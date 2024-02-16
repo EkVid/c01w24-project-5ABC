@@ -4,7 +4,7 @@ import "@/app/globals.css";
 
 const About = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-20 py-16 px-4 md:px-8 lg:px-12 items-center lg:ml-20 md:ml-20">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-20 py-16 px-4 md:px-8 lg:px-12 items-center lg:ml-40 md:ml-20">
       {" "}
       <div className="flex flex-col gap-8 lg:ml-20">
         <h1 className="text-black text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
@@ -20,7 +20,7 @@ const About = () => {
           Register
         </button>
       </div>
-      <div className="flex items-center ml-20">
+      <div className="flex items-center ml-10">
         {" "}
         <Image
           src={Four_Circle}
