@@ -1,6 +1,12 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import dynamic from 'next/dynamic'
 import Footer from "@/components/Footer";
+
+const AccessibilityBar = dynamic(
+  () => import('@/components/AccessibilityBar'),
+  { ssr: false }
+)
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,10 +17,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html id="root" lang="en">
       <body className={inter.className}>
         <div className="flex flex-col min-h-screen">
-          <main className="flex-grow">{children}</main>
+          <AccessibilityBar />
+          <main className="flex-grow dark:bg-[#1f1f1f]">{children}</main>
           <Footer />
         </div>
       </body>

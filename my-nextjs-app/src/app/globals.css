@@ -32,6 +32,7 @@ body {
   }
 }
 
+/* ------------------Colours------------------*/
 .custom-green{
   color : #4CAF4F;
 }
@@ -44,3 +45,65 @@ body {
   color : #717171;
 }
 
+.custom-dark-grey-background{
+  background-color: #E0E0E0;
+}
+
+.custom-dark-grey-text{
+  color: #4D4D4D;
+}
+
+.custom-offwhite-background{
+  background-color: #F5F7FA;
+}
+
+/* ------------------Dark Mode Colours------------------*/
+.d-text{
+  color : #ffffff;
+}
+
+.d-custom-dark-grey-background{
+  background-color: #1f1f1f;
+}
+
+.d-custom-offwhite-background{
+  background-color: #000000;
+}
+
+
+/* ------------------Non-Dynamic Font Sizes------------------*/
+.cs-text-xs{
+  font-size: 12px;
+}
+
+.cs-text-sm{
+  font-size: 14px;
+}
+
+.cs-text-base{
+  font-size: 16px;
+}
+
+.cs-text-lg{
+  font-size: 18px;
+}
+
+.cs-text-xl{
+  font-size: 20px;
+}
+
+.cs-text-2xl{
+  font-size: 24px;
+}
+
+.cs-text-3xl{
+  font-size: 30px;
+}
+
+.cs-text-4xl{
+  font-size: 36px;
+}
+
+.cs-text-5xl{
+  font-size: 48px;
+}
