@@ -2,31 +2,28 @@ import Four_Circle from "../../public/logo.svg";
 import Image from "next/image";
 import "@/app/globals.css";
 
-const About = () => {
+const Hero = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-20 py-16 px-4 md:px-8 lg:px-12 items-center lg:ml-40 md:ml-20">
-      {" "}
-      <div className="flex flex-col gap-8 lg:ml-20">
-        <h1 className="text-black text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
-          Funding futures, <span className="custom-green"> changing lives</span>
-          .
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-20 py-16 md:px-8 lg:px-12 items-center justify-center md:ml-20 sm:ml-10 min-w-">
+      <div className="flex flex-col gap-8 items-center text-center lg:items-start lg:text-left">
+        <h1 className="text-black dark:text-white text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
+          Funding futures, <span className="custom-green">changing lives</span>.
         </h1>
-        <p className="text-black text-sm md:text-sm lg:text-sm custom-grey">
+        <p className="text-black text-sm md:text-sm lg:text-sm custom-grey dark:text-[#dddddd]">
           Simplify your life with MA everywhere, our online and mobile
           self-service platform that lets you instantly connect to your grants
           information.
         </p>
-        <button className="self-start bg-blue-500 text-white py-2 px-4 rounded custom-green-background">
+        <button className="bg-blue-500 text-white py-2 px-4 rounded custom-green-background">
           Register
         </button>
       </div>
-      <div className="flex items-center ml-10">
-        {" "}
+      <div className="flex justify-center">
         <Image
           src={Four_Circle}
           alt="Logo"
-          width={300}
-          height={200}
+          width={250}
+          height={150}
           className="rounded-3xl transition-all duration-300"
         />
       </div>
@@ -34,4 +31,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default Hero;
