@@ -20,11 +20,11 @@ def token_required(f):
         try:
             decodedToken = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
 
-            #Check if the email passed in the auth token corresponds to a user in the DB
+            #Check if the username passed in the auth token corresponds to a user in the DB
 
-            user = MongoClient()['DB'].Users.find_one({"Email": decodedToken["email"]})
+            user = MongoClient()['RapidAIDB'].Users.find_one({"Username": decodedToken["user"]})
 
-            if(user is None): #if there is no user registered in the DB with the encoded email from the JWT
+            if(user is None): #if there is no user registered in the DB with the encoded username from the JWT
                 return {
                     "message": "Access token is invalid",
                     "error": "Unauthorized"
