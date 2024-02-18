@@ -63,6 +63,9 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
 
         {/* Dropdown Open Content */}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 90c5470 (updated dark mode)
         <div className="flex justify-start custom-dark-grey-text p-4 space-x-5 transition-all overflow-x-auto">
           {/* Font Size */}
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600  min-w-40">
@@ -103,6 +106,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:text-white">Theme</h3>
             <div className="flex flex-col lg:flex-row lg:space-x-2 items-center lg:justify-center mt-4">
+<<<<<<< HEAD
               <label htmlFor="theme" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] ">
                 <input id='theme' type="checkbox" className="sr-only peer" onChange={handleOnChangeTheme} checked={lightTheme}/>
                 <div className="dark:bg-[#E0E0E0] bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
@@ -126,6 +130,19 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
               </label>
               <p className="cs-text-lg dark:text-white">Light</p>
 >>>>>>> fae0b24 (Font Size and Theme settings implemented)
+=======
+              <label htmlFor="theme" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] ">
+                <input id='theme' type="checkbox" className="sr-only peer" onChange={(e) => changeTheme(e.target.checked, setLightTheme)} checked={lightTheme}/>
+                <div className="dark:bg-[#E0E0E0] bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
+                <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1 flex items-center justify-center">
+                  <Image
+                    src={lightTheme ? sun : moon}
+                    alt={lightTheme ? "sun" : "moon"}
+                    className="w-full h-full transition-all duration-300"
+                  />
+                </span>
+              </label>
+>>>>>>> 90c5470 (updated dark mode)
             </div>
           </div>
 
