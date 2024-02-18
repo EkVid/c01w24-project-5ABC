@@ -11,7 +11,7 @@ const CheckWord = ({word}) => {
         width={30}
         className="transition-all duration-300 mr-4 pointer"
       />
-      <h2 className="custom-green-dark self-center text-3xl font-bold">
+      <h2 className="custom-green-dark dark:d-custom-green self-center text-3xl font-bold">
         {word}
       </h2>
     </div>

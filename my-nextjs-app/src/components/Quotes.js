@@ -8,10 +8,10 @@ const Quotes = () => {
   return (
     <div className="flex flex-col items-center mx-10 mt-20 mb-10">
       <div className="flex flex-col mb-5">
-        <h2 className="custom-grey-dark text-center text-4xl font-bold mb-4">
+        <h2 className="custom-dark-grey-text dark:d-text text-center text-4xl font-bold mb-4">
           Helping Remove Accessibility Barriers
         </h2>
-        <p className="custom-grey text-center text-md">
+        <p className="custom-grey dark:d-text text-center text-md">
           We work to develop solutions that increase usability, reach, 
           and efficiency within your organization
         </p>
@@ -19,7 +19,7 @@ const Quotes = () => {
       <div className="flex flex-col items-center lg:grid lg:grid-cols-3">
         <div className="flex flex-col items-center mt-10 lg:min-h-full"> 
           <CheckWord word={"Accessible"} />
-          <QuoteCard 
+          <QuoteCard
             img={AccessiblityIcon} 
             title={"Accessibility"} 
             content={"Committed to removing barriers and creating accessible and adaptive solutions that empower people with disabilities in the workplace."}

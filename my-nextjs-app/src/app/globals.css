@@ -33,6 +33,7 @@ body {
 }
 
 /* ------------------Colours------------------*/
+
 .custom-green{
   color : #4CAF4F;
 }
@@ -62,18 +63,27 @@ body {
 }
 
 /* ------------------Dark Mode Colours------------------*/
-.d-text{
-  color : #ffffff;
-}
+@layer utilities {
+  .d-text{
+    color : #ffffff;
+  }
+  
+  .d-custom-dark-grey-background{
+    background-color: #1f1f1f;
+  }
+  
+  .d-custom-offwhite-background{
+    background-color: #000000;
+  }
 
-.d-custom-dark-grey-background{
-  background-color: #1f1f1f;
-}
+  .d-custom-green{
+    color : #4CAF4F;
+  }
 
-.d-custom-offwhite-background{
-  background-color: #000000;
+  .d-custom-navy-background{
+    background-color: #263238;
+  }
 }
-
 
 /* ------------------Non-Dynamic Font Sizes------------------*/
 .cs-text-xs{
