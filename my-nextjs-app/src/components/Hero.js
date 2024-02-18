@@ -7,11 +7,11 @@ const About = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-20 py-16 px-4 md:px-8 lg:px-12 items-center lg:ml-40 md:ml-20">
       {" "}
       <div className="flex flex-col gap-8 lg:ml-20">
-        <h1 className="text-black text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
+        <h1 className="text-black dark:text-white text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
           Funding futures, <span className="custom-green"> changing lives</span>
           .
         </h1>
-        <p className="text-black text-sm md:text-sm lg:text-sm custom-grey">
+        <p className="text-black text-sm md:text-sm lg:text-sm custom-grey dark:text-[#dddddd]">
           Simplify your life with MA everywhere, our online and mobile
           self-service platform that lets you instantly connect to your grants
           information.
