@@ -11,7 +11,7 @@ const Footer = () => {
             <h2 className="uppercase font-bold">Logo</h2>
           </div>
           {/* Navigation/Quick Links */}
-          <ul className="flex mt-5 justify-center lg:space-x-40 md:space-x-20 space-x-5">
+          <ul className="flex mt-5 justify-center lg:space-x-30 md:space-x-20 space-x-5">
             <li>
               <a href="#" className="hover:underline">
                 Dashboard
