@@ -28,10 +28,17 @@ const scaleFont = (dir) => {
     }
 }
 
+<<<<<<< HEAD
 const getFont = () => parseInt(root.style.fontSize);
 
+=======
+>>>>>>> fae0b24 (Font Size and Theme settings implemented)
 const resetFont = () => {
     document.getElementById("root").style.fontSize = "100%"
 }
 
+<<<<<<< HEAD
 export { scaleFont, getFont, resetFont }
+=======
+export { scaleFont, resetFont }
+>>>>>>> fae0b24 (Font Size and Theme settings implemented)

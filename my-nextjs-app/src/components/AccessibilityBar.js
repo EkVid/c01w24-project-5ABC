@@ -62,6 +62,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
         </summary>
 
         {/* Dropdown Open Content */}
+<<<<<<< HEAD
         <div className="flex justify-start custom-dark-grey-text p-4 space-x-5 transition-all overflow-x-auto">
           {/* Font Size */}
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600  min-w-40">
@@ -98,6 +99,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
           </div>
 
           {/* Theme */}
+<<<<<<< HEAD
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:text-white">Theme</h3>
             <div className="flex flex-col lg:flex-row lg:space-x-2 items-center lg:justify-center mt-4">
@@ -112,10 +114,23 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
                   />
                 </span>
               </label>
+=======
+          <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600">
+            <h3 className="text-center cs-text-xl dark:text-white">Theme</h3>
+            <div className="flex space-x-2 items-center mt-4">
+              <p className="cs-text-lg dark:text-white">Dark</p>
+              <label htmlFor="theme" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] ">
+                <input id='theme' type="checkbox" className="sr-only peer" onChange={(e) => changeTheme(e.target.checked, setLightTheme)} checked={lightTheme}/>
+                <div className="dark:bg-[#000000] bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
+                <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1"></span>
+              </label>
+              <p className="cs-text-lg dark:text-white">Light</p>
+>>>>>>> fae0b24 (Font Size and Theme settings implemented)
             </div>
           </div>
 
           {/* Language */}
+<<<<<<< HEAD
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:text-white">Language</h3>
             <div className="flex justify-center items-center mt-4 mx-1  rounded-lg custom-dark-grey-background h-8">
@@ -141,10 +156,23 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1"></span>
               </label>
               <p className="cs-text-lg dark:text-white">On</p>
+=======
+          <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600">
+            <h3 className="text-center cs-text-xl dark:text-white">Language</h3>
+            <div className="flex space-x-2 items-center mt-4">
+              <p className="cs-text-lg dark:text-white">Dark</p>
+              <label htmlFor="theme" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] ">
+                <input id='theme' type="checkbox" className="sr-only peer" onChange={(e) => changeTheme(e.target.checked, setLightTheme)} checked={lightTheme}/>
+                <div className="dark:bg-[#000000] bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
+                <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1"></span>
+              </label>
+              <p className="cs-text-lg dark:text-white">Light</p>
+>>>>>>> fae0b24 (Font Size and Theme settings implemented)
             </div>
           </div>
         </div>
       </details>
+<<<<<<< HEAD
       <FontSizeContext.Provider value={fontSize}>
         <ThemeContext.Provider value={lightTheme}>
           <ReducedMotionContext.Provider value={isReducedMotion}>
@@ -152,6 +180,8 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
           </ReducedMotionContext.Provider>
         </ThemeContext.Provider>
       </FontSizeContext.Provider>
+=======
+>>>>>>> fae0b24 (Font Size and Theme settings implemented)
     </div>
   );
 };
