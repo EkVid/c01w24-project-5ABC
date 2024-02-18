@@ -40,7 +40,14 @@ body {
   background-color: #4CAF4F;
 }
 
+.custom-green-dark {
+  color: #407541;
+}
+
 .custom-grey{
   color : #717171;
 }
 
+.custom-grey-dark {
+  color: #4D4D4D
+}
