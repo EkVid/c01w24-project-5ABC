@@ -1,12 +1,12 @@
 import Hero from "@/components/Hero";
 import Quotes from "@/components/Quotes/Quotes";
-import Navbar from "@/components/AuthNavBar";
-import NewBar from "@/components/UnauthNavBar";
+import AuthNavBar from "@/components/navbar/AuthNavBar";
+import UnauthNavBar from "@/components/navbar/UnauthNavBar";
 
 export default function Home() {
   return (
     <main>
-      <NewBar />
+      <AuthNavBar />
       <Hero />
       <Quotes />
     </main>

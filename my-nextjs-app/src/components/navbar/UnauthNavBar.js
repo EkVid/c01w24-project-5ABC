@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import styles from './newbar.module.css';
+import styles from '../styles/unauthNavBar.module.css';
 
 const NewBar = () => {
   return (
@@ -12,10 +12,10 @@ const NewBar = () => {
       </div>
       <div className={styles.actions}>
         <Link href="/login">
-          <p>Login</p>
+          <p className={styles.button}>Login</p>
         </Link>
         <Link href="/register">
-          <p className={styles.registerButton}>Register</p>
+          <p className={styles.button}>Register Now →</p>
         </Link>
       </div>
     </nav>
