@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
+=======
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)
 const Login = () => {
   return (
     <div
@@ -35,6 +38,7 @@ const Login = () => {
               placeholder="Password"
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
             />
+<<<<<<< HEAD
             <Link href="/forgot_password">
               <h2 className="text-center text-xl hover:underline hover:text-blue-500">
                 Forgot password?
@@ -44,6 +48,14 @@ const Login = () => {
               <button
                 type="submit"
                 className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
+=======
+            <h2 className="text-center text-xl">Forgot password?</h2>
+            {/* remeber to add link to forgot password  */}
+            <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
+              <button
+                type="submit"
+                className="text-white text-lg w-full font-semibold"
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)
               >
                 Sign In
               </button>
@@ -61,11 +73,20 @@ const Login = () => {
             Sign up and discover a great amount of new opportunities!
           </p>
           <div className="bg-white rounded max-w-xs w-full rounded-full">
+<<<<<<< HEAD
             <Link href="/signup">
               <button className="inline-block custom-text text-md w-full font-semibold h-12 px-6 bg-white hover:bg-gray-100 rounded-full transition duration-150 ease-in-out">
                 Sign Up
               </button>
             </Link>
+=======
+            <button
+              type="submit"
+              className="text-black text-lg w-full font-semibold"
+            >
+              Sign Up
+            </button>
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)
           </div>
         </div>
       </div>
@@ -73,4 +94,8 @@ const Login = () => {
   );
 };
 
+<<<<<<< HEAD
 export default dynamic(() => Promise.resolve(Login), { ssr: false });
+=======
+export default Login;
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)

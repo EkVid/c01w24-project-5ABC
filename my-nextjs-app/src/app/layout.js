@@ -1,6 +1,10 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
+<<<<<<< HEAD
+=======
+import Footer from "@/components/Footer";
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)
 
 const AccessibilityBar = dynamic(
   () => import("@/components/AccessibilityBar"),
