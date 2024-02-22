@@ -19,6 +19,7 @@ grantFormCollection = db.GrantForms
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
+
 @app.route("/register", methods=["POST"])
 def register():
     contentType = request.headers.get('Content-Type')
@@ -48,6 +49,7 @@ def register():
 
     else:
         return {"message": "Unsupported Content Type"}, 400
+
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -103,24 +105,16 @@ def login():
     else:
         return {"message": "Unsupported Content Type"}, 400
 
+
 @app.route("/createGrantForm", methods=["POST"])
 def createGrantForm():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
 
-    form = getValidatedGrantFormData(request.json)  # TODO: maybe replace with schema validation?
-    if form == {}:  # Invalid data
-        return {"message": "Invalid grant application data"}, 400
-    grantFormCollection.insert_one(form)
+    json = request.json
+    grantForm = {
+        "grantName": json.get("grantName", ""),
+        "questions": json.get("questions", [])
+    }
+    grantFormCollection.insert_one(grantForm)
     return {"message": "Grant application successfully created"}
-
-# Returns an empty dictionary if the grant form data is invalid; otherwise, the data is returned in a dictionary
-def getValidatedGrantFormData(formJSON: dict[str, str]):
-    if "grantName" not in formJSON or formJSON["grantName"].strip() == "":
-        return {}
-    else:
-        form = {
-            "grantName": formJSON["grantName"],
-            "questions": formJSON.get("questions", [])
-        }
-        return form
