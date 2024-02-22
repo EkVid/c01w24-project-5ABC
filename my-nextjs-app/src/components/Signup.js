@@ -1,7 +1,10 @@
 "use client";
 import React, { useState } from "react";
+<<<<<<< HEAD
 import Link from "next/link";
 import dynamic from "next/dynamic";
+=======
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)
 
 const SignUp = () => {
   const [selection, setSelection] = useState("grantee");
@@ -25,12 +28,18 @@ const SignUp = () => {
             </h2>
             <p className="text-center text-lg">
               Already have an account?{" "}
+<<<<<<< HEAD
               <Link
                 href="/login"
                 className="text-green-600 hover:text-green-700"
               >
                 Sign in
               </Link>
+=======
+              <a href="/login" className="text-green-600 hover:text-green-700">
+                Sign in
+              </a>
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)
             </p>
           </div>
           <div className="flex mb-6 justify-center ">
@@ -107,7 +116,11 @@ const SignUp = () => {
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
+<<<<<<< HEAD
                 className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
+=======
+                className="text-white text-lg w-full font-semibold"
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)
               >
                 Sign Up
               </button>
@@ -178,4 +191,8 @@ const SignUp = () => {
   );
 };
 
+<<<<<<< HEAD
 export default dynamic(() => Promise.resolve(SignUp), { ssr: false });
+=======
+export default SignUp;
+>>>>>>> c0cda00 (Created sign up and sign in sections' UI)
