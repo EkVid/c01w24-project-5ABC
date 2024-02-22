@@ -15,6 +15,7 @@ client = MongoClient()
 db = client['DB']
 userCollection = db.Users
 fileCollection = db.Files
+grantFormCollection = db.GrantForms
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
@@ -54,7 +55,7 @@ def login():
 
     if(contentType == 'application/json'):
         json = request.json
-        
+
         username = json['Username']
         password = json['Password']
 
@@ -82,7 +83,7 @@ def login():
                         "Error": "Error generating the JWT TOKEN",
                         "Message": str(e)
                     }, 500
-                    
+
                 #tells the DB that the user has an active session. This prevents them from accessing the API routes if they have a valid Access Token but have logged out
                 userCollection.update_one({"Username": username}, {"$set": { "ActiveSession": True}})
 
@@ -96,8 +97,30 @@ def login():
                     "token": token,
                     "UserInfo": userInfo
                 }, 200
-            
+
             else:
                 return "Invalid login information", 401
     else:
         return {"message": "Unsupported Content Type"}, 400
+
+@app.route("/createGrantForm", methods=["POST"])
+def createGrantForm():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
+    form = getValidatedGrantFormData(request.json)  # TODO: maybe replace with schema validation?
+    if form == {}:  # Invalid data
+        return {"message": "Invalid grant application data"}, 400
+    grantFormCollection.insert_one(form)
+    return {"message": "Grant application successfully created"}
+
+# Returns an empty dictionary if the grant form data is invalid; otherwise, the data is returned in a dictionary
+def getValidatedGrantFormData(formJSON: dict[str, str]):
+    if "grantName" not in formJSON or formJSON["grantName"].strip() == "":
+        return {}
+    else:
+        form = {
+            "grantName": formJSON["grantName"],
+            "questions": formJSON.get("questions", [])
+        }
+        return form
