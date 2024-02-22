@@ -1,6 +1,5 @@
-
-import Link from 'next/link';
-import styles from '../styles/unauthNavBar.module.css';
+import Link from "next/link";
+import styles from "@/styles/Navbar/unauthNavBar.module.css";
 
 const NewBar = () => {
   return (
