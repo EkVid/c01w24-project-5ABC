@@ -10,3 +10,4 @@ build
 out
 *.dll
 node_modules
+backend/data/
