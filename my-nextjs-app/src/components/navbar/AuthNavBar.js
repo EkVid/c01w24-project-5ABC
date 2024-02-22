@@ -1,17 +1,16 @@
-// components/Navbar.js
 
 import Link from 'next/link';
-import styles from './navbar.css';
+import styles from '../styles/AuthNavBar.css';
 
 
 
 const Navbar = () => {
     return (
-        <nav>
+        <nav class="shadow-md ms-auto">
             <ul>
                 <li>
                     <Link href="/">
-                        <p>Home</p>
+                        <p>Logo</p>
                     </Link>
                 </li>
                 <li>
@@ -30,6 +29,18 @@ const Navbar = () => {
                     </Link>
                 </li>
             </ul>
+            <ul class="ms-auto">
+                <li>
+                    <div class="dropdown">
+                        <button class="dropbtn">Profile</button>
+                        <ul class='dropdown-content'>
+                            <li>Edit Profile</li>
+                            <li>Sign Out</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            
         </nav>
     );
 };
