@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import Flask, request
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -111,10 +112,29 @@ def createGrantForm():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
 
-    json = request.json
+    json = dict(request.json)
     grantForm = {
         "grantName": json.get("grantName", ""),
         "questions": json.get("questions", [])
     }
     grantFormCollection.insert_one(grantForm)
+
     return {"message": "Grant application successfully created"}
+
+
+@app.route("/updateGrantForm/<_id>", methods=["PUT"])
+def updateGrantForm(_id):
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objId = ObjectId(_id)
+    json = request.json
+
+    newData = {key: val for (key, val) in json.items() if key != "_id"}     # Updating everything but the ID for now
+    res = grantFormCollection.update_one({"_id": objId}, {"$set": newData})
+    if res.matched_count != 1:
+        return {"message": "Grant application with the given ID not found"}, 404
+
+    return {"message": "Grant application successfully updated"}
