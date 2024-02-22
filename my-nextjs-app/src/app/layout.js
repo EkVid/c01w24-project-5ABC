@@ -1,12 +1,12 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
 import Footer from "@/components/Footer";
 
 const AccessibilityBar = dynamic(
-  () => import('@/components/AccessibilityBar'),
+  () => import("@/components/AccessibilityBar"),
   { ssr: false }
-)
+);
 
 const inter = Inter({ subsets: ["latin"] });
 
