@@ -130,13 +130,25 @@ def createGrantForm():
     return {"message": message}, 200
 
 
+@app.route("/getGrantForm/<_id>", methods=["GET"])
+def getGrantForm(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objId = ObjectId(_id)
+
+    form = grantFormCollection.find_one({"_id": objId})
+
+    responseForm = {key: val for (key, val) in form.items() if key != "_id"}
+    
+    return responseForm, 200
+
+
 @app.route("/updateGrantForm/<_id>", methods=["PUT"])
 def updateGrantForm(_id):
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
 
     if not ObjectId.is_valid(_id):
-        print(_id)
         return {"message": "Invalid ID"}, 400
     objId = ObjectId(_id)
     json = request.json
