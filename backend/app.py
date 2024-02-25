@@ -3,16 +3,20 @@ from flask import Flask, request
 from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from pydantic import ValidationError
 import os
 import jwt
 import bcrypt
 import datetime
+import json as JSON
+
+from data_models import Form
 
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-client = MongoClient()
+client = MongoClient(os.getenv('DB_URI'))
 db = client['DB']
 userCollection = db.Users
 fileCollection = db.Files
@@ -112,14 +116,18 @@ def createGrantForm():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
 
-    json = dict(request.json)
-    grantForm = {
-        "grantName": json.get("grantName", ""),
-        "questions": json.get("questions", [])
-    }
-    grantFormCollection.insert_one(grantForm)
+    json = request.json
 
-    return {"message": "Grant application successfully created"}
+    try:
+        form = Form.model_validate_json(JSON.dumps(json))
+        print(type(form.questionData[0].options.minNum))
+    except ValidationError as e:
+        return {"message": str(e)}, 400
+
+    id = grantFormCollection.insert_one(json).inserted_id
+    message = "Grant application successfully created with id: " + str(id)
+
+    return {"message": message}, 200
 
 
 @app.route("/updateGrantForm/<_id>", methods=["PUT"])
@@ -128,13 +136,20 @@ def updateGrantForm(_id):
         return {"message": "Unsupported Content Type"}, 400
 
     if not ObjectId.is_valid(_id):
+        print(_id)
         return {"message": "Invalid ID"}, 400
     objId = ObjectId(_id)
     json = request.json
 
     newData = {key: val for (key, val) in json.items() if key != "_id"}     # Updating everything but the ID for now
+
+    try:
+        Form.model_validate_json(JSON.dumps(newData))
+    except ValidationError as e:
+        return {"message": str(e)}, 400
+
     res = grantFormCollection.update_one({"_id": objId}, {"$set": newData})
     if res.matched_count != 1:
-        return {"message": "Grant application with the given ID not found"}, 404
+        return {"message": "Grant form with the given ID not found"}, 404
 
-    return {"message": "Grant application successfully updated"}
+    return {"message": "Grant form successfully updated"}, 200
