@@ -136,11 +136,11 @@ def getGrantForm(_id):
         return {"message": "Invalid ID"}, 400
     objId = ObjectId(_id)
 
-    form = grantFormCollection.find_one({"_id": objId})
+    form = grantFormCollection.find_one({"_id": objId}, {"_id": 0})
+    if not form:
+        return {"message": "Grant form with the given ID not found"}, 404
 
-    responseForm = {key: val for (key, val) in form.items() if key != "_id"}
-    
-    return responseForm, 200
+    return form, 200
 
 
 @app.route("/updateGrantForm/<_id>", methods=["PUT"])
@@ -165,3 +165,16 @@ def updateGrantForm(_id):
         return {"message": "Grant form with the given ID not found"}, 404
 
     return {"message": "Grant form successfully updated"}, 200
+
+
+@app.route("/deleteGrantForm/<_id>", methods=["DELETE"])
+def deleteGrantForm(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objId = ObjectId(_id)
+
+    res = grantFormCollection.delete_one({"_id": objId})
+    if res.deleted_count != 1:
+        return {"message": "Grant form with the given ID not found"}, 404
+    
+    return {"message": "Grant form successfully deleted"}, 200
