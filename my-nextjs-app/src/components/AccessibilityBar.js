@@ -6,12 +6,27 @@ import sun from "../../public/sun.svg"
 import moon from "../../public/moon.svg"
 import Image from "next/image.js";
 import { useState } from "react";
-import { scaleFont, resetFont } from "./utils/scaleFont.js"
+import { scaleFont, resetFont, getFont } from "./utils/scaleFont.js"
 import { initTheme, changeTheme, getTheme } from "./utils/theme.js"
+import FontSizeContext from "./utils/FontSizeContext";
+import ReducedMotionContext from "./utils/ReducedMotionContext";
 
-const AccessibilityBar = () => {
+const AccessibilityBar = ({children}) => {
   initTheme()
   const [ lightTheme, setLightTheme ] = useState(getTheme() === 'light')
+  const [ fontSize, setFontSize ] = useState(100)  // Default font size is 100
+  const [ isReducedMotion, setIsReducedMotion ] = useState(false)
+  // TODO: add handler for setting isReducedMotion when option is changed
+
+  const handleScaleFontDown = () => {
+    scaleFont('down');
+    setFontSize(getFont());
+  }
+
+  const handleScaleFontUp = () => {
+    scaleFont('up')
+    setFontSize(getFont());
+  }
 
   return(
     <div className="custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm">
@@ -39,7 +54,7 @@ const AccessibilityBar = () => {
             <div className="flex space-x-4 justify-center items-center">
               <button 
                 className="cs-text-5xl font-light hover:cursor-pointer dark:text-white" 
-                onClick={() => scaleFont('down')}>
+                onClick={handleScaleFontDown}>
                   −
               </button>
 
@@ -47,7 +62,7 @@ const AccessibilityBar = () => {
 
               <button 
                 className="cs-text-5xl font-light hover:cursor-pointer dark:text-white" 
-                onClick={() => scaleFont('up')}>
+                onClick={handleScaleFontUp}>
                   +
               </button>
             </div>
@@ -100,6 +115,11 @@ const AccessibilityBar = () => {
           </div>
         </div>
       </details>
+      <FontSizeContext.Provider value={fontSize}>
+        <ReducedMotionContext.Provider value={isReducedMotion}>
+          {children}
+        </ReducedMotionContext.Provider>
+      </FontSizeContext.Provider>
     </div>
   )
 }
