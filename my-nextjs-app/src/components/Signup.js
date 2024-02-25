@@ -1,10 +1,14 @@
 "use client";
 import React, { useState } from "react";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import Link from "next/link";
 import dynamic from "next/dynamic";
 =======
 >>>>>>> c0cda00 (Created sign up and sign in sections' UI)
+=======
+import Link from "next/link";
+>>>>>>> 548595b (Added routes for login & Signup)
 
 const SignUp = () => {
   const [selection, setSelection] = useState("grantee");
@@ -29,10 +33,14 @@ const SignUp = () => {
             <p className="text-center text-lg">
               Already have an account?{" "}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 548595b (Added routes for login & Signup)
               <Link
                 href="/login"
                 className="text-green-600 hover:text-green-700"
               >
+<<<<<<< HEAD
                 Sign in
               </Link>
 =======
@@ -40,6 +48,10 @@ const SignUp = () => {
                 Sign in
               </a>
 >>>>>>> c0cda00 (Created sign up and sign in sections' UI)
+=======
+                Sign in
+              </Link>
+>>>>>>> 548595b (Added routes for login & Signup)
             </p>
           </div>
           <div className="flex mb-6 justify-center ">
@@ -117,10 +129,14 @@ const SignUp = () => {
               <button
                 type="submit"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
 =======
                 className="text-white text-lg w-full font-semibold"
 >>>>>>> c0cda00 (Created sign up and sign in sections' UI)
+=======
+                className="text-white text-lg w-full font-semibold h-12 px-6"
+>>>>>>> 548595b (Added routes for login & Signup)
               >
                 Sign Up
               </button>
