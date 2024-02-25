@@ -53,7 +53,7 @@ const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers
         <div 
           key={idx} 
           onClick={() => handleOnClickAnswer(a.answer)}
-          className={`flex items-center my-2 p-1 px-3 ${isEditMode ? "" : "rounded-md hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black"}`}
+          className={`flex items-center p-1 px-3 mb-1 ${isEditMode ? "" : "rounded-md hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black"}`}
         >
           <input
             type="radio"
@@ -84,7 +84,7 @@ const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers
                     alt="Delete"
                     width={20 * fontSizeMultiplier}
                     height={"auto"}
-                    className="d-filter-white rotate-45 pointer-events-none"
+                    className="text-sm d-filter-white rotate-45 pointer-events-none"
                   />
                 </button>
                 :
@@ -92,7 +92,7 @@ const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers
               }
             </>
             :
-            <label htmlFor={a.id} className="ml-3 custom-dark-grey dark:text-white pointer-events-none"> 
+            <label htmlFor={a.id} className="ml-3 text-sm custom-dark-grey dark:text-white pointer-events-none"> 
               {a.answer}
             </label>
           }
