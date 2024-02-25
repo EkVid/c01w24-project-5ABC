@@ -10,7 +10,7 @@ import bcrypt
 import datetime
 import json as JSON
 
-from data_models import Form
+from dataModels import Form
 
 load_dotenv()
 app = Flask(__name__)

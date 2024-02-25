@@ -31,7 +31,6 @@ class NumberOptions(BaseModel):
         else:
             assert(type(value) == float)
 
-
 class MultipleChoiceOptions(BaseModel): 
     answers: Annotated[list[str], Len(min_length=2, max_length=10)]
 
