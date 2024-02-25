@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
 
 const SignUp = () => {
   const [selection, setSelection] = useState("grantee");
@@ -23,9 +24,12 @@ const SignUp = () => {
             </h2>
             <p className="text-center text-lg">
               Already have an account?{" "}
-              <a href="/login" className="text-green-600 hover:text-green-700">
+              <Link
+                href="/login"
+                className="text-green-600 hover:text-green-700"
+              >
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
           <div className="flex mb-6 justify-center ">
@@ -102,7 +106,7 @@ const SignUp = () => {
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
-                className="text-white text-lg w-full font-semibold"
+                className="text-white text-lg w-full font-semibold h-12 px-6"
               >
                 Sign Up
               </button>
