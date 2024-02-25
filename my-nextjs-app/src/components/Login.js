@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const Login = () => {
   return (
     <div
@@ -34,10 +36,10 @@ const Login = () => {
             />
             <h2 className="text-center text-xl">Forgot password?</h2>
             {/* remeber to add link to forgot password  */}
-            <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
+            <div className="bg-green-500 rounded max-w-xs w-full rounded-full ">
               <button
                 type="submit"
-                className="text-white text-lg w-full font-semibold"
+                className="text-white text-lg w-full font-semibold bg-green-500 rounded-full h-12 px-6"
               >
                 Sign In
               </button>
@@ -55,12 +57,11 @@ const Login = () => {
             Sign up and discover a great amount of new opportunities!
           </p>
           <div className="bg-white rounded max-w-xs w-full rounded-full">
-            <button
-              type="submit"
-              className="text-black text-lg w-full font-semibold"
-            >
-              Sign Up
-            </button>
+            <Link href="/signup">
+              <button className="text-black text-lg w-full font-semibold h-12 px-6">
+                Sign Up
+              </button>
+            </Link>
           </div>
         </div>
       </div>
