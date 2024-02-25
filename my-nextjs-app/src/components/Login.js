@@ -1,9 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
 =======
 >>>>>>> c0cda00 (Created sign up and sign in sections' UI)
+=======
+import Link from "next/link";
+
+>>>>>>> 548595b (Added routes for login & Signup)
 const Login = () => {
   return (
     <div
@@ -51,11 +56,15 @@ const Login = () => {
 =======
             <h2 className="text-center text-xl">Forgot password?</h2>
             {/* remeber to add link to forgot password  */}
-            <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
+            <div className="bg-green-500 rounded max-w-xs w-full rounded-full ">
               <button
                 type="submit"
+<<<<<<< HEAD
                 className="text-white text-lg w-full font-semibold"
 >>>>>>> c0cda00 (Created sign up and sign in sections' UI)
+=======
+                className="text-white text-lg w-full font-semibold bg-green-500 rounded-full h-12 px-6"
+>>>>>>> 548595b (Added routes for login & Signup)
               >
                 Sign In
               </button>
@@ -74,6 +83,7 @@ const Login = () => {
           </p>
           <div className="bg-white rounded max-w-xs w-full rounded-full">
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Link href="/signup">
               <button className="inline-block custom-text text-md w-full font-semibold h-12 px-6 bg-white hover:bg-gray-100 rounded-full transition duration-150 ease-in-out">
                 Sign Up
@@ -87,6 +97,13 @@ const Login = () => {
               Sign Up
             </button>
 >>>>>>> c0cda00 (Created sign up and sign in sections' UI)
+=======
+            <Link href="/signup">
+              <button className="text-black text-lg w-full font-semibold h-12 px-6">
+                Sign Up
+              </button>
+            </Link>
+>>>>>>> 548595b (Added routes for login & Signup)
           </div>
         </div>
       </div>
