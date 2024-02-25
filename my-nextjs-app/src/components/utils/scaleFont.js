@@ -28,8 +28,10 @@ const scaleFont = (dir) => {
     }
 }
 
+const getFont = () => parseInt(root.style.fontSize);
+
 const resetFont = () => {
     document.getElementById("root").style.fontSize = "100%"
 }
 
-export { scaleFont, resetFont }
+export { scaleFont, getFont, resetFont }
