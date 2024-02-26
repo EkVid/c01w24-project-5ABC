@@ -14,7 +14,7 @@ const CheckboxSetting = ({label, currentValue, onClick}) => {
   return (
     <div 
       onClick={onClick}
-      className={`flex items-center w-fit rounded-md p-1 px-3 hover:cursor-pointer hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`flex items-center w-fit rounded-md p-1 px-2 hover:cursor-pointer hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black ${isReduceMotion ? "" : "transition-colors"}`}
     >
       <input 
         type="checkbox"

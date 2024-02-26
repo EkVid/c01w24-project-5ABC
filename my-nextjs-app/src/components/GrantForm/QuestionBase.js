@@ -5,8 +5,9 @@ import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 import CheckboxSetting from "./SmallComponents/CheckboxSetting";
+import ErrTextbox from "./SmallComponents/ErrTextbox";
 
-const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
+const QuestionBase = ({questionData, isEditMode, errMsg, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -54,7 +55,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
       {/* Options section */}
       {isEditMode ? 
         <div className="pl-5 mb-8">
-          <div className="mb-2 px-3">Settings:</div>
+          <div className="mb-2 px-2 text-black dark:text-white">Settings:</div>
             <CheckboxSetting 
               label={"Required question"} 
               currentValue={isRequired} 
@@ -73,6 +74,11 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
           onChangeAnswers={handleOnChangeAnswers}
           onDelete={() => onDelete(id)}
         />
+        :
+        <></>
+      }
+      {errMsg ? 
+        <ErrTextbox msg={errMsg}/>
         :
         <></>
       }

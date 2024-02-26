@@ -8,12 +8,12 @@ const ErrTextbox = ({msg}) => {
   const fontSize = useContext(FontSizeContext);
 
   return msg ? (
-    <div className="flex items-center">
+    <div className="flex items-center p-2">
       <Image
         src={AlertIcon}
         alt="Alert"
         width={"auto"}
-        height={20 * (fontSize / 100)}
+        height={17 * (fontSize / 100)}
       />
       <div className="ml-2 text-sm custom-red dark:d-custom-red">
         {msg}
