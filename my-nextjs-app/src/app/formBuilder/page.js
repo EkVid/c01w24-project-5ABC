@@ -9,7 +9,7 @@ const testbody = [
     type: "multiple choice",
     answers: ["Yes", "No"],
     isRequired: true,
-    errMsg: null,
+    errMsgArr: null,
     errEmptyAnsIdxArr: [],
     errDupAnsIdxArr: []
   },
@@ -18,6 +18,7 @@ const testbody = [
     type: process.env.NEXT_PUBLIC_TYPE_CHECKBOX,
     answers: ["Tall", "Smol", "Wide", "Thinn"],
     isRequired: false,
+    errMsgArr: ["eerror 1", "erro2"],
     options:
     {
       isAllAnOption: false,
@@ -51,7 +52,7 @@ export default function FormBuilder() {
     <>
       <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
       {questionData?.map(q => 
-        <div key={q.id} className={`custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 custom-questioncard-border dark:d-custom-questioncard-border ${q.errMsg ? "custom-red-border dark:d-custom-red-border" : ""}`}>
+        <div key={q.id} className={`custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 ${q.errMsgArr ? "custom-red-border dark:d-custom-red-border" : "custom-questioncard-border dark:d-custom-questioncard-border"}`}>
           <QuestionBase 
             questionData={q} 
             isEditMode={isEditMode}
