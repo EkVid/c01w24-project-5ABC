@@ -5,7 +5,7 @@ import PlusIcon from "@/../public/plus.svg";
 import FontSizeContext from "../utils/FontSizeContext";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 import OptionsDiv from "./SmallComponents/OptionsDiv";
-import Checkbox from "./SmallComponents/Checkbox";
+import CheckboxOption from "./SmallComponents/CheckboxOption";
 
 const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onChangeOptions, onDeleteAnswer}) => {
   const [currentAnswers, setCurrentAnswers] = useState([]);
@@ -49,7 +49,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
     <>
       {isEditMode ? 
         <OptionsDiv>
-          <Checkbox 
+          <CheckboxOption 
             label={`Include "${process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}"`} 
             currentValue={isNoneAnOption} 
             onClick={() => onChangeOptions({...options, isNoneAnOption: !isNoneAnOption})}
@@ -81,7 +81,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`min-w-5 text-sm bg-transparent text-black border-b-2 border-black ml-3 dark:text-white dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
+                className={`min-w-5 text-sm text-black border-b-2 border-black ml-3 dark:text-white dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?

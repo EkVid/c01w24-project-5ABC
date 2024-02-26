@@ -5,6 +5,7 @@ import Image from 'next/image';
 import PlusIcon from "@/../public/plus.svg";
 import ReducedMotionContext from '../utils/ReducedMotionContext';
 import FontSizeContext from '../utils/FontSizeContext';
+import OptionsDiv from './SmallComponents/OptionsDiv';
 
 const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState(null)
@@ -34,6 +35,11 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
 
   return (
     <>
+      {isEditMode ? 
+        <OptionsDiv />
+        :
+        <></>
+      }
       {answersObj?.map((a, idx) =>
         <div 
           key={idx} 
@@ -57,7 +63,7 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`min-w-5 text-sm bg-transparent text-black border-b-2 border-black ml-3 dark:text-white dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
+                className={`min-w-5 text-sm text-black border-b-2 border-black ml-3 dark:text-white dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?

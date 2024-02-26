@@ -217,5 +217,5 @@ body {
 }
 
 .custom-interactive-input{
-  @apply hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent
+  @apply bg-transparent hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent
 }

@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
-import Checkbox from "./SmallComponents/Checkbox";
+import CheckboxOption from "./SmallComponents/CheckboxOption";
 import ErrTextbox from "./SmallComponents/ErrTextbox";
 import QCheckbox from "./QCheckbox";
+import QNumber from "./QNumber";
 
 const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -35,7 +36,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
   }
   
   const handleOnChangeQuestion = (newQuestion) => {
-    onChangeQuestionData({...questionData, question: newQuestion, errMsg: isTitleErr ? null : errMsg});
+    onChangeQuestionData({...questionData, question: newQuestion})
   }
 
   const handleOnChangeOptions = (newOptions) => {
@@ -83,7 +84,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
           <>
             <input 
               type="text"
-              className={`flex-auto min-w-5 text-2xl bg-transparent border-b-2 border-black dark:border-white text-black dark:text-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-red-border dark:d-custom-red-border" : ""}`}
+              className={`flex-auto min-w-5 text-2xl border-b-2 border-black dark:border-white text-black dark:text-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-red-border dark:d-custom-red-border" : ""}`}
               value={question}
               placeholder="Enter a question"
               onInput={e => handleOnChangeQuestion(e.target.value)}
@@ -111,7 +112,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
       {isEditMode ? 
         <div className="pl-5">
           <div className="text-sm mb-2  text-black dark:text-white">Settings:</div>
-            <Checkbox 
+            <CheckboxOption 
               label={"Required question"} 
               currentValue={isRequired} 
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
@@ -144,6 +145,14 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
           onChangeAnswers={handleOnChangeAnswers}
           onChangeOptions={handleOnChangeOptions}
           onDeleteAnswer={handleOnDeleteAnswer}
+        />
+        :
+        type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
+        <QNumber
+          options={options}
+          isEditMode={isEditMode}
+          onSelectAnswer={onSelectAnswer}
+          onChangeOptions={handleOnChangeOptions}
         />
         :
         <></>
