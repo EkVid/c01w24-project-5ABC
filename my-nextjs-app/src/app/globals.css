@@ -16,6 +16,12 @@
   }
 }
 
+@layer base {
+  ::selection {
+    @apply text-black dark:text-white custom-highlight dark:d-custom-highlight
+  }
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -34,12 +40,20 @@ body {
 
 /* ------------------Colours------------------*/
 
+.custom-highlight{
+  background-color: #79f37d;
+}
+
+.custom-accent{
+  accent-color: #407541;
+}
+
 .custom-green{
   color : #4CAF4F;
 }
 
 .custom-green-background{
-  background-color: #4CAF4F;
+  background-color: #79f37d;
 }
 
 .custom-green-dark {
@@ -78,17 +92,31 @@ body {
   background-color: #ffffff;
 }
 
-
+.custom-questioncard-border{
+  border: #F5F7FA;
+}
 
 
 /* ------------------Dark Mode Colours------------------*/
 @layer utilities {
+  .d-custom-highlight{
+    background-color: #4CAF4F;
+  }
+
+  .d-custom-accent{
+    accent-color: #4CAF4F;
+  }
+
   .d-text{
     color : #ffffff;
   }
   
   .d-custom-dark-grey-background{
     background-color: #1f1f1f;
+  }
+
+  .d-custom-dark-grey-border{
+    border-color: #1f1f1f;;
   }
   
   .d-custom-offwhite-background{

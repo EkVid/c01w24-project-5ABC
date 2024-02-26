@@ -5,14 +5,15 @@ import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
-import CheckboxSetting from "./SmallComponents/CheckboxSetting";
+import Checkbox from "./SmallComponents/Checkbox";
 import ErrTextbox from "./SmallComponents/ErrTextbox";
+import QCheckbox from "./QCheckbox";
 
 const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
 
-  const {id, answers, question, type, isRequired, errMsg, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
+  const {id, answers, question, type, options, isRequired, errMsg, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
 
   const isTitleErr = errMsg === process.env.NEXT_PUBLIC_ERR_MISSING_TITLE;
 
@@ -22,15 +23,23 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
   }));
 
   const errAnsIdxArr = [];
-  for (let idx of errEmptyAnsIdxArr) {
-    if (!errAnsIdxArr.includes(idx)) errAnsIdxArr.push(idx);
+  if (errEmptyAnsIdxArr) {
+    for (let idx of errEmptyAnsIdxArr) {
+      if (!errAnsIdxArr.includes(idx)) errAnsIdxArr.push(idx);
+    }
   }
-  for (let idx of errDupAnsIdxArr) {
-    if (!errAnsIdxArr.includes(idx)) errAnsIdxArr.push(idx);
+  if (errDupAnsIdxArr) {
+    for (let idx of errDupAnsIdxArr) {
+      if (!errAnsIdxArr.includes(idx)) errAnsIdxArr.push(idx);
+    }
   }
   
   const handleOnChangeQuestion = (newQuestion) => {
     onChangeQuestionData({...questionData, question: newQuestion, errMsg: isTitleErr ? null : errMsg});
+  }
+
+  const handleOnChangeOptions = (newOptions) => {
+    onChangeQuestionData({...questionData, options: newOptions});
   }
 
   // --------- Handlers for questions that have answers (multiple choice, checkbox) -----------
@@ -100,9 +109,9 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
       </div>
       {/* Options section */}
       {isEditMode ? 
-        <div className="pl-5 mb-8">
-          <div className="mb-2 px-2 text-black dark:text-white">Settings:</div>
-            <CheckboxSetting 
+        <div className="pl-5">
+          <div className="text-sm mb-2  text-black dark:text-white">Settings:</div>
+            <Checkbox 
               label={"Required question"} 
               currentValue={isRequired} 
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
@@ -112,15 +121,28 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         <></>
       }
       {/* Body of question */}
-      {type === "multiple choice" ?
+      {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
         <QMultichoice
+          answersObj={answersObj}
           isRequired={isRequired}
           isEditMode={isEditMode}
           errAnsIdxArr={errAnsIdxArr}
-          answersObj={answersObj}
           onSelectAnswer={onSelectAnswer}
           onAddAnswer={handleOnAddAnswer}
           onChangeAnswers={handleOnChangeAnswers}
+          onDeleteAnswer={handleOnDeleteAnswer}
+        />
+        :
+        type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
+        <QCheckbox
+          answersObj={answersObj}
+          options={options}
+          isEditMode={isEditMode}
+          errAnsIdxArr={errAnsIdxArr}
+          onSelectAnswer={onSelectAnswer}
+          onAddAnswer={handleOnAddAnswer}
+          onChangeAnswers={handleOnChangeAnswers}
+          onChangeOptions={handleOnChangeOptions}
           onDeleteAnswer={handleOnDeleteAnswer}
         />
         :

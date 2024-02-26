@@ -1,21 +1,20 @@
 "use client"
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import fontSizeContext from '../utils/FontSizeContext';
 import Image from 'next/image';
 import PlusIcon from "@/../public/plus.svg";
 import ReducedMotionContext from '../utils/ReducedMotionContext';
+import FontSizeContext from '../utils/FontSizeContext';
 
-const QMultichoice = ({isRequired, isEditMode, errAnsIdxArr, answersObj, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
+const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState(null)
-  const fontSizeMultiplier = useContext(fontSizeContext) / 100; 
+  const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
  
   const formName = uuidv4();
 
   const radioStyle = {
-    transform: `scale(${fontSizeMultiplier * 1.2})`,
-    accentColor: '#407541',
+    transform: `scale(${fontSizeMultiplier * 1.2})`
   }
 
   const handleOnClickAnswer = (answer) => {
@@ -48,7 +47,7 @@ const QMultichoice = ({isRequired, isEditMode, errAnsIdxArr, answersObj, onSelec
             style={radioStyle}
             onChange={() => handleOnClickAnswer(a.answer)}
             checked={isEditMode ? false : a.answer === currentAnswer}
-            className="pointer-events-none"
+            className="pointer-events-none custom-accent dark:d-custom-accent"
           />
           {isEditMode ?
             <>
@@ -58,7 +57,7 @@ const QMultichoice = ({isRequired, isEditMode, errAnsIdxArr, answersObj, onSelec
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`min-w-5 text-md bg-transparent text-black border-b-2 border-black ml-3 dark:text-white dark:border-white hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
+                className={`min-w-5 text-sm bg-transparent text-black border-b-2 border-black ml-3 dark:text-white dark:border-white hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
@@ -88,7 +87,7 @@ const QMultichoice = ({isRequired, isEditMode, errAnsIdxArr, answersObj, onSelec
       )}
       {/* Show add button if in edit mode, or show clear answer button if in final view */}
       <button 
-        className={`flex w-fit rounded-md p-1 px-2 mt-4 hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswer == null || isRequired) ? "hidden" : ""}`} 
+        className={`flex w-fit rounded-md p-1  mt-4 hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswer == null || isRequired) ? "hidden" : ""}`} 
         onClick={isEditMode ? handleOnAddAnswer : handleOnClearSelectedAnswer}
       >
         <Image
