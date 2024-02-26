@@ -10,6 +10,7 @@ import { scaleFont, resetFont, getFont } from "./utils/scaleFont.js"
 import { initTheme, changeTheme, getTheme } from "./utils/theme.js"
 import FontSizeContext from "./utils/FontSizeContext";
 import ReducedMotionContext from "./utils/ReducedMotionContext";
+import ThemeContext from "./utils/ThemeContext";
 
 const AccessibilityBar = ({children}) => {
   initTheme()
@@ -116,9 +117,11 @@ const AccessibilityBar = ({children}) => {
         </div>
       </details>
       <FontSizeContext.Provider value={fontSize}>
-        <ReducedMotionContext.Provider value={isReducedMotion}>
-          {children}
-        </ReducedMotionContext.Provider>
+        <ThemeContext.Provider value={lightTheme}>
+          <ReducedMotionContext.Provider value={isReducedMotion}>
+            {children}
+          </ReducedMotionContext.Provider>
+        </ThemeContext.Provider>
       </FontSizeContext.Provider>
     </div>
   )

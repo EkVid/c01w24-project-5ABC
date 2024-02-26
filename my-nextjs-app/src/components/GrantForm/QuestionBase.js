@@ -13,9 +13,9 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
 
-  const {id, answers, question, type, options, isRequired, errMsg, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
+  const {id, answers, question, type, options, isRequired, errMsgArr, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
 
-  const isTitleErr = errMsg === process.env.NEXT_PUBLIC_ERR_MISSING_TITLE;
+  const isTitleErr = errMsgArr?.includes(process.env.NEXT_PUBLIC_ERR_MISSING_TITLE);
 
   const answersObj = answers?.map(a => ({
     answer: a, 
@@ -83,18 +83,18 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
           <>
             <input 
               type="text"
-              className={`flex-auto min-w-5 text-2xl bg-transparent border-b-2 border-black dark:border-white text-black dark:text-white hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-red-border dark:d-custom-red-border" : ""}`}
+              className={`flex-auto min-w-5 text-2xl bg-transparent border-b-2 border-black dark:border-white text-black dark:text-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-red-border dark:d-custom-red-border" : ""}`}
               value={question}
               placeholder="Enter a question"
               onInput={e => handleOnChangeQuestion(e.target.value)}
             />
-            <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 custom-red-background p-1.5 rounded-lg hover:custom-hover-red active:custom-active-red ${isReduceMotion ? "" : "transition-colors"}`}>
+            <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}>
               <Image
                 src={TrashIcon}
                 alt="Delete"
                 width={35 * fontSizeMultiplier}
                 height={"auto"}
-                className="pointer-events-none d-filter-white"
+                className="pointer-events-none dark:d-white-filter"
               />
             </button>
           </>
@@ -148,11 +148,9 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         :
         <></>
       }
-      {errMsg ? 
-        <ErrTextbox msg={errMsg}/>
-        :
-        <></>
-      }
+      {errMsgArr?.map((err, i) => 
+        <ErrTextbox msg={err} key={i}/>
+      )}
     </>
   )
 }
