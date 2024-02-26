@@ -90,7 +90,7 @@ const AccessibilityBar = ({children}) => {
           {/* Language */}
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:text-white">Language</h3>
-            <div className="flex justify-center items-center mt-4 mx-1 px-2 rounded-lg custom-dark-grey-background h-8">
+            <div className="flex justify-center items-center mt-4 mx-1  rounded-lg custom-dark-grey-background h-8">
               <p className="cs-text-xl text-center ms-auto">EN</p>
               <Image
                 src={chevronDown}
