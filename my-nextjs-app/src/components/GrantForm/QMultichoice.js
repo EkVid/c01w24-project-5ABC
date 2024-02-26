@@ -53,7 +53,7 @@ const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers
         <div 
           key={idx} 
           onClick={() => handleOnClickAnswer(a.answer)}
-          className={`flex items-center p-1 px-3 mb-1 ${isEditMode ? "" : "rounded-md hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black"}`}
+          className={`flex items-center p-1 px-2 mb-1 ${isEditMode ? "" : "rounded-md hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black"}`}
         >
           <input
             type="radio"
@@ -100,13 +100,13 @@ const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers
       )}
       {/* Show add button if in edit mode, or show clear answer button if in final view */}
       <button 
-        className={`flex w-fit rounded-md p-1 px-3 mt-4 hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswer == null || isRequired) ? "hidden" : ""}`} 
+        className={`flex w-fit rounded-md p-1 px-2 mt-4 hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswer == null || isRequired) ? "hidden" : ""}`} 
         onClick={isEditMode ? handleOnAddAnswer : handleOnClearSelectedAnswer}
       >
         <Image
           src={PlusIcon}
           alt={`Add`}
-          width={15 * fontSizeMultiplier}
+          width={18 * fontSizeMultiplier}
           height={'auto'}
           className={`pointer-events-none dark:d-filter-white ${isEditMode ? "" : "rotate-45"}`}
         />
