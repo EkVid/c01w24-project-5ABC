@@ -12,7 +12,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
 
-  const {id, answers, question, type, isRequired, errMsg} = questionData;
+  const {id, answers, question, type, isRequired, errMsg, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
 
   const isTitleErr = errMsg === process.env.NEXT_PUBLIC_ERR_MISSING_TITLE;
 
@@ -21,12 +21,23 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
     id: uuidv4()
   }));
 
+  const errAnsIdxArr = [];
+  for (let idx of errEmptyAnsIdxArr) {
+    if (!errAnsIdxArr.includes(idx)) errAnsIdxArr.push(idx);
+  }
+  for (let idx of errDupAnsIdxArr) {
+    if (!errAnsIdxArr.includes(idx)) errAnsIdxArr.push(idx);
+  }
+  
   const handleOnChangeQuestion = (newQuestion) => {
     onChangeQuestionData({...questionData, question: newQuestion, errMsg: isTitleErr ? null : errMsg});
   }
 
+  // --------- Handlers for questions that have answers (multiple choice, checkbox) -----------
+
   const handleOnAddAnswer = () => {
-    onChangeQuestionData({...questionData, answers: [...answers, ""]})
+    //onChangeQuestionData({...questionData, answers: [...answers, ""]})
+    validateAndUpdateAnswers([...answersObj, {answer: "", id: uuidv4()}]);
   }
 
   const handleOnChangeAnswers = (answerId, newAnswer) => {
@@ -56,8 +67,6 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
     onChangeQuestionData({...questionData, answers: ansArr, errEmptyAnsIdxArr: emptyAnsArr, errDupAnsIdxArr: dupAnsArr});
   }
 
-  
-
   return (
     <>
       <div className={`flex mb-5 items-center`}>
@@ -67,7 +76,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
               type="text"
               className={`flex-auto min-w-5 text-2xl bg-transparent border-b-2 border-black dark:border-white text-black dark:text-white hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-red-border dark:d-custom-red-border" : ""}`}
               value={question}
-              placeholder="Enter question"
+              placeholder="Enter a question"
               onInput={e => handleOnChangeQuestion(e.target.value)}
             />
             <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 custom-red-background p-1.5 rounded-lg hover:custom-hover-red active:custom-active-red ${isReduceMotion ? "" : "transition-colors"}`}>
@@ -105,8 +114,9 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
       {/* Body of question */}
       {type === "multiple choice" ?
         <QMultichoice
-          questionData={questionData}
+          isRequired={isRequired}
           isEditMode={isEditMode}
+          errAnsIdxArr={errAnsIdxArr}
           answersObj={answersObj}
           onSelectAnswer={onSelectAnswer}
           onAddAnswer={handleOnAddAnswer}

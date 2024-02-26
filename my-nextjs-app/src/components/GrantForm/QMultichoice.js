@@ -6,13 +6,11 @@ import Image from 'next/image';
 import PlusIcon from "@/../public/plus.svg";
 import ReducedMotionContext from '../utils/ReducedMotionContext';
 
-const QMultichoice = ({questionData, isEditMode, answersObj, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
+const QMultichoice = ({isRequired, isEditMode, errAnsIdxArr, answersObj, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState(null)
   const fontSizeMultiplier = useContext(fontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
  
-  const {isRequired, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
-
   const formName = uuidv4();
 
   const radioStyle = {
@@ -60,7 +58,7 @@ const QMultichoice = ({questionData, isEditMode, answersObj, onSelectAnswer, onA
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`min-w-5 text-md bg-transparent text-black border-b-2 border-black ml-3 dark:text-white dark:border-white hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent ${isReduceMotion ? "" : "transition-colors"} ${errDupAnsIdxArr?.includes(idx) || errEmptyAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
+                className={`min-w-5 text-md bg-transparent text-black border-b-2 border-black ml-3 dark:text-white dark:border-white hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
