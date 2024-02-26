@@ -58,7 +58,7 @@ const Login = () => {
           </p>
           <div className="bg-white rounded max-w-xs w-full rounded-full">
             <Link href="/signup">
-              <button className="text-black text-lg w-full font-semibold h-12 px-6">
+              <button className="text-black text-md w-full font-semibold h-12 px-6">
                 Sign Up
               </button>
             </Link>
