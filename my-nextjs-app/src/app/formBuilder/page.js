@@ -8,15 +8,19 @@ const testbody = [{
   type: "multiple choice",
   answers: ["Yes", "No"],
   isRequired: true,
-  errMsg: "There is problem here, idk what"
+  errMsg: null,
+  errEmptyAnsIdxArr: [],
+  errDupAnsIdxArr: []
 },
-{
-  question: "Do you have a driver's license 2?",
-  type: "multiple choice",
-  answers: ["Yes", "No"],
-  isRequired: false,
-  errMsg: null
-}]
+// {
+//   question: "Do you have a driver's license 2?",
+//   type: "multiple choice",
+//   answers: ["Yes", "No"],
+//   isRequired: false,
+//   errMsg: null,
+//   errEmptyAnsIdArr: [],
+//   errDupAnsIdArr: []
+]
 
 
 export default function FormBuilder() {
@@ -25,8 +29,11 @@ export default function FormBuilder() {
 
   useEffect(() => {
     setQuestionData(testbody.map(q => ({...q, id: uuidv4()})));
-    console.log("isEditMode: " + isEditMode);
   }, []);
+
+  useEffect(() => {
+    console.log(questionData);
+  }, [questionData]);
 
   const handleOnChangeQuestionData = (questionId, newQuestionData) => {
     setQuestionData(prev => prev.map(q => q.id === questionId ? newQuestionData : q));
@@ -47,7 +54,6 @@ export default function FormBuilder() {
             onChangeQuestionData={newData => handleOnChangeQuestionData(q.id, newData)}
             onDelete={handleOnDeleteQuestion}
             onSelectAnswer={answer => console.log(`${q.question}: ${answer}`)}
-            errMsg={q.errMsg}
           />
         </div>
       )}

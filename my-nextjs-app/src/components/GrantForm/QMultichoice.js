@@ -1,22 +1,19 @@
 "use client"
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import fontSizeContext from '../utils/FontSizeContext';
 import Image from 'next/image';
 import PlusIcon from "@/../public/plus.svg";
 import ReducedMotionContext from '../utils/ReducedMotionContext';
 
-const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers, onDelete}) => {
+const QMultichoice = ({questionData, isEditMode, answersObj, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState(null)
   const fontSizeMultiplier = useContext(fontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
  
-  const {id, question, answers, isRequired} = questionData;
+  const {isRequired, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
+
   const formName = uuidv4();
-  const answersObj = answers?.map(a => ({
-    answer: a, 
-    id: uuidv4()
-  }));
 
   const radioStyle = {
     transform: `scale(${fontSizeMultiplier * 1.2})`,
@@ -30,16 +27,7 @@ const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers
   }
 
   const handleOnAddAnswer = () => {
-    onChangeAnswers([...answers, ""]);
-  }
-
-  const handleOnEditAnswers = (answerId, newAnswer) => {
-    onChangeAnswers(answersObj.map(a => a.id === answerId ? newAnswer : a.answer));
-  }
-
-  const handleOnDeleteAnswers = (answerId) => {
-    const filteredAnsObj = answersObj.filter(a => a.id !== answerId)
-    onChangeAnswers(filteredAnsObj.map(a => a.answer));
+    onAddAnswer();
   }
 
   const handleOnClearSelectedAnswer = () => {
@@ -66,17 +54,18 @@ const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers
           />
           {isEditMode ?
             <>
+              {/* Edit answer */}
               <input
                 type="text"
-                onChange={e => handleOnEditAnswers(a.id, e.target.value)}
+                onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`min-w-5 text-md bg-transparent text-black border-b border-b-black ml-3 dark:text-white dark:border-b-white hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent ${isReduceMotion ? "" : "transition-colors"}`}
+                className={`min-w-5 text-md bg-transparent text-black border-b-2 border-black ml-3 dark:text-white dark:border-white hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent ${isReduceMotion ? "" : "transition-colors"} ${errDupAnsIdxArr?.includes(idx) || errEmptyAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
                 <button 
-                  onClick={() => handleOnDeleteAnswers(a.id)}
+                  onClick={() => onDeleteAnswer(a.id)}
                   className={`shrink-0 bg-red-800 ml-2 p-0.5 rounded-md custom-red-background hover:custom-hover-red active:custom-active-red ${isReduceMotion ? "" : "transition-colors"}`}
                 >
                   <Image
@@ -92,6 +81,7 @@ const QMultichoice = ({questionData, isEditMode, onSelectAnswer, onChangeAnswers
               }
             </>
             :
+            // Show answer
             <label htmlFor={a.id} className="ml-3 text-sm custom-dark-grey dark:text-white pointer-events-none"> 
               {a.answer}
             </label>
