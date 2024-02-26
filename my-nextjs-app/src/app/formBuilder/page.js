@@ -24,6 +24,15 @@ const testbody = [
       isAllAnOption: false,
       isNoneAnOption: false
     }
+  },
+  {
+    question: "Enter your age:",
+    type: process.env.NEXT_PUBLIC_TYPE_NUMBER,
+    options:
+    {
+      isIntegerOnly: false,
+      minNum: 0,
+    }
   }
 ]
 
@@ -52,7 +61,7 @@ export default function FormBuilder() {
     <>
       <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
       {questionData?.map(q => 
-        <div key={q.id} className={`custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 ${q.errMsgArr ? "custom-red-border dark:d-custom-red-border" : "custom-questioncard-border dark:d-custom-questioncard-border"}`}>
+        <div key={q.id} className={`flex flex-col custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 ${q.errMsgArr ? "custom-red-border dark:d-custom-red-border" : "custom-questioncard-border dark:d-custom-questioncard-border"}`}>
           <QuestionBase 
             questionData={q} 
             isEditMode={isEditMode}
