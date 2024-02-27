@@ -1,7 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Four_Circle from "../../public/logo.svg";
+import Image from "next/image";
+import FontSizeContext from "@/components/utils/FontSizeContext";
+import { useContext } from "react";
 
 const Login = () => {
+  const fontSizeMultiplier = useContext(FontSizeContext) / 100;
+
   return (
     <div
       className="flex items-center justify-center min-h-screen"
@@ -17,8 +25,14 @@ const Login = () => {
         style={{ maxWidth: "1200px" }}
       >
         <div className="flex flex-col w-full md:w-1/2 lg:w-3/5 xl:w-3/5 p-16 space-y-8">
-          <div className="space-y-6">
-            <p className="text-center text-xl">Logo</p>
+          <div className="space-y-6 flex flex-col items-center md:items-start">
+            <Image
+              src={Four_Circle}
+              alt="Logo"
+              width={80 * fontSizeMultiplier}
+              height={80 * fontSizeMultiplier}
+              className="rounded-3xl"
+            />
             <h2 className="text-center lg:text-6xl md:text-5xl text-4xl mb-8 mt-8 font-semibold">
               Sign in to your account
             </h2>
