@@ -2,7 +2,7 @@ import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 import { checkIfNum } from "@/components/utils/checkIfNum";
 import { useContext } from "react";
 
-const NumOption = ({label, isIntegerOnly, isPositiveOnly, isError, currentValue, onChangeValue}) => {
+const NumOption = ({label, currentValue, onChangeValue, isIntegerOnly=false, isPositiveOnly=false, isError=false}) => {
   const isReduceMotion = useContext(ReducedMotionContext);
 
   const value = currentValue ? currentValue : ""
@@ -18,7 +18,7 @@ const NumOption = ({label, isIntegerOnly, isPositiveOnly, isError, currentValue,
       <input
         type="text"
         name="number"
-        className={`text-xs min-w-1 max-w-32 border-b-2 text-black dark:d-text border-black dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
+        className={`text-xs min-w-1 max-w-32 border-b-2 text-black dark:d-text custom-interactive-input ${isError ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
         onInput={e => onInput(e.target.value)}
         value={value}
         placeholder="Enter a number"

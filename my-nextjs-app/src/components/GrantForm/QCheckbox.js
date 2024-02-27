@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import Image from "next/image";
 import PlusIcon from "@/../public/plus.svg";
@@ -27,23 +27,23 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
   const handleOnSelectAnswer = (answer) => {
     if (isEditMode) return;
     if (isNoneAnOption && answer === process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE) {
-      if (currentAnswers.length === 1) setCurrentAnswers([]);
+      if (currentAnswers.length === 1 && currentAnswers[0] === process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE) setCurrentAnswers([]);
       else setCurrentAnswers([process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE]);
     }
     else {
       if (currentAnswers.includes(answer)) {
         const newAnswers = currentAnswers.filter(a => a !== answer);
         setCurrentAnswers(newAnswers);
-        onChangeAnswers(newAnswers);
       }
       else {
         const newAnswers = [...currentAnswers, answer];
         const newAnswersWithoutNone = newAnswers.filter(a => a !== process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE);
         setCurrentAnswers(newAnswersWithoutNone);
-        onChangeAnswers(newAnswersWithoutNone);
       }
     }
   }
+
+  useEffect(() => onSelectAnswer(currentAnswers), [currentAnswers]);
 
   return (
     <>
