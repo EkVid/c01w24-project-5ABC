@@ -20,9 +20,10 @@ export default function RootLayout({ children, showFooter = true }) {
     <html id="root" lang="en">
       <body className={inter.className}>
         <div className="flex flex-col min-h-screen">
+          <AccessibilityBar>
+            <main className="flex flex-col flex-grow dark:bg-[#1f1f1f]">{children}</main>
+            <Footer />
           <AccessibilityBar />
-          <main className="flex-grow dark:bg-[#1f1f1f]">{children}</main>
-          {showFooter && <Footer />}
         </div>
       </body>
     </html>
