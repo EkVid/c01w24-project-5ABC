@@ -1,4 +1,5 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 const Login = () => {
   return (
@@ -34,12 +35,15 @@ const Login = () => {
               placeholder="Password"
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
             />
-            <h2 className="text-center text-xl">Forgot password?</h2>
-            {/* remeber to add link to forgot password  */}
+            <Link href="/forgot_password">
+              <h2 className="text-center text-xl hover:underline hover:text-blue-500">
+                Forgot password?
+              </h2>
+            </Link>{" "}
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full ">
               <button
                 type="submit"
-                className="text-white text-lg w-full font-semibold bg-green-500 rounded-full h-12 px-6"
+                className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
               >
                 Sign In
               </button>
@@ -58,7 +62,7 @@ const Login = () => {
           </p>
           <div className="bg-white rounded max-w-xs w-full rounded-full">
             <Link href="/signup">
-              <button className="text-black text-md w-full font-semibold h-12 px-6">
+              <button className="inline-block text-black text-md w-full font-semibold h-12 px-6 bg-white hover:bg-gray-100 rounded-full transition duration-150 ease-in-out">
                 Sign Up
               </button>
             </Link>
@@ -69,4 +73,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default dynamic(() => Promise.resolve(Login), { ssr: false });
