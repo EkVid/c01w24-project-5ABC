@@ -1,5 +1,6 @@
 import Signup from "@/components/Signup";
 import BaseLayout from "@/app/layout";
+import dynamic from "next/dynamic";
 
 const SignupPage = () => {
   return (
@@ -9,4 +10,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default dynamic(() => Promise.resolve(SignupPage), { ssr: false });

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 const SignUp = () => {
   const [selection, setSelection] = useState("grantee");
@@ -106,7 +107,7 @@ const SignUp = () => {
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
-                className="text-white text-lg w-full font-semibold h-12 px-6"
+                className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
               >
                 Sign Up
               </button>
@@ -177,4 +178,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default dynamic(() => Promise.resolve(SignUp), { ssr: false });
