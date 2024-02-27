@@ -2,9 +2,14 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Four_Circle from "../../public/logo.svg";
+import Image from "next/image";
+import FontSizeContext from "@/components/utils/FontSizeContext";
+import { useContext } from "react";
 
 const SignUp = () => {
   const [selection, setSelection] = useState("grantee");
+  const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
   return (
     <div
@@ -18,21 +23,24 @@ const SignUp = () => {
     >
       <div className="flex flex-col md:flex-row bg-white shadow-lg overflow-hidden rounded-lg">
         <div className="flex flex-col w-full md:w-4/6 p-12 space-y-6 ">
-          <div className="space-y-4">
-            <p className="text-center text-xl">Logo</p>
+          <div className="flex flex-col items-center lg:items-start space-y-4">
+            <Image
+              src={Four_Circle}
+              alt="Logo"
+              width={80 * fontSizeMultiplier}
+              height={80 * fontSizeMultiplier}
+              className="rounded-3xl"
+            />
             <h2 className="text-center lg:text-5xl md:text-5xl text-3xl mb-6 mt-6 font-semibold">
               Welcome to the future of funding
             </h2>
-            <p className="text-center text-lg">
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="text-green-600 hover:text-green-700"
-              >
-                Sign in
-              </Link>
-            </p>
           </div>
+          <p className="text-center text-lg mt-4">
+            Already have an account?{" "}
+            <Link href="/login" className="text-green-600 hover:text-green-700">
+              Sign in
+            </Link>
+          </p>
           <div className="flex mb-6 justify-center ">
             <div
               className={`cursor-pointer px-4 py-3 text-lg flex items-center ${
