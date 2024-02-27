@@ -1,11 +1,17 @@
 "use client";
+"use client";
 
 import "@/app/globals.css";
 import chevronDown from "../../public/chevron-down.svg";
 import sun from "../../public/sun.svg";
 import moon from "../../public/moon.svg";
+import chevronDown from "../../public/chevron-down.svg";
+import sun from "../../public/sun.svg";
+import moon from "../../public/moon.svg";
 import Image from "next/image.js";
 import { useState } from "react";
+import { scaleFont, resetFont, getFont } from "./utils/scaleFont.js";
+import { initTheme, changeTheme, getTheme } from "./utils/theme.js";
 import { scaleFont, resetFont, getFont } from "./utils/scaleFont.js";
 import { initTheme, changeTheme, getTheme } from "./utils/theme.js";
 import FontSizeContext from "./utils/FontSizeContext";
@@ -17,14 +23,22 @@ const AccessibilityBar = ({ children }) => {
   const [lightTheme, setLightTheme] = useState(getTheme() === "light");
   const [fontSize, setFontSize] = useState(100); // Default font size is 100
   const [isReducedMotion, setIsReducedMotion] = useState(false);
+const AccessibilityBar = ({ children }) => {
+  initTheme();
+  const [lightTheme, setLightTheme] = useState(getTheme() === "light");
+  const [fontSize, setFontSize] = useState(100); // Default font size is 100
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
   // TODO: add handler for setting isReducedMotion when option is changed
 
   const handleScaleFontDown = () => {
     scaleFont("down");
+    scaleFont("down");
     setFontSize(getFont());
+  };
   };
 
   const handleScaleFontUp = () => {
+    scaleFont("up");
     scaleFont("up");
     setFontSize(getFont());
   };
@@ -33,13 +47,23 @@ const AccessibilityBar = ({ children }) => {
     resetFont();
     setFontSize(100);
   };
+  };
 
+  const handleResetFont = () => {
+    resetFont();
+    setFontSize(100);
+  };
+
+  return (
   return (
     <div className="flex-grow custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm">
       {/* Dropdown */}
       <details className="group">
         {/* Dropdown Closed Content */}
         <summary className="list-none flex flex-nowrap justify-end items-center cursor-pointer">
+          <h1 className="custom-dark-grey-text dark:text-white cs-text-lg text-center">
+            Accessibility Settings
+          </h1>
           <h1 className="custom-dark-grey-text dark:text-white cs-text-lg text-center">
             Accessibility Settings
           </h1>
@@ -62,9 +86,24 @@ const AccessibilityBar = ({ children }) => {
               >
                 &#8635;
               </button>
+              <h3 className="text-center cs-text-xl dark:text-white">
+                Font Size{" "}
+              </h3>
+              <button
+                className="cs-text-2xl ms-3 cursor-pointer dark:text-white"
+                onClick={handleResetFont}
+              >
+                &#8635;
+              </button>
             </div>
 
+
             <div className="flex space-x-4 justify-center items-center">
+              <button
+                className="cs-text-5xl font-light hover:cursor-pointer dark:text-white"
+                onClick={handleScaleFontDown}
+              >
+                −
               <button
                 className="cs-text-5xl font-light hover:cursor-pointer dark:text-white"
                 onClick={handleScaleFontDown}
@@ -79,8 +118,14 @@ const AccessibilityBar = ({ children }) => {
                 onClick={handleScaleFontUp}
               >
                 +
+              <button
+                className="cs-text-5xl font-light hover:cursor-pointer dark:text-white"
+                onClick={handleScaleFontUp}
+              >
+                +
               </button>
             </div>
+            <hr className="border border-[#4D4D4D] dark:border-white" />
             <hr className="border border-[#4D4D4D] dark:border-white" />
           </div>
 
@@ -88,6 +133,17 @@ const AccessibilityBar = ({ children }) => {
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:text-white">Theme</h3>
             <div className="flex flex-col lg:flex-row lg:space-x-2 items-center lg:justify-center mt-4">
+              <label
+                htmlFor="theme"
+                className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] "
+              >
+                <input
+                  id="theme"
+                  type="checkbox"
+                  className="sr-only peer"
+                  onChange={(e) => changeTheme(e.target.checked, setLightTheme)}
+                  checked={lightTheme}
+                />
               <label
                 htmlFor="theme"
                 className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] "
@@ -129,8 +185,16 @@ const AccessibilityBar = ({ children }) => {
             <h3 className="text-center cs-text-xl dark:text-white">
               Reduced Motion
             </h3>
+            <h3 className="text-center cs-text-xl dark:text-white">
+              Reduced Motion
+            </h3>
             <div className="flex space-x-2 items-center mt-4">
               <p className="cs-text-lg dark:text-white">Off</p>
+              <label
+                htmlFor="motion"
+                className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] "
+              >
+                <input id="motion" type="checkbox" className="sr-only peer" />
               <label
                 htmlFor="motion"
                 className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] "
@@ -152,6 +216,8 @@ const AccessibilityBar = ({ children }) => {
         </ThemeContext.Provider>
       </FontSizeContext.Provider>
     </div>
+  );
+};
   );
 };
 
