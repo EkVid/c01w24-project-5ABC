@@ -16,7 +16,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-client = MongoClient(os.getenv('DB_URI'))
+client = MongoClient()
 db = client['DB']
 userCollection = db.Users
 fileCollection = db.Files
@@ -122,7 +122,8 @@ def createGrantForm():
         form = Form.model_validate_json(JSON.dumps(json))
         print(type(form.questionData[0].options.minNum))
     except ValidationError as e:
-        return {"message": str(e)}, 400
+        # Do not change e.errors(), the unit tests require an error list in this specific format
+        return {"message": e.errors()}, 400
 
     id = grantFormCollection.insert_one(json).inserted_id
     message = "Grant application successfully created with id: " + str(id)
@@ -157,7 +158,7 @@ def updateGrantForm(_id):
 
     try:
         Form.model_validate_json(JSON.dumps(newData))
-    except ValidationError as e:
+    except ValidationError as e:    # TODO: use the same error response with e.errors() as in /createGrantForm
         return {"message": str(e)}, 400
 
     res = grantFormCollection.update_one({"_id": objId}, {"$set": newData})
@@ -176,5 +177,5 @@ def deleteGrantForm(_id):
     res = grantFormCollection.delete_one({"_id": objId})
     if res.deleted_count != 1:
         return {"message": "Grant form with the given ID not found"}, 404
-    
+
     return {"message": "Grant form successfully deleted"}, 200
