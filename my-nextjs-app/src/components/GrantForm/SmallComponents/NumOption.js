@@ -5,6 +5,8 @@ import { useContext } from "react";
 const NumOption = ({label, isIntegerOnly, isPositiveOnly, isError, currentValue, onChangeValue}) => {
   const isReduceMotion = useContext(ReducedMotionContext);
 
+  const value = currentValue ? currentValue : ""
+
   // Only change option value if input is a number
   const onInput = (newValue) => {
     if (checkIfNum(newValue, isPositiveOnly, isIntegerOnly)) onChangeValue(newValue);
@@ -16,9 +18,9 @@ const NumOption = ({label, isIntegerOnly, isPositiveOnly, isError, currentValue,
       <input
         type="text"
         name="number"
-        className={`text-sm min-w-1 max-w-32 border-b-2 text-black dark:d-text border-black dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
+        className={`text-xs min-w-1 max-w-32 border-b-2 text-black dark:d-text border-black dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
         onInput={e => onInput(e.target.value)}
-        value={currentValue}
+        value={value}
         placeholder="Enter a number"
       />
     </div>

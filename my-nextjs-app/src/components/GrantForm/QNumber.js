@@ -40,8 +40,6 @@ const QNumber = ({options, optionsErrMsgArr, isEditMode, onSelectAnswer, onChang
           />
           <NumOption
             label={"Minimum number: "}
-            isPositiveOnly={true}
-            isIntegerOnly={true}
             currentValue={minNum}
             onChangeValue={newMin => onChangeOptions({...options, minNum: newMin})}
           />
