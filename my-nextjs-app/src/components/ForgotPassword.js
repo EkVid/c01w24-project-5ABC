@@ -1,6 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 const ForgotPassword = () => {
+  // State to track if the reset password button has been clicked
+  const [resetClicked, setResetClicked] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent form submission
+    setResetClicked(true);
+    // Here you can also add your logic to call backend to send an email
+  };
+
   return (
     <div
       className="flex items-center justify-center min-h-screen"
@@ -19,29 +31,46 @@ const ForgotPassword = () => {
           <div className="space-y-6">
             <p className="text-center text-xl">Logo</p>
             <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-8 mt-8 font-semibold">
-              Reset your password{" "}
+              Reset your password
             </h2>
-            <h3 className="text-center text-sm mb-8 mt-8 font-semibold">
-              Enter your email address below and we'll send you a link to reset
-              your password.
-            </h3>
           </div>
-          <form className="flex flex-col space-y-6 items-center">
-            <input
-              type="email"
-              placeholder="Email"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
-            />
-            <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
-              <button
-                type="submit"
-                className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
+          {!resetClicked ? (
+            <>
+              <h3 className="text-center text-sm mb-8 mt-8 font-semibold">
+                Enter your email address below and we'll send you a link to
+                reset your password.
+              </h3>
+              <form
+                className="flex flex-col space-y-6 items-center"
+                onSubmit={handleSubmit}
               >
-                Reset Password
-              </button>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+                  required
+                />
+                <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
+                  <button
+                    type="submit"
+                    className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
+                  >
+                    Reset Password
+                  </button>
+                </div>
+              </form>
+            </>
+          ) : (
+            <div className="text-center lg:text-lg md:text-lg text-sm mb-8 mt-8">
+              <p>
+                Check your inbox for the next steps.
+                <br />
+                If you don't receive an email, and it's not in your spam folder,
+                <br />
+                this could mean you signed up with a different address.
+              </p>
             </div>
-            {/* check with backend to send an email to the entered email address */}
-          </form>
+          )}
           <div className="border-t border-gray-300 my-8"></div>
           <div className="text-center mt-8 flex justify-center items-center lg:text-2xl md:text-xl text-lg">
             <p>
@@ -68,7 +97,6 @@ const ForgotPassword = () => {
               e-mail 5ABC@gmail.com
             </p>
           </div>
-          {/* check to see if we need this  */}
         </div>
       </div>
     </div>
