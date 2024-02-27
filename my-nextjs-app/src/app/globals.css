@@ -48,6 +48,14 @@ body {
   accent-color: #407541;
 }
 
+.custom-text{
+  color:#000000
+}
+
+.custom-text-shade{
+  color:#353535
+}
+
 .custom-green{
   color : #4CAF4F;
 }
@@ -105,6 +113,10 @@ body {
 
   .d-text{
     color : #ffffff;
+  }
+
+  .d-text-shade{
+    color : #a8a8a8;
   }
   
   .d-custom-dark-grey-background{
