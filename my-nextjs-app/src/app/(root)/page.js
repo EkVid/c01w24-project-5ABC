@@ -10,7 +10,6 @@ import SignUp from "@/components/signup-login/Signup";
 
 
 export default function Home() {
-
   return (
     <main>
       <UnauthNavBar />
