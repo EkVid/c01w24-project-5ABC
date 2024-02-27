@@ -9,14 +9,13 @@ import CheckboxOption from "./SmallComponents/CheckboxOption";
 import ErrTextbox from "./SmallComponents/ErrTextbox";
 import QCheckbox from "./QCheckbox";
 import QNumber from "./QNumber";
+import QText from "./QText";
 
 const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
 
   const {id, answers, question, type, options, isRequired, errMsgArr, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
-
-  const isTitleErr = errMsgArr?.includes(process.env.NEXT_PUBLIC_ERR_MISSING_TITLE);
 
   const answersObj = answers?.map(a => ({
     answer: a, 
@@ -150,6 +149,18 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
         <QNumber
           options={options}
+          optionsErrMsgArr={errMsgArr.filter(e => e === process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
+          isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+          isEditMode={isEditMode}
+          onSelectAnswer={onSelectAnswer}
+          onChangeOptions={handleOnChangeOptions}
+        />
+        :
+        type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
+        <QText
+          options={options}
+          optionsErrMsgArr={errMsgArr.filter(e => e === process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
+          isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
           isEditMode={isEditMode}
           onSelectAnswer={onSelectAnswer}
           onChangeOptions={handleOnChangeOptions}
@@ -157,9 +168,15 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         :
         <></>
       }
-      {errMsgArr?.map((err, i) => 
-        <ErrTextbox msg={err} key={i}/>
-      )}
+      {errMsgArr && errMsgArr.length > 0 ?
+        <div className="mt-3">
+          {errMsgArr?.map((err, i) => 
+            <ErrTextbox msg={err} key={i}/>
+          )}
+        </div>
+        :
+        <></>
+      }
     </>
   )
 }

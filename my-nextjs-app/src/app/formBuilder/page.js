@@ -5,8 +5,19 @@ import { v4 as uuidv4 } from 'uuid';
 
 const testbody = [
   {
+    question: "What's your name?",
+    type: process.env.NEXT_PUBLIC_TYPE_TEXT,
+    errMsgArr: [],
+    options:
+    {
+      isMultipleLines: true,
+      minCharsNum: 3,
+      maxCharsNum: null,
+    }
+  },
+  {
     question: "Do you have a driver's license?",
-    type: "multiple choice",
+    type: process.env.NEXT_PUBLIC_TYPE_MULTI,
     answers: ["Yes", "No"],
     isRequired: true,
     errMsgArr: null,
@@ -28,6 +39,7 @@ const testbody = [
   {
     question: "Enter your age:",
     type: process.env.NEXT_PUBLIC_TYPE_NUMBER,
+    errMsgArr: [],
     options:
     {
       isIntegerOnly: false,
@@ -61,7 +73,7 @@ export default function FormBuilder() {
     <>
       <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
       {questionData?.map(q => 
-        <div key={q.id} className={`flex flex-col custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 ${q.errMsgArr ? "custom-red-border dark:d-custom-red-border" : "custom-questioncard-border dark:d-custom-questioncard-border"}`}>
+        <div key={q.id} className={`flex flex-col custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 ${q.errMsgArr && q.errMsgArr.length > 0 ? "custom-red-border dark:d-custom-red-border" : "custom-questioncard-border dark:d-custom-questioncard-border"}`}>
           <QuestionBase 
             questionData={q} 
             isEditMode={isEditMode}

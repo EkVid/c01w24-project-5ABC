@@ -9,6 +9,7 @@ const CheckboxOption = ({label, currentValue, onClick}) => {
     transform: `scale(${fontSizeMultiplier * 1.2})`
   }
 
+  const value = currentValue == true;
 
   return (
     <button 
@@ -18,7 +19,7 @@ const CheckboxOption = ({label, currentValue, onClick}) => {
       <input 
         type="checkbox"
         id="isRequired"
-        checked={currentValue}
+        checked={value}
         style={checkboxStyle}
         onChange={onClick}
         className="pointer-events-none select-none custom-accent dark:d-custom-accent"

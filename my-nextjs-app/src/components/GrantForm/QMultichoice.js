@@ -1,5 +1,5 @@
 "use client"
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image';
 import PlusIcon from "@/../public/plus.svg";
@@ -32,6 +32,8 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
     setCurrentAnswer(null);
     onSelectAnswer(null);
   }
+
+  useEffect(() => onSelectAnswer(currentAnswer), [currentAnswer]);
 
   return (
     <>
