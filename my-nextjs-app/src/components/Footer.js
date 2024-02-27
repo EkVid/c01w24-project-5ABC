@@ -1,3 +1,5 @@
+import dynamic from "next/dynamic";
+
 const Footer = () => {
   const year = new Date().getFullYear();
 
@@ -45,4 +47,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default dynamic(() => Promise.resolve(Footer), { ssr: false });
