@@ -2,27 +2,13 @@
 
 import Four_Circle from "../../public/logo.svg";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import FontSizeContext from "@/components/utils/FontSizeContext";
+import { useContext } from "react";
+import dynamic from "next/dynamic";
 
 const Hero = () => {
-  const [fontSize, setFontSize] = useState(16); // Default font size
+  const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const rootElement = document.getElementById("root");
-      if (rootElement) {
-        const newFontSize = parseInt(
-          window.getComputedStyle(rootElement).fontSize,
-          10
-        );
-        if (newFontSize !== fontSize) {
-          setFontSize(newFontSize);
-        }
-      }
-    }, 500); // Check every 500 milliseconds (0.5 second)
-
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, [fontSize]);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-20 py-16 md:px-8 lg:px-12 items-center justify-center md:ml-20 sm:ml-10 min-w-">
       <div className="flex justify-end items-center">
@@ -45,13 +31,13 @@ const Hero = () => {
         <Image
           src={Four_Circle}
           alt="Logo"
-          width={20 * fontSize}
+          width={300 * fontSizeMultiplier}
           height={"auto"}
-          className="rounded-3xl transition-all duration-300"
+          className="rounded-3xl"
         />
       </div>
     </div>
   );
 };
 
-export default Hero;
+export default dynamic(() => Promise.resolve(Hero), { ssr: false });

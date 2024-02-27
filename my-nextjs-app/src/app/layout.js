@@ -16,11 +16,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html id="root" lang="en" suppressHydrationWarning={true}>
-      <body className={inter.className} >
-        <main className="flex flex-col flex-grow custom-offwhite-background dark:bg-[#1f1f1f]">
-          {children}
-        </main>
+    <html id="root" lang="en">
+      <body className={inter.className}>
+        <div className="flex flex-col min-h-screen">
+          <AccessibilityBar>
+            <main className="flex flex-col flex-grow dark:bg-[#1f1f1f]">
+              {children}
+            </main>
+            {showFooter && <Footer />}
+          </AccessibilityBar>
+        </div>
       </body>
     </html>
   );
