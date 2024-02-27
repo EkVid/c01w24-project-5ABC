@@ -31,7 +31,7 @@ class NumberOptions(BaseModel):
         else:
             assert(type(value) == float)
 
-class MultipleChoiceOptions(BaseModel): 
+class MultipleChoiceOptions(BaseModel):
     answers: Annotated[list[str], Len(min_length=2, max_length=10)]
 
 class CheckboxOptions(BaseModel):
@@ -45,7 +45,7 @@ class DateOptions(BaseModel):
 class FileOptions(BaseModel):
     type: str
 
-class Question(BaseModel):
+class Question(BaseModel):  # TODO: implement phone number and email options if needed
     question: str
     type: Literal['textbox', 'number', 'multiple choice', 'checkbox', 'date', 'file']
     isRequired: bool
