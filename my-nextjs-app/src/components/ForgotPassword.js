@@ -4,13 +4,11 @@ import Link from "next/link";
 import { useState } from "react";
 
 const ForgotPassword = () => {
-  // State to track if the reset password button has been clicked
   const [resetClicked, setResetClicked] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
     setResetClicked(true);
-    // Here you can also add your logic to call backend to send an email
   };
 
   return (
