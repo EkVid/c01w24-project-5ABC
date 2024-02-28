@@ -4,11 +4,13 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pydantic import ValidationError
+from middleware import tokenCheck
 import os
 import jwt
 import bcrypt
 import datetime
 import json as JSON
+import uuid
 
 from dataModels import Form
 
@@ -32,10 +34,10 @@ def register():
     if contentType == 'application/json':
         json = request.json
 
-        #Checks for duplicate users with the specified username
-        duplicateTest = userCollection.find_one({"Username": json['Username']})
+        #Checks for duplicate users with the specified email
+        duplicateTest = userCollection.find_one({"Email": json['Email']})
         if duplicateTest is not None:
-            return {"message": "User already exists in the system"}, 409
+            return {"message": "Email already exists in the system"}, 409
 
         else:
             salt = bcrypt.gensalt()
@@ -43,11 +45,10 @@ def register():
             hashedPassword = bcrypt.hashpw(encodedPassword, salt) #salts and hashes the password before storage
 
             userToAdd = {
-                "Name": json['Name'],
-                "Username": json['Username'],
-                "Password": hashedPassword.decode('utf-8'),
                 "Email": json['Email'],
-                "ActiveSession": True
+                "Password": hashedPassword.decode('utf-8'),
+                "Usertype": json['Usertype'], # "Grantee" or "Grantor"
+                "ActiveSession": False
             }
             userCollection.insert_one(userToAdd)
             return {"message": "User successfully registered"}
@@ -63,12 +64,12 @@ def login():
     if(contentType == 'application/json'):
         json = request.json
 
-        username = json['Username']
+        email = json['Email']
         password = json['Password']
 
-        foundUser = userCollection.find_one({"Username": username})
+        foundUser = userCollection.find_one({"Email": email})
 
-        if foundUser is None: #Either the user is not registered, or they input the wrong username
+        if foundUser is None: #Either the user is not registered, or they input the wrong email
             return {"message": "Invalid login information"}, 401
         else:
             storedPassword = foundUser['Password'].encode('utf-8')
@@ -79,7 +80,7 @@ def login():
             if result:
                 try:
                     token = jwt.encode({
-                            'user': username,
+                            'email': email,
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=3600)
                         },
                         app.config['SECRET_KEY'],
@@ -92,12 +93,11 @@ def login():
                     }, 500
 
                 #tells the DB that the user has an active session. This prevents them from accessing the API routes if they have a valid Access Token but have logged out
-                userCollection.update_one({"Username": username}, {"$set": { "ActiveSession": True}})
+                userCollection.update_one({"Email": email}, {"$set": { "ActiveSession": True}})
 
                 userInfo = { #stores the data we need to return to the front end for the profile page
-                        "Username": foundUser['Username'],
-                        "Name": foundUser['Name'],
-                        "Email": foundUser['Email']
+                        "Email": foundUser['Email'],
+                        "Usertype" : foundUser['Usertype']
                     }
                 return {
                     "message": "User logged in sucessfully",
@@ -111,7 +111,96 @@ def login():
         return {"message": "Unsupported Content Type"}, 400
 
 
+@app.route("/resetPassword", methods=['POST'])
+def resetPassword():
+    contentType = request.headers.get("Content-Type")
+
+    if(contentType == "application/json"):
+        email = request.json['Email']
+        passedResetCode = request.json['ResetCode']
+        newPassword = request.json['NewPassword']
+
+        foundUser = userCollection.find_one({"Email": email})
+
+        if foundUser is None:
+            return {"message": "Email not found in the system"}, 404
+        
+        storedResetCode = foundUser['ResetCode']
+
+        if(storedResetCode['Code'] == passedResetCode):
+            difference = abs(datetime.datetime.utcnow() - storedResetCode['IssueDate'])
+
+            if(difference.seconds < 60): # reset code works within 60 seconds
+                salt = bcrypt.gensalt()
+                encodedPassword = newPassword.encode('utf-8')
+                hashedPassword = bcrypt.hashpw(encodedPassword, salt)
+
+                userCollection.update_one({"Email": email}, {"$set": {"Password": hashedPassword.decode('utf-8')}})
+
+                userCollection.update_one({"Email": email}, {"$set": {"ResetCode": {}}})
+
+                return {"message": "Password reset successful"}, 200
+            else:
+                return {"message": "Reset Code has expired"}, 401
+        else:
+            return {"message": "Reset Codes to not match"}, 401
+    else:
+        return {"message": "Unsupported Content Type"}, 400
+
+
+@app.route("/generateResetCode", methods=['GET'])
+def generateResetCode():
+    contentType = request.headers.get("Content-Type")
+
+    if(contentType == "application/json"):
+        email = request.json['Email']
+
+        foundUser = userCollection.find_one({"Email": email})
+
+        if foundUser is None:
+            return {"message": "Email not found in the system"}, 404
+        
+        #generates a reset code with uuid and stamps it with the current date time for expiration
+
+        resetCode = {
+            "Code": str(uuid.uuid4()),
+            "IssueDate": datetime.datetime.utcnow()
+            }
+
+        userCollection.update_one({"Email": email}, {"$set": {"ResetCode": resetCode}})
+
+        return resetCode, 200
+
+    else:
+        return {"message": "Unsupported Content Type"}, 400
+
+
+@app.route("/logout", methods=['GET'])
+@tokenCheck.token_required
+def logout():
+    #user needs to have their active session attribute made null
+
+    contentType = request.headers.get("Content-Type")
+
+    if(contentType == "application/json"):
+        json = request.json
+
+        email = json['Email']
+
+        foundUser = userCollection.find_one({"Email": email})
+
+        if foundUser is None:
+            return "Error: no user with that email found in the system"
+        else:
+            userCollection.update_one({"Email": email}, {"$set": {"ActiveSession": False}})
+
+        return {"message": "Sucessfully logged the user out"}
+    else:
+        return {"message": "Unsupported Content Type"}, 400
+
+
 @app.route("/createGrantForm", methods=["POST"])
+@tokenCheck.token_required
 def createGrantForm():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -132,6 +221,7 @@ def createGrantForm():
 
 
 @app.route("/getGrantForm/<_id>", methods=["GET"])
+@tokenCheck.token_required
 def getGrantForm(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -145,6 +235,7 @@ def getGrantForm(_id):
 
 
 @app.route("/updateGrantForm/<_id>", methods=["PUT"])
+@tokenCheck.token_required
 def updateGrantForm(_id):
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -169,6 +260,7 @@ def updateGrantForm(_id):
 
 
 @app.route("/deleteGrantForm/<_id>", methods=["DELETE"])
+@tokenCheck.token_required
 def deleteGrantForm(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
