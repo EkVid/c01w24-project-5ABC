@@ -56,8 +56,13 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
       }
       {isMultipleLines ?
         <textarea
+<<<<<<< HEAD
           placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
           className={`min-h-6 max-h-96 flex custom-text dark:d-text text-sm border-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input resize-none" : "custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+=======
+          placeholder={isEditMode ? "User will enter answer here" : "Enter an answer"}
+          className={`min-h-6 max-h-96 custom-text dark:d-text text-sm max-w-full md:max-w-96 border-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : ""} ${isReduceMotion ? "" : "transition-colors"}`}
+>>>>>>> 7198180 (more styling refacotring)
           onInput={e => handleOnInput(e.target.value)}
           value={currentAnswer}
           disabled={isEditMode}
@@ -65,8 +70,13 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
         :
         <input
           type="text"
+<<<<<<< HEAD
           placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
           className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 border-b-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+=======
+          placeholder={isEditMode ? "User will enter answer here" : "Enter an answer"}
+          className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 border-b-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : ""} ${isReduceMotion ? "" : "transition-colors"}`}
+>>>>>>> 7198180 (more styling refacotring)
           onInput={e => handleOnInput(e.target.value)}
           value={currentAnswer}
           disabled={isEditMode}
