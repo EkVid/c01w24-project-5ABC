@@ -24,7 +24,7 @@ const CheckboxOption = ({label, currentValue, onClick}) => {
         onChange={onClick}
         className="pointer-events-none select-none custom-accent dark:d-custom-accent"
       />
-      <label htmlFor="isRequired" className={`ml-3 custom-text text-left text-sm dark:d-text pointer-events-none z-40`}>{label}</label>
+      <label htmlFor="isRequired" className={`ml-3 custom-text dark:d-text text-left text-sm pointer-events-none z-40`}>{label}</label>
     </button>
   )
 }

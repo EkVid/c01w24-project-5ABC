@@ -55,7 +55,7 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
       {isMultipleLines ?
         <textarea
           placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
-          className={`min-h-6 max-h-96 custom-text dark:d-text text-sm max-w-full md:max-w-96 border-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+          className={`min-h-6 max-h-96 custom-text dark:d-text text-sm max-w-full md:max-w-96 border-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input resize-none" : "custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
           onInput={e => handleOnInput(e.target.value)}
           value={currentAnswer}
           disabled={isEditMode}
