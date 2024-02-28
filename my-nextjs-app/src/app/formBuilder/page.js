@@ -16,6 +16,11 @@ const testbody = [
     }
   },
   {
+    question: "What's your phone number?",
+    type: process.env.NEXT_PUBLIC_TYPE_PHONE,
+    errMsgArr: ["phone neu error"]
+  },
+  {
     question: "What's your email?",
     type: process.env.NEXT_PUBLIC_TYPE_EMAIL,
     errMsgArr: ["email error"]
@@ -74,6 +79,10 @@ export default function FormBuilder() {
     setQuestionData(prev => prev.filter(q => q.id !== questionId));
   }
 
+  const handleOnSelectAnswer = (questionID, answer) => {
+    console.log("answer: " + answer);
+  }
+
   return (
     <>
       <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
@@ -84,7 +93,7 @@ export default function FormBuilder() {
             isEditMode={isEditMode}
             onChangeQuestionData={newData => handleOnChangeQuestionData(q.id, newData)}
             onDelete={handleOnDeleteQuestion}
-            onSelectAnswer={answer => console.log(`${q.question}: ${answer}`)}
+            onSelectAnswer={answer => handleOnSelectAnswer(q.id, answer)}
           />
         </div>
       )}

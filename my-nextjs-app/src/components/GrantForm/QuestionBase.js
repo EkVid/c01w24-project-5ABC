@@ -11,6 +11,7 @@ import QCheckbox from "./QCheckbox";
 import QNumber from "./QNumber";
 import QText from "./QText";
 import QEmail from "./QEmail";
+import QPhoneNum from "./QPhoneNum";
 
 const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -181,7 +182,13 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
             isEditMode={isEditMode}
             onSelectAnswer={onSelectAnswer}
-            onChangeOptions={handleOnChangeOptions}
+          />
+          :
+          type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
+          <QPhoneNum
+            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+            isEditMode={isEditMode}
+            onSelectAnswer={onSelectAnswer}
           />
           :
           <></>
