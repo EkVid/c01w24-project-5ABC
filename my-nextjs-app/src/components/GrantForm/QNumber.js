@@ -59,7 +59,7 @@ const QNumber = ({options, optionsErrMsgArr, isErr, isEditMode, onSelectAnswer, 
       <input
         type="input"
         placeholder={isEditMode ? "User will enter number here" : "Enter number"}
-        className={`text-sm max-w-full md:max-w-96 border-b-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${!isEditMode && isErr ? "custom-red-border dark:d-custom-red-border" : " dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+        className={`text-sm max-w-full md:max-w-96 border-b-2 bg-transparent custom-text dark:d-text ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${!isEditMode && isErr ? "custom-err-border" : " dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
         onInput={e => handleOnInput(e.target.value)}
         value={currentAnswer}
         disabled={isEditMode}
