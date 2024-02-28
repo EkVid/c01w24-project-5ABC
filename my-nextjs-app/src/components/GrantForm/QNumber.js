@@ -5,7 +5,7 @@ import CheckboxOption from "./SmallComponents/CheckboxOption";
 import NumOption from "./SmallComponents/NumOption";
 import { checkIfNum } from "../utils/checkIfNum";
 
-const QNumber = ({options, optionsErrMsgArr, isErr, isEditMode, onSelectAnswer, onChangeOptions}) => {
+const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -26,7 +26,8 @@ const QNumber = ({options, optionsErrMsgArr, isErr, isEditMode, onSelectAnswer, 
 
   const handleOnInput = (newAnswer) => {
     if (isEditMode) return;
-    if (checkIfNum(newAnswer, false, isIntegerOnly)) setCurrentAnswer(newAnswer);
+    setCurrentAnswer(newAnswer);
+    onSelectAnswer(newAnswer)
   }
 
   useEffect(() => onSelectAnswer(currentAnswer), [currentAnswer]);
@@ -44,22 +45,20 @@ const QNumber = ({options, optionsErrMsgArr, isErr, isEditMode, onSelectAnswer, 
             label={"Minimum number: "}
             currentValue={minNum}
             onChangeValue={newMin => onChangeOptions({...options, minNum: newMin})}
-            isError={optionsErrMsgArr.includes(process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
           />
           <NumOption
             label={"Maximum number: "}
             currentValue={maxNum}
             onChangeValue={newMax => onChangeOptions({...options, maxNum: newMax})}
-            isError={optionsErrMsgArr.includes(process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
           />
         </OptionsDiv>
         :
         <></>
       }
       <input
-        type="input"
+        type="number"
         placeholder={isEditMode ? "User will enter number here" : "Enter number"}
-        className={`text-sm max-w-full md:max-w-96 border-b-2 bg-transparent custom-text dark:d-text ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${!isEditMode && isErr ? "custom-err-border" : " dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+        className={`text-sm max-w-full md:max-w-96 border-b-2 bg-transparent custom-text dark:d-text ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${!isEditMode && isErr ? "custom-err-border" : " dark:border-white"} ${isReduceMotion ? "" : "transition-colors"} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
         onInput={e => handleOnInput(e.target.value)}
         value={currentAnswer}
         disabled={isEditMode}

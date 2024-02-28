@@ -16,6 +16,11 @@ const testbody = [
     }
   },
   {
+    question: "What's your email?",
+    type: process.env.NEXT_PUBLIC_TYPE_EMAIL,
+    errMsgArr: ["email error"]
+  },
+  {
     question: "Do you have a driver's license?",
     type: process.env.NEXT_PUBLIC_TYPE_MULTI,
     answers: ["Yes", "No"],
