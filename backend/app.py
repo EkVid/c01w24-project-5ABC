@@ -5,12 +5,14 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from pydantic import ValidationError
 from middleware import tokenCheck
+from email.mime.text import MIMEText
+import smtplib
 import os
 import jwt
 import bcrypt
 import datetime
 import json as JSON
-import uuid
+import random
 
 from dataModels import Form
 
@@ -116,8 +118,11 @@ def resetPassword():
     contentType = request.headers.get("Content-Type")
 
     if(contentType == "application/json"):
-        email = request.json['Email']
-        passedResetCode = request.json['ResetCode']
+        verificationCode = request.json['ResetCode'].split("-")
+        email = verificationCode[0]
+        print(email)
+        ResetCode = verificationCode[1]
+        print(ResetCode)
         newPassword = request.json['NewPassword']
 
         foundUser = userCollection.find_one({"Email": email})
@@ -127,10 +132,10 @@ def resetPassword():
         
         storedResetCode = foundUser['ResetCode']
 
-        if(storedResetCode['Code'] == passedResetCode):
+        if(storedResetCode['Code'] == int(ResetCode)):
             difference = abs(datetime.datetime.utcnow() - storedResetCode['IssueDate'])
 
-            if(difference.seconds < 60): # reset code works within 60 seconds
+            if(difference.seconds < 300): # reset code works within 300 seconds
                 salt = bcrypt.gensalt()
                 encodedPassword = newPassword.encode('utf-8')
                 hashedPassword = bcrypt.hashpw(encodedPassword, salt)
@@ -148,7 +153,7 @@ def resetPassword():
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/generateResetCode", methods=['GET'])
+@app.route("/emailResetCode", methods=['GET'])
 def generateResetCode():
     contentType = request.headers.get("Content-Type")
 
@@ -163,13 +168,35 @@ def generateResetCode():
         #generates a reset code with uuid and stamps it with the current date time for expiration
 
         resetCode = {
-            "Code": str(uuid.uuid4()),
+            "Code": random.randint(100000, 999999),
             "IssueDate": datetime.datetime.utcnow()
             }
 
         userCollection.update_one({"Email": email}, {"$set": {"ResetCode": resetCode}})
 
-        return resetCode, 200
+        try:
+            code = email + "-" + str(resetCode["Code"])
+            subject = "Reset Password"
+            body = "Please reset you password at http://localhost:3000/reset_password.\nVerification code (include email and code): " + code
+            sender = "5abc.noreply@gmail.com"
+            password = "gpjk gykf fejy eppg"
+
+            msg = MIMEText(body)
+            msg['Subject'] = subject
+            msg['From'] = sender
+            msg['To'] = email
+
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
+                smtp_server.login(sender, password)
+                smtp_server.sendmail(sender, email, msg.as_string())
+
+        except Exception as e:
+            return {
+                "Error": "Email could not be sent.",
+                "Message": str(e)
+            }, 500
+
+        return {"message": "Verification code successfully sent"}, 200
 
     else:
         return {"message": "Unsupported Content Type"}, 400
@@ -178,7 +205,6 @@ def generateResetCode():
 @app.route("/logout", methods=['GET'])
 @tokenCheck.token_required
 def logout():
-    #user needs to have their active session attribute made null
 
     contentType = request.headers.get("Content-Type")
 
