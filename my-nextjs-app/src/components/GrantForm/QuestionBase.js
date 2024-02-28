@@ -10,6 +10,7 @@ import ErrTextbox from "./SmallComponents/ErrTextbox";
 import QCheckbox from "./QCheckbox";
 import QNumber from "./QNumber";
 import QText from "./QText";
+import QEmail from "./QEmail";
 
 const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -130,7 +131,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         :
         <></>
       }
-      <div className="flex flex-col mt-5">
+      <div className="flex flex-col">
         {/* Body of question */}
         {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
           <QMultichoice
@@ -160,7 +161,6 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
           type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
           <QNumber
             options={options}
-            optionsErrMsgArr={errMsgArr.filter(e => e === process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
             isEditMode={isEditMode}
             onSelectAnswer={onSelectAnswer}
@@ -170,7 +170,14 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
           type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
           <QText
             options={options}
-            optionsErrMsgArr={errMsgArr.filter(e => e === process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
+            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+            isEditMode={isEditMode}
+            onSelectAnswer={onSelectAnswer}
+            onChangeOptions={handleOnChangeOptions}
+          />
+          :
+          type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
+          <QEmail
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
             isEditMode={isEditMode}
             onSelectAnswer={onSelectAnswer}
