@@ -101,6 +101,7 @@ body {
 }
 
 .custom-disabled-input{
+  color: #bdbdbd;
   border-color: #bdbdbd;
 }
 
@@ -116,6 +117,7 @@ body {
   }
 
   .d-custom-disabled-input{
+    color: #525252;
     border-color: #525252;
   }
 
@@ -124,7 +126,7 @@ body {
   }
 
   .d-text-shade{
-    color : #5f5f5f;
+    color : #686868;
   }
   
   .d-custom-dark-grey-background{

@@ -55,8 +55,10 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
         :
         <></>
       }
+      {/* <label htmlFor="numAnswer" className="mb-2 custom-text dark:d-text">Answer:</label> */}
       <input
         type="number"
+        id="numAnswer"
         placeholder={"ex: 12345"}
         className={`text-sm max-w-full md:max-w-96 border-b-2 bg-transparent custom-text dark:d-text ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${!isEditMode && isErr ? "custom-err-border" : " dark:border-white"} ${isReduceMotion ? "" : "transition-colors"} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
         onInput={e => handleOnInput(e.target.value)}
