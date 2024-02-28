@@ -5,6 +5,7 @@ import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import { useContext } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const Hero = () => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -23,7 +24,9 @@ const Hero = () => {
             information.
           </p>
           <button className="bg-blue-500 text-white py-2 px-4 rounded custom-green-background">
-            Register
+            <Link href="/signup">
+              Register
+            </Link>
           </button>
         </div>
       </div>
