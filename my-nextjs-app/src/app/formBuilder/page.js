@@ -7,7 +7,7 @@ const testbody = [
   {
     question: "What's your name?",
     type: process.env.NEXT_PUBLIC_TYPE_TEXT,
-    errMsgArr: [],
+    errMsgArr: ["Invaldi ererif here"],
     options:
     {
       isMultipleLines: true,
@@ -39,7 +39,7 @@ const testbody = [
   {
     question: "Enter your age:",
     type: process.env.NEXT_PUBLIC_TYPE_NUMBER,
-    errMsgArr: [],
+    errMsgArr: ['rr'],
     options:
     {
       isIntegerOnly: false,
@@ -73,7 +73,7 @@ export default function FormBuilder() {
     <>
       <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
       {questionData?.map(q => 
-        <div key={q.id} className={`flex flex-col custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 ${q.errMsgArr && q.errMsgArr.length > 0 ? "custom-red-border dark:d-custom-red-border" : "custom-questioncard-border dark:d-custom-questioncard-border"}`}>
+        <div key={q.id} className={`flex flex-col custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 ${q.errMsgArr && q.errMsgArr.length > 0 ? "custom-err-border" : "custom-questioncard-border dark:d-custom-questioncard-border"}`}>
           <QuestionBase 
             questionData={q} 
             isEditMode={isEditMode}

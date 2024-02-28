@@ -65,7 +65,7 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`min-w-5 text-sm text-black border-b-2 border-black ml-3 dark:text-white dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
+                className={`min-w-5 text-sm custom-text border-b-2 border-black ml-3 dark:d-text dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-err-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
@@ -87,7 +87,7 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
             </>
             :
             // Show answer
-            <label htmlFor={a.id} className="ml-3 text-sm custom-dark-grey dark:text-white pointer-events-none"> 
+            <label htmlFor={a.id} className="ml-3 text-sm custom-dark-grey dark:d-text pointer-events-none"> 
               {a.answer}
             </label>
           }

@@ -10,10 +10,10 @@ const QuoteCard = ({img, title, content}) => {
         height={90}
         className="mb-5 lg:pt-5"
       />
-      <h2 className="custom-dark-grey-text dark:text-white text-2xl font-bold text-center">
+      <h2 className="custom-dark-grey-text dark:d-text text-2xl font-bold text-center">
         {title}
       </h2>
-      <p className="custom-grey dark:text-white text-sm m-5 mb-7 text-center lg:mb-0">
+      <p className="custom-grey dark:d-text text-sm m-5 mb-7 text-center lg:mb-0">
         {content}
       </p>
     </div>

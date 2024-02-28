@@ -18,7 +18,7 @@
 
 @layer base {
   ::selection {
-    @apply text-black dark:text-white custom-highlight dark:d-custom-highlight
+    @apply custom-text dark:text-white custom-highlight dark:d-custom-highlight
   }
 }
 
@@ -229,6 +229,11 @@ body {
     background-color: #5f5f5f;
   }
 
+}
+
+/* Class for the red border around inputs and question cards for errors */
+.custom-err-border{
+  @apply custom-red-border dark:d-custom-red-border
 }
 
 /* Hover effect for interactable form items */

@@ -78,39 +78,49 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
 
   return (
     <>
-      <div className={`flex mb-5 items-center`}>
+      <div className={`flex items-center md:mb-5 `}>
         {isEditMode ?
           <>
             <input 
               type="text"
-              className={`flex-auto min-w-5 text-2xl border-b-2 border-black dark:border-white text-black dark:text-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-red-border dark:d-custom-red-border" : ""}`}
+              className={`flex-auto min-w-5 text-2xl border-b-2 border-black dark:border-white custom-text dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : ""}`}
               value={question}
               placeholder="Enter a question"
               onInput={e => handleOnChangeQuestion(e.target.value)}
             />
-            <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}>
+            <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}>
               <Image
                 src={TrashIcon}
                 alt="Delete"
-                width={35 * fontSizeMultiplier}
+                width={30 * fontSizeMultiplier}
                 height={"auto"}
                 className="pointer-events-none dark:d-white-filter"
               />
             </button>
           </>
           :
-          <>
-            
-            <div className="text-2xl text-black dark:text-white">
-              {question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
-            </div>
-          </>
+          <div className="text-2xl custom-text dark:d-text">
+            {question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
+          </div>
         }
       </div>
+      {isEditMode ?
+        <button onClick={() => onDelete(id)} className={`p-1.5 mt-1 rounded-lg custom-interactive-btn flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}>
+          <Image
+            src={TrashIcon}
+            alt="Delete"
+            width={30 * fontSizeMultiplier}
+            height={"auto"}
+            className="pointer-events-none dark:d-white-filter"
+          />
+        </button>
+        :
+        <></>
+      }
       {/* Options section */}
       {isEditMode ? 
-        <div className="pl-5">
-          <div className="text-sm mb-2  text-black dark:text-white">Settings:</div>
+        <div className="px-5">
+          <div className="text-sm mb-2  custom-text dark:d-text">Settings:</div>
             <CheckboxOption 
               label={"Required question"} 
               currentValue={isRequired} 
@@ -120,54 +130,56 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         :
         <></>
       }
-      {/* Body of question */}
-      {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
-        <QMultichoice
-          answersObj={answersObj}
-          isRequired={isRequired}
-          isEditMode={isEditMode}
-          errAnsIdxArr={errAnsIdxArr}
-          onSelectAnswer={onSelectAnswer}
-          onAddAnswer={handleOnAddAnswer}
-          onChangeAnswers={handleOnChangeAnswers}
-          onDeleteAnswer={handleOnDeleteAnswer}
-        />
-        :
-        type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
-        <QCheckbox
-          answersObj={answersObj}
-          options={options}
-          isEditMode={isEditMode}
-          errAnsIdxArr={errAnsIdxArr}
-          onSelectAnswer={onSelectAnswer}
-          onAddAnswer={handleOnAddAnswer}
-          onChangeAnswers={handleOnChangeAnswers}
-          onChangeOptions={handleOnChangeOptions}
-          onDeleteAnswer={handleOnDeleteAnswer}
-        />
-        :
-        type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
-        <QNumber
-          options={options}
-          optionsErrMsgArr={errMsgArr.filter(e => e === process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
-          isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-          isEditMode={isEditMode}
-          onSelectAnswer={onSelectAnswer}
-          onChangeOptions={handleOnChangeOptions}
-        />
-        :
-        type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
-        <QText
-          options={options}
-          optionsErrMsgArr={errMsgArr.filter(e => e === process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
-          isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-          isEditMode={isEditMode}
-          onSelectAnswer={onSelectAnswer}
-          onChangeOptions={handleOnChangeOptions}
-        />
-        :
-        <></>
-      }
+      <div className="flex flex-col mt-5">
+        {/* Body of question */}
+        {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
+          <QMultichoice
+            answersObj={answersObj}
+            isRequired={isRequired}
+            isEditMode={isEditMode}
+            errAnsIdxArr={errAnsIdxArr}
+            onSelectAnswer={onSelectAnswer}
+            onAddAnswer={handleOnAddAnswer}
+            onChangeAnswers={handleOnChangeAnswers}
+            onDeleteAnswer={handleOnDeleteAnswer}
+          />
+          :
+          type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
+          <QCheckbox
+            answersObj={answersObj}
+            options={options}
+            isEditMode={isEditMode}
+            errAnsIdxArr={errAnsIdxArr}
+            onSelectAnswer={onSelectAnswer}
+            onAddAnswer={handleOnAddAnswer}
+            onChangeAnswers={handleOnChangeAnswers}
+            onChangeOptions={handleOnChangeOptions}
+            onDeleteAnswer={handleOnDeleteAnswer}
+          />
+          :
+          type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
+          <QNumber
+            options={options}
+            optionsErrMsgArr={errMsgArr.filter(e => e === process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
+            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+            isEditMode={isEditMode}
+            onSelectAnswer={onSelectAnswer}
+            onChangeOptions={handleOnChangeOptions}
+          />
+          :
+          type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
+          <QText
+            options={options}
+            optionsErrMsgArr={errMsgArr.filter(e => e === process.env.NEXT_PUBLIC_ERR_MAX_LESS_THAN_MIN)}
+            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+            isEditMode={isEditMode}
+            onSelectAnswer={onSelectAnswer}
+            onChangeOptions={handleOnChangeOptions}
+          />
+          :
+          <></>
+        }
+      </div>
       {errMsgArr && errMsgArr.length > 0 ?
         <div className="mt-3">
           {errMsgArr?.map((err, i) => 

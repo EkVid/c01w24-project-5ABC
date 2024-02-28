@@ -81,7 +81,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`min-w-5 text-sm text-black border-b-2 border-black ml-3 dark:text-white dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-red-border dark:d-custom-red-border" : "border-black dark:border-white"}`}
+                className={`min-w-5 text-sm custom-text border-b-2 border-black ml-3 dark:d-text dark:border-white custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-err-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
