@@ -16,6 +16,16 @@ const testbody = [
     }
   },
   {
+    question: "What's your education time?",
+    type: process.env.NEXT_PUBLIC_TYPE_DATE,
+    errMsgArr: ["Invaldi date error here"],
+    options:
+    {
+      isDateRange: true,
+      isBothRequired: false,
+    }
+  },
+  {
     question: "What's your phone number?",
     type: process.env.NEXT_PUBLIC_TYPE_PHONE,
     errMsgArr: ["phone neu error"]

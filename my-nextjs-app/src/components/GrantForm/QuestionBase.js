@@ -12,6 +12,7 @@ import QNumber from "./QNumber";
 import QText from "./QText";
 import QEmail from "./QEmail";
 import QPhoneNum from "./QPhoneNum";
+import QDate from "./QDate";
 
 const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -80,7 +81,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
 
   return (
     <>
-      <div className={`flex items-center md:mb-5 `}>
+      <div className={`flex items-center mb-6`}>
         {isEditMode ?
           <>
             <input 
@@ -189,6 +190,15 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
             isEditMode={isEditMode}
             onSelectAnswer={onSelectAnswer}
+          />
+          :
+          type === process.env.NEXT_PUBLIC_TYPE_DATE ?
+          <QDate
+            options={options}
+            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+            isEditMode={isEditMode}
+            onSelectAnswer={onSelectAnswer}
+            onChangeOptions={handleOnChangeOptions}
           />
           :
           <></>
