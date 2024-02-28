@@ -10,6 +10,7 @@ const NumOption = ({label, currentValue, onChangeValue}) => {
   const formId = uuidv4();
 
   return(
+<<<<<<< HEAD
     <div className="px-2 py-1 flex flex-col md:flex-row">
       <label htmlFor={formId} className="text-sm mr-3 custom-text dark:d-text">{label}</label>
       <input
@@ -17,6 +18,15 @@ const NumOption = ({label, currentValue, onChangeValue}) => {
         id={formId}
         className={`text-xs min-w-1 max-w-24 border-b-2 custom-text dark:d-text custom-interactive-input ${!checkIfNum(value) ? "custom-err-border" : "border-black dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
         onInput={e => onChangeValue(e.target.value)}
+=======
+    <div className="p-1 flex flex-col md:flex-row">
+      <label htmlFor="number" className="text-sm mr-2 custom-text dark:d-text">{label}</label>
+      <input
+        type="text"
+        name="number"
+        className={`text-xs min-w-1 max-w-32 border-b-2 custom-text dark:d-text custom-interactive-input ${isError ? "custom-err-border" : "border-black dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+        onInput={e => onInput(e.target.value)}
+>>>>>>> 7198180 (more styling refacotring)
         value={value}
         placeholder="Enter a number"
       />

@@ -250,6 +250,11 @@ body {
   @apply custom-red-border dark:d-custom-red-border
 }
 
+/* Class for the red border around inputs and question cards for errors */
+.custom-err-border{
+  @apply custom-red-border dark:d-custom-red-border
+}
+
 /* Hover effect for interactable form items */
 .custom-interactive-btn{
   @apply hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black
