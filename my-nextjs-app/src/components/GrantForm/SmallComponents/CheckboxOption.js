@@ -14,7 +14,7 @@ const CheckboxOption = ({label, currentValue, onClick}) => {
   return (
     <button 
       onClick={onClick}
-      className={`flex w-fit rounded-md p-1 custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`flex w-fit rounded-md pl-1 py-1 custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
     >
       <input 
         type="checkbox"
@@ -24,7 +24,7 @@ const CheckboxOption = ({label, currentValue, onClick}) => {
         onChange={onClick}
         className="pointer-events-none select-none custom-accent dark:d-custom-accent"
       />
-      <label htmlFor="isRequired" className={`ml-3 text-black text-left text-sm dark:text-white pointer-events-none z-40`}>{label}</label>
+      <label htmlFor="isRequired" className={`ml-3 custom-text text-left text-sm dark:d-text pointer-events-none z-40`}>{label}</label>
     </button>
   )
 }

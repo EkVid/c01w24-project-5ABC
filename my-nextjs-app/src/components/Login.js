@@ -62,7 +62,7 @@ const Login = () => {
           </p>
           <div className="bg-white rounded max-w-xs w-full rounded-full">
             <Link href="/signup">
-              <button className="inline-block text-black text-md w-full font-semibold h-12 px-6 bg-white hover:bg-gray-100 rounded-full transition duration-150 ease-in-out">
+              <button className="inline-block custom-text text-md w-full font-semibold h-12 px-6 bg-white hover:bg-gray-100 rounded-full transition duration-150 ease-in-out">
                 Sign Up
               </button>
             </Link>

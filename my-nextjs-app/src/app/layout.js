@@ -23,7 +23,7 @@ export default function RootLayout({ children, showFooter = true }) {
           <AccessibilityBar>
             <main className="flex flex-col flex-grow dark:bg-[#1f1f1f]">{children}</main>
             <Footer />
-          <AccessibilityBar />
+          </AccessibilityBar>
         </div>
       </body>
     </html>

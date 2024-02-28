@@ -3,7 +3,6 @@ import ReducedMotionContext from "../utils/ReducedMotionContext";
 import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
 import NumOption from "./SmallComponents/NumOption";
-import { checkIfNum } from "../utils/checkIfNum";
 
 const QText = ({options, optionsErrMsgArr, isErr, isEditMode, onSelectAnswer, onChangeOptions}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
@@ -56,7 +55,7 @@ const QText = ({options, optionsErrMsgArr, isErr, isEditMode, onSelectAnswer, on
       {isMultipleLines ?
         <textarea
           placeholder={isEditMode ? "User will enter answer here" : "Enter an answer"}
-          className={`min-h-6 max-h-96 text-black dark:d-text text-sm max-w-full md:max-w-96 border-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${isReduceMotion ? "" : "transition-colors"}`}
+          className={`min-h-6 max-h-96 custom-text dark:d-text text-sm max-w-full md:max-w-96 border-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : ""} ${isReduceMotion ? "" : "transition-colors"}`}
           onInput={e => handleOnInput(e.target.value)}
           value={currentAnswer}
           disabled={isEditMode}
@@ -65,7 +64,7 @@ const QText = ({options, optionsErrMsgArr, isErr, isEditMode, onSelectAnswer, on
         <input
           type="text"
           placeholder={isEditMode ? "User will enter answer here" : "Enter an answer"}
-          className={`text-sm max-w-full text-black dark:d-text md:max-w-96 border-b-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${isReduceMotion ? "" : "transition-colors"}`}
+          className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 border-b-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : ""} ${isReduceMotion ? "" : "transition-colors"}`}
           onInput={e => handleOnInput(e.target.value)}
           value={currentAnswer}
           disabled={isEditMode}
