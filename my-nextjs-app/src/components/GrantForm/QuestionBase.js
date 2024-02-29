@@ -2,6 +2,14 @@ import Image from "next/image";
 import TrashIcon from "@/../public/trash-icon.svg"
 import PlusIcon from "@/../public/plus.svg"
 import UndoIcon from "@/../public/undo.svg"
+import MultichoiceIcon from "@/../public/multichoice.svg"
+import CheckboxIcon from "@/../public/checkbox.svg"
+import NumberIcon from "@/../public/number.svg"
+import TextIcon from "@/../public/textbox.svg"
+import EmailIcon from "@/../public/email.svg"
+import PhoneIcon from "@/../public/phone.svg"
+import DateIcon from "@/../public/date.svg"
+import FileIcon from "@/../public/file.svg"
 import { useContext, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
@@ -44,6 +52,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
 
   const attId = uuidv4();
 
+  // For multiple answers questions, sends array of index of answers that have problems to highlight red
   const errAnsIdxArr = [];
   if (errEmptyAnsIdxArr) {
     for (let idx of errEmptyAnsIdxArr) {
@@ -55,6 +64,8 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
       if (!errAnsIdxArr.includes(idx)) errAnsIdxArr.push(idx);
     }
   }
+
+
   
   const handleOnChangeQuestion = (newQuestion) => {
     onChangeQuestionData({...questionData, question: newQuestion})
@@ -216,85 +227,103 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         :
         <></>
       }
-      <div className="flex flex-col">
-        {/* Body of question */}
-        {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
-          <QMultichoice
-            answersObj={answersObj}
-            isRequired={isRequired}
-            isEditMode={isEditMode}
-            errAnsIdxArr={errAnsIdxArr}
-            onSelectAnswer={onSelectAnswer}
-            onAddAnswer={handleOnAddAnswer}
-            onChangeAnswers={handleOnChangeAnswers}
-            onDeleteAnswer={handleOnDeleteAnswer}
-          />
-          : type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
-          <QCheckbox
-            answersObj={answersObj}
-            options={options}
-            isEditMode={isEditMode}
-            errAnsIdxArr={errAnsIdxArr}
-            onSelectAnswer={onSelectAnswer}
-            onAddAnswer={handleOnAddAnswer}
-            onChangeAnswers={handleOnChangeAnswers}
-            onChangeOptions={handleOnChangeOptions}
-            onDeleteAnswer={handleOnDeleteAnswer}
-          />
-          : type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
-          <QNumber
-            options={options}
-            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-            isEditMode={isEditMode}
-            onSelectAnswer={onSelectAnswer}
-            onChangeOptions={handleOnChangeOptions}
-          />
-          : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
-          <QText
-            options={options}
-            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-            isEditMode={isEditMode}
-            onSelectAnswer={onSelectAnswer}
-            onChangeOptions={handleOnChangeOptions}
-          />
-          : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
-          <QEmail
-            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-            isEditMode={isEditMode}
-            onSelectAnswer={onSelectAnswer}
-          />
-          : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
-          <QPhoneNum
-            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-            isEditMode={isEditMode}
-            onSelectAnswer={onSelectAnswer}
-          />
-          : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
-          <QDate
-            options={options}
-            isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-            isEditMode={isEditMode}
-            onSelectAnswer={onSelectAnswer}
-            onChangeOptions={handleOnChangeOptions}
-          />
-          : type === process.env.NEXT_PUBLIC_TYPE_FILE ?
-          <QFile
-            isEditMode={isEditMode}
-            onSelectAnswer={onSelectAnswer}
-          />
-          :
-          <></>
-        }
-      </div>
-      {errMsgArr && errMsgArr.length > 0 ?
-        <div className="mt-3">
-          {errMsgArr?.map((err, i) => 
-            <ErrTextbox msg={err} key={i}/>
-          )}
+      <div className="flex justify-between items-end">
+        <div className="flex flex-col flex-auto mr-5">
+          {/* Body of question */}
+          {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
+            <QMultichoice
+              answersObj={answersObj}
+              isRequired={isRequired}
+              isEditMode={isEditMode}
+              errAnsIdxArr={errAnsIdxArr}
+              onSelectAnswer={onSelectAnswer}
+              onAddAnswer={handleOnAddAnswer}
+              onChangeAnswers={handleOnChangeAnswers}
+              onDeleteAnswer={handleOnDeleteAnswer}
+            />
+            : type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
+            <QCheckbox
+              answersObj={answersObj}
+              options={options}
+              isEditMode={isEditMode}
+              errAnsIdxArr={errAnsIdxArr}
+              onSelectAnswer={onSelectAnswer}
+              onAddAnswer={handleOnAddAnswer}
+              onChangeAnswers={handleOnChangeAnswers}
+              onChangeOptions={handleOnChangeOptions}
+              onDeleteAnswer={handleOnDeleteAnswer}
+            />
+            : type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
+            <QNumber
+              options={options}
+              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+              isEditMode={isEditMode}
+              onSelectAnswer={onSelectAnswer}
+              onChangeOptions={handleOnChangeOptions}
+            />
+            : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
+            <QText
+              options={options}
+              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+              isEditMode={isEditMode}
+              onSelectAnswer={onSelectAnswer}
+              onChangeOptions={handleOnChangeOptions}
+            />
+            : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
+            <QEmail
+              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+              isEditMode={isEditMode}
+              onSelectAnswer={onSelectAnswer}
+            />
+            : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
+            <QPhoneNum
+              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+              isEditMode={isEditMode}
+              onSelectAnswer={onSelectAnswer}
+            />
+            : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
+            <QDate
+              options={options}
+              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+              isEditMode={isEditMode}
+              onSelectAnswer={onSelectAnswer}
+              onChangeOptions={handleOnChangeOptions}
+            />
+            : type === process.env.NEXT_PUBLIC_TYPE_FILE ?
+            <QFile
+              isEditMode={isEditMode}
+              onSelectAnswer={onSelectAnswer}
+            />
+            :
+            <></>
+          }
+          {errMsgArr?.map((err, i) => <ErrTextbox msg={err} key={i}/>)}
         </div>
-        :
-        <></>
-      }
+        {/* Question icon in corner */}
+        <div className="p-1.5"><Image
+          src={
+            type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
+            type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? CheckboxIcon : 
+            type === process.env.NEXT_PUBLIC_TYPE_TEXT ? TextIcon :
+            type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? NumberIcon :
+            type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? EmailIcon :
+            type === process.env.NEXT_PUBLIC_TYPE_PHONE ? PhoneIcon :
+            type === process.env.NEXT_PUBLIC_TYPE_DATE ? DateIcon :
+            type === process.env.NEXT_PUBLIC_TYPE_FILE ? FileIcon : ""}
+          alt={type === process.env.NEXT_PUBLIC_TYPE_MULTI ? "Multiple choice type question" : 
+            type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? "Checkbox type question" : 
+            type === process.env.NEXT_PUBLIC_TYPE_TEXT ? "Texbox type question" :
+            type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? "Numeric type question" :
+            type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? "Email type question" :
+            type === process.env.NEXT_PUBLIC_TYPE_PHONE ? "Phone number type question" :
+            type === process.env.NEXT_PUBLIC_TYPE_DATE ? "Date type question" :
+            type === process.env.NEXT_PUBLIC_TYPE_FILE ? "File upload type question" : ""}
+          width={30 * fontSizeMultiplier}
+          height={"auto"}
+          className="pointer-events-none opacity-40 dark:opacity-30 dark:d-white-filter"
+        /></div>
+        
+      </div>
     </>
   )
 }

@@ -11,7 +11,7 @@ const ErrTextbox = ({msg}) => {
   const isLightTheme = useContext(ThemeContext);
 
   return msg ? (
-    <div className="flex items-center p-2">
+    <div className="flex items-center px-2 mt-4">
       <Image
         src={isLightTheme ? AlertIconLightMode : AlertIconDarkMode}
         alt="Alert"
