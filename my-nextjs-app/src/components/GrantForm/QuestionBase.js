@@ -1,6 +1,8 @@
 import Image from "next/image";
 import TrashIcon from "@/../public/trash-icon.svg"
-import { useContext } from "react";
+import PlusIcon from "@/../public/plus.svg"
+import UndoIcon from "@/../public/undo.svg"
+import { useContext, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
@@ -13,17 +15,34 @@ import QText from "./QText";
 import QEmail from "./QEmail";
 import QPhoneNum from "./QPhoneNum";
 import QDate from "./QDate";
+import QFile from "./QFile";
 
 const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
+  const formRef = useRef();
 
-  const {id, answers, question, type, options, isRequired, errMsgArr, errEmptyAnsIdxArr, errDupAnsIdxArr} = questionData;
+  const {
+    id, 
+    answers, 
+    question, 
+    type, 
+    file, 
+    curFile, 
+    isCurFileDeleting, 
+    options, 
+    isRequired, 
+    errMsgArr, 
+    errEmptyAnsIdxArr, 
+    errDupAnsIdxArr
+  } = questionData;
 
   const answersObj = answers?.map(a => ({
     answer: a, 
     id: uuidv4()
   }));
+
+  const attId = uuidv4();
 
   const errAnsIdxArr = [];
   if (errEmptyAnsIdxArr) {
@@ -43,6 +62,16 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
 
   const handleOnChangeOptions = (newOptions) => {
     onChangeQuestionData({...questionData, options: newOptions});
+  }
+
+  const handleOnSubmitFile = (e) => {
+    e.preventDefault();
+    formRef.current.reset();
+  }
+
+  const handleOnUndoCurFile = (e) => {
+    formRef.current.reset();
+    onChangeQuestionData({...questionData, isCurFileDeleting: !isCurFileDeleting, file: null})
   }
 
   // --------- Handlers for questions that have answers (multiple choice, checkbox) -----------
@@ -120,15 +149,69 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         :
         <></>
       }
-      {/* Options section */}
+      {/* Options section for required question and file upload */}
       {isEditMode ? 
-        <div className="px-5">
-          <div className="text-sm mb-2  custom-text dark:d-text">Settings:</div>
-            <CheckboxOption 
-              label={"Required question"} 
-              currentValue={isRequired} 
-              onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
-            />
+        <>
+        <div className="text-sm mb-4 custom-text dark:d-text">Settings:</div>
+        <div className="px-4 mb-4">
+          <CheckboxOption 
+            label={"Required question:"} 
+            currentValue={isRequired} 
+            onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
+          />
+          <div className="flex items-center px-2 py-1">
+            <label htmlFor={attId} className="text-sm mr-2 custom-text dark:d-text">Attachments:</label>
+            <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center overflow-hidden">
+              <input
+                type="file"
+                id={attId}
+                className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
+                onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0]})}
+                disabled={!isCurFileDeleting && curFile}
+              />
+              <button 
+                onClick={() => onChangeQuestionData({...questionData, file: null})}
+                className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
+              >
+                <Image
+                  src={PlusIcon}
+                  alt="Delete"
+                  width={20 * fontSizeMultiplier}
+                  height={"auto"}
+                  className="text-sm dark:d-white-filter rotate-45 pointer-events-none"
+                />
+              </button>
+            </form>
+          </div>
+          {curFile ? 
+            <div className="flex items-center">
+              <div className="text-sm custom-text-shade dark:d-text-shade pl-8">
+                {isCurFileDeleting ? "Previous uploaded file will be deleted" : `Current upload: ${curFile.name}`}
+              </div>
+              <button 
+                onClick={handleOnUndoCurFile}
+                className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+              >
+                <Image
+                  src={isCurFileDeleting ? UndoIcon : PlusIcon}
+                  alt={isCurFileDeleting ? "Restore" : "Delete"}
+                  width={20 * fontSizeMultiplier}
+                  height={"auto"}
+                  className={`text-sm dark:d-white-filter shrink-0 pointer-events-none opacity-50 ${isCurFileDeleting ? "" : "rotate-45"}`}
+                />
+              </button>
+            </div>
+            :
+            <></>
+          }
+        </div>
+        </>
+        :
+        <></>
+      }
+      {file ?
+        <div>
+
         </div>
         :
         <></>
@@ -146,8 +229,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
             onChangeAnswers={handleOnChangeAnswers}
             onDeleteAnswer={handleOnDeleteAnswer}
           />
-          :
-          type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
+          : type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
           <QCheckbox
             answersObj={answersObj}
             options={options}
@@ -159,8 +241,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
             onChangeOptions={handleOnChangeOptions}
             onDeleteAnswer={handleOnDeleteAnswer}
           />
-          :
-          type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
+          : type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
           <QNumber
             options={options}
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
@@ -168,8 +249,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
             onSelectAnswer={onSelectAnswer}
             onChangeOptions={handleOnChangeOptions}
           />
-          :
-          type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
+          : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
           <QText
             options={options}
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
@@ -177,28 +257,30 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
             onSelectAnswer={onSelectAnswer}
             onChangeOptions={handleOnChangeOptions}
           />
-          :
-          type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
+          : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
           <QEmail
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
             isEditMode={isEditMode}
             onSelectAnswer={onSelectAnswer}
           />
-          :
-          type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
+          : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
           <QPhoneNum
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
             isEditMode={isEditMode}
             onSelectAnswer={onSelectAnswer}
           />
-          :
-          type === process.env.NEXT_PUBLIC_TYPE_DATE ?
+          : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
           <QDate
             options={options}
             isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
             isEditMode={isEditMode}
             onSelectAnswer={onSelectAnswer}
             onChangeOptions={handleOnChangeOptions}
+          />
+          : type === process.env.NEXT_PUBLIC_TYPE_FILE ?
+          <QFile
+            isEditMode={isEditMode}
+            onSelectAnswer={onSelectAnswer}
           />
           :
           <></>

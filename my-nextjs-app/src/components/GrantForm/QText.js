@@ -34,17 +34,17 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
       {isEditMode ? 
         <OptionsDiv>
           <CheckboxOption 
-            label={"Enable multiline responses"}
+            label={"Allow multiline responses:"}
             currentValue={isMultipleLines} 
             onClick={() => onChangeOptions({...options, isMultipleLines: !isMultipleLines})}
           />
           <NumOption
-            label={"Minimum character count: "}
+            label={"Minimum character count:"}
             currentValue={minCharsNum}
             onChangeValue={newMin => onChangeOptions({...options, minCharsNum: newMin})}
           />
           <NumOption
-            label={"Maximum character count: "}
+            label={"Maximum character count:"}
             currentValue={maxCharsNum}
             onChangeValue={newMax => onChangeOptions({...options, maxCharsNum: newMax})}
           />

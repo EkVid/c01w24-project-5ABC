@@ -37,17 +37,17 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
       {isEditMode ? 
         <OptionsDiv>
           <CheckboxOption 
-            label={"Require integer answers"}
+            label={"Require integer answers:"}
             currentValue={isIntegerOnly} 
             onClick={() => onChangeOptions({...options, isIntegerOnly: !isIntegerOnly})}
           />
           <NumOption
-            label={"Minimum number: "}
+            label={"Minimum number:"}
             currentValue={minNum}
             onChangeValue={newMin => onChangeOptions({...options, minNum: newMin})}
           />
           <NumOption
-            label={"Maximum number: "}
+            label={"Maximum number:"}
             currentValue={maxNum}
             onChangeValue={newMax => onChangeOptions({...options, maxNum: newMax})}
           />
