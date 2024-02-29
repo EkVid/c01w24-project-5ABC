@@ -32,7 +32,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
 
   const {
     id, 
-    answers, 
+    answersObj, 
     question, 
     type, 
     file, 
@@ -44,11 +44,6 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
     errEmptyAnsIdxArr, 
     errDupAnsIdxArr
   } = questionData;
-
-  const answersObj = answers?.map(a => ({
-    answer: a, 
-    id: uuidv4()
-  }));
 
   const attId = uuidv4();
 
@@ -64,8 +59,6 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
       if (!errAnsIdxArr.includes(idx)) errAnsIdxArr.push(idx);
     }
   }
-
-
   
   const handleOnChangeQuestion = (newQuestion) => {
     onChangeQuestionData({...questionData, question: newQuestion})
@@ -103,7 +96,6 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
 
   // Validation on answers for multiple choice and checkbox questions
   const validateAndUpdateAnswers = (newAnswersObjArr) => {
-    const ansArr = newAnswersObjArr.map(a => a.answer)
     const emptyAnsArr = [];
     const dupAnsArr = [];
     const tempCountObj = {};
@@ -116,7 +108,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
     for (let v of Object.values(tempCountObj)) {
       if (v.length > 1) v.forEach(i => dupAnsArr.push(i));
     }
-    onChangeQuestionData({...questionData, answers: ansArr, errEmptyAnsIdxArr: emptyAnsArr, errDupAnsIdxArr: dupAnsArr});
+    onChangeQuestionData({...questionData, answersObj: newAnswersObjArr, errEmptyAnsIdxArr: emptyAnsArr, errDupAnsIdxArr: dupAnsArr});
   }
 
   return (
@@ -126,7 +118,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
           <>
             <input 
               type="text"
-              className={`flex-auto min-w-5 text-2xl border-b-2 border-black dark:border-white custom-text dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : ""}`}
+              className={`flex-auto min-w-5 text-2xl border-b-2 custom-text dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
               value={question}
               placeholder="Enter a question"
               onInput={e => handleOnChangeQuestion(e.target.value)}
@@ -189,7 +181,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
                   alt="Delete"
                   width={20 * fontSizeMultiplier}
                   height={"auto"}
-                  className="text-sm dark:d-white-filter rotate-45 pointer-events-none"
+                  className="dark:d-white-filter rotate-45 pointer-events-none"
                 />
               </button>
             </form>
