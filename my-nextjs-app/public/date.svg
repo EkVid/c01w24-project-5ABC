@@ -46,14 +46,14 @@
      inkscape:groupmode="layer"
      id="layer1">
     <circle
-       style="fill:none;stroke:#000000;stroke-width:3.96875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       style="fill:none;stroke:#000000;stroke-width:3.175;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        id="path1"
        cx="13.229167"
        cy="13.229167"
        r="11.292513" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:3.96875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
-       d="m 13.229167,7.1692804 0,6.0598866 3.98624,0"
+       style="fill:none;stroke:#000000;stroke-width:3.175;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       d="m 13.229167,6.4843173 0,6.7448497 h 4.214561"
        id="path2"
        sodipodi:nodetypes="ccc" />
   </g>
