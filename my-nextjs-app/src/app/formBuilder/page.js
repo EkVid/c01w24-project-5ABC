@@ -13,7 +13,14 @@ const testbody = [
       isMultipleLines: true,
       minCharsNum: 3,
       maxCharsNum: null,
-    }
+    },
+    curFile: {name: "notactualfile.txt"},
+    isCurFileDeleting: false,
+  },
+  {
+    question: "Any attachments?",
+    type: process.env.NEXT_PUBLIC_TYPE_FILE,
+    errMsgArr: ["Invaldi file error here"],
   },
   {
     question: "What's your education time?",

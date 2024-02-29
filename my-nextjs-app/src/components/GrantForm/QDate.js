@@ -21,13 +21,13 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
       {isEditMode ? 
         <OptionsDiv>
           <CheckboxOption 
-            label={"Enable date range answers"}
+            label={"Enable date range answers:"}
             currentValue={isDateRange} 
             onClick={() => onChangeOptions({isDateRange: !isDateRange, isBothRequired: false})}
           />
           {isDateRange ?
             <CheckboxOption 
-              label={"Require both start and end"}
+              label={"Require both start and end:"}
               currentValue={isBothRequired} 
               onClick={() => onChangeOptions({...options, isBothRequired: !isBothRequired})}
             />
