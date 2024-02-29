@@ -25,12 +25,12 @@
      inkscape:document-units="mm"
      inkscape:zoom="6.6493264"
      inkscape:cx="56.923059"
-     inkscape:cy="70.759047"
-     inkscape:window-width="1920"
-     inkscape:window-height="1129"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
+     inkscape:cy="70.683852"
+     inkscape:window-width="1354"
+     inkscape:window-height="1152"
+     inkscape:window-x="2147"
+     inkscape:window-y="101"
+     inkscape:window-maximized="0"
      inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
@@ -39,11 +39,11 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#000000;stroke:#000000;stroke-width:2.70638;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       style="fill:#000000;stroke:#000000;stroke-width:3.96875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        d="m 13.229167,24.50982 c 0,-22.5613068 0,-22.5613068 0,-22.5613068 v 0"
        id="path1" />
     <path
-       style="fill:#000000;stroke:#000000;stroke-width:2.70638;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       style="fill:#000000;stroke:#000000;stroke-width:3.96875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        d="m 1.9485124,13.228183 c 22.5613086,0 22.5613086,0 22.5613086,0 v 0"
        id="path1-0" />
   </g>

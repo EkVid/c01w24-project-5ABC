@@ -29,6 +29,11 @@ const AccessibilityBar = ({children}) => {
     setFontSize(getFont());
   }
 
+  const handleResetFont = () => {
+    resetFont();
+    setFontSize(getFont());
+  }
+
   return(
     <div className="flex-grow custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm">
       {/* Dropdown */}
@@ -49,7 +54,7 @@ const AccessibilityBar = ({children}) => {
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600  min-w-40">
             <div className="flex items-center justify-center">
               <h3 className="text-center cs-text-xl dark:text-white">Font Size </h3>
-              <button className="cs-text-2xl ms-3 cursor-pointer dark:text-white" onClick={resetFont}>&#8635;</button>
+              <button className="cs-text-2xl ms-3 cursor-pointer dark:text-white" onClick={handleResetFont}>&#8635;</button>
             </div>
             
             <div className="flex space-x-4 justify-center items-center">

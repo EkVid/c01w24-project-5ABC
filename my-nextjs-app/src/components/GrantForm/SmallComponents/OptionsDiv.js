@@ -1,6 +1,6 @@
 const OptionsDiv = ({children}) => {
   return (
-    <div className="px-5 mb-8">
+    <div className="px-4 mb-10">
       {children}
     </div>
   )
