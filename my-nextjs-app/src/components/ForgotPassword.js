@@ -144,7 +144,7 @@ const ForgotPassword = () => {
                 />
               </div>
               {showWarning && (
-                <p className="text-red-500 text-xs text-center">
+                <p className="text-red-500 text-xs text-center mt-5">
                   Verification Code is incorrect, please enter again
                 </p>
               )}
