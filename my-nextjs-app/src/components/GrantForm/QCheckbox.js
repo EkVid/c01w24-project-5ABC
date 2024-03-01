@@ -27,23 +27,30 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
   const handleOnSelectAnswer = (answer) => {
     if (isEditMode) return;
     if (isNoneAnOption && answer === process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE) {
-      if (currentAnswers.length === 1 && currentAnswers[0] === process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE) setCurrentAnswers([]);
-      else setCurrentAnswers([process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE]);
+      if (currentAnswers.length === 1 && currentAnswers[0] === process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE) {
+        setCurrentAnswers([]);
+        onSelectAnswer([]);
+      }
+      else {
+        setCurrentAnswers([process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE]);
+        onSelectAnswer([process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE]);
+      }
     }
     else {
       if (currentAnswers.includes(answer)) {
         const newAnswers = currentAnswers.filter(a => a !== answer);
         setCurrentAnswers(newAnswers);
+        onSelectAnswer(newAnswers);
       }
       else {
         const newAnswers = [...currentAnswers, answer];
         const newAnswersWithoutNone = newAnswers.filter(a => a !== process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE);
         setCurrentAnswers(newAnswersWithoutNone);
+        onSelectAnswer(newAnswersWithoutNone);
       }
     }
   }
 
-  useEffect(() => onSelectAnswer(currentAnswers), [currentAnswers]);
 
   return (
     <>
