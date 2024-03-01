@@ -51,7 +51,10 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
     }
   }
 
+<<<<<<< HEAD
   useEffect(() => setCurrentAnswers([]), [isEditMode]);
+=======
+>>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
 
   return (
     <>

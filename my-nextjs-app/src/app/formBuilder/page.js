@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 'use client'
 import QuestionBase from "@/components/GrantForm/QuestionBase";
 import { useEffect, useState } from "react";
@@ -85,5 +86,19 @@ export default function FormBuilder() {
       )}
     </>
     
+=======
+import BaseLayout from "@/app/layout";
+import FormComponent from "@/components/GrantForm/FormComponent";
+
+export default function FormEditor() {
+
+  return (
+    <BaseLayout showFooter={false} restrictScroll={true}>
+      <div className="flex flex-col w-screen custom-dark-grey-background dark:d-custom-dark-grey-background">
+        <FormComponent/>
+      </div>
+    </BaseLayout>
+>>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
   )
+  
 }
