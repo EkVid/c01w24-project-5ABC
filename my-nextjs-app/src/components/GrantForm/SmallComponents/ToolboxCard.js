@@ -10,7 +10,7 @@ const ToolboxCard = ({title, desc, icon, onClickAdd}) => {
 
   return (
     <div className="flex my-2">
-      <div className={`flex flex-auto p-2 items-center rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black cursor-grab active:cursor-grabbing ${isReduceMotion ? "" : "transition-colors"}`}>
+      <div className={`flex flex-auto p-2 items-center rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black cursor-move ${isReduceMotion ? "" : "transition-colors"}`}>
         <Image
           src={icon}
           alt="Question icon"

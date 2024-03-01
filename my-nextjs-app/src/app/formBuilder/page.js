@@ -1,9 +1,10 @@
 'use client'
 import QuestionBase from "@/components/GrantForm/QuestionBase";
 import Toolbox from "@/components/GrantForm/Toolbox";
+import FontSizeContext from "@/components/utils/FontSizeContext";
 import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 import { DndContext, DragOverlay, MouseSensor, TouchSensor, closestCenter, closestCorners, rectIntersection, useDraggable, useDroppable, useSensor } from "@dnd-kit/core";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { restrictToParentElement, restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
@@ -82,18 +83,21 @@ const testbody = [
 
 
 export default function FormBuilder() {
+  const fontSize = useContext(FontSizeContext);
   const isReduceMotion = useContext(ReducedMotionContext);
   const [questionData, setQuestionData] = useState(null);
-  const [activeId, setActiveId] = useState(null);
+  const [activeQuestion, setActiveQuestion] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
   const [isToolboxDisabled, setIsToolboxDisabled] = useState(false);
+
   const {setNodeRef} = useDraggable({ id: "questionPanel"});
 
   // Load data into form
   useEffect(() => {
     const allData = [];
     for (let question of testbody) {
-      question = {...question, id: uuidv4(), errMsgArr: []}
+      //question = {...question, id: uuidv4(), errMsgArr: []}
+      question = {...question, id: uuidv4()}
       if (question.answers) question = {...question, answersObj: question.answers.map(a => ({answer: a, id: uuidv4()}))}
       allData.push(question);
     }
@@ -124,14 +128,33 @@ export default function FormBuilder() {
 
   const handleOnDragStart = ({active}) => {
     setIsToolboxDisabled(true); 
-    setActiveId(active.id);
+    setActiveQuestion(() => {
+      const oldIdx = questionData.findIndex(q => q.id === active.id);
+      if (oldIdx !== -1) return questionData[oldIdx];
+      let newQuestion = {
+        id: uuidv4(),
+        question: "",
+        type: type,
+        errMsgArr: [],
+        isRequired: false,
+        file: null,
+      }
+      if (type === process.env.NEXT_PUBLIC_TYPE_MULTI || type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX) {
+        newQuestion = {...newQuestion, 
+          answersObj: [{answer: "", id: uuidv4()}],
+          errEmptyAnsIdxArr: [0], 
+          errDupAnsIdxArr: []
+        }
+      }
+      return newQuestion;
+    })
   }
 
   const handleOnDragEnd = ({active, over, data}) => {
     const type = data?.type;
-    const currentIdx = active.data?.current?.index;
+    const questionNum = active.data?.current?.questionNum;
     if (type && (!questionData.length || questionData.length === 0)) handleOnClickAddQuestion(type);
-    else if (currentIdx !== undefined) {
+    else if (questionNum !== undefined) {
       setQuestionData(prev => {
         const oldIdx = prev.findIndex(q => q.id === active.id);
         const newIdx = prev.findIndex(q => q.id === over.id);
@@ -139,12 +162,12 @@ export default function FormBuilder() {
       });
     }
     setIsToolboxDisabled(false);
-    setActiveId(null);
+    setActiveQuestion(null);
   }
 
   const handleOnDragCancel = () => {
     setIsToolboxDisabled(false);
-    setActiveId(null);
+    setActiveQuestion(null);
   }
 
   // ---------------- Question handlers ---------------- 
@@ -161,6 +184,13 @@ export default function FormBuilder() {
     //console.log("answer: " + answer);
   }
 
+  const handleOnChangePosition = (questionId, posChange) => {
+    const questionIdx = questionData.findIndex(q => q.id === questionId);
+    if (questionIdx === 0 && posChange === -1) return;
+    if (questionIdx === questionData.length - 1 && posChange === 1) return;
+    setQuestionData(prev => arrayMove(prev, questionIdx, questionIdx + posChange));
+  }
+
   const questionIds = useMemo(() => questionData ? questionData.map(q => q.id) : [], [questionData]);
  
   return (
@@ -169,7 +199,7 @@ export default function FormBuilder() {
       onDragStart={handleOnDragStart}
       onDragEnd={handleOnDragEnd}
       onDragCancel={handleOnDragCancel}
-      modifiers={[restrictToWindowEdges]}
+      modifiers={[restrictToParentElement]}
     >
       <SortableContext
         id="questionPanel"
@@ -178,7 +208,7 @@ export default function FormBuilder() {
       >
         <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
         <div className="flex bg-transparent">
-          <div className={`${isEditMode ? "lg:flex sticky top-5" : ""} hidden h-fit p-5 ml-5 my-5 rounded-xl border-4 max-h-[95vh] overflow-auto overscroll-none flex-col max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition ease-out"}`}>
+          <div className={`${fontSize > 150 || !isEditMode ? "" : "lg:flex sticky top-5"} hidden h-fit p-5 ml-5 my-5 rounded-xl max-h-[95vh] overflow-auto overscroll-none flex-col max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition ease-out"}`}>
             <Toolbox onClickAdd={handleOnClickAddQuestion}/>
           </div>
           <div className={`flex flex-col max-w-full flex-auto p-5`} ref={setNodeRef}>
@@ -186,12 +216,13 @@ export default function FormBuilder() {
               <QuestionBase 
                 key={q.id}
                 questionData={q} 
-                questionIdx={i}
+                questionNum={i + 1}
                 isEditMode={isEditMode}
                 isLastQuestion={i === questionData.length - 1}
                 onChangeQuestionData={newData => handleOnChangeQuestionData(q.id, newData)}
                 onDelete={handleOnDeleteQuestion}
                 onSelectAnswer={answer => handleOnSelectAnswer(q.id, answer)}
+                onChangePosition={posChange => handleOnChangePosition(q.id, posChange)}
               />
             )}
             {!questionData || questionData.length === 0 ?
@@ -205,8 +236,16 @@ export default function FormBuilder() {
               :
               <></>
             }
-            <DragOverlay>
-              {activeId ? <div className="flex">THis is diplsay</div> : null}
+            <DragOverlay zIndex={100}>
+              {activeQuestion ? 
+                <QuestionBase 
+                  questionData={activeQuestion} 
+                  isEditMode={true}
+                  questionNum={null}
+                  onChangeQuestionData={null}
+                  onDelete={null}
+                  onSelectAnswer={null}
+              /> : null}
             </DragOverlay>
           </div>
         </div>

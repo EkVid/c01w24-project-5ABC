@@ -250,5 +250,5 @@ body {
 
 /* Class for question cards */
 .custom-questioncard-background{
-  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color custom-questioncard-border dark:d-custom-questioncard-border
+  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color
 }
