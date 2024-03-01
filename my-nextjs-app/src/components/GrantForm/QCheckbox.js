@@ -12,7 +12,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
 
-  const isNoneAnOption = options?.isNoneAnOption ? options.isNoneAnOption : false;
+  const isNoneAnOption = options?.isNoneAnOption ?? false;
 
   const formName = uuidv4();
 
