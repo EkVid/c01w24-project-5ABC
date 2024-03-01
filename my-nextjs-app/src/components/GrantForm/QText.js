@@ -8,9 +8,9 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
-  const isMultipleLines = options?.isMultipleLines ? options.isMultipleLines : false;
-  const minCharsNum = options?.minCharsNum ? options.minCharsNum : "";
-  const maxCharsNum = options?.maxCharsNum ? options.maxCharsNum : "";
+  const isMultipleLines = options?.isMultipleLines ?? false;
+  const minCharsNum = options?.minCharsNum ?? "";
+  const maxCharsNum = options?.maxCharsNum ?? "";
 
   let rangeStr = "";
   if (minCharsNum !== "" && maxCharsNum !== "") {
