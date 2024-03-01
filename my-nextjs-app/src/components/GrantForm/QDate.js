@@ -7,7 +7,7 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
-  const isDateRange = options?.isDateRange ? options.isDateRange : false;
+  const isDateRange = options?.isDateRange ?? false;
   const isBothRequired = options?.isBothRequired && isDateRange ? options.isBothRequired : false;
 
   const handleOnInput = (newAnswer, answerIdx) => {

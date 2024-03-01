@@ -10,7 +10,7 @@ import EmailIcon from "@/../public/email.svg"
 import PhoneIcon from "@/../public/phone.svg"
 import DateIcon from "@/../public/date.svg"
 import FileIcon from "@/../public/file.svg"
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
@@ -24,14 +24,16 @@ import QEmail from "./QEmail";
 import QPhoneNum from "./QPhoneNum";
 import QDate from "./QDate";
 import QFile from "./QFile";
+import { useSortable } from "@dnd-kit/sortable";
 
-const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestionData, onDelete}) => {
+const QuestionBase = ({questionData, questionIdx, isEditMode, isLastQuestion, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
   const formRef = useRef();
+  const [zIdx, setZIdx] = useState(0);
 
   const {
-    id, 
+    id,
     answersObj, 
     question, 
     type, 
@@ -44,6 +46,27 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
     errEmptyAnsIdxArr, 
     errDupAnsIdxArr
   } = questionData;
+  
+  const {attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform} = useSortable({ 
+    id: id,
+    data: {index: questionIdx},
+    disabled: !isEditMode
+  });
+
+  const dragTransitionSec = 0.1;
+
+  const dragStyle = {
+    translate: `${transform ? transform.x : 0}px ${transform ? transform.y : 0}px`,
+    zIndex: zIdx,
+    transition: isReduceMotion ? "" : isDragging ? "" : transform ? `translate ${dragTransitionSec}s` : "",
+    transitionTimingFunction: isReduceMotion ? "" : isDragging ? "" : transform ? "ease-in" : ""
+  }
+
+  // Used for making sure dragged question stays above everything else while moving to its spot
+  useEffect(() => {
+    if (isDragging) setZIdx(10);
+    else if (zIdx > 0) setTimeout(() => setZIdx(0), dragTransitionSec * 1000);
+  }, [isDragging]);
 
   const attId = uuidv4();
 
@@ -112,7 +135,18 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
   }
 
   return (
-    <>
+    <div 
+      ref={setNodeRef} 
+      className={`p-5 ${isEditMode ? "pt-0" : ""} flex flex-col ${isLastQuestion ? "" : "mb-5"} custom-questioncard-background rounded-xl border-4 ${errMsgArr && errMsgArr.length > 0 ? "custom-err-border" : "custom-questioncard-border dark:d-custom-questioncard-border"} ${isDragging ? "opacity-60" : ""}`}
+      style={dragStyle}
+    >
+      {isEditMode ? 
+        <div className="flex justify-center my-1">
+          <button ref={setActivatorNodeRef} {...listeners} {...attributes}>Drag Handle</button>
+        </div>
+        :
+        <></>
+      }
       <div className={`flex items-center mb-6`}>
         {isEditMode ?
           <>
@@ -316,7 +350,7 @@ const QuestionBase = ({questionData, isEditMode, onSelectAnswer, onChangeQuestio
         /></div>
         
       </div>
-    </>
+    </div>
   )
 }
 

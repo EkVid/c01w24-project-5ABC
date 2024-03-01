@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 const NumOption = ({label, currentValue, onChangeValue}) => {
   const isReduceMotion = useContext(ReducedMotionContext);
 
-  const value = currentValue ? currentValue : ""
+  const value = currentValue ?? ""
   const formId = uuidv4();
 
   return(

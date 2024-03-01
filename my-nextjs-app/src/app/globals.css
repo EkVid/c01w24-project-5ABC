@@ -92,7 +92,7 @@ body {
   border-color: #8d0808;
 }
 
-.custom-questioncard-background{
+.custom-questioncard-bg-color{
   background-color: #ffffff;
 }
 
@@ -157,7 +157,7 @@ body {
     color: #a8a8a8;
   }
 
-  .d-custom-questioncard-background{
+  .d-custom-questioncard-bg-color{
     background-color: #2c2c2c;
   }
 
@@ -246,4 +246,9 @@ body {
 
 .custom-interactive-input{
   @apply bg-transparent hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent
+}
+
+/* Class for question cards */
+.custom-questioncard-background{
+  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color custom-questioncard-border dark:d-custom-questioncard-border
 }

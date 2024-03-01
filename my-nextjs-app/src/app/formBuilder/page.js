@@ -1,8 +1,11 @@
 'use client'
 import QuestionBase from "@/components/GrantForm/QuestionBase";
 import Toolbox from "@/components/GrantForm/Toolbox";
-import { DndContext, MouseSensor, TouchSensor, useSensor } from "@dnd-kit/core";
-import { useEffect, useState } from "react";
+import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
+import { DndContext, DragOverlay, MouseSensor, TouchSensor, closestCenter, closestCorners, rectIntersection, useDraggable, useDroppable, useSensor } from "@dnd-kit/core";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 
 const testbody = [
@@ -79,19 +82,23 @@ const testbody = [
 
 
 export default function FormBuilder() {
+  const isReduceMotion = useContext(ReducedMotionContext);
   const [questionData, setQuestionData] = useState(null);
+  const [activeId, setActiveId] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
+  const [isToolboxDisabled, setIsToolboxDisabled] = useState(false);
+  const {setNodeRef} = useDraggable({ id: "questionPanel"});
 
   // Load data into form
-  // useEffect(() => {
-  //   const allData = [];
-  //   for (let question of testbody) {
-  //     question = {...question, id: uuidv4(), errMsgArr: []}
-  //     if (question.answers) question = {...question, answersObj: question.answers.map(a => ({answer: a, id: uuidv4()}))}
-  //     allData.push(question);
-  //   }
-  //   setQuestionData(allData);
-  // }, []);
+  useEffect(() => {
+    const allData = [];
+    for (let question of testbody) {
+      question = {...question, id: uuidv4(), errMsgArr: []}
+      if (question.answers) question = {...question, answersObj: question.answers.map(a => ({answer: a, id: uuidv4()}))}
+      allData.push(question);
+    }
+    setQuestionData(allData);
+  }, []);
 
   const handleOnClickAddQuestion = (type) => {
     let newQuestion = {
@@ -113,6 +120,35 @@ export default function FormBuilder() {
     else setQuestionData([newQuestion]);
   }
 
+  // ---------------- Drag handlers ----------------
+
+  const handleOnDragStart = ({active}) => {
+    setIsToolboxDisabled(true); 
+    setActiveId(active.id);
+  }
+
+  const handleOnDragEnd = ({active, over, data}) => {
+    const type = data?.type;
+    const currentIdx = active.data?.current?.index;
+    if (type && (!questionData.length || questionData.length === 0)) handleOnClickAddQuestion(type);
+    else if (currentIdx !== undefined) {
+      setQuestionData(prev => {
+        const oldIdx = prev.findIndex(q => q.id === active.id);
+        const newIdx = prev.findIndex(q => q.id === over.id);
+        return arrayMove(prev, oldIdx, newIdx);
+      });
+    }
+    setIsToolboxDisabled(false);
+    setActiveId(null);
+  }
+
+  const handleOnDragCancel = () => {
+    setIsToolboxDisabled(false);
+    setActiveId(null);
+  }
+
+  // ---------------- Question handlers ---------------- 
+
   const handleOnChangeQuestionData = (questionId, newQuestionData) => {
     setQuestionData(prev => prev.map(q => q.id === questionId ? newQuestionData : q));
   }
@@ -125,39 +161,57 @@ export default function FormBuilder() {
     //console.log("answer: " + answer);
   }
 
+  const questionIds = useMemo(() => questionData ? questionData.map(q => q.id) : [], [questionData]);
+ 
   return (
-    <>
-      <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
-      <div className="flex">
-        <div className={`${isEditMode ? "lg:flex sticky top-5" : ""} hidden h-fit p-5 ml-5 my-5 rounded-xl border-4 max-h-[95vh] overflow-auto flex-col max-w-sm custom-questioncard-background dark:d-custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border`}>
-          <Toolbox onClickAdd={handleOnClickAddQuestion}/>
-        </div>
-        <div className={`flex flex-col flex-auto`}>
-          {questionData?.map(q => 
-            <div key={q.id} className={`flex flex-col custom-questioncard-background dark:d-custom-questioncard-background p-5 m-5 rounded-xl border-4 ${q.errMsgArr && q.errMsgArr.length > 0 ? "custom-err-border" : "custom-questioncard-border dark:d-custom-questioncard-border"}`}>
+    <DndContext
+      collisionDetection={closestCenter}
+      onDragStart={handleOnDragStart}
+      onDragEnd={handleOnDragEnd}
+      onDragCancel={handleOnDragCancel}
+      modifiers={[restrictToWindowEdges]}
+    >
+      <SortableContext
+        id="questionPanel"
+        items={questionIds}
+        strategy={verticalListSortingStrategy}
+      >
+        <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
+        <div className="flex bg-transparent">
+          <div className={`${isEditMode ? "lg:flex sticky top-5" : ""} hidden h-fit p-5 ml-5 my-5 rounded-xl border-4 max-h-[95vh] overflow-auto overscroll-none flex-col max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition ease-out"}`}>
+            <Toolbox onClickAdd={handleOnClickAddQuestion}/>
+          </div>
+          <div className={`flex flex-col max-w-full flex-auto p-5`} ref={setNodeRef}>
+            {questionData?.map((q, i) => 
               <QuestionBase 
+                key={q.id}
                 questionData={q} 
+                questionIdx={i}
                 isEditMode={isEditMode}
+                isLastQuestion={i === questionData.length - 1}
                 onChangeQuestionData={newData => handleOnChangeQuestionData(q.id, newData)}
                 onDelete={handleOnDeleteQuestion}
                 onSelectAnswer={answer => handleOnSelectAnswer(q.id, answer)}
               />
-            </div>
-          )}
-          {!questionData || questionData.length === 0 ?
-            <div className="flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap">
-              {!questionData ? 
-                "Use the toolbox to start creating your application form!\n\n\nDrag and drop questions here!" 
-                : 
-                "You trynna give people an empty application to fill out?\n\n\nAdd your questions back now."
-              }
-            </div>
-            :
-            <></>
-          }
+            )}
+            {!questionData || questionData.length === 0 ?
+              <div className="flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap">
+                {!questionData ? 
+                  "Use the toolbox to start creating your application form!\n\n\nDrag and drop questions here!" 
+                  : 
+                  "You trynna give people an empty application to fill out?\n\n\nAdd your questions back now."
+                }
+              </div>
+              :
+              <></>
+            }
+            <DragOverlay>
+              {activeId ? <div className="flex">THis is diplsay</div> : null}
+            </DragOverlay>
+          </div>
         </div>
-      </div>
-    </>
+      </SortableContext>
+    </DndContext>
     
   )
 }

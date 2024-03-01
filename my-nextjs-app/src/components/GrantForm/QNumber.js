@@ -9,9 +9,9 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
-  const isIntegerOnly = options?.isIntegerOnly ? options.isIntegerOnly : false;
-  const minNum = options?.minNum ? options.minNum : "";
-  const maxNum = options?.maxNum ? options.maxNum : "";
+  const isIntegerOnly = options?.isIntegerOnly ?? false;
+  const minNum = options?.minNum ?? "";
+  const maxNum = options?.maxNum ?? "";
 
   let rangeStr = "";
   if (minNum !== "" && maxNum !== "") {
