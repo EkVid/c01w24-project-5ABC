@@ -3,18 +3,30 @@ import { useContext } from "react";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 import { useSortable } from "@dnd-kit/sortable";
+<<<<<<< HEAD
 import { useUniqueId } from "@dnd-kit/utilities";
+=======
+>>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
 
 const ToolboxCard = ({title, type, desc, icon}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
   const {attributes, isDragging, listeners, setNodeRef} = useSortable({
+<<<<<<< HEAD
     id: useUniqueId(),
     data: {title, type, desc, icon, cont: "toolbox"}
   });
 
   return (
     <button 
+=======
+    id: title,
+    data: {title, type, desc, icon}
+  });
+
+  return (
+    <div 
+>>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
       ref={setNodeRef}
       {...attributes}
       {...listeners}
@@ -27,11 +39,20 @@ const ToolboxCard = ({title, type, desc, icon}) => {
         height={"auto"}
         className="mt-1 mx-1 self-start pointer-events-none dark:d-white-filter"
       />
+<<<<<<< HEAD
       <div className="flex flex-col items-start mx-4">
         <div className="text-lg text-left font-bold custom-text dark:d-text select-none">{title}</div>
         <div className="text-sm text-left custom-text-shade dark:d-text-shade select-none">{desc}</div>
       </div>
     </button>
+=======
+      <div className="flex flex-col mx-4">
+        <div className="text-lg font-bold custom-text dark:d-text select-none">{title}</div>
+        <div className="text-sm custom-text-shade dark:d-text-shade select-none">{desc}</div>
+      </div>
+      
+    </div>
+>>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
   )
 }
 
