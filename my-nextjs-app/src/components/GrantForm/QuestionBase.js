@@ -133,7 +133,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
-      className={`p-5 ${isEditMode ? "pt-0" : ""} ${isLastQuestion ? "" : "mb-5"} rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"}`}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition"}`}
     >
       <div className={` flex flex-col  ${isDragging ? "invisible" : ""}`}>
         {isEditMode ? 
@@ -363,7 +363,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             {errMsgArr?.map((err, i) => <ErrTextbox msg={err} key={i}/>)}
           </div>
           {/* Question icon in corner */}
-          <div className="p-1.5"><Image
+          <div className="p-1.5">
+            <Image
             src={
               type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
               type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? CheckboxIcon : 
