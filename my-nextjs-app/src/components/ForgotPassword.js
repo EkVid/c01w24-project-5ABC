@@ -10,7 +10,7 @@ const VerificationSuccessMessage = () => {
 
   useEffect(() => {
     if (countdown === 0) {
-      router.push("/login"); // Redirect to the login page when countdown reaches 0
+      router.push("/reset_password"); // Redirect to the reset_password page when countdown reaches 0
       return;
     }
 
@@ -24,7 +24,8 @@ const VerificationSuccessMessage = () => {
 
   return (
     <div className="fixed top-0 left-0 w-full p-4 bg-green-500 text-white text-center shadow-md">
-      Verification successful! Redirecting to login in {countdown} seconds...
+      Verification successful! Redirecting to reset password page in {countdown}{" "}
+      seconds...
     </div>
   );
 };
