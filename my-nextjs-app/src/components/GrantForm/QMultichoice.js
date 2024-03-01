@@ -33,8 +33,6 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
     onSelectAnswer(null);
   }
 
-  useEffect(() => onSelectAnswer(currentAnswer), [currentAnswer]);
-
   return (
     <>
       {isEditMode ? 

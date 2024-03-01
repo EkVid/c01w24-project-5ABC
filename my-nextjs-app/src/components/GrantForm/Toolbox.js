@@ -1,4 +1,6 @@
 import ToolboxCard from "./SmallComponents/ToolboxCard";
+import Image from "next/image";
+import PlusIcon from "@/../public/plus.svg";
 import MultichoiceIcon from "@/../public/multichoice.svg"
 import CheckboxIcon from "@/../public/checkbox.svg"
 import NumberIcon from "@/../public/number.svg"
@@ -7,6 +9,9 @@ import EmailIcon from "@/../public/email.svg"
 import PhoneIcon from "@/../public/phone.svg"
 import DateIcon from "@/../public/date.svg"
 import FileIcon from "@/../public/file.svg"
+import { useContext } from "react";
+import FontSizeContext from "../utils/FontSizeContext";
+import ReducedMotionContext from "../utils/ReducedMotionContext";
 
 const toolboxData = [
   {
@@ -60,8 +65,11 @@ const toolboxData = [
 ]
 
 const Toolbox = ({onClickAdd}) => {
+  const fontSizeMultiplier = useContext(FontSizeContext) / 100;
+  const isReduceMotion = useContext(ReducedMotionContext);
+
   return (
-    <>
+    <div className="flex flex-col my-1">
       <h1 className="text-3xl text-center custom-text dark:d-text font-bold">
         Question Toolbox
       </h1>
@@ -69,15 +77,29 @@ const Toolbox = ({onClickAdd}) => {
         Drag and drop questions into the panel on the right or click the + icon to add a new question to the bottom of the form
       </p>
       {toolboxData.map(({title, desc, icon, type}) => 
-        <ToolboxCard 
-          key={title}
-          title={title} 
-          desc={desc} 
-          icon={icon}
-          onClickAdd={() => onClickAdd(type)}
-        />
+        <div className="flex mb-2 justify-between">
+          <ToolboxCard 
+            key={title}
+            title={title} 
+            type={type}
+            desc={desc} 
+            icon={icon}
+          />
+          <button
+            onClick={() => onClickAdd(type)}
+            className={`ml-2 p-2 shrink-0 rounded-lg custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+          >
+            <Image
+              src={PlusIcon}
+              alt="Add question"
+              width={25 * fontSizeMultiplier}
+              height={"auto"}
+              className="dark:d-white-filter pointer-events-none"
+            />
+          </button>
+        </div>
       )}
-    </>
+    </div>
   )
 }
 
