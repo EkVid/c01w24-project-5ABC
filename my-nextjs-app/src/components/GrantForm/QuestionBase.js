@@ -2,6 +2,8 @@ import Image from "next/image";
 import TrashIcon from "@/../public/trash-icon.svg"
 import PlusIcon from "@/../public/plus.svg"
 import UndoIcon from "@/../public/undo.svg"
+import DragIcon from "@/../public/drag.svg"
+import UpIcon from "@/../public/up-arrow.svg"
 import MultichoiceIcon from "@/../public/multichoice.svg"
 import CheckboxIcon from "@/../public/checkbox.svg"
 import NumberIcon from "@/../public/number.svg"
@@ -10,7 +12,7 @@ import EmailIcon from "@/../public/email.svg"
 import PhoneIcon from "@/../public/phone.svg"
 import DateIcon from "@/../public/date.svg"
 import FileIcon from "@/../public/file.svg"
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
@@ -26,11 +28,10 @@ import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
 
-const QuestionBase = ({questionData, questionIdx, isEditMode, isLastQuestion, onSelectAnswer, onChangeQuestionData, onDelete}) => {
+const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
   const formRef = useRef();
-  const [zIdx, setZIdx] = useState(0);
 
   const {
     id,
@@ -47,9 +48,9 @@ const QuestionBase = ({questionData, questionIdx, isEditMode, isLastQuestion, on
     errDupAnsIdxArr
   } = questionData;
   
-  const {attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform} = useSortable({ 
+  const {attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform, transition} = useSortable({ 
     id: id,
-    data: {index: questionIdx},
+    data: {questionNum: questionNum},
     disabled: !isEditMode
   });
 
@@ -57,16 +58,10 @@ const QuestionBase = ({questionData, questionIdx, isEditMode, isLastQuestion, on
 
   const dragStyle = {
     translate: `${transform ? transform.x : 0}px ${transform ? transform.y : 0}px`,
-    zIndex: zIdx,
     transition: isReduceMotion ? "" : isDragging ? "" : transform ? `translate ${dragTransitionSec}s` : "",
     transitionTimingFunction: isReduceMotion ? "" : isDragging ? "" : transform ? "ease-in" : ""
   }
 
-  // Used for making sure dragged question stays above everything else while moving to its spot
-  useEffect(() => {
-    if (isDragging) setZIdx(10);
-    else if (zIdx > 0) setTimeout(() => setZIdx(0), dragTransitionSec * 1000);
-  }, [isDragging]);
 
   const attId = uuidv4();
 
@@ -137,218 +132,261 @@ const QuestionBase = ({questionData, questionIdx, isEditMode, isLastQuestion, on
   return (
     <div 
       ref={setNodeRef} 
-      className={`p-5 ${isEditMode ? "pt-0" : ""} flex flex-col ${isLastQuestion ? "" : "mb-5"} custom-questioncard-background rounded-xl border-4 ${errMsgArr && errMsgArr.length > 0 ? "custom-err-border" : "custom-questioncard-border dark:d-custom-questioncard-border"} ${isDragging ? "opacity-60" : ""}`}
       style={dragStyle}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} ${isLastQuestion ? "" : "mb-5"} rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"}`}
     >
-      {isEditMode ? 
-        <div className="flex justify-center my-1">
-          <button ref={setActivatorNodeRef} {...listeners} {...attributes}>Drag Handle</button>
-        </div>
-        :
-        <></>
-      }
-      <div className={`flex items-center mb-6`}>
-        {isEditMode ?
-          <>
-            <input 
-              type="text"
-              className={`flex-auto min-w-5 text-2xl border-b-2 custom-text dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
-              value={question}
-              placeholder="Enter a question"
-              onInput={e => handleOnChangeQuestion(e.target.value)}
-            />
-            <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}>
+      <div className={` flex flex-col  ${isDragging ? "invisible" : ""}`}>
+        {isEditMode ? 
+          <div className="flex justify-center mt-2">
+            <button 
+              onClick={() => onChangePosition(-1)}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && questionNum > 1 && !isDragging ? "visible" : "invisible"}`}
+            >
               <Image
-                src={TrashIcon}
-                alt="Delete"
-                width={30 * fontSizeMultiplier}
-                height={"auto"}
-                className="pointer-events-none dark:d-white-filter"
+                src={UpIcon}
+                alt="Move up"
+                height={8 * fontSizeMultiplier}
+                className="dark:d-white-filter "
               />
             </button>
+            <button 
+              ref={setActivatorNodeRef}
+              className="px-2 py-1 mx-6 cursor-move rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black"
+              {...listeners}
+              {...attributes} 
+            >
+              <Image
+                src={DragIcon}
+                alt="Drag handle"
+                height={8 * fontSizeMultiplier}
+                className="dark:d-white-filter"
+              />
+            </button>
+            <button 
+              onClick={() => onChangePosition(1)}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && !isLastQuestion && !isDragging ? "visible" : "invisible"}`}
+            >
+              <Image
+                src={UpIcon}
+                alt="Move down"
+                height={8 * fontSizeMultiplier}
+                className="dark:d-white-filter rotate-180"
+              />
+            </button>
+          </div>
+          :
+          <></>
+        }
+        <div className={`flex items-center mb-6`}>
+          {questionNum ? 
+            <div className="mr-4 font-bold text-xl">
+              Q.{questionNum}
+            </div> 
+            : 
+            <></>
+          }
+          {isEditMode ?
+            <>
+              <input 
+                type="text"
+                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
+                value={question}
+                placeholder="Enter a question"
+                onInput={e => handleOnChangeQuestion(e.target.value)}
+              />
+              <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}>
+                <Image
+                  src={TrashIcon}
+                  alt="Delete"
+                  width={30 * fontSizeMultiplier}
+                  height={"auto"}
+                  className="pointer-events-none dark:d-white-filter"
+                />
+              </button>
+            </>
+            :
+            <div className="text-2xl custom-text dark:d-text">
+              {question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
+            </div>
+          }
+        </div>
+        {isEditMode ?
+          <button onClick={() => onDelete(id)} className={`p-1.5 mt-1 rounded-lg custom-interactive-btn flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}>
+            <Image
+              src={TrashIcon}
+              alt="Delete"
+              width={30 * fontSizeMultiplier}
+              height={"auto"}
+              className="pointer-events-none dark:d-white-filter"
+            />
+          </button>
+          :
+          <></>
+        }
+        {/* Options section for required question and file upload */}
+        {isEditMode ? 
+          <>
+          <div className="text-sm mb-4 custom-text dark:d-text">Settings:</div>
+          <div className="px-4 mb-4">
+            <CheckboxOption 
+              label={"Required question:"} 
+              currentValue={isRequired} 
+              onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
+            />
+            <div className="flex items-center px-2 py-1">
+              <label htmlFor={attId} className="text-sm mr-2 custom-text dark:d-text">Attachments:</label>
+              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center overflow-hidden">
+                <input
+                  type="file"
+                  id={attId}
+                  className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
+                  onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0]})}
+                  disabled={!isCurFileDeleting && curFile}
+                />
+                <button 
+                  onClick={() => onChangeQuestionData({...questionData, file: null})}
+                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
+                >
+                  <Image
+                    src={PlusIcon}
+                    alt="Delete"
+                    width={20 * fontSizeMultiplier}
+                    height={"auto"}
+                    className="dark:d-white-filter rotate-45 pointer-events-none"
+                  />
+                </button>
+              </form>
+            </div>
+            {curFile ? 
+              <div className="flex items-center">
+                <div className="text-sm custom-text-shade dark:d-text-shade pl-8">
+                  {isCurFileDeleting ? "Previous uploaded file will be deleted" : `Current upload: ${curFile.name}`}
+                </div>
+                <button 
+                  onClick={handleOnUndoCurFile}
+                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+                >
+                  <Image
+                    src={isCurFileDeleting ? UndoIcon : PlusIcon}
+                    alt={isCurFileDeleting ? "Restore" : "Delete"}
+                    width={20 * fontSizeMultiplier}
+                    height={"auto"}
+                    className={`text-sm dark:d-white-filter shrink-0 pointer-events-none opacity-50 ${isCurFileDeleting ? "" : "rotate-45"}`}
+                  />
+                </button>
+              </div>
+              :
+              <></>
+            }
+          </div>
           </>
           :
-          <div className="text-2xl custom-text dark:d-text">
-            {question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
-          </div>
+          <></>
         }
-      </div>
-      {isEditMode ?
-        <button onClick={() => onDelete(id)} className={`p-1.5 mt-1 rounded-lg custom-interactive-btn flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}>
-          <Image
-            src={TrashIcon}
-            alt="Delete"
+        {file ?
+          <div>
+
+          </div>
+          :
+          <></>
+        }
+        <div className="flex justify-between items-end">
+          <div className="flex flex-col flex-auto mr-5">
+            {/* Body of question */}
+            {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
+              <QMultichoice
+                answersObj={answersObj}
+                isRequired={isRequired}
+                isEditMode={isEditMode}
+                errAnsIdxArr={errAnsIdxArr}
+                onSelectAnswer={onSelectAnswer}
+                onAddAnswer={handleOnAddAnswer}
+                onChangeAnswers={handleOnChangeAnswers}
+                onDeleteAnswer={handleOnDeleteAnswer}
+              />
+              : type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
+              <QCheckbox
+                answersObj={answersObj}
+                options={options}
+                isEditMode={isEditMode}
+                errAnsIdxArr={errAnsIdxArr}
+                onSelectAnswer={onSelectAnswer}
+                onAddAnswer={handleOnAddAnswer}
+                onChangeAnswers={handleOnChangeAnswers}
+                onChangeOptions={handleOnChangeOptions}
+                onDeleteAnswer={handleOnDeleteAnswer}
+              />
+              : type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
+              <QNumber
+                options={options}
+                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isEditMode={isEditMode}
+                onSelectAnswer={onSelectAnswer}
+                onChangeOptions={handleOnChangeOptions}
+              />
+              : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
+              <QText
+                options={options}
+                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isEditMode={isEditMode}
+                onSelectAnswer={onSelectAnswer}
+                onChangeOptions={handleOnChangeOptions}
+              />
+              : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
+              <QEmail
+                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isEditMode={isEditMode}
+                onSelectAnswer={onSelectAnswer}
+              />
+              : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
+              <QPhoneNum
+                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isEditMode={isEditMode}
+                onSelectAnswer={onSelectAnswer}
+              />
+              : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
+              <QDate
+                options={options}
+                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isEditMode={isEditMode}
+                onSelectAnswer={onSelectAnswer}
+                onChangeOptions={handleOnChangeOptions}
+              />
+              : type === process.env.NEXT_PUBLIC_TYPE_FILE ?
+              <QFile
+                isEditMode={isEditMode}
+                onSelectAnswer={onSelectAnswer}
+              />
+              :
+              <></>
+            }
+            {errMsgArr?.map((err, i) => <ErrTextbox msg={err} key={i}/>)}
+          </div>
+          {/* Question icon in corner */}
+          <div className="p-1.5"><Image
+            src={
+              type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
+              type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? CheckboxIcon : 
+              type === process.env.NEXT_PUBLIC_TYPE_TEXT ? TextIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? NumberIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? EmailIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_PHONE ? PhoneIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_DATE ? DateIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_FILE ? FileIcon : ""}
+            alt={type === process.env.NEXT_PUBLIC_TYPE_MULTI ? "Multiple choice type question" : 
+              type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? "Checkbox type question" : 
+              type === process.env.NEXT_PUBLIC_TYPE_TEXT ? "Texbox type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? "Numeric type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? "Email type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_PHONE ? "Phone number type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_DATE ? "Date type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_FILE ? "File upload type question" : ""}
             width={30 * fontSizeMultiplier}
             height={"auto"}
-            className="pointer-events-none dark:d-white-filter"
-          />
-        </button>
-        :
-        <></>
-      }
-      {/* Options section for required question and file upload */}
-      {isEditMode ? 
-        <>
-        <div className="text-sm mb-4 custom-text dark:d-text">Settings:</div>
-        <div className="px-4 mb-4">
-          <CheckboxOption 
-            label={"Required question:"} 
-            currentValue={isRequired} 
-            onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
-          />
-          <div className="flex items-center px-2 py-1">
-            <label htmlFor={attId} className="text-sm mr-2 custom-text dark:d-text">Attachments:</label>
-            <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center overflow-hidden">
-              <input
-                type="file"
-                id={attId}
-                className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
-                onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0]})}
-                disabled={!isCurFileDeleting && curFile}
-              />
-              <button 
-                onClick={() => onChangeQuestionData({...questionData, file: null})}
-                className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
-              >
-                <Image
-                  src={PlusIcon}
-                  alt="Delete"
-                  width={20 * fontSizeMultiplier}
-                  height={"auto"}
-                  className="dark:d-white-filter rotate-45 pointer-events-none"
-                />
-              </button>
-            </form>
-          </div>
-          {curFile ? 
-            <div className="flex items-center">
-              <div className="text-sm custom-text-shade dark:d-text-shade pl-8">
-                {isCurFileDeleting ? "Previous uploaded file will be deleted" : `Current upload: ${curFile.name}`}
-              </div>
-              <button 
-                onClick={handleOnUndoCurFile}
-                className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
-              >
-                <Image
-                  src={isCurFileDeleting ? UndoIcon : PlusIcon}
-                  alt={isCurFileDeleting ? "Restore" : "Delete"}
-                  width={20 * fontSizeMultiplier}
-                  height={"auto"}
-                  className={`text-sm dark:d-white-filter shrink-0 pointer-events-none opacity-50 ${isCurFileDeleting ? "" : "rotate-45"}`}
-                />
-              </button>
-            </div>
-            :
-            <></>
-          }
+            className="pointer-events-none opacity-40 dark:opacity-30 dark:d-white-filter"
+          /></div>
+          
         </div>
-        </>
-        :
-        <></>
-      }
-      {file ?
-        <div>
-
-        </div>
-        :
-        <></>
-      }
-      <div className="flex justify-between items-end">
-        <div className="flex flex-col flex-auto mr-5">
-          {/* Body of question */}
-          {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
-            <QMultichoice
-              answersObj={answersObj}
-              isRequired={isRequired}
-              isEditMode={isEditMode}
-              errAnsIdxArr={errAnsIdxArr}
-              onSelectAnswer={onSelectAnswer}
-              onAddAnswer={handleOnAddAnswer}
-              onChangeAnswers={handleOnChangeAnswers}
-              onDeleteAnswer={handleOnDeleteAnswer}
-            />
-            : type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
-            <QCheckbox
-              answersObj={answersObj}
-              options={options}
-              isEditMode={isEditMode}
-              errAnsIdxArr={errAnsIdxArr}
-              onSelectAnswer={onSelectAnswer}
-              onAddAnswer={handleOnAddAnswer}
-              onChangeAnswers={handleOnChangeAnswers}
-              onChangeOptions={handleOnChangeOptions}
-              onDeleteAnswer={handleOnDeleteAnswer}
-            />
-            : type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
-            <QNumber
-              options={options}
-              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-              isEditMode={isEditMode}
-              onSelectAnswer={onSelectAnswer}
-              onChangeOptions={handleOnChangeOptions}
-            />
-            : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
-            <QText
-              options={options}
-              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-              isEditMode={isEditMode}
-              onSelectAnswer={onSelectAnswer}
-              onChangeOptions={handleOnChangeOptions}
-            />
-            : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
-            <QEmail
-              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-              isEditMode={isEditMode}
-              onSelectAnswer={onSelectAnswer}
-            />
-            : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
-            <QPhoneNum
-              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-              isEditMode={isEditMode}
-              onSelectAnswer={onSelectAnswer}
-            />
-            : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
-            <QDate
-              options={options}
-              isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
-              isEditMode={isEditMode}
-              onSelectAnswer={onSelectAnswer}
-              onChangeOptions={handleOnChangeOptions}
-            />
-            : type === process.env.NEXT_PUBLIC_TYPE_FILE ?
-            <QFile
-              isEditMode={isEditMode}
-              onSelectAnswer={onSelectAnswer}
-            />
-            :
-            <></>
-          }
-          {errMsgArr?.map((err, i) => <ErrTextbox msg={err} key={i}/>)}
-        </div>
-        {/* Question icon in corner */}
-        <div className="p-1.5"><Image
-          src={
-            type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
-            type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? CheckboxIcon : 
-            type === process.env.NEXT_PUBLIC_TYPE_TEXT ? TextIcon :
-            type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? NumberIcon :
-            type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? EmailIcon :
-            type === process.env.NEXT_PUBLIC_TYPE_PHONE ? PhoneIcon :
-            type === process.env.NEXT_PUBLIC_TYPE_DATE ? DateIcon :
-            type === process.env.NEXT_PUBLIC_TYPE_FILE ? FileIcon : ""}
-          alt={type === process.env.NEXT_PUBLIC_TYPE_MULTI ? "Multiple choice type question" : 
-            type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? "Checkbox type question" : 
-            type === process.env.NEXT_PUBLIC_TYPE_TEXT ? "Texbox type question" :
-            type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? "Numeric type question" :
-            type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? "Email type question" :
-            type === process.env.NEXT_PUBLIC_TYPE_PHONE ? "Phone number type question" :
-            type === process.env.NEXT_PUBLIC_TYPE_DATE ? "Date type question" :
-            type === process.env.NEXT_PUBLIC_TYPE_FILE ? "File upload type question" : ""}
-          width={30 * fontSizeMultiplier}
-          height={"auto"}
-          className="pointer-events-none opacity-40 dark:opacity-30 dark:d-white-filter"
-        /></div>
-        
       </div>
     </div>
   )
