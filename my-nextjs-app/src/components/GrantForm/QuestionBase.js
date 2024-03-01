@@ -146,7 +146,11 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
+<<<<<<< HEAD
       className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging || isTemp ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
+=======
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition"}`}
+>>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
     >
       <div className={` flex flex-col  ${isDragging || isTemp ? "invisible" : ""}`}>
         {isEditMode ? 
@@ -421,6 +425,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             {errMsgArr?.map((err, i) => <ErrTextbox msg={err} key={i}/>)}
           </div>
           {/* Question icon in corner */}
+<<<<<<< HEAD
           {fontSizeMultiplier < 1.5 ?
             <div className="shrink-0 ml-4 p-1.5 hidden lg:flex">
               <Image
@@ -449,6 +454,32 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             :
             <></>
           }
+=======
+          <div className="p-1.5">
+            <Image
+            src={
+              type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
+              type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? CheckboxIcon : 
+              type === process.env.NEXT_PUBLIC_TYPE_TEXT ? TextIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? NumberIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? EmailIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_PHONE ? PhoneIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_DATE ? DateIcon :
+              type === process.env.NEXT_PUBLIC_TYPE_FILE ? FileIcon : ""}
+            alt={type === process.env.NEXT_PUBLIC_TYPE_MULTI ? "Multiple choice type question" : 
+              type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? "Checkbox type question" : 
+              type === process.env.NEXT_PUBLIC_TYPE_TEXT ? "Texbox type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? "Numeric type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? "Email type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_PHONE ? "Phone number type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_DATE ? "Date type question" :
+              type === process.env.NEXT_PUBLIC_TYPE_FILE ? "File upload type question" : ""}
+            width={30 * fontSizeMultiplier}
+            height={"auto"}
+            className="pointer-events-none opacity-40 dark:opacity-30 dark:d-white-filter"
+          /></div>
+          
+>>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
         </div>
 <<<<<<< HEAD
       </div>

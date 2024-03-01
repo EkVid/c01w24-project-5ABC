@@ -33,8 +33,11 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
     onSelectAnswer([]);
   }
 
+<<<<<<< HEAD
   useEffect(() => setCurrentAnswer([]), [isEditMode]);
 
+=======
+>>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
   return (
     <>
       {isEditMode ? 
