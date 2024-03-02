@@ -3,7 +3,6 @@ import ReducedMotionContext from "../utils/ReducedMotionContext";
 import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
 import NumOption from "./SmallComponents/NumOption";
-import { checkIfNum } from "../utils/checkIfNum";
 
 const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
