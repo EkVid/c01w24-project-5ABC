@@ -12,7 +12,7 @@ import EmailIcon from "@/../public/email.svg"
 import PhoneIcon from "@/../public/phone.svg"
 import DateIcon from "@/../public/date.svg"
 import FileIcon from "@/../public/file.svg"
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
@@ -27,11 +27,13 @@ import QPhoneNum from "./QPhoneNum";
 import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
+import { useDndMonitor } from "@dnd-kit/core";
 
 const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
   const formRef = useRef();
+  const [isShowingNum, setIsShowingNum] = useState(true);
 
   const {
     id,
@@ -45,21 +47,34 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     isRequired, 
     errMsgArr, 
     errEmptyAnsIdxArr, 
-    errDupAnsIdxArr
+    errDupAnsIdxArr,
+    isTemp
   } = questionData;
   
-  const {attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform, transition} = useSortable({ 
+  const {attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform} = useSortable({ 
     id: id,
-    data: {questionNum: questionNum},
+    data: {
+      questionNum,
+      cont: "questionPanel"
+    },
     disabled: !isEditMode
   });
+
+  useDndMonitor({
+    onDragStart() {
+      setIsShowingNum(false);
+    },
+    onDragEnd() {
+      setIsShowingNum(true);
+    }
+  })
 
   const dragTransitionSec = 0.1;
 
   const dragStyle = {
     translate: `${transform ? transform.x : 0}px ${transform ? transform.y : 0}px`,
     transition: isReduceMotion ? "" : isDragging ? "" : transform ? `translate ${dragTransitionSec}s` : "",
-    transitionTimingFunction: isReduceMotion ? "" : isDragging ? "" : transform ? "ease-in" : ""
+    transitionTimingFunction: isReduceMotion ? "" : isDragging ? "" : transform ? "ease-in" : "",
   }
 
 
@@ -133,14 +148,14 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
-      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging || isTemp ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
     >
-      <div className={` flex flex-col  ${isDragging ? "invisible" : ""}`}>
+      <div className={` flex flex-col  ${isDragging || isTemp ? "invisible" : ""}`}>
         {isEditMode ? 
           <div className="flex justify-center mt-2">
             <button 
               onClick={() => onChangePosition(-1)}
-              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && questionNum > 1 && !isDragging ? "visible" : "invisible"}`}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && questionNum > 1 && !isDragging && !isTemp ? "visible" : "invisible"}`}
             >
               <Image
                 src={UpIcon}
@@ -164,7 +179,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             </button>
             <button 
               onClick={() => onChangePosition(1)}
-              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && !isLastQuestion && !isDragging ? "visible" : "invisible"}`}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && !isLastQuestion && !isDragging && !isTemp ? "visible" : "invisible"}`}
             >
               <Image
                 src={UpIcon}
@@ -178,7 +193,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           <></>
         }
         <div className={`flex items-center mb-6`}>
-          {questionNum ? 
+          {questionNum && isShowingNum ? 
             <div className="mr-4 font-bold text-xl">
               Q.{questionNum}
             </div> 
