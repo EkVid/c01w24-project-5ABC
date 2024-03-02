@@ -36,6 +36,8 @@ const VerificationSuccessMessage = () => {
 
 const SignUp = () => {
   const [selection, setSelection] = useState("grantee");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
@@ -74,6 +76,14 @@ const SignUp = () => {
     if (validatePassword(newPassword) && newPassword === confirmPassword) {
       setShowSuccessMessage(true); // Show the verification success message
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -170,16 +180,28 @@ const SignUp = () => {
               Password needs to be minimum 7 characters long, including at least
               1 alphabet, 1 number, and 1 special symbol{" "}
             </p>
-            <input
-              type="password"
-              placeholder="Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              onBlur={handlePasswordBlur}
-              onFocus={handlePasswordFocus}
-              required
-            />
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10" // Added padding-right to make room for the icon
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                onBlur={handlePasswordBlur}
+                onFocus={handlePasswordFocus}
+                required
+              />
+              <div
+                onClick={togglePasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showPassword ? (
+                  <p className="text-black">Hide</p> // Consider replacing with an icon for better UX
+                ) : (
+                  <p className="text-black">Show</p> // Consider replacing with an icon for better UX
+                )}
+              </div>
+            </div>
             <p
               className={`text-red-500 text-xs mt-5 ${
                 matchError ? "block" : "hidden"
@@ -187,16 +209,28 @@ const SignUp = () => {
             >
               Passwords don't match
             </p>
-            <input
-              type="password"
-              placeholder="Confirm password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              onBlur={handleMatchBlur}
-              onFocus={handleMatchFocus}
-              required
-            />
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10" // Added padding-right to make room for the icon
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={handleMatchBlur}
+                onFocus={handleMatchFocus}
+                required
+              />
+              <div
+                onClick={toggleConfirmPasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showConfirmPassword ? (
+                  <p className="text-black">Hide</p> // Consider replacing with an icon for better UX
+                ) : (
+                  <p className="text-black">Show</p> // Consider replacing with an icon for better UX
+                )}
+              </div>
+            </div>
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
