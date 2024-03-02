@@ -133,7 +133,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
-      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition"}`}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition-colors"}`}
     >
       <div className={` flex flex-col  ${isDragging ? "invisible" : ""}`}>
         {isEditMode ? 
