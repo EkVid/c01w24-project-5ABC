@@ -33,7 +33,7 @@ const Login = () => {
               height={80 * fontSizeMultiplier}
               className="rounded-3xl"
             />
-            <h2 className="text-center lg:text-6xl md:text-5xl text-4xl mb-8 mt-8 font-semibold">
+            <h2 className="text-center lg:text-6xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black">
               Sign in to your account
             </h2>
           </div>
@@ -42,15 +42,15 @@ const Login = () => {
             <input
               type="email"
               placeholder="Email"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
             />
             <input
               type="password"
               placeholder="Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
             />
             <Link href="/forgot_password">
-              <h2 className="text-center text-xl hover:underline hover:text-blue-500">
+              <h2 className="text-center text-xl hover:underline hover:text-blue-500 text-black">
                 Forgot password?
               </h2>
             </Link>{" "}
