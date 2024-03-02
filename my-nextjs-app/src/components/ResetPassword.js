@@ -15,7 +15,7 @@ const ResetPassword = () => {
       >
         <div className="flex flex-col w-full p-16 space-y-8">
           <div className="space-y-6">
-            <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-8 mt-8 font-semibold">
+            <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black">
               Reset your password{" "}
             </h2>
           </div>
@@ -32,7 +32,7 @@ const ResetPassword = () => {
             <input
               type="password"
               placeholder="New Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
               required
             />
             <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs text-green-600 font-semibold">
@@ -45,7 +45,7 @@ const ResetPassword = () => {
             <input
               type="password"
               placeholder="Confirm New Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
               required
             />
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
