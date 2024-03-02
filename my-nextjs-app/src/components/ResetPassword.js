@@ -34,7 +34,9 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [matchError, setMatchError] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false); //  State for showing the success message
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validatePassword = (password) => {
     const regex =
@@ -64,8 +66,16 @@ const ResetPassword = () => {
     setMatchError(newPassword !== confirmPassword);
 
     if (validatePassword(newPassword) && newPassword === confirmPassword) {
-      setShowSuccessMessage(true); // Show the verification success message
+      setShowSuccessMessage(true);
     }
+  };
+
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -86,17 +96,18 @@ const ResetPassword = () => {
           <div className="space-y-6">
             <div>{showSuccessMessage && <VerificationSuccessMessage />}</div>
             <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black">
-              Reset your password{" "}
+              Reset your password
             </h2>
           </div>
           <form
             className="flex flex-col space-y-6 items-center w-full"
             onSubmit={handleSubmit}
           >
+            {/* New Password Input */}
             <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs font-semibold text-green-600">
               <p>New Password</p>
               <p
-                className={`text-red-500 text-xs mt-5 ${
+                className={`text-red-500 text-xs mt-5 Participant 5: 5 ${
                   passwordError ? "block" : "hidden"
                 }`}
               >
@@ -104,17 +115,29 @@ const ResetPassword = () => {
                 least 1 alphabet, 1 number, and 1 special symbol
               </p>
             </div>
-
-            <input
-              type="password"
-              placeholder="New Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              onBlur={handlePasswordBlur}
-              onFocus={handlePasswordFocus}
-              required
-            />
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showNewPassword ? "text" : "password"}
+                placeholder="New Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                onBlur={handlePasswordBlur}
+                onFocus={handlePasswordFocus}
+                required
+              />
+              <div
+                onClick={toggleNewPasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showNewPassword ? (
+                  <p className="text-black">Hide</p>
+                ) : (
+                  <p className="text-black">Show</p>
+                )}
+              </div>
+            </div>
+            {/* Confirm New Password Input */}
             <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs text-green-600 font-semibold">
               <p>Confirm New Password</p>
               <p
@@ -125,16 +148,28 @@ const ResetPassword = () => {
                 Passwords don't match
               </p>
             </div>
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              onBlur={handleMatchBlur}
-              onFocus={handleMatchFocus}
-              required
-            />
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm New Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={handleMatchBlur}
+                onFocus={handleMatchFocus}
+                required
+              />
+              <div
+                onClick={toggleConfirmPasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showConfirmPassword ? (
+                  <p className="text-black">Hide</p>
+                ) : (
+                  <p className="text-black">Show</p>
+                )}
+              </div>
+            </div>
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
