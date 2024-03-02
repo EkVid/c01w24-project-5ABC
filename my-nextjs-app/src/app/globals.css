@@ -96,10 +96,6 @@ body {
   background-color: #ffffff;
 }
 
-.custom-questioncard-border{
-  border: #F5F7FA;
-}
-
 .custom-disabled-input{
   color: #bdbdbd;
   border-color: #bdbdbd;
@@ -159,10 +155,6 @@ body {
 
   .d-custom-questioncard-bg-color{
     background-color: #2c2c2c;
-  }
-
-  .d-custom-questioncard-border{
-    border-color: #2c2c2c;
   }
 
   .d-custom-red-border {
@@ -252,3 +244,4 @@ body {
 .custom-questioncard-background{
   @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color
 }
+

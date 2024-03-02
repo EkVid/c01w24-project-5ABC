@@ -12,6 +12,7 @@ import FileIcon from "@/../public/file.svg"
 import { useContext } from "react";
 import FontSizeContext from "../utils/FontSizeContext";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
+import { SortableContext } from "@dnd-kit/sortable";
 
 const toolboxData = [
   {
@@ -69,7 +70,10 @@ const Toolbox = ({onClickAdd}) => {
   const isReduceMotion = useContext(ReducedMotionContext);
 
   return (
-    <div className="flex flex-col my-1">
+    <SortableContext
+      items={toolboxData.map(t => t.title)}
+    >
+      <div className="flex flex-col my-1">
       <h1 className="text-3xl text-center custom-text dark:d-text font-bold">
         Question Toolbox
       </h1>
@@ -99,6 +103,8 @@ const Toolbox = ({onClickAdd}) => {
         </div>
       )}
     </div>
+    </SortableContext>
+    
   )
 }
 
