@@ -18,11 +18,9 @@ export default function RootLayout({ children }) {
   return (
     <html id="root" lang="en" suppressHydrationWarning={true}>
       <body className={inter.className} >
-
-            <main className="flex flex-col flex-grow dark:bg-[#1f1f1f]">
-              {children}
-            </main>
-
+        <main className="flex flex-col flex-grow dark:bg-[#1f1f1f]">
+          {children}
+        </main>
       </body>
     </html>
   );
