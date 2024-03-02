@@ -1,15 +1,80 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Four_Circle from "../../public/logo.svg";
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import { useContext } from "react";
+import { useRouter } from "next/navigation";
+
+const VerificationSuccessMessage = () => {
+  const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
+  const router = useRouter();
+
+  useEffect(() => {
+    if (countdown === 0) {
+      router.push("/login"); // Redirect to the login page when countdown reaches 0
+      return;
+    }
+
+    // Decrease the countdown by 1 every second
+    const timerId = setTimeout(() => {
+      setCountdown(countdown - 1);
+    }, 1000);
+
+    return () => clearTimeout(timerId); // Cleanup the timer when the component unmounts or countdown changes
+  }, [countdown, router]);
+
+  return (
+    <div className="fixed top-0 left-0 w-full p-4 bg-green-500 text-white text-center shadow-md">
+      Register successful! Redirecting you to Login page in {countdown}{" "}
+      seconds...
+    </div>
+  );
+};
 
 const SignUp = () => {
   const [selection, setSelection] = useState("grantee");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [matchError, setMatchError] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false); //  State for showing the success message
+
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
+
+  const validatePassword = (password) => {
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/;
+    return regex.test(password);
+  };
+
+  const handlePasswordBlur = () => {
+    setPasswordError(!validatePassword(newPassword));
+  };
+
+  const handlePasswordFocus = () => {
+    setPasswordError(false);
+  };
+
+  const handleMatchBlur = () => {
+    setMatchError(newPassword !== confirmPassword);
+  };
+
+  const handleMatchFocus = () => {
+    setMatchError(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setPasswordError(!validatePassword(newPassword));
+    setMatchError(newPassword !== confirmPassword);
+
+    if (validatePassword(newPassword) && newPassword === confirmPassword) {
+      setShowSuccessMessage(true); // Show the verification success message
+    }
+  };
 
   return (
     <div
@@ -31,6 +96,7 @@ const SignUp = () => {
               height={80 * fontSizeMultiplier}
               className="rounded-3xl"
             />
+            <div>{showSuccessMessage && <VerificationSuccessMessage />}</div>
             <h2 className="text-center lg:text-5xl md:text-5xl text-3xl mb-6 mt-6 font-semibold text-black">
               Welcome to the future of funding
             </h2>
@@ -86,30 +152,49 @@ const SignUp = () => {
             </div>
           </div>
 
-          <form className="flex flex-col space-y-4 items-center">
+          <form
+            className="flex flex-col space-y-4 items-center"
+            onSubmit={handleSubmit}
+          >
             <input
               type="email"
               placeholder="Email"
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
               required
             />
-            <p className="text-red-500 text-xs hidden">
+            <p
+              className={`text-red-500 text-xs mt-5 ${
+                passwordError ? "block" : "hidden"
+              }`}
+            >
               Password needs to be minimum 7 characters long, including at least
-              1 alphabet, 1 number, and 1 special symbol
+              1 alphabet, 1 number, and 1 special symbol{" "}
             </p>
-            {/* make the text appear if the passwords doesn't satisfy the criteria above */}
             <input
               type="password"
               placeholder="Password"
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              onBlur={handlePasswordBlur}
+              onFocus={handlePasswordFocus}
               required
             />
-            <p className="text-red-500 text-xs hidden">Passwords don't match</p>
-            {/* make the text appear if two passwords don't match */}
+            <p
+              className={`text-red-500 text-xs mt-5 ${
+                matchError ? "block" : "hidden"
+              }`}
+            >
+              Passwords don't match
+            </p>
             <input
               type="password"
               placeholder="Confirm password"
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onBlur={handleMatchBlur}
+              onFocus={handleMatchFocus}
               required
             />
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
