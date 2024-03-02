@@ -228,7 +228,6 @@ const FormComponent = () => {
           <Toolbox onClickAdd={handleOnClickAddQuestion}/>
         </div>
         <SortableContext
-          id="everything"
           items={["toolbox, questionPanel"]}
           strategy={verticalListSortingStrategy}
         >
@@ -240,7 +239,6 @@ const FormComponent = () => {
             modifiers={[restrictToParentElement]}
           >
             <SortableContext
-              id="questionPanel"
               items={questionIds}
               strategy={verticalListSortingStrategy}
             >

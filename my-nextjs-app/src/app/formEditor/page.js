@@ -1,6 +1,5 @@
 'use client'
 import AccessibilityBar from "@/components/AccessibilityBar";
-import FormComponent from "@/components/GrantForm/FormComponent";
 import QuestionBase from "@/components/GrantForm/QuestionBase";
 import ToolboxCard from "@/components/GrantForm/SmallComponents/ToolboxCard";
 import Toolbox from "@/components/GrantForm/Toolbox";
@@ -10,8 +9,13 @@ import { getTheme, initTheme } from "@/components/utils/theme";
 import { DndContext, DragOverlay, closestCenter, useDraggable} from "@dnd-kit/core";
 import { restrictToFirstScrollableAncestor, restrictToParentElement, restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import dynamic from "next/dynamic";
 import { useContext, useEffect, useId, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+
+const FormComponent = dynamic(() => import("@/components/GrantForm/FormComponent"), {
+  ssr: false,
+})
 
 const testbody = [
   {
@@ -86,136 +90,6 @@ const testbody = [
 ]
 
 const FormEditor = () => {
-  const [lightTheme, setLightTheme] = useState(getTheme() === 'light')
-  const [fontSize, setFontSize] = useState(100)  // Default font size is 100
-  const [isReduceMotion, setIsReduceMotion] = useState(false)
-  const [questionData, setQuestionData] = useState(null);
-  const [activeQuestion, setActiveQuestion] = useState(null);
-  const [newDraggedObj, setNewDraggedObj] = useState(null);
-  const [isEditMode, setIsEditMode] = useState(true);
-  const [isToolboxDisabled, setIsToolboxDisabled] = useState(false);
-
-  const {setNodeRef} = useDraggable({ id: "questionPanel"});
-
-  // Load data into form
-  useEffect(() => {
-    const allData = [];
-    for (let question of testbody) {
-      //question = {...question, id: uuidv4(), errMsgArr: []}
-      question = {...question, id: uuidv4()}
-      if (question.answers) question = {...question, answersObj: question.answers.map(a => ({answer: a, id: uuidv4()}))}
-      allData.push(question);
-    }
-    setQuestionData(allData);
-  }, []);
-
-  const handleOnClickAddQuestion = (type) => {
-    let newQuestion = {
-      id: uuidv4(),
-      question: "",
-      type: type,
-      errMsgArr: [],
-      isRequired: false,
-      file: null,
-    }
-    if (type === process.env.NEXT_PUBLIC_TYPE_MULTI || type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX) {
-      newQuestion = {...newQuestion, 
-        answersObj: [{answer: "", id: uuidv4()}],
-        errEmptyAnsIdxArr: [0], 
-        errDupAnsIdxArr: []
-      }
-    }
-    if (questionData != null) setQuestionData([...questionData, newQuestion]);
-    else setQuestionData([newQuestion]);
-  }
-
-  // ---------------- Drag handlers ----------------
-
-  // const handleOnDragStart = ({active, data}) => {
-  //   setIsToolboxDisabled(true); 
-  //   setActiveQuestion(() => {
-  //     const oldIdx = questionData.findIndex(q => q.id === active.id);
-  //     if (oldIdx !== -1) return questionData[oldIdx];
-  //     const type = active.data?.current?.type;
-  //     let newQuestion = {
-  //       id: uuidv4(),
-  //       question: "",
-  //       type: type,
-  //       errMsgArr: [],
-  //       isRequired: false,
-  //       file: null,
-  //     }
-  //     if (type === process.env.NEXT_PUBLIC_TYPE_MULTI || type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX) {
-  //       newQuestion = {...newQuestion, 
-  //         answersObj: [{answer: "", id: uuidv4()}],
-  //         errEmptyAnsIdxArr: [0], 
-  //         errDupAnsIdxArr: []
-  //       }
-  //     }
-  //     return newQuestion;
-  //   })
-  // }
-
-  const clearStates = () => {
-    setIsToolboxDisabled(false);
-    setNewDraggedObj(null);
-    setActiveQuestion(null);
-  }
-
-  const handleOuterDragStart = ({active}) => {
-    setIsToolboxDisabled(true);
-    setNewDraggedObj(active.data?.current);
-  }
-
-  const handleOuterDragEnd = ({active, over}) => {
-    clearStates();
-  }
-
-  const handleOnDragStart = ({active}) => {
-    setIsToolboxDisabled(true); 
-    setActiveQuestion(() => {
-      const oldIdx = questionData.findIndex(q => q.id === active.id);
-      if (oldIdx !== -1) return questionData[oldIdx];
-      return null;
-    })
-  }
-
-  const handleOnDragEnd = ({active, over}) => {
-    const type = active.data?.current?.type;
-    const questionNum = active.data?.current?.questionNum;
-    if (type && (!questionData.length || questionData.length === 0)) handleOnClickAddQuestion(type);
-    else if (questionNum !== undefined) {
-      setQuestionData(prev => {
-        const oldIdx = prev.findIndex(q => q.id === active.id);
-        const newIdx = prev.findIndex(q => q.id === over.id);
-        return arrayMove(prev, oldIdx, newIdx);
-      });
-    }
-    clearStates();
-  }
-
-  // ---------------- Question handlers ---------------- 
-
-  const handleOnChangeQuestionData = (questionId, newQuestionData) => {
-    setQuestionData(prev => prev.map(q => q.id === questionId ? newQuestionData : q));
-  }
-
-  const handleOnDeleteQuestion = (questionId) => {
-    setQuestionData(prev => prev.filter(q => q.id !== questionId));
-  }
-
-  const handleOnSelectAnswer = (questionID, answer) => {
-    //console.log("answer: " + answer);
-  }
-
-  const handleOnChangePosition = (questionId, posChange) => {
-    const questionIdx = questionData.findIndex(q => q.id === questionId);
-    if (questionIdx === 0 && posChange === -1) return;
-    if (questionIdx === questionData.length - 1 && posChange === 1) return;
-    setQuestionData(prev => arrayMove(prev, questionIdx, questionIdx + posChange));
-  }
-
-  const questionIds = useMemo(() => questionData ? questionData.map(q => q.id) : [], [questionData]);
  
   return (
     <div className="flex flex-col h-screen overflow-hidden">
