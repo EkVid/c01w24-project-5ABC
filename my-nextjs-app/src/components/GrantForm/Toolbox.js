@@ -77,9 +77,8 @@ const Toolbox = ({onClickAdd}) => {
         Drag and drop questions into the panel on the right or click the + icon to add a new question to the bottom of the form
       </p>
       {toolboxData.map(({title, desc, icon, type}) => 
-        <div className="flex mb-2 justify-between">
+        <div key={title} className="flex mb-2 justify-between">
           <ToolboxCard 
-            key={title}
             title={title} 
             type={type}
             desc={desc} 
