@@ -1,4 +1,88 @@
+"use client";
+import { useState, useEffect, useContext } from "react";
+import { useRouter } from "next/navigation";
+import FontSizeContext from "@/components/utils/FontSizeContext";
+import show_password from "../../public/password_eye.svg";
+import hide_password from "../../public/password_eye_cross.svg";
+import Image from "next/image";
+
+const VerificationSuccessMessage = () => {
+  const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
+  const router = useRouter();
+
+  useEffect(() => {
+    if (countdown === 0) {
+      router.push("/login"); // Redirect to the login page when countdown reaches 0
+      return;
+    }
+
+    // Decrease the countdown by 1 every second
+    const timerId = setTimeout(() => {
+      setCountdown(countdown - 1);
+    }, 1000);
+
+    return () => clearTimeout(timerId); // Cleanup the timer when the component unmounts or countdown changes
+  }, [countdown, router]);
+
+  return (
+    <div className="fixed top-0 left-0 w-full p-4 bg-green-500 text-white text-center shadow-md">
+      Password Reset successful! Redirecting you to Login page in {countdown}{" "}
+      seconds...
+    </div>
+  );
+};
+
 const ResetPassword = () => {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [matchError, setMatchError] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const fontSizeMultiplier = useContext(FontSizeContext) / 100;
+
+  const validatePassword = (password) => {
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/;
+    return regex.test(password);
+  };
+
+  const handlePasswordBlur = () => {
+    setPasswordError(!validatePassword(newPassword));
+  };
+
+  const handlePasswordFocus = () => {
+    setPasswordError(false);
+  };
+
+  const handleMatchBlur = () => {
+    setMatchError(newPassword !== confirmPassword);
+  };
+
+  const handleMatchFocus = () => {
+    setMatchError(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setPasswordError(!validatePassword(newPassword));
+    setMatchError(newPassword !== confirmPassword);
+
+    if (validatePassword(newPassword) && newPassword === confirmPassword) {
+      setShowSuccessMessage(true);
+    }
+  };
+
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <div
       className="flex items-center justify-center min-h-screen"
@@ -28,13 +112,41 @@ const ResetPassword = () => {
               </p>
               {/* make the text appear if the passwords doesn't satisfy the criteria above */}
             </div>
-
-            <input
-              type="password"
-              placeholder="New Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-              required
-            />
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showNewPassword ? "text" : "password"}
+                placeholder="New Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                onBlur={handlePasswordBlur}
+                onFocus={handlePasswordFocus}
+                required
+              />
+              <div
+                onClick={toggleNewPasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showNewPassword ? (
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                ) : (
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                )}
+              </div>
+            </div>
+            {/* Confirm New Password Input */}
             <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs text-green-600 font-semibold">
               <p>Confirm New Password</p>
               <p className="text-red-500 text-xs mt-5 hidden">
@@ -42,12 +154,40 @@ const ResetPassword = () => {
               </p>
               {/* make the text appear if two passwords don't match */}
             </div>
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-              required
-            />
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm New Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={handleMatchBlur}
+                onFocus={handleMatchFocus}
+                required
+              />
+              <div
+                onClick={toggleConfirmPasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showConfirmPassword ? (
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                ) : (
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                )}
+              </div>
+            </div>
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
