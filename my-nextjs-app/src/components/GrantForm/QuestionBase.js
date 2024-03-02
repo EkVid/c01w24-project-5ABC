@@ -73,7 +73,12 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
 
   const dragStyle = {
     translate: `${transform ? transform.x : 0}px ${transform ? transform.y : 0}px`,
+<<<<<<< HEAD
     transition: isReduceMotion ? "" : isDragging ? "" : transform ? `translate ${dragTransitionSec}s` : ""
+=======
+    transition: isReduceMotion ? "" : isDragging ? "" : transform ? `translate ${dragTransitionSec}s` : "",
+    transitionTimingFunction: isReduceMotion ? "" : isDragging ? "" : transform ? "ease-in" : "",
+>>>>>>> a2fc5c6 (dnd works)
   }
 
   const attId = uuidv4();
@@ -148,6 +153,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
       style={dragStyle}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging || isTemp ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
 =======
       className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition"}`}
@@ -155,6 +161,9 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
 =======
       className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition-colors"}`}
 >>>>>>> e2d6acf (fixed warnings, redid layout, and dnd now doesn't look glitchy)
+=======
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging || isTemp ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
+>>>>>>> a2fc5c6 (dnd works)
     >
       <div className={` flex flex-col  ${isDragging || isTemp ? "invisible" : ""}`}>
         {isEditMode ? 
@@ -221,7 +230,11 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         }
         <div className={`flex items-center mb-6`}>
           {questionNum && isShowingNum ? 
+<<<<<<< HEAD
             <div className="mr-4 font-bold text-xl custom-text dark:d-text">
+=======
+            <div className="mr-4 font-bold text-xl">
+>>>>>>> a2fc5c6 (dnd works)
               Q.{questionNum}
             </div> 
             : 
