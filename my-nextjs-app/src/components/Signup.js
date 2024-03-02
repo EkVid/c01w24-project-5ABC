@@ -31,11 +31,11 @@ const SignUp = () => {
               height={80 * fontSizeMultiplier}
               className="rounded-3xl"
             />
-            <h2 className="text-center lg:text-5xl md:text-5xl text-3xl mb-6 mt-6 font-semibold">
+            <h2 className="text-center lg:text-5xl md:text-5xl text-3xl mb-6 mt-6 font-semibold text-black">
               Welcome to the future of funding
             </h2>
           </div>
-          <p className="text-center text-lg mt-4">
+          <p className="text-center text-lg mt-4 text-black">
             Already have an account?{" "}
             <Link href="/login" className="text-green-600 hover:text-green-700">
               Sign in
@@ -61,7 +61,7 @@ const SignUp = () => {
                   }`}
                 ></span>
               </span>
-              Grantee
+              <p className="text-black">Grantor</p>
             </div>
             <div
               className={`cursor-pointer px-4 py-3 text-lg flex items-center ${
@@ -82,7 +82,7 @@ const SignUp = () => {
                   }`}
                 ></span>
               </span>
-              Grantor
+              <p className="text-black">Grantor</p>
             </div>
           </div>
 
@@ -90,7 +90,7 @@ const SignUp = () => {
             <input
               type="email"
               placeholder="Email"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
               required
             />
             <p className="text-red-500 text-xs hidden">
@@ -101,7 +101,7 @@ const SignUp = () => {
             <input
               type="password"
               placeholder="Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
               required
             />
             <p className="text-red-500 text-xs hidden">Passwords don't match</p>
@@ -109,7 +109,7 @@ const SignUp = () => {
             <input
               type="password"
               placeholder="Confirm password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
               required
             />
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
@@ -129,11 +129,11 @@ const SignUp = () => {
             className="mx-auto"
             style={{ maxWidth: "40%", height: "auto" }}
           />
-          <h2 className="text-xl text-center">
+          <h2 className="text-xl text-center text-black">
             The service of {selection === "grantee" ? "Grantee" : "Grantor"}{" "}
             includes:
           </h2>
-          <div className="text-md text-left ml-6">
+          <div className="text-md text-left ml-6 text-black">
             {selection === "grantee" ? (
               <>
                 <p>

@@ -90,13 +90,13 @@ const ForgotPassword = () => {
         <div className="flex flex-col w-full p-16 space-y-8">
           <div className="space-y-6">
             <div>{showSuccessMessage && <VerificationSuccessMessage />}</div>
-            <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-4 mt-8 font-semibold">
+            <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-4 mt-8 font-semibold text-black">
               Reset your password
             </h2>
           </div>
           {!resetClicked ? (
             <>
-              <h3 className="text-center text-sm mb-8 mt-8 font-semibold">
+              <h3 className="text-center text-sm mb-8 mt-8 font-semibold text-black">
                 Enter your email address below and we'll send you a link to
                 reset your password.
               </h3>
@@ -107,13 +107,13 @@ const ForgotPassword = () => {
                 <input
                   type="email"
                   placeholder="Email"
-                  className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+                  className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
                   required
                 />
                 <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
                   <button
                     type="submit"
-                    className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
+                    className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out text-black"
                   >
                     Reset Password
                   </button>
@@ -122,7 +122,7 @@ const ForgotPassword = () => {
             </>
           ) : (
             <div>
-              <div className="text-center lg:text-lg md:text-lg text-sm mb-8 mt-8">
+              <div className="text-center lg:text-lg md:text-lg text-sm mb-8 mt-8 text-black">
                 <p>
                   Check your inbox for a verification code.
                   <br />
@@ -138,7 +138,7 @@ const ForgotPassword = () => {
                   value={code}
                   onChange={handleCodeChange}
                   placeholder="Enter your verification code"
-                  className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full"
+                  className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
                   aria-label="Verification Code"
                   required
                 />
@@ -169,7 +169,7 @@ const ForgotPassword = () => {
                 Login
               </Link>
             </p>
-            <p>or</p>
+            <p className="text-black">or</p>
             <p>
               <Link
                 href="/signup"
@@ -179,7 +179,7 @@ const ForgotPassword = () => {
               </Link>
             </p>
           </div>
-          <div className="text-center lg:text-md text-sm">
+          <div className="text-center lg:text-md text-sm text-black">
             <p>
               Still can't login? If you need additional assistance, <br />
               e-mail 5ABC@gmail.com
