@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from "next/navigation";
 =======
 import { DndContext, DragOverlay, closestCenter, useDraggable} from "@dnd-kit/core";
-import { restrictToFirstScrollableAncestor, restrictToParentElement, restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { restrictToFirstScrollableAncestor, restrictToParentElement, restrictToVerticalAxis, restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
@@ -524,8 +524,8 @@ const FormComponent = () => {
       modifiers={[restrictToWindowEdges]}
     >
       <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
-      <div className="flex bg-transparent">
-        <div className={`${fontSize > 150 || !isEditMode ? "" : "lg:flex sticky top-5"} hidden h-fit p-5 ml-5 my-5 rounded-xl max-h-[76.5vh] overflow-auto overscroll-none flex-col max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition"}`}>
+      <div className="flex flex-grow bg-transparent">
+        <div className={`${fontSize > 150 || !isEditMode ? "" : "lg:flex top-5"} hidden h-fit max-h-[90vh] p-5 pb-0 ml-5 my-5 rounded-xl overflow-auto flex-col max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition"}`}>
           <Toolbox onClickAdd={handleOnClickAddQuestion}/>
         </div>
         <SortableContext
@@ -537,13 +537,13 @@ const FormComponent = () => {
             onDragStart={handleOnDragStart}
             onDragEnd={handleOnDragEnd}
             onDragCancel={clearStates}
-            modifiers={[restrictToParentElement]}
+            modifiers={[restrictToVerticalAxis]}
           >
             <SortableContext
               items={questionIds}
               strategy={verticalListSortingStrategy}
             >
-              <div className={`flex flex-col max-w-full flex-auto p-5 max-h-screen overflow-auto`} ref={setNodeRef}>
+              <div className={`flex flex-col max-w-full flex-auto p-5 pb-0 max-h-screen overflow-auto`} ref={setNodeRef}>
                 {questionData?.map((q, i) => 
                   <QuestionBase 
                     key={q.id}
@@ -566,10 +566,10 @@ const FormComponent = () => {
                     }
                   </div>
                   :
-                  <div className="text-center mt-5 mb-64 text-3xl font-bold custom-text dark:d-text opacity-50">Bottom of form</div>
+                  <div className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">Bottom of form</div>
                 }
               </div>
-              <DragOverlay zIndex={100}>
+              <DragOverlay zIndex={100} dropAnimation={{duration: isReduceMotion ? 0 : 250}}>
                 {activeQuestion ? 
                   <div className="overflow-visible">
                     <QuestionBase 
@@ -596,7 +596,7 @@ const FormComponent = () => {
               </DragOverlay>
             </SortableContext>
           </DndContext>
-          <DragOverlay zIndex={100}>
+          <DragOverlay zIndex={100} dropAnimation={{duration: isReduceMotion ? 0 : 250}}>
             {newDraggedObj ?
               <div className="custom-questioncard-background transition-none">
                 <ToolboxCard 
