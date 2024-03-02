@@ -147,10 +147,14 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
       ref={setNodeRef} 
       style={dragStyle}
 <<<<<<< HEAD
+<<<<<<< HEAD
       className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging || isTemp ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
 =======
       className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition"}`}
 >>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
+=======
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background custom-questioncard-border dark:d-custom-questioncard-border"} ${isReduceMotion ? "" : "transition-colors"}`}
+>>>>>>> e2d6acf (fixed warnings, redid layout, and dnd now doesn't look glitchy)
     >
       <div className={` flex flex-col  ${isDragging || isTemp ? "invisible" : ""}`}>
         {isEditMode ? 
