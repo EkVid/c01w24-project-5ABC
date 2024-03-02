@@ -6,11 +6,15 @@ import { useSortable } from "@dnd-kit/sortable";
 <<<<<<< HEAD
 <<<<<<< HEAD
 import { useUniqueId } from "@dnd-kit/utilities";
+<<<<<<< HEAD
 =======
 >>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
 =======
 import { useUniqueId } from "@dnd-kit/utilities";
 >>>>>>> 972d39f (moved routers and removed warnings in inspect console)
+=======
+import { useDraggable } from "@dnd-kit/core";
+>>>>>>> a2fc5c6 (dnd works)
 
 const ToolboxCard = ({title, type, desc, icon}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
@@ -20,6 +24,7 @@ const ToolboxCard = ({title, type, desc, icon}) => {
 <<<<<<< HEAD
     id: useUniqueId(),
     data: {title, type, desc, icon, cont: "toolbox"}
+<<<<<<< HEAD
   });
 
   return (
@@ -30,6 +35,8 @@ const ToolboxCard = ({title, type, desc, icon}) => {
     id: useUniqueId(),
 >>>>>>> 972d39f (moved routers and removed warnings in inspect console)
     data: {title, type, desc, icon}
+=======
+>>>>>>> a2fc5c6 (dnd works)
   });
 
   return (

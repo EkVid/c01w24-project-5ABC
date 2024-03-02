@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
   return (
     <html id="root" lang="en" suppressHydrationWarning={true}>
       <body className={inter.className} >
-        <main className="flex flex-col flex-grow dark:bg-[#1f1f1f]">
+        <main className="flex flex-col flex-grow custom-offwhite-background dark:bg-[#1f1f1f]">
           {children}
         </main>
     <html id="root" lang="en">
