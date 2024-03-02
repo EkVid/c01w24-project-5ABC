@@ -4,8 +4,7 @@ import ToolboxCard from "@/components/GrantForm/SmallComponents/ToolboxCard";
 import Toolbox from "@/components/GrantForm/Toolbox";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
-import { DndContext, DragOverlay, closestCenter, rectIntersection, useDroppable} from "@dnd-kit/core";
-import { restrictToVerticalAxis, restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { DndContext, DragOverlay, rectIntersection, useDroppable} from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
@@ -95,7 +94,9 @@ const FormComponent = () => {
 
   const questionPanelRef = useDroppable({ id: "questionPanel"});
 
+  const largeFontSize = 140;
   const deltaXToAdd = 240;
+  const deltaYToAdd = -100;
 
   // Load data into form
   // useEffect(() => {
@@ -164,16 +165,15 @@ const FormComponent = () => {
     });
 
   }
-//useEffect(() => console.log(tempQuestion), [tempQuestion])
+
   const handleOnDragMove = ({active, over, delta}) => {
     const activeCont = active.data?.current?.cont;
     const overId = over?.id;
-
-    setIsAddingNew(delta.x >= deltaXToAdd);
-
+    setIsAddingNew(delta.x >= deltaXToAdd || delta.y <= deltaYToAdd);
     // For dragging from toolbox
+    console.log(delta)
     if (activeCont === "toolbox") {
-      if (delta.x < deltaXToAdd) return clearTemp();
+      if (delta.x < deltaXToAdd && !newDraggedObj) return console.log("return");
       if (questionData == null || questionData.length === 0) return setQuestionData([tempObj]);
       if (questionData.filter(q => q.isTemp).length === 0) return setQuestionData([...questionData, tempObj]);
       const newTempIdx = questionData.findIndex(q => q.id === overId);
@@ -195,6 +195,7 @@ const FormComponent = () => {
 
     if (activeCont === "toolbox") {
       if (questionData && questionData.length === 1 && questionData[0].isTemp && delta.x >= deltaXToAdd) handleOnClickAddQuestion(type);
+      else if (questionData && questionData.length === 1 && questionData[0].isTemp && delta.y <= deltaYToAdd) handleOnClickAddQuestion(type);
       else if (tempIdx[1] !== -1) {
         const newQuestion = getNewQuestionObj(type);
         setQuestionData(prev => [...prev.slice(0, tempIdx[1]), newQuestion, ...prev.slice(tempIdx[1])]);
@@ -236,19 +237,28 @@ const FormComponent = () => {
 
   const questionIds = useMemo(() => questionData ? questionData.map(q => q.id) : [], [questionData]);
 
+  const restrictToVerticalAxisAndWindowEdges = ({transform, draggingNodeRect, windowRect}) => {
+    const value = {...transform};
+    if (!draggingNodeRect || !windowRect) return transform;
+    
+    if (draggingNodeRect.left + transform.x <= windowRect.left) value.x = windowRect.left - draggingNodeRect.left;
+    else if (draggingNodeRect.right + transform.x >= windowRect.left + windowRect.width) value.x = windowRect.left + windowRect.width - draggingNodeRect.right;
+
+    return value;
+  }
+
   return (
     <DndContext
-      id="outerDnd"
       collisionDetection={rectIntersection}
       onDragStart={handleOnDragStart}
       onDragMove={handleOnDragMove}
       onDragEnd={handleOnDragEnd}
       onDragCancel={clearStates}
-      modifiers={[restrictToWindowEdges]}
+      modifiers={[restrictToVerticalAxisAndWindowEdges]}
     >
       <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
-      <div className="flex flex-grow bg-transparent">
-        <div className={`${fontSize > 150 || !isEditMode ? "" : "lg:flex top-0"} hidden h-fit max-h-[90vh] p-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition"}`}>
+      <div className={`${fontSize > largeFontSize ? "flex-col" : "flex flex-col lg:flex-row"} flex-grow bg-transparent`}>
+        <div className={`${fontSize > largeFontSize || !isEditMode ? "" : "lg:flex top-0"} hidden h-fit max-h-[90vh] p-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col lg:max-w-xs xl:max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition"}`}>
           <Toolbox onClickAdd={handleOnClickAddQuestion}/>
         </div>
         <SortableContext
@@ -256,7 +266,7 @@ const FormComponent = () => {
           strategy={verticalListSortingStrategy}
         >
           <div 
-            className={`flex flex-col max-w-full flex-auto p-2.5 pb-0 max-h-screen overflow-auto  ${isReduceMotion ? "" : "transition"}`} 
+            className={`flex flex-col max-w-full flex-auto p-2.5 pb-0 max-h-screen overflow-auto ${isReduceMotion ? "" : "transition"}`} 
             ref={questionPanelRef.setNodeRef}
           >
             {questionData?.map((q, i) => 
@@ -275,7 +285,7 @@ const FormComponent = () => {
             {!questionData || questionData.length === 0 ?
               <div className="flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap">
                 {!questionData ? 
-                  "Use the toolbox to start creating your application form!\n\n\nDrag and drop questions here!" 
+                  "Use the toolbox to start creating your application form!\n\n\nClick the + icons to start adding questions!" 
                   : 
                   "You trynna give people an empty application to fill out?\n\n\nAdd your questions here now."
                 }
@@ -301,7 +311,7 @@ const FormComponent = () => {
               /> 
             </div>
             : newDraggedObj ?
-            <div className="custom-questioncard-background transition-none">
+            <div className="custom-questioncard-background rounded-lg transition-none">
               <ToolboxCard 
                 title={newDraggedObj.title}
                 type={newDraggedObj.type}
@@ -313,6 +323,9 @@ const FormComponent = () => {
             null
           }
         </DragOverlay>
+        <div className={`${!isEditMode ? "hidden" : fontSize <= largeFontSize ? "lg:hidden" : ""} flex sticky max-h-[10vh]bottom-0 items-center w-screen p-3 my-3 overflow-auto custom-questioncard-background ${isReduceMotion ? "" : "transition"}`}>
+          <Toolbox isSmallVersion={true} onClickAdd={handleOnClickAddQuestion}/>
+        </div>
       </div>
     </DndContext>
   )

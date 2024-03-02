@@ -10,7 +10,7 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
   const isDateRange = options?.isDateRange ?? false;
   const isBothRequired = options?.isBothRequired && isDateRange ? options.isBothRequired : false;
 
-  const handleOnInput = (newAnswer, answerIdx) => {
+  const handleOnInput = (newAnswer) => {
     if (isEditMode) return;
     setCurrentAnswer(newAnswer);
     onSelectAnswer(newAnswer);

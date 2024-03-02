@@ -241,8 +241,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         {/* Options section for required question and file upload */}
         {isEditMode ? 
           <>
-          <div className="text-sm mb-4 custom-text dark:d-text">Settings:</div>
-          <div className="px-4 mb-4">
+          <div className="text-sm mb-4 over custom-text dark:d-text">Settings:</div>
+          <div className="px-4 mb-4 overflow-auto">
             <CheckboxOption 
               label={"Required question:"} 
               currentValue={isRequired} 
@@ -250,7 +250,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             />
             <div className="flex items-center px-2 py-1">
               <label htmlFor={attId} className="text-sm mr-2 custom-text dark:d-text">Attachments:</label>
-              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center overflow-hidden">
+              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center">
                 <input
                   type="file"
                   id={attId}
@@ -306,7 +306,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           <></>
         }
         <div className="flex justify-between items-end">
-          <div className="flex flex-col flex-auto mr-5">
+          <div className="flex flex-col flex-auto overflow-auto">
             {/* Body of question */}
             {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
               <QMultichoice
@@ -378,30 +378,34 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             {errMsgArr?.map((err, i) => <ErrTextbox msg={err} key={i}/>)}
           </div>
           {/* Question icon in corner */}
-          <div className="p-1.5">
-            <Image
-            src={
-              type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
-              type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? CheckboxIcon : 
-              type === process.env.NEXT_PUBLIC_TYPE_TEXT ? TextIcon :
-              type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? NumberIcon :
-              type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? EmailIcon :
-              type === process.env.NEXT_PUBLIC_TYPE_PHONE ? PhoneIcon :
-              type === process.env.NEXT_PUBLIC_TYPE_DATE ? DateIcon :
-              type === process.env.NEXT_PUBLIC_TYPE_FILE ? FileIcon : ""}
-            alt={type === process.env.NEXT_PUBLIC_TYPE_MULTI ? "Multiple choice type question" : 
-              type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? "Checkbox type question" : 
-              type === process.env.NEXT_PUBLIC_TYPE_TEXT ? "Texbox type question" :
-              type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? "Numeric type question" :
-              type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? "Email type question" :
-              type === process.env.NEXT_PUBLIC_TYPE_PHONE ? "Phone number type question" :
-              type === process.env.NEXT_PUBLIC_TYPE_DATE ? "Date type question" :
-              type === process.env.NEXT_PUBLIC_TYPE_FILE ? "File upload type question" : ""}
-            width={30 * fontSizeMultiplier}
-            height={"auto"}
-            className="pointer-events-none opacity-40 dark:opacity-30 dark:d-white-filter"
-          /></div>
-          
+          {fontSizeMultiplier < 1.5 ?
+            <div className="shrink-0 ml-4 hidden lg:flex">
+              <Image
+                src={
+                  type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
+                  type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? CheckboxIcon : 
+                  type === process.env.NEXT_PUBLIC_TYPE_TEXT ? TextIcon :
+                  type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? NumberIcon :
+                  type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? EmailIcon :
+                  type === process.env.NEXT_PUBLIC_TYPE_PHONE ? PhoneIcon :
+                  type === process.env.NEXT_PUBLIC_TYPE_DATE ? DateIcon :
+                  type === process.env.NEXT_PUBLIC_TYPE_FILE ? FileIcon : ""}
+                alt={type === process.env.NEXT_PUBLIC_TYPE_MULTI ? "Multiple choice type question" : 
+                  type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? "Checkbox type question" : 
+                  type === process.env.NEXT_PUBLIC_TYPE_TEXT ? "Texbox type question" :
+                  type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? "Numeric type question" :
+                  type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? "Email type question" :
+                  type === process.env.NEXT_PUBLIC_TYPE_PHONE ? "Phone number type question" :
+                  type === process.env.NEXT_PUBLIC_TYPE_DATE ? "Date type question" :
+                  type === process.env.NEXT_PUBLIC_TYPE_FILE ? "File upload type question" : ""}
+                width={30 * fontSizeMultiplier}
+                height={"auto"}
+                className="pointer-events-none opacity-40 dark:opacity-30 dark:d-white-filter"
+              />
+            </div>
+            :
+            <></>
+          }
         </div>
       </div>
     </div>
