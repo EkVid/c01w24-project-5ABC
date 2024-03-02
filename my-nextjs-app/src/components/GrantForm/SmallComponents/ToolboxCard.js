@@ -4,13 +4,14 @@ import FontSizeContext from "@/components/utils/FontSizeContext";
 import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 import { useSortable } from "@dnd-kit/sortable";
 import { useUniqueId } from "@dnd-kit/utilities";
+import { useDraggable } from "@dnd-kit/core";
 
 const ToolboxCard = ({title, type, desc, icon}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
   const {attributes, isDragging, listeners, setNodeRef} = useSortable({
     id: useUniqueId(),
-    data: {title, type, desc, icon}
+    data: {title, type, desc, icon, cont: "toolbox"}
   });
 
   return (
