@@ -13,9 +13,13 @@ import { useContext } from "react";
 import FontSizeContext from "../utils/FontSizeContext";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import SmallToolboxCard from "./SmallComponents/SmallToolboxCard";
 =======
 >>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
+=======
+import { SortableContext } from "@dnd-kit/sortable";
+>>>>>>> a2fc5c6 (dnd works)
 
 const toolboxData = [
   {
@@ -77,6 +81,7 @@ const Toolbox = ({onClickAdd}) => {
   const isReduceMotion = useContext(ReducedMotionContext);
 
   return (
+<<<<<<< HEAD
 <<<<<<< HEAD
     <>
       {isSmallVersion ? 
@@ -147,6 +152,12 @@ const Toolbox = ({onClickAdd}) => {
     </>    
 =======
     <div className="flex flex-col my-1">
+=======
+    <SortableContext
+      items={toolboxData.map(t => t.title)}
+    >
+      <div className="flex flex-col my-1">
+>>>>>>> a2fc5c6 (dnd works)
       <h1 className="text-3xl text-center custom-text dark:d-text font-bold">
         Question Toolbox
       </h1>
@@ -177,7 +188,12 @@ const Toolbox = ({onClickAdd}) => {
         </div>
       )}
     </div>
+<<<<<<< HEAD
 >>>>>>> 06ce668 (fixed dnd issue without major change to root layout)
+=======
+    </SortableContext>
+    
+>>>>>>> a2fc5c6 (dnd works)
   )
 }
 

@@ -59,10 +59,13 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
 <<<<<<< HEAD
           placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
           className={`min-h-6 max-h-96 flex custom-text dark:d-text text-sm border-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input resize-none" : "custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+<<<<<<< HEAD
 =======
           placeholder={isEditMode ? "User will enter answer here" : "Enter an answer"}
           className={`min-h-6 max-h-96 custom-text dark:d-text text-sm max-w-full md:max-w-96 border-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "dark:border-white custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : ""} ${isReduceMotion ? "" : "transition-colors"}`}
 >>>>>>> 7198180 (more styling refacotring)
+=======
+>>>>>>> a2fc5c6 (dnd works)
           onInput={e => handleOnInput(e.target.value)}
           value={currentAnswer}
           disabled={isEditMode}

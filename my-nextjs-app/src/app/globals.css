@@ -266,6 +266,7 @@ body {
 
 /* Class for question cards */
 .custom-questioncard-background{
+<<<<<<< HEAD
   @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color drop-shadow-lg
 }
 
@@ -341,3 +342,8 @@ body {
 .cs-text-5xl{
   font-size: 48px;
 }
+=======
+  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color
+}
+
+>>>>>>> a2fc5c6 (dnd works)
