@@ -6,6 +6,35 @@ import Four_Circle from "../../public/logo.svg";
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import { useContext } from "react";
+import { useRouter } from "next/navigation";
+import show_password from "../../public/password_eye.svg";
+import hide_password from "../../public/password_eye_cross.svg";
+
+const VerificationSuccessMessage = () => {
+  const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
+  const router = useRouter();
+
+  useEffect(() => {
+    if (countdown === 0) {
+      router.push("/login"); // Redirect to the login page when countdown reaches 0
+      return;
+    }
+
+    // Decrease the countdown by 1 every second
+    const timerId = setTimeout(() => {
+      setCountdown(countdown - 1);
+    }, 1000);
+
+    return () => clearTimeout(timerId); // Cleanup the timer when the component unmounts or countdown changes
+  }, [countdown, router]);
+
+  return (
+    <div className="fixed top-0 left-0 w-full p-4 bg-green-500 text-white text-center shadow-md">
+      Register successful! Redirecting you to Login page in {countdown}{" "}
+      seconds...
+    </div>
+  );
+};
 
 const SignUp = () => {
   const [selection, setSelection] = useState("grantee");
@@ -97,21 +126,81 @@ const SignUp = () => {
               Password needs to be minimum 7 characters long, including at least
               1 alphabet, 1 number, and 1 special symbol
             </p>
-            {/* make the text appear if the passwords doesn't satisfy the criteria above */}
-            <input
-              type="password"
-              placeholder="Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-              required
-            />
-            <p className="text-red-500 text-xs hidden">Passwords don't match</p>
-            {/* make the text appear if two passwords don't match */}
-            <input
-              type="password"
-              placeholder="Confirm password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-              required
-            />
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10" // Added padding-right to make room for the icon
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                onBlur={handlePasswordBlur}
+                onFocus={handlePasswordFocus}
+                required
+              />
+              <div
+                onClick={togglePasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showPassword ? (
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                ) : (
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                )}
+              </div>
+            </div>
+            <p
+              className={`text-red-500 text-xs mt-5 ${
+                matchError ? "block" : "hidden"
+              }`}
+            >
+              Passwords don't match
+            </p>
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10" // Added padding-right to make room for the icon
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={handleMatchBlur}
+                onFocus={handleMatchFocus}
+                required
+              />
+              <div
+                onClick={toggleConfirmPasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showConfirmPassword ? (
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                ) : (
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                )}
+              </div>
+            </div>
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
