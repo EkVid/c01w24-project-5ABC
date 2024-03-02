@@ -7,6 +7,8 @@ import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
+import show_password from "../../public/password_eye.svg";
+import hide_password from "../../public/password_eye_cross.svg";
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -196,9 +198,21 @@ const SignUp = () => {
                 className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
               >
                 {showPassword ? (
-                  <p className="text-black">Hide</p> // Consider replacing with an icon for better UX
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
                 ) : (
-                  <p className="text-black">Show</p> // Consider replacing with an icon for better UX
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
                 )}
               </div>
             </div>
@@ -225,9 +239,21 @@ const SignUp = () => {
                 className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
               >
                 {showConfirmPassword ? (
-                  <p className="text-black">Hide</p> // Consider replacing with an icon for better UX
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
                 ) : (
-                  <p className="text-black">Show</p> // Consider replacing with an icon for better UX
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
                 )}
               </div>
             </div>

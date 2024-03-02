@@ -1,7 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
-// Assuming you're using react-router-dom for navigation
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
+import FontSizeContext from "@/components/utils/FontSizeContext";
+import show_password from "../../public/password_eye.svg";
+import hide_password from "../../public/password_eye_cross.svg";
+import Image from "next/image";
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -37,6 +40,8 @@ const ResetPassword = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
   const validatePassword = (password) => {
     const regex =
@@ -131,9 +136,21 @@ const ResetPassword = () => {
                 className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
               >
                 {showNewPassword ? (
-                  <p className="text-black">Hide</p>
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
                 ) : (
-                  <p className="text-black">Show</p>
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
                 )}
               </div>
             </div>
@@ -164,9 +181,21 @@ const ResetPassword = () => {
                 className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
               >
                 {showConfirmPassword ? (
-                  <p className="text-black">Hide</p>
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
                 ) : (
-                  <p className="text-black">Show</p>
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
                 )}
               </div>
             </div>

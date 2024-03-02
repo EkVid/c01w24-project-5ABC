@@ -5,9 +5,17 @@ import dynamic from "next/dynamic";
 import Four_Circle from "../../public/logo.svg";
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import show_password from "../../public/password_eye.svg";
+import hide_password from "../../public/password_eye_cross.svg";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
   return (
@@ -44,11 +52,36 @@ const Login = () => {
               placeholder="Email"
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
             />
-            <input
-              type="password"
-              placeholder="Password"
-              className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
-            />
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10"
+                required
+              />
+              <div
+                onClick={togglePasswordVisibility}
+                className="cursor-pointer absolute right-0 mr-4 flex items-center justify-center h-full"
+              >
+                {showPassword ? (
+                  <Image
+                    src={hide_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                ) : (
+                  <Image
+                    src={show_password}
+                    alt="Logo"
+                    width={30 * fontSizeMultiplier}
+                    height={30 * fontSizeMultiplier}
+                    className="rounded-3xl"
+                  />
+                )}
+              </div>
+            </div>
             <Link href="/forgot_password">
               <h2 className="text-center text-xl hover:underline hover:text-blue-500 text-black">
                 Forgot password?
