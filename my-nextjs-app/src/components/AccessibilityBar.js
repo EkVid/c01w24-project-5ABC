@@ -12,7 +12,7 @@ import FontSizeContext from "./utils/FontSizeContext";
 import ReducedMotionContext from "./utils/ReducedMotionContext";
 import ThemeContext from "./utils/ThemeContext";
 
-const AccessibilityBar = ({children}) => {
+const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion}) => {
   initTheme()
   const [ lightTheme, setLightTheme ] = useState(getTheme() === 'light')
   const [ fontSize, setFontSize ] = useState(100)  // Default font size is 100
@@ -22,16 +22,29 @@ const AccessibilityBar = ({children}) => {
   const handleScaleFontDown = () => {
     scaleFont('down');
     setFontSize(getFont());
+    onChangeFont(getFont());
   }
 
   const handleScaleFontUp = () => {
     scaleFont('up')
     setFontSize(getFont());
+    onChangeFont(getFont());
   }
 
   const handleResetFont = () => {
     resetFont();
     setFontSize(getFont());
+    onChangeFont(getFont());
+  }
+
+  const handleOnChangeTheme = (e) => {
+    changeTheme(e.target.checked, setLightTheme);
+    onChangeTheme(getTheme());
+  }
+
+  const handleOnClickMotion = () => {
+    setIsReducedMotion(!isReducedMotion);
+    onChangeMotion(!isReducedMotion);
   }
 
   return(
@@ -80,7 +93,7 @@ const AccessibilityBar = ({children}) => {
             <h3 className="text-center cs-text-xl dark:text-white">Theme</h3>
             <div className="flex flex-col lg:flex-row lg:space-x-2 items-center lg:justify-center mt-4">
               <label htmlFor="theme" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] ">
-                <input id='theme' type="checkbox" className="sr-only peer" onChange={(e) => changeTheme(e.target.checked, setLightTheme)} checked={lightTheme}/>
+                <input id='theme' type="checkbox" className="sr-only peer" onChange={handleOnChangeTheme} checked={lightTheme}/>
                 <div className="dark:bg-[#E0E0E0] bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1 flex items-center justify-center">
                   <Image
@@ -112,7 +125,7 @@ const AccessibilityBar = ({children}) => {
             <div className="flex space-x-2 items-center mt-4">
               <p className="cs-text-lg dark:text-white">Off</p>
               <label htmlFor="motion" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] ">
-                <input id='motion' type="checkbox" className="sr-only peer"/>
+                <input id='motion' type="checkbox" className="sr-only peer" onChange={handleOnClickMotion} checked={isReducedMotion}/>
                 <div className="bg-[#E0E0E0] peer-checked:bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1"></span>
               </label>
