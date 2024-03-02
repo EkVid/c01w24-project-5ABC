@@ -4,7 +4,6 @@ import FontSizeContext from "@/components/utils/FontSizeContext";
 import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 import { useSortable } from "@dnd-kit/sortable";
 import { useUniqueId } from "@dnd-kit/utilities";
-import { useDraggable } from "@dnd-kit/core";
 
 const ToolboxCard = ({title, type, desc, icon}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
@@ -32,7 +31,6 @@ const ToolboxCard = ({title, type, desc, icon}) => {
         <div className="text-lg font-bold custom-text dark:d-text select-none">{title}</div>
         <div className="text-sm custom-text-shade dark:d-text-shade select-none">{desc}</div>
       </div>
-      
     </div>
   )
 }

@@ -48,7 +48,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   }
 
   return(
-    <div className="flex-grow custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm">
+    <div className="h-fit custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm">
       {/* Dropdown */}
       <details className="group">
 

@@ -19,7 +19,7 @@ const FormEditor = () => {
   useEffect(() => setTheme(getTheme()), []);
  
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col flex-grow justify-between">
       <AccessibilityBar 
         onChangeFont={setFontSize}
         onChangeTheme={setTheme}
