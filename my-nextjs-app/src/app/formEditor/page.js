@@ -1,5 +1,4 @@
 'use client'
-import AccessibilityBar from "@/components/AccessibilityBar";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 import ThemeContext from "@/components/utils/ThemeContext";
@@ -7,9 +6,14 @@ import { getTheme } from "@/components/utils/theme";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
+const AccessibilityBar = dynamic(
+  () => import("@/components/AccessibilityBar"),
+  { ssr: false }
+);
+
 const FormComponent = dynamic(() => import("@/components/GrantForm/FormComponent"), {
   ssr: false,
-})
+});
 
 const FormEditor = () => {
   const [fontSize, setFontSize] = useState(100);
