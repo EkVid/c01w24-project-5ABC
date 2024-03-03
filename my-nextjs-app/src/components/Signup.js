@@ -16,23 +16,13 @@ import axios from 'axios';
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
   const router = useRouter();
-  const [data, setData] = useState('');
 
-
-  useEffect(() => {
-    axios.get('http://localhost:5000/signup')
-        .then(response => {
-          setData(response.data.message);
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-      }, []);
+  useEffect(() => {    
     if (countdown === 0) {
       router.push("/login"); // Redirect to the login page when countdown reaches 0
       return;
     }
-    
+  
 
     // Decrease the countdown by 1 every second
     const timerId = setTimeout(() => {
@@ -51,9 +41,11 @@ const VerificationSuccessMessage = () => {
 };
 
 const SignUp = () => {
+  const [data, setData] = useState('');
   const [selection, setSelection] = useState("grantee");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
@@ -84,7 +76,7 @@ const SignUp = () => {
     setMatchError(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setPasswordError(!validatePassword(newPassword));
     setMatchError(newPassword !== confirmPassword);
@@ -92,6 +84,19 @@ const SignUp = () => {
     if (validatePassword(newPassword) && newPassword === confirmPassword) {
       setShowSuccessMessage(true); // Show the verification success message
     }
+    // TODO: If email already exists in db can we have a window come up and say
+    // this email already exists
+    try {
+      const response = axios.post('http://localhost:5000/signup', {
+        Email: emailValue,
+        Password: newPassword,
+        Usertype: selection
+      });
+      setData(response.data.message);
+      console.log(data)
+    } catch (error) {
+      console.log(data)
+    } 
   };
 
   const togglePasswordVisibility = () => {
@@ -153,7 +158,7 @@ const SignUp = () => {
                   }`}
                 ></span>
               </span>
-              <p className="text-black">Grantor</p>
+              <p className="text-black">Grantee</p>
             </div>
             <div
               className={`cursor-pointer px-4 py-3 text-lg flex items-center ${
@@ -184,6 +189,8 @@ const SignUp = () => {
           >
             <input
               type="email"
+              value={emailValue}
+              onChange={(e) => setEmailValue(e.target.value)}
               placeholder="Email"
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
               required
@@ -278,7 +285,6 @@ const SignUp = () => {
               >
                 Sign Up
               </button>
-              <p>{data}</p>
             </div>
           </form>
         </div>

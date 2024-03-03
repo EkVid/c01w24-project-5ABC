@@ -8,12 +8,40 @@ import FontSizeContext from "@/components/utils/FontSizeContext";
 import { useContext, useState } from "react";
 import show_password from "../../public/password_eye.svg";
 import hide_password from "../../public/password_eye_cross.svg";
+import axios from 'axios';
+import { useRouter } from "next/navigation";
+
+
 
 const Login = () => {
+  const [data, setData] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const router = useRouter();
+
+
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // TODO: route to welcome user landing page otherwise leave him on same page
+    try {
+      const response = axios.post('http://localhost:5000/login', {
+        Email: emailValue,
+        Password: newPassword
+      });
+      setData(response.data.message);
+      console.log(emailValue, newPassword)
+      console.log(data)
+    } catch (error) {
+      console.log(data)
+    }
   };
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -46,10 +74,15 @@ const Login = () => {
             </h2>
           </div>
 
-          <form className="flex flex-col space-y-6 items-center">
+          <form 
+            className="flex flex-col space-y-6 items-center"
+            onSubmit={handleSubmit}
+          >
             <input
               type="email"
               placeholder="Email"
+              value={emailValue}
+              onChange={(e) => setEmailValue(e.target.value)}
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
             />
             <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
@@ -57,6 +90,8 @@ const Login = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 className="p-4 text-lg rounded-full border w-full text-black pr-10"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 required
               />
               <div
