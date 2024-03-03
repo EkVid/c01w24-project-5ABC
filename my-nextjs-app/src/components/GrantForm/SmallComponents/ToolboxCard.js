@@ -14,7 +14,7 @@ const ToolboxCard = ({title, type, desc, icon}) => {
   });
 
   return (
-    <div 
+    <button 
       ref={setNodeRef}
       {...attributes}
       {...listeners}
@@ -27,11 +27,11 @@ const ToolboxCard = ({title, type, desc, icon}) => {
         height={"auto"}
         className="mt-1 mx-1 self-start pointer-events-none dark:d-white-filter"
       />
-      <div className="flex flex-col mx-4">
-        <div className="text-lg font-bold custom-text dark:d-text select-none">{title}</div>
-        <div className="text-sm custom-text-shade dark:d-text-shade select-none">{desc}</div>
+      <div className="flex flex-col items-start mx-4">
+        <div className="text-lg text-left font-bold custom-text dark:d-text select-none">{title}</div>
+        <div className="text-sm text-left custom-text-shade dark:d-text-shade select-none">{desc}</div>
       </div>
-    </div>
+    </button>
   )
 }
 

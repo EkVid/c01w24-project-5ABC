@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
@@ -15,6 +15,8 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
     setCurrentAnswer(newAnswer);
     onSelectAnswer(newAnswer);
   }
+
+  useEffect(() => setCurrentAnswer(""), [isEditMode]);
 
   return (
     <>

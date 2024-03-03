@@ -1,5 +1,5 @@
 "use client"
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image';
 import PlusIcon from "@/../public/plus.svg";
@@ -8,7 +8,7 @@ import FontSizeContext from '../utils/FontSizeContext';
 import OptionsDiv from './SmallComponents/OptionsDiv';
 
 const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
-  const [currentAnswer, setCurrentAnswer] = useState(null)
+  const [currentAnswer, setCurrentAnswer] = useState([])
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
  
@@ -29,9 +29,11 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
   }
 
   const handleOnClearSelectedAnswer = () => {
-    setCurrentAnswer(null);
-    onSelectAnswer(null);
+    setCurrentAnswer([]);
+    onSelectAnswer([]);
   }
+
+  useEffect(() => setCurrentAnswer([]), [isEditMode]);
 
   return (
     <>
@@ -86,7 +88,7 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
             :
             // Show answer
             <label htmlFor={a.id} className="ml-3 text-sm custom-dark-grey dark:d-text pointer-events-none"> 
-              {a.answer}
+              {a.answer.trim() === "" ? "(empty answer)" : a.answer}
             </label>
           }
         </div>

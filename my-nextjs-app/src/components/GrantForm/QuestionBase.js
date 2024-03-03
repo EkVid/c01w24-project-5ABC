@@ -73,10 +73,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
 
   const dragStyle = {
     translate: `${transform ? transform.x : 0}px ${transform ? transform.y : 0}px`,
-    transition: isReduceMotion ? "" : isDragging ? "" : transform ? `translate ${dragTransitionSec}s` : "",
-    transitionTimingFunction: isReduceMotion ? "" : isDragging ? "" : transform ? "ease-in" : "",
+    transition: isReduceMotion ? "" : isDragging ? "" : transform ? `translate ${dragTransitionSec}s` : ""
   }
-
 
   const attId = uuidv4();
 
@@ -114,7 +112,6 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
   // --------- Handlers for questions that have answers (multiple choice, checkbox) -----------
 
   const handleOnAddAnswer = () => {
-    //onChangeQuestionData({...questionData, answers: [...answers, ""]})
     validateAndUpdateAnswers([...answersObj, {answer: "", id: uuidv4()}]);
   }
 
@@ -194,7 +191,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         }
         <div className={`flex items-center mb-6`}>
           {questionNum && isShowingNum ? 
-            <div className="mr-4 font-bold text-xl">
+            <div className="mr-4 font-bold text-xl custom-text dark:d-text">
               Q.{questionNum}
             </div> 
             : 
@@ -220,8 +217,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               </button>
             </>
             :
-            <div className="text-2xl custom-text dark:d-text">
-              {question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
+            <div className="text-xl custom-text dark:d-text">
+              {question.trim() === "" ? "(empty question)" : question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
             </div>
           }
         </div>
@@ -379,7 +376,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           </div>
           {/* Question icon in corner */}
           {fontSizeMultiplier < 1.5 ?
-            <div className="shrink-0 ml-4 hidden lg:flex">
+            <div className="shrink-0 ml-4 p-1.5 hidden lg:flex">
               <Image
                 src={
                   type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
