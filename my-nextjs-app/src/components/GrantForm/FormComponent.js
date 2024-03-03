@@ -4,6 +4,11 @@ import ToolboxCard from "@/components/GrantForm/SmallComponents/ToolboxCard";
 import Toolbox from "@/components/GrantForm/Toolbox";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
+import Image from "next/image";
+import UndoIcon from "@/../public/undo.svg";
+import EditIcon from "@/../public/edit.svg";
+import SaveIcon from "@/../public/save.svg";
+import EyeIcon from "@/../public/password-eye.svg"
 import { DndContext, DragOverlay, rectIntersection, useDroppable} from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -13,7 +18,7 @@ const testbody = [
   {
     question: "What's your name?",
     type: process.env.NEXT_PUBLIC_TYPE_TEXT,
-    errMsgArr: ["Invaldi ererif here"],
+    errMsgArr: ["Example of error"],
     options:
     {
       isMultipleLines: true,
@@ -26,12 +31,10 @@ const testbody = [
   {
     question: "Any attachments?",
     type: process.env.NEXT_PUBLIC_TYPE_FILE,
-    errMsgArr: ["Invaldi file error here"],
   },
   {
     question: "What's your education time?",
     type: process.env.NEXT_PUBLIC_TYPE_DATE,
-    errMsgArr: ["Invaldi date error here"],
     options:
     {
       isDateRange: true,
@@ -41,19 +44,16 @@ const testbody = [
   {
     question: "What's your phone number?",
     type: process.env.NEXT_PUBLIC_TYPE_PHONE,
-    errMsgArr: ["phone neu error"]
   },
   {
     question: "What's your email?",
     type: process.env.NEXT_PUBLIC_TYPE_EMAIL,
-    errMsgArr: ["email error"]
   },
   {
     question: "Do you have a driver's license?",
     type: process.env.NEXT_PUBLIC_TYPE_MULTI,
     answers: ["Yes", "No"],
     isRequired: true,
-    errMsgArr: null,
     errEmptyAnsIdxArr: [],
     errDupAnsIdxArr: []
   },
@@ -62,7 +62,6 @@ const testbody = [
     type: process.env.NEXT_PUBLIC_TYPE_CHECKBOX,
     answers: ["Tall", "Smol", "Wide", "Thinn"],
     isRequired: false,
-    errMsgArr: ["eerror 1", "erro2"],
     options:
     {
       isAllAnOption: false,
@@ -72,7 +71,6 @@ const testbody = [
   {
     question: "Enter your age:",
     type: process.env.NEXT_PUBLIC_TYPE_NUMBER,
-    errMsgArr: ['rr'],
     options:
     {
       isIntegerOnly: false,
@@ -96,7 +94,6 @@ const FormComponent = () => {
 
   const largeFontSize = 140;
   const deltaXToAdd = 240;
-  const deltaYToAdd = -100;
 
   // Load data into form
   // useEffect(() => {
@@ -130,6 +127,16 @@ const FormComponent = () => {
   }
 
   const tempObj = {...getNewQuestionObj("multiple choice"), isTemp: true}
+
+  const handleOnQuit = () => {
+    // TODO: Send user back to their forms when clicked Quit
+    console.log("Aye where you goin? Quitting doesn't work");
+  }
+
+  const handleOnSave = () => {
+    // TODO: Do save and make request
+    console.log("Congratulations. You clicked the save button. Way to go. This button doesn't work btw.");
+  }
 
   const handleOnClickAddQuestion = (type) => {
     const newQuestion = getNewQuestionObj(type);
@@ -169,11 +176,11 @@ const FormComponent = () => {
   const handleOnDragMove = ({active, over, delta}) => {
     const activeCont = active.data?.current?.cont;
     const overId = over?.id;
-    setIsAddingNew(delta.x >= deltaXToAdd || delta.y <= deltaYToAdd);
+    setIsAddingNew(delta.x >= deltaXToAdd);
+
     // For dragging from toolbox
-    console.log(delta)
     if (activeCont === "toolbox") {
-      if (delta.x < deltaXToAdd && !newDraggedObj) return console.log("return");
+      if (delta.x < deltaXToAdd && newDraggedObj) return clearTemp();
       if (questionData == null || questionData.length === 0) return setQuestionData([tempObj]);
       if (questionData.filter(q => q.isTemp).length === 0) return setQuestionData([...questionData, tempObj]);
       const newTempIdx = questionData.findIndex(q => q.id === overId);
@@ -195,7 +202,6 @@ const FormComponent = () => {
 
     if (activeCont === "toolbox") {
       if (questionData && questionData.length === 1 && questionData[0].isTemp && delta.x >= deltaXToAdd) handleOnClickAddQuestion(type);
-      else if (questionData && questionData.length === 1 && questionData[0].isTemp && delta.y <= deltaYToAdd) handleOnClickAddQuestion(type);
       else if (tempIdx[1] !== -1) {
         const newQuestion = getNewQuestionObj(type);
         setQuestionData(prev => [...prev.slice(0, tempIdx[1]), newQuestion, ...prev.slice(tempIdx[1])]);
@@ -225,7 +231,7 @@ const FormComponent = () => {
 
   const handleOnSelectAnswer = (questionID, answer) => {
     //console.log("answer: " + answer);
-    // Stores answer that applicant chooses
+    // TODO: Store answer that applicant chooses for final version
   }
 
   const handleOnChangePosition = (questionId, posChange) => {
@@ -256,9 +262,55 @@ const FormComponent = () => {
       onDragCancel={clearStates}
       modifiers={[restrictToVerticalAxisAndWindowEdges]}
     >
-      <button onClick={() => setIsEditMode(prev => !prev)}>Change isEditMode</button>
+      {/* Header for title and save, exit, view buttons */}
+      <div className={`flex items-center sticky top-0 z-30 justify-between h-fit overflow-auto px-2.5 custom-questioncard-background`}>
+        <button 
+          onClick={handleOnQuit}
+          className="flex min-w-fit rounded custom-interactive-btn px-2 py-1"
+        >
+          <Image
+            src={UndoIcon}
+            alt="Quit"
+            width={22 * fontSize / 100}
+            height={"auto"}
+            className="dark:d-white-filter rotate-[30deg]"
+          />
+          <div className="ml-3 text-xl custom-text dark:d-text">Quit</div>
+        </button>
+        <div className="flex-grow text-center mx-8 text-2xl custom-text dark:d-text">
+          Da Best Form in Da World
+        </div>
+        <div className="min-w-fit flex flex-col justify-between">
+          <button 
+            onClick={handleOnSave}
+            className="flex rounded custom-interactive-btn px-2 py-1"
+          >
+            <Image
+              src={SaveIcon}
+              alt="Quit"
+              width={22 * fontSize / 100}
+              height={"auto"}
+              className="dark:d-white-filter"
+            />
+            <div className="ml-3 text-xl custom-text dark:d-text">Save</div>
+          </button>
+          <button 
+            onClick={() => setIsEditMode(!isEditMode)}
+            className="flex rounded custom-interactive-btn px-2 py-1"
+          >
+            <Image
+              src={isEditMode ? EyeIcon : EditIcon}
+              alt="Quit"
+              width={22 * fontSize / 100}
+              height={"auto"}
+              className="dark:d-white-filter"
+            />
+            <div className="ml-3 text-xl custom-text dark:d-text">{isEditMode ? "View" : "Edit"}</div>
+          </button>
+        </div>
+      </div>
       <div className={`${fontSize > largeFontSize ? "flex-col" : "flex flex-col lg:flex-row"} flex-grow bg-transparent`}>
-        <div className={`${fontSize > largeFontSize || !isEditMode ? "" : "lg:flex top-0"} hidden h-fit max-h-[90vh] p-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col lg:max-w-xs xl:max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition"}`}>
+        <div className={`${fontSize > largeFontSize || !isEditMode ? "" : "lg:flex sticky top-20"} hidden h-fit max-h-[90vh] px-3 py-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col lg:max-w-xs xl:max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition"}`}>
           <Toolbox onClickAdd={handleOnClickAddQuestion}/>
         </div>
         <SortableContext
@@ -291,7 +343,7 @@ const FormComponent = () => {
                 }
               </div>
               :
-              <div className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">Bottom of form</div>
+              <div className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">End of form</div>
             }
           </div>
         </SortableContext>

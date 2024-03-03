@@ -51,6 +51,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
     }
   }
 
+  useEffect(() => setCurrentAnswers([]), [isEditMode]);
 
   return (
     <>
@@ -111,7 +112,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
             :
             // Show answer
             <label htmlFor={a.id} className="ml-3 text-sm custom-dark-grey dark:d-text pointer-events-none selection:bg-"> 
-              {a.answer}
+              {a.answer.trim() === "" ? "(empty answer)" : a.answer}
             </label>
           }
         </div>
