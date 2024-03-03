@@ -29,7 +29,7 @@ grantFormCollection = db.GrantForms
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
-@app.route("/register", methods=["POST"])
+@app.route("/signup", methods=["POST"])
 def register():
     contentType = request.headers.get('Content-Type')
 
