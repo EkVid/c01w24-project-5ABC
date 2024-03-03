@@ -334,16 +334,23 @@ const FormComponent = () => {
                 onChangePosition={posChange => handleOnChangePosition(q.id, posChange)}
               />
             )}
-            {!questionData || questionData.length === 0 ?
-              <div className="flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap">
-                {!questionData ? 
-                  "Use the toolbox to start creating your application form!\n\n\nClick the + icons to start adding questions!" 
-                  : 
-                  "You trynna give people an empty application to fill out?\n\n\nAdd your questions here now."
-                }
-              </div>
-              :
-              <div className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">End of form</div>
+            {isEditMode ?
+              !questionData || questionData.length === 0 ?
+                <div className="flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap">
+                  {!questionData ? 
+                    "Use the toolbox to start creating your application form!\n\n\nClick the + icons to start adding questions!" 
+                    : 
+                    "You trynna give people an empty application to fill out?\n\n\nAdd your questions here now."
+                  }
+                </div>
+                :
+                <div className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">End of form</div>
+              : !questionData || questionData.length === 0 ?
+                <div className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">
+                  There are no questions to preview
+                </div>
+                :
+                <></>
             }
           </div>
         </SortableContext>
