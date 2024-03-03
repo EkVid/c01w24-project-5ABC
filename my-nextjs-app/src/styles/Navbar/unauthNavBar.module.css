@@ -1,0 +1,38 @@
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+  
+  .logo p {
+    color: #333;
+    text-decoration: none;
+    font-size: 1.5rem;
+  }
+  
+  .actions p {
+    color: white;
+    text-decoration: none;
+    margin-left: 10px;
+  }
+  
+  .actions p:hover {
+    text-decoration: underline;
+  }
+  
+  .button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: #4CAF4F;
+    margin-right: 25px;
+  }
+  
+  .actions {
+    display: flex;
+    align-items: center;
+  }
+  
