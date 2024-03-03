@@ -61,6 +61,7 @@ def register():
                 "ActiveSession": False
             }
             userCollection.insert_one(userToAdd)
+            print(userToAdd)
             return {"message": "User successfully registered"}
 
     else:
