@@ -113,14 +113,43 @@ def login():
         return {"message": "Unsupported Content Type"}, 400
 
 
+@app.route("/checkResetCode", methods=['POST'])
+def checkResetCode():
+    contentType = request.headers.get("Content-Type")
+
+    if(contentType == "application/json"):
+        email = request.json['Email']
+        ResetCode = request.json['ResetCode']
+
+        foundUser = userCollection.find_one({"Email": email})
+
+        if foundUser is None:
+            return {"message": "Email not found in the system"}, 404
+        
+        storedResetCode = foundUser['ResetCode']
+
+        if(storedResetCode['Code'] == int(ResetCode)):
+            difference = abs(datetime.datetime.utcnow() - storedResetCode['IssueDate'])
+
+            if(difference.seconds < 300): # reset code works within 300 seconds
+                salt = bcrypt.gensalt()
+                return {"message": "Reset Code is valid."}, 200
+            
+            else:
+                return {"message": "Reset Code has expired"}, 401
+        else:
+            return {"message": "Reset Code does not match"}, 401
+    else:
+        return {"message": "Unsupported Content Type"}, 400
+
+
 @app.route("/resetPassword", methods=['POST'])
 def resetPassword():
     contentType = request.headers.get("Content-Type")
 
     if(contentType == "application/json"):
-        verificationCode = request.json['ResetCode'].split("-")
-        email = verificationCode[0]
-        ResetCode = verificationCode[1]
+        email = request.json['Email']
+        ResetCode = request.json['ResetCode']
         newPassword = request.json['NewPassword']
 
         foundUser = userCollection.find_one({"Email": email})
@@ -146,12 +175,12 @@ def resetPassword():
             else:
                 return {"message": "Reset Code has expired"}, 401
         else:
-            return {"message": "Reset Codes to not match"}, 401
+            return {"message": "Reset Code does not match"}, 401
     else:
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/emailResetCode", methods=['GET'])
+@app.route("/emailResetCode", methods=['POST'])
 def generateResetCode():
     contentType = request.headers.get("Content-Type")
 
@@ -173,9 +202,9 @@ def generateResetCode():
         userCollection.update_one({"Email": email}, {"$set": {"ResetCode": resetCode}})
 
         try:
-            code = email + "-" + str(resetCode["Code"])
+            code = str(resetCode["Code"])
             subject = "Reset Password"
-            body = "Please reset you password at http://localhost:3000/reset_password.\nVerification code (include email and code): " + code
+            body = "Reset your password with the verification code: " + code
             sender = "5abc.noreply@gmail.com"
             password = "gpjk gykf fejy eppg"
 
@@ -194,7 +223,8 @@ def generateResetCode():
                 "Message": str(e)
             }, 500
 
-        return {"message": "Verification code successfully sent"}, 200
+        return {"message": "Verification code successfully sent",
+                "code": code}, 200
 
     else:
         return {"message": "Unsupported Content Type"}, 400
