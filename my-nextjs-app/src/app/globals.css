@@ -16,6 +16,12 @@
   }
 }
 
+@layer base {
+  ::selection {
+    @apply custom-text dark:text-white custom-highlight dark:d-custom-highlight
+  }
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -34,12 +40,28 @@ body {
 
 /* ------------------Colours------------------*/
 
+.custom-highlight{
+  background-color: #79f37d;
+}
+
+.custom-accent{
+  accent-color: #407541;
+}
+
+.custom-text{
+  color:#000000
+}
+
+.custom-text-shade{
+  color:#535353
+}
+
 .custom-green{
   color : #4CAF4F;
 }
 
 .custom-green-background{
-  background-color: #4CAF4F;
+  background-color: #79f37d;
 }
 
 .custom-green-dark {
@@ -54,7 +76,7 @@ body {
   background-color: #E0E0E0;
 }
 
-.custom-dark-grey-text{
+.custom-dark-grey{
   color: #4D4D4D;
 }
 
@@ -62,14 +84,53 @@ body {
   background-color: #F5F7FA;
 }
 
+.custom-red{
+  color: #8d0808;
+}
+
+.custom-red-border{
+  border-color: #8d0808;
+}
+
+.custom-questioncard-bg-color{
+  background-color: #ffffff;
+}
+
+.custom-disabled-input{
+  color: #bdbdbd;
+  border-color: #bdbdbd;
+}
+
+
 /* ------------------Dark Mode Colours------------------*/
 @layer utilities {
+  .d-custom-highlight{
+    background-color: #4CAF4F;
+  }
+
+  .d-custom-accent{
+    accent-color: #38913b;
+  }
+
+  .d-custom-disabled-input{
+    color: #525252;
+    border-color: #525252;
+  }
+
   .d-text{
     color : #ffffff;
+  }
+
+  .d-text-shade{
+    color : #7a7a7a;
   }
   
   .d-custom-dark-grey-background{
     background-color: #1f1f1f;
+  }
+
+  .d-custom-dark-grey-border{
+    border-color: #1f1f1f;;
   }
   
   .d-custom-offwhite-background{
@@ -83,6 +144,27 @@ body {
   .d-custom-navy-background{
     background-color: #263238;
   }
+
+  .d-custom-red{
+    color: #f79c9c;
+  }
+
+  .d-custom-dark-grey{
+    color: #a8a8a8;
+  }
+
+  .d-custom-questioncard-bg-color{
+    background-color: #2c2c2c;
+  }
+
+  .d-custom-red-border {
+    border-color: #f79c9c;
+  }
+
+  .d-white-filter{
+    filter: invert(1);
+  }
+
 }
 
 /* ------------------Non-Dynamic Font Sizes------------------*/
@@ -121,3 +203,45 @@ body {
 .cs-text-5xl{
   font-size: 48px;
 }
+
+/* Styles for hover and active states */
+@layer utilities {
+  
+  .custom-hover-white{
+    background-color: #e7e7e7;
+  }
+  
+  .custom-active-white{
+    background-color: #c4c4c4;
+  }
+
+  .d-custom-hover-black{
+    background-color: #3d3d3d;
+  }
+  
+  .d-custom-active-black{
+    background-color: #686868;
+  }
+
+
+}
+
+/* Class for the red border around inputs and question cards for errors */
+.custom-err-border{
+  @apply custom-red-border dark:d-custom-red-border
+}
+
+/* Hover effect for interactable form items */
+.custom-interactive-btn{
+  @apply hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black
+}
+
+.custom-interactive-input{
+  @apply bg-transparent hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent
+}
+
+/* Class for question cards */
+.custom-questioncard-background{
+  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color drop-shadow-lg
+}
+

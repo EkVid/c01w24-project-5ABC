@@ -6,15 +6,49 @@ import sun from "../../public/sun.svg"
 import moon from "../../public/moon.svg"
 import Image from "next/image.js";
 import { useState } from "react";
-import { scaleFont, resetFont } from "./utils/scaleFont.js"
+import { scaleFont, resetFont, getFont } from "./utils/scaleFont.js"
 import { initTheme, changeTheme, getTheme } from "./utils/theme.js"
+import FontSizeContext from "./utils/FontSizeContext";
+import ReducedMotionContext from "./utils/ReducedMotionContext";
+import ThemeContext from "./utils/ThemeContext";
 
-const AccessibilityBar = () => {
+const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion}) => {
   initTheme()
   const [ lightTheme, setLightTheme ] = useState(getTheme() === 'light')
+  const [ fontSize, setFontSize ] = useState(100)  // Default font size is 100
+  const [ isReducedMotion, setIsReducedMotion ] = useState(false)
+  // TODO: add handler for setting isReducedMotion when option is changed
+
+  const handleScaleFontDown = () => {
+    scaleFont('down');
+    setFontSize(getFont());
+    onChangeFont(getFont());
+  }
+
+  const handleScaleFontUp = () => {
+    scaleFont('up')
+    setFontSize(getFont());
+    onChangeFont(getFont());
+  }
+
+  const handleResetFont = () => {
+    resetFont();
+    setFontSize(getFont());
+    onChangeFont(getFont());
+  }
+
+  const handleOnChangeTheme = (e) => {
+    changeTheme(e.target.checked, setLightTheme);
+    onChangeTheme(getTheme());
+  }
+
+  const handleOnClickMotion = () => {
+    setIsReducedMotion(!isReducedMotion);
+    onChangeMotion(!isReducedMotion);
+  }
 
   return(
-    <div className="custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm">
+    <div className="h-fit custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm">
       {/* Dropdown */}
       <details className="group">
 
@@ -33,13 +67,13 @@ const AccessibilityBar = () => {
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600  min-w-40">
             <div className="flex items-center justify-center">
               <h3 className="text-center cs-text-xl dark:text-white">Font Size </h3>
-              <button className="cs-text-2xl ms-3 cursor-pointer dark:text-white" onClick={resetFont}>&#8635;</button>
+              <button className="cs-text-2xl ms-3 cursor-pointer dark:text-white" onClick={handleResetFont}>&#8635;</button>
             </div>
             
             <div className="flex space-x-4 justify-center items-center">
               <button 
                 className="cs-text-5xl font-light hover:cursor-pointer dark:text-white" 
-                onClick={() => scaleFont('down')}>
+                onClick={handleScaleFontDown}>
                   −
               </button>
 
@@ -47,7 +81,7 @@ const AccessibilityBar = () => {
 
               <button 
                 className="cs-text-5xl font-light hover:cursor-pointer dark:text-white" 
-                onClick={() => scaleFont('up')}>
+                onClick={handleScaleFontUp}>
                   +
               </button>
             </div>
@@ -59,7 +93,7 @@ const AccessibilityBar = () => {
             <h3 className="text-center cs-text-xl dark:text-white">Theme</h3>
             <div className="flex flex-col lg:flex-row lg:space-x-2 items-center lg:justify-center mt-4">
               <label htmlFor="theme" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] ">
-                <input id='theme' type="checkbox" className="sr-only peer" onChange={(e) => changeTheme(e.target.checked, setLightTheme)} checked={lightTheme}/>
+                <input id='theme' type="checkbox" className="sr-only peer" onChange={handleOnChangeTheme} checked={lightTheme}/>
                 <div className="dark:bg-[#E0E0E0] bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1 flex items-center justify-center">
                   <Image
@@ -75,7 +109,7 @@ const AccessibilityBar = () => {
           {/* Language */}
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:text-white">Language</h3>
-            <div className="flex justify-center items-center mt-4 mx-1 px-2 rounded-lg custom-dark-grey-background h-8">
+            <div className="flex justify-center items-center mt-4 mx-1  rounded-lg custom-dark-grey-background h-8">
               <p className="cs-text-xl text-center ms-auto">EN</p>
               <Image
                 src={chevronDown}
@@ -91,7 +125,7 @@ const AccessibilityBar = () => {
             <div className="flex space-x-2 items-center mt-4">
               <p className="cs-text-lg dark:text-white">Off</p>
               <label htmlFor="motion" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] ">
-                <input id='motion' type="checkbox" className="sr-only peer"/>
+                <input id='motion' type="checkbox" className="sr-only peer" onChange={handleOnClickMotion} checked={isReducedMotion}/>
                 <div className="bg-[#E0E0E0] peer-checked:bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1"></span>
               </label>
@@ -100,6 +134,13 @@ const AccessibilityBar = () => {
           </div>
         </div>
       </details>
+      <FontSizeContext.Provider value={fontSize}>
+        <ThemeContext.Provider value={lightTheme}>
+          <ReducedMotionContext.Provider value={isReducedMotion}>
+            {children}
+          </ReducedMotionContext.Provider>
+        </ThemeContext.Provider>
+      </FontSizeContext.Provider>
     </div>
   )
 }
