@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from 'axios';
+import axios from "axios";
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -32,7 +32,7 @@ const VerificationSuccessMessage = () => {
 };
 
 const ForgotPassword = () => {
-  const [data, setData] = useState('');
+  const [data, setData] = useState("");
   const [resetClicked, setResetClicked] = useState(false); // store whether reset password button is clicked
   const [code, setCode] = useState(""); // Store the entered code
   const [codeChecked, setCodeChecked] = useState(false); // Store whether the code is correct or not
@@ -48,13 +48,13 @@ const ForgotPassword = () => {
     setResetClicked(true);
     // TODO: handle email does not exist in db frontend
     try {
-      const response = axios.post('http://localhost:5000/forgot_password', {
-        Email: emailValue
+      const response = axios.post("http://localhost:5000/forgot_password", {
+        Email: emailValue,
       });
       setData(response.data.message);
     } catch (error) {
-      console.log(data)
-    } 
+      console.log(data);
+    }
   };
 
   const handleCodeChange = (e) => {
@@ -68,7 +68,7 @@ const ForgotPassword = () => {
 
   const checkCode = (inputCode) => {
     if (inputCode === "1234") {
-      // change 1234 to the actual code from backend
+      // TO DO: change 1234 to the actual code from backend
       setCodeChecked(true);
       setShowWarning(false);
       setShowSuccessMessage(true);
