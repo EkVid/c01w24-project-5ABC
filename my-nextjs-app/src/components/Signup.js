@@ -9,21 +9,35 @@ import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import show_password from "../../public/password_eye.svg";
 import hide_password from "../../public/password_eye_cross.svg";
+import axios from 'axios';
+
+
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
   const router = useRouter();
+  const [data, setData] = useState('');
+
 
   useEffect(() => {
+    axios.get('http://localhost:5000/signup')
+        .then(response => {
+          setData(response.data.message);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+      }, []);
     if (countdown === 0) {
       router.push("/login"); // Redirect to the login page when countdown reaches 0
       return;
     }
+    
 
     // Decrease the countdown by 1 every second
     const timerId = setTimeout(() => {
       setCountdown(countdown - 1);
-    }, 1000);
+    }, 1000);        
 
     return () => clearTimeout(timerId); // Cleanup the timer when the component unmounts or countdown changes
   }, [countdown, router]);
@@ -264,6 +278,7 @@ const SignUp = () => {
               >
                 Sign Up
               </button>
+              <p>{data}</p>
             </div>
           </form>
         </div>
