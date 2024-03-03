@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from 'axios';
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -30,18 +31,29 @@ const VerificationSuccessMessage = () => {
 };
 
 const ForgotPassword = () => {
+  const [data, setData] = useState('');
   const [resetClicked, setResetClicked] = useState(false); // store whether reset password button is clicked
   const [code, setCode] = useState(""); // Store the entered code
   const [codeChecked, setCodeChecked] = useState(false); // Store whether the code is correct or not
   const [showWarning, setShowWarning] = useState(false); // store whether to show the warning or not based on the code
   const [verifyClicked, setVerifyClicked] = useState(false); // State to track verify button click
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); //  State for showing the success message
+  const [emailValue, setEmailValue] = useState("");
 
   const router = useRouter(); // used for redirection
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setResetClicked(true);
+    // TODO: handle email does not exist in db frontend
+    try {
+      const response = axios.post('http://localhost:5000/forgot_password', {
+        Email: emailValue
+      });
+      setData(response.data.message);
+    } catch (error) {
+      console.log(data)
+    } 
   };
 
   const handleCodeChange = (e) => {
@@ -107,6 +119,8 @@ const ForgotPassword = () => {
                 <input
                   type="email"
                   placeholder="Email"
+                  value={emailValue}
+                  onChange={(e) => setEmailValue(e.target.value)}
                   className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
                   required
                 />
