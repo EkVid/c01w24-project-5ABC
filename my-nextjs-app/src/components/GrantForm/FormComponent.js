@@ -13,6 +13,7 @@ import { DndContext, DragOverlay, rectIntersection, useDroppable} from "@dnd-kit
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from "next/navigation";
 
 const testbody = [
   {
@@ -79,7 +80,7 @@ const testbody = [
   }
 ]
 
-const FormComponent = () => {
+const FormComponent = ({onClickQuit}) => {
   const fontSize = useContext(FontSizeContext);
   const isReduceMotion = useContext(ReducedMotionContext);
   const [questionData, setQuestionData] = useState(null);
@@ -91,6 +92,7 @@ const FormComponent = () => {
   const [tempIdx, setTempIdx] = useState([-1, -1]);
 
   const questionPanelRef = useDroppable({ id: "questionPanel"});
+  const router = useRouter();
 
   const largeFontSize = 140;
   const deltaXToAdd = 240;
@@ -127,11 +129,6 @@ const FormComponent = () => {
   }
 
   const tempObj = {...getNewQuestionObj("multiple choice"), isTemp: true}
-
-  const handleOnQuit = () => {
-    // TODO: Send user back to their forms when clicked Quit
-    console.log("Aye where you goin? Quitting doesn't work");
-  }
 
   const handleOnSave = () => {
     // TODO: Do save and make request
@@ -265,7 +262,7 @@ const FormComponent = () => {
       {/* Header for title and save, exit, view buttons */}
       <div className={`flex items-center sticky top-0 z-30 justify-between h-fit overflow-auto px-2.5 custom-questioncard-background`}>
         <button 
-          onClick={handleOnQuit}
+          onClick={() => router.push("/")}
           className="flex min-w-fit rounded custom-interactive-btn px-2 py-1"
         >
           <Image
