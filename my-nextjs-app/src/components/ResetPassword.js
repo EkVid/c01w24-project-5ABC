@@ -74,7 +74,7 @@ const ResetPassword = () => {
 
   const handleCodeChange = (e) => {
     const inputCode = e.target.value;
-    setCode(inputCode); // Update the code state with the new input
+    setCode(inputCode);
     setShowWarning(false);
   };
 
@@ -84,13 +84,13 @@ const ResetPassword = () => {
     setMatchError(newPassword !== confirmPassword);
 
     setShowWarning(code !== "1234");
-    // chaneg it to the actual code
+    // TO DO: change 1234 to the actual code from backend
 
     if (
       validatePassword(newPassword) &&
       newPassword === confirmPassword &&
       code == "1234"
-      // chaneg it to the actual code
+      // TO DO: change 1234 to the actual code from backend
     ) {
       setShowSuccessMessage(true);
     }
