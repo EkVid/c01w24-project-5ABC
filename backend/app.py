@@ -53,6 +53,7 @@ def register():
                 "ActiveSession": False
             }
             userCollection.insert_one(userToAdd)
+            print(userToAdd)
             return {"message": "User successfully registered"}
 
     else:
@@ -151,7 +152,7 @@ def resetPassword():
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/emailResetCode", methods=['GET'])
+@app.route("/forgot_password", methods=['GET', 'POST'])
 def generateResetCode():
     contentType = request.headers.get("Content-Type")
 
@@ -194,7 +195,7 @@ def generateResetCode():
                 "Message": str(e)
             }, 500
 
-        return {"message": "Verification code successfully sent"}, 200
+        return {"message": "Verification code "+str(resetCode["Code"])+" successfully sent"}, 200
 
     else:
         return {"message": "Unsupported Content Type"}, 400
