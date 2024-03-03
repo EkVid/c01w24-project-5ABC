@@ -22,29 +22,29 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   const handleScaleFontDown = () => {
     scaleFont("down");
     setFontSize(getFont());
-    onChangeFont(getFont());
+    if (onChangeFont) onChangeFont(getFont());
   }
 
   const handleScaleFontUp = () => {
     scaleFont("up");
     setFontSize(getFont());
-    onChangeFont(getFont());
+    if (onChangeFont) onChangeFont(getFont());
   }
 
   const handleResetFont = () => {
     resetFont();
     setFontSize(getFont());
-    onChangeFont(getFont());
+    if (onChangeFont) onChangeFont(getFont());
   }
 
   const handleOnChangeTheme = (e) => {
     changeTheme(e.target.checked, setLightTheme);
-    onChangeTheme(getTheme());
+    if (onChangeTheme) onChangeTheme(getTheme());
   }
 
   const handleOnClickMotion = () => {
     setIsReducedMotion(!isReducedMotion);
-    onChangeMotion(!isReducedMotion);
+    if (onChangeMotion) onChangeMotion(!isReducedMotion);
   }
 
   return(
