@@ -40,6 +40,8 @@ const ResetPassword = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showWarning, setShowWarning] = useState(false); // store whether to show the warning or not based on the code
+  const [code, setCode] = useState(""); // Store the entered code
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
@@ -65,12 +67,31 @@ const ResetPassword = () => {
     setMatchError(false);
   };
 
+  const handleCodeFocus = () => {
+    setCode("");
+    setShowWarning(false);
+  };
+
+  const handleCodeChange = (e) => {
+    const inputCode = e.target.value;
+    setCode(inputCode); // Update the code state with the new input
+    setShowWarning(false);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setPasswordError(!validatePassword(newPassword));
     setMatchError(newPassword !== confirmPassword);
 
-    if (validatePassword(newPassword) && newPassword === confirmPassword) {
+    setShowWarning(code !== "1234");
+    // chaneg it to the actual code
+
+    if (
+      validatePassword(newPassword) &&
+      newPassword === confirmPassword &&
+      code == "1234"
+      // chaneg it to the actual code
+    ) {
       setShowSuccessMessage(true);
     }
   };
@@ -199,6 +220,25 @@ const ResetPassword = () => {
                 )}
               </div>
             </div>
+            <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs text-green-600 font-semibold">
+              <p>Verification Code</p>
+            </div>
+            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
+              <input
+                type="text"
+                placeholder="Enter your verification code"
+                className="p-4 text-lg rounded-full border w-full text-black pr-10"
+                value={code}
+                onChange={handleCodeChange}
+                onFocus={handleCodeFocus}
+                required
+              />
+            </div>
+            {showWarning && (
+              <p className="text-red-500 text-xs text-center mt-5">
+                Verification Code is incorrect, please enter again
+              </p>
+            )}
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
