@@ -111,7 +111,7 @@ const CreateNewGrant = () => {
                             <div className="flex flex-col md:flex-row flex-grow items-center ms-4 me-8 px-2 py-2 rounded-md custom-dark-grey-background border-2 border-neutral-300 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700">
                                 <p className="flex-grow text-center dark:d-text">My Custom Form</p>
                                 {/* <Link href='#' className="px-6 my-2 md:my-0 text-center py-4 me-2 rounded-md bg-white border-2 border-neutral-300 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700">Applicant View</Link> */}
-                                <Link href='/formEditor' className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 dark:d-text dark:border-neutral-700">Edit</Link>
+                                <Link href='/formEditor' className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">Edit</Link>
                             </div>
                         </div>
 
@@ -136,15 +136,16 @@ const CreateNewGrant = () => {
                             </button>
                             <button
                                 type="button"
-                                className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md bg-white hover:bg-red-600 border-2 border-neutral-300 dark:d-text dark:d-custom-dark-grey-background dark:hover:bg-red-600 dark:border-neutral-700"
+                                className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md hover:scale-105 bg-white hover:bg-red-600 border-2 border-neutral-300 disabled:text-neutral-400 disabled:bg-transparent dark:d-text dark:d-custom-dark-grey-background dark:hover:bg-red-600 dark:border-neutral-700"
                                 onClick={clearForm}
+                                disabled={(!grant.title && !grant.description && grant.numWinners === 0 && !grant.form && !grant.profile)}
                             >
                                 Clear
                             </button>
                             <button
                                 type="submit"
-                                className="px-6 my-2 md:my-0 text-center py-4 rounded-md custom-green-background disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:d-text dark:border-neutral-700"
-                                disabled={(grant.title && grant.numWinners > 0 && grant.form) ? false : true}
+                                className="px-6 my-2 md:my-0 text-center py-4 rounded-md hover:scale-105 custom-green-background disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:d-text dark:border-neutral-700"
+                                disabled={!(grant.title && grant.numWinners > 0 && grant.form)}
                             >
                                 Confirm
                             </button>
