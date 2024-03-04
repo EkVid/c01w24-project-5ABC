@@ -8,13 +8,13 @@
   --background-end-rgb: 255, 255, 255; 
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 255, 255, 255; 
     --background-end-rgb: 255, 255, 255; 
-  }
-}
+  } */
+/* } */
 
 @layer base {
   ::selection {
@@ -61,7 +61,7 @@ body {
 }
 
 .custom-green-background{
-  background-color: #79f37d;
+  background-color: #4CAF4F;
 }
 
 .custom-green-dark {
