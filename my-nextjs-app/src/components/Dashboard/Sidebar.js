@@ -4,16 +4,14 @@ import { usePathname } from "next/navigation"
 const Sidebar = () => {
     const pathname = usePathname()
 
-    console.log(pathname)
-
     return(
         <div className="h-screen flex flex-col lg:w-1/5 sm:w-1/3 dark:d-custom-dark-grey-background transition-colors">
-            <h1 className="w-full text-center text-3xl dark:d-text my-6">
+            <Link href="/dashboard" className="w-full text-center text-3xl dark:d-text my-6">
                 Logo
-            </h1>
+            </Link>
 
             <nav className=" ">
-                <details className="group">
+                <details className="group" open>
                     <summary className="list-none flex items-center w-full cursor-pointer">
                         <h1 className="custom-dark-grey dark:d-text text-3xl ms-8 me-auto">Grants</h1>
                         <div className="custom-dark-grey dark:d-text cs-text-5xl mx-5 group-open:rotate-90 transition-transform">

@@ -1,10 +1,12 @@
-
+import DashboardInnerContainer from "../InnerContainer"
 
 const MyGrants = () => {
     return(
-        <section className="h-screen custom-inner-shadow">
-            <h1>My Grants</h1>
-        </section>
+        <DashboardInnerContainer>
+            <section className="">
+                <h1>My Grants</h1>
+            </section>
+        </DashboardInnerContainer>
     )
 }
 

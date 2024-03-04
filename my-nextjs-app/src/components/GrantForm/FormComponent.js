@@ -81,9 +81,14 @@ const testbody = [
 ]
 
 const FormComponent = ({onClickQuit}) => {
+  // Carter: initializing the question data from grant form
+  const grant = JSON.parse(localStorage.getItem('grant'))
+  const initQuestions = grant ? grant.form : null
+
   const fontSize = useContext(FontSizeContext);
   const isReduceMotion = useContext(ReducedMotionContext);
-  const [questionData, setQuestionData] = useState(null);
+  const [questionData, setQuestionData] = useState(initQuestions);
+  // const [questionData, setQuestionData] = useState(null);
   const [activeQuestion, setActiveQuestion] = useState(null);
   const [newDraggedObj, setNewDraggedObj] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
@@ -132,6 +137,11 @@ const FormComponent = ({onClickQuit}) => {
 
   const handleOnSave = () => {
     // TODO: Do save and make request
+
+    // Carter: setting the question data into grant form
+    const newGrant = {...grant, form:questionData}
+    localStorage.setItem('grant', JSON.stringify(newGrant))
+
     console.log("Congratulations. You clicked the save button. Way to go. This button doesn't work btw.");
   }
 
@@ -262,7 +272,8 @@ const FormComponent = ({onClickQuit}) => {
       {/* Header for title and save, exit, view buttons */}
       <div className={`flex items-center sticky top-0 z-30 justify-between h-fit overflow-auto px-2.5 custom-questioncard-background`}>
         <button 
-          onClick={() => router.push("/")}
+          // onClick={() => router.push("/")}
+          onClick={() => router.back()}
           className="flex min-w-fit rounded custom-interactive-btn px-2 py-1"
         >
           <Image

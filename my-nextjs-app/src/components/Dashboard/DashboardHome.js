@@ -1,10 +1,13 @@
-
+import DashboardInnerContainer from "./InnerContainer"
 
 const DashboardHome = () => {
     return(
-        <div className="">
-            Home dashboard
-        </div>
+        <DashboardInnerContainer>
+            <div className="dark:d-text">
+                Home dashboard
+            </div>
+        </DashboardInnerContainer>
+        
     )
 }
 
