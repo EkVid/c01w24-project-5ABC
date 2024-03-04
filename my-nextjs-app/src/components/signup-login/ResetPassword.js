@@ -2,8 +2,8 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import FontSizeContext from "@/components/utils/FontSizeContext";
-import show_password from "../../public/password_eye.svg";
-import hide_password from "../../public/password_eye_cross.svg";
+import show_password from "../../../public/password_eye.svg";
+import hide_password from "../../../public/password_eye_cross.svg";
 import Image from "next/image";
 import VerificationFailMessage from "./VerificationFailMessage";
 

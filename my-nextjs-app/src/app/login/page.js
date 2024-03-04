@@ -1,4 +1,4 @@
-import Login from "@/components/Login";
+import Login from "@/components/signup-login/Login";
 import BaseLayout from "@/app/layout";
 import dynamic from "next/dynamic";
 

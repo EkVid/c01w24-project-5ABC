@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import Four_Circle from "../../public/logo.svg";
+import Four_Circle from "../../../public/logo.svg";
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
-import show_password from "../../public/password_eye.svg";
-import hide_password from "../../public/password_eye_cross.svg";
+import show_password from "../../../public/password_eye.svg";
+import hide_password from "../../../public/password_eye_cross.svg";
 import axios from "axios";
 import VerificationFailMessage from "./VerificationFailMessage";
 
