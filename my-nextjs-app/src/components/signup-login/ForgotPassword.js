@@ -41,46 +41,22 @@ const ForgotPassword = () => {
   const [verifyClicked, setVerifyClicked] = useState(false); // State to track verify button click
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); //  State for showing the success message
   const [emailValue, setEmailValue] = useState("");
-  const [display, setDisplay] = useState(false); // for displaying failed msg
-  const [resetCode, setResetCode] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
-
 
   const router = useRouter(); // used for redirection
 
-  const handleForgotSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    setResetClicked(true);
     // TODO: handle email does not exist in db frontend
-    axios
-    .post("http://localhost:5000/forgot_password", {
-      Email: emailValue,
-    })
-    .then((response) => {
+    try {
+      const response = axios.post("http://localhost:5000/forgot_password", {
+        Email: emailValue,
+      });
       setData(response.data.message);
-      setResetCode(response.data.code)
-      setResetClicked(true);
-      console.log(response.data.code);
-      localStorage.setItem('resetCode', JSON.stringify(response.data.code));
-      localStorage.setItem('email', emailValue);
-    })
-    .catch((error) => {
-      setDisplay(true);
-      setErrorMsg(error.response.data.message);
-      setResetClicked(false);
-      if (error.response) {
-        console.log(error.response.status);
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log("No response received:", error.request);
-      } else {
-        console.log("Error:", error.message);
-      }
-    });
+    } catch (error) {
+      console.log(data);
+    }
   };
-
-  const getResetCode = () => {
-    return resetCode;
-  }
 
   const handleCodeChange = (e) => {
     setCode(e.target.value); // Update the code based on input
@@ -92,7 +68,8 @@ const ForgotPassword = () => {
   };
 
   const checkCode = (inputCode) => {
-    if (inputCode === resetCode) {
+    if (inputCode === "1234") {
+      // TO DO: change 1234 to the actual code from backend
       setCodeChecked(true);
       setShowWarning(false);
       setShowSuccessMessage(true);
@@ -120,8 +97,16 @@ const ForgotPassword = () => {
         backgroundPosition: "center",
       }}
     >
-      {display && <VerificationFailMessage text={errorMsg} />}
-      
+      {/* <VerificationFailMessage
+        text={"The email does not exist, please double check your email"}
+      />
+      TODO: render this with logic for route 404 */}
+
+      {/* <VerificationFailMessage
+        text={"An unexpected error occured, please try again later."}
+      />
+      TODO: render this with logic for route 500 and 400 */}
+
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1200px", width: "100%" }}
@@ -141,7 +126,7 @@ const ForgotPassword = () => {
               </h3>
               <form
                 className="flex flex-col space-y-6 items-center"
-                onSubmit={handleForgotSubmit}
+                onSubmit={handleSubmit}
               >
                 <input
                   type="email"
@@ -231,6 +216,7 @@ const ForgotPassword = () => {
     </div>
   );
 };
+
 export default ForgotPassword;
 // export { handleForgotSubmit };
 export const tempCode = '786110';
