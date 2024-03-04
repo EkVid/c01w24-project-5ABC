@@ -162,7 +162,7 @@ def resetPassword():
 def generateResetCode():
     contentType = request.headers.get("Content-Type")
 
-    if(contentType == "application/json"):
+    if (contentType == "application/json"):
         email = request.json['Email']
 
         foundUser = userCollection.find_one({"Email": email})
@@ -175,9 +175,10 @@ def generateResetCode():
         resetCode = {
             "Code": random.randint(100000, 999999),
             "IssueDate": datetime.datetime.utcnow()
-            }
+        }
 
-        userCollection.update_one({"Email": email}, {"$set": {"ResetCode": resetCode}})
+        userCollection.update_one(
+            {"Email": email}, {"$set": {"ResetCode": resetCode}})
 
         try:
             code = str(resetCode["Code"])

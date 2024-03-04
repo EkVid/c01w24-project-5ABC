@@ -8,20 +8,16 @@ import FontSizeContext from "@/components/utils/FontSizeContext";
 import { useContext, useState } from "react";
 import show_password from "../../public/password_eye.svg";
 import hide_password from "../../public/password_eye_cross.svg";
-import axios from 'axios';
+import axios from "axios";
 import { useRouter } from "next/navigation";
-
-
+import VerificationFailMessage from "./VerificationFailMessage";
 
 const Login = () => {
-  const [data, setData] = useState('');
+  const [data, setData] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [emailValue, setEmailValue] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const router = useRouter();
-
-
-
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -32,15 +28,15 @@ const Login = () => {
 
     // TODO: route to welcome user landing page otherwise leave him on same page
     try {
-      const response = axios.post('http://localhost:5000/login', {
+      const response = axios.post("http://localhost:5000/login", {
         Email: emailValue,
-        Password: newPassword
+        Password: newPassword,
       });
       setData(response.data.message);
-      console.log(emailValue, newPassword)
-      console.log(data)
+      console.log(emailValue, newPassword);
+      console.log(data);
     } catch (error) {
-      console.log(data)
+      console.log(data);
     }
   };
 
@@ -56,6 +52,15 @@ const Login = () => {
         backgroundPosition: "center",
       }}
     >
+      {/* <VerificationFailMessage
+        text={"Login failed. Please double-check your email and password."}
+      />
+      TODO: render this with logic for route 401 */}
+
+      {/* <VerificationFailMessage
+        text={"An unexpected error occured, please try again"}
+      />
+      TODO: render this with logic for route 400 and 500  */}
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1200px" }}
@@ -74,7 +79,7 @@ const Login = () => {
             </h2>
           </div>
 
-          <form 
+          <form
             className="flex flex-col space-y-6 items-center"
             onSubmit={handleSubmit}
           >

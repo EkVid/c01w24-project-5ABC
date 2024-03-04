@@ -9,25 +9,23 @@ import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import show_password from "../../public/password_eye.svg";
 import hide_password from "../../public/password_eye_cross.svg";
-import axios from 'axios';
-
-
+import axios from "axios";
+import VerificationFailMessage from "./VerificationFailMessage";
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
   const router = useRouter();
 
-  useEffect(() => {    
+  useEffect(() => {
     if (countdown === 0) {
       router.push("/login"); // Redirect to the login page when countdown reaches 0
       return;
     }
-  
 
     // Decrease the countdown by 1 every second
     const timerId = setTimeout(() => {
       setCountdown(countdown - 1);
-    }, 1000);        
+    }, 1000);
 
     return () => clearTimeout(timerId); // Cleanup the timer when the component unmounts or countdown changes
   }, [countdown, router]);
@@ -41,7 +39,7 @@ const VerificationSuccessMessage = () => {
 };
 
 const SignUp = () => {
-  const [data, setData] = useState('');
+  const [data, setData] = useState("");
   const [selection, setSelection] = useState("grantee");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -84,19 +82,17 @@ const SignUp = () => {
     if (validatePassword(newPassword) && newPassword === confirmPassword) {
       setShowSuccessMessage(true); // Show the verification success message
     }
-    // TODO: If email already exists in db can we have a window come up and say
-    // this email already exists
     try {
-      const response = axios.post('http://localhost:5000/signup', {
+      const response = axios.post("http://localhost:5000/signup", {
         Email: emailValue,
         Password: newPassword,
-        Usertype: selection
+        Usertype: selection,
       });
       setData(response.data.message);
-      console.log(data)
+      console.log(data);
     } catch (error) {
-      console.log(data)
-    } 
+      console.log(data);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -117,6 +113,18 @@ const SignUp = () => {
         backgroundPosition: "center",
       }}
     >
+      {/* <VerificationFailMessage
+        text={
+          "Account already exists in the system, you can login directly without signing up"
+        }
+      />
+      TODO: add logic to render this properly for route 409 */}
+
+      {/* <VerificationFailMessage
+        text={"An unexpected error occured, please try again"}
+      />
+      TODO: add logic to render this properly for route 400 */}
+
       <div className="flex flex-col md:flex-row bg-white shadow-lg overflow-hidden rounded-lg">
         <div className="flex flex-col w-full md:w-4/6 p-12 space-y-6 ">
           <div className="flex flex-col items-center lg:items-start space-y-4">
