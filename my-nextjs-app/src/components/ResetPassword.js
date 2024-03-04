@@ -5,6 +5,7 @@ import FontSizeContext from "@/components/utils/FontSizeContext";
 import show_password from "../../public/password_eye.svg";
 import hide_password from "../../public/password_eye_cross.svg";
 import Image from "next/image";
+import VerificationFailMessage from "./VerificationFailMessage";
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -114,6 +115,14 @@ const ResetPassword = () => {
         backgroundPosition: "center",
       }}
     >
+      {/* <VerificationFailMessage text={"Verification Code has expired"} />
+      TODO: render this for route 401 when code expire */}
+
+      {/* <VerificationFailMessage
+        text={"An unexpected error occured, please try again"}
+      />
+      TODO: render this for route 400  */}
+
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1200px", width: "100%" }}
