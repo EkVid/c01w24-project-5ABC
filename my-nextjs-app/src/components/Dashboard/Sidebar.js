@@ -1,12 +1,13 @@
 import Link from "next/link"
-import { useRouter } from "next/router"
-
+import { usePathname } from "next/navigation"
 
 const Sidebar = () => {
-    const router = useRouter()
+    const pathname = usePathname()
+
+    console.log(pathname)
 
     return(
-        <div className="flex flex-col lg:w-1/5 dark:d-custom-dark-grey-background dark:border-e-2 dark:border-neutral-600 transition-colors">
+        <div className="h-screen flex flex-col lg:w-1/5 sm:w-1/3 dark:d-custom-dark-grey-background transition-colors">
             <h1 className="w-full text-center text-3xl dark:d-text my-6">
                 Logo
             </h1>
@@ -20,11 +21,11 @@ const Sidebar = () => {
                         </div>
                     </summary>
 
-                    <ul className="custom-dark-grey text-lg dark:d-text w-full ms-16">
-                        <li className="my-2 py-2">
-                            <Link href='/dashboard/my-grants' activeClassName="bg-black">My Grants</Link>
+                    <ul className="custom-dark-grey text-lg dark:d-text w-full ps-16 pe-2">
+                        <li className={`${pathname.includes('my-grants') ? "custom-green-background text-white" : "bg-transparent"} w-full p-2 rounded-lg`}>
+                            <Link href='/dashboard/my-grants'>My Grants</Link>
                         </li>
-                        <li className="my-2 py-2">
+                        <li className={`${pathname.includes('create-new-grant') ? "custom-green-background text-white" : "bg-transparent"} w-full p-2 rounded-lg`}>
                             <Link href='/dashboard/create-new-grant'>Create New Grant</Link>
                         </li>
                     </ul>

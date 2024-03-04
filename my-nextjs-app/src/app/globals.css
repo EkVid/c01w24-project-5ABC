@@ -245,3 +245,7 @@ body {
   @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color drop-shadow-lg
 }
 
+/* Box shadow for inner dashboard elements */
+.custom-inner-shadow{
+  box-shadow: inset 2px 4px 6px -1px rgb(0 0 0 / 0.1), inset 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}

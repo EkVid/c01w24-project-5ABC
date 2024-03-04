@@ -18,6 +18,7 @@ const DashboardLayoutElement = dynamic(
 );
 
 export default function DashboardLayout({children}) {
+
     const [fontSize, setFontSize] = useState(100);
     const [theme, setTheme] = useState(false);
     const [isReducedMotion, setIsReducedMotion] = useState(false);

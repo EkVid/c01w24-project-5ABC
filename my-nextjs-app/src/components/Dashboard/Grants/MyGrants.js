@@ -2,9 +2,9 @@
 
 const MyGrants = () => {
     return(
-        <div className="">
-            My Grants
-        </div>
+        <section className="h-screen custom-inner-shadow">
+            <h1>My Grants</h1>
+        </section>
     )
 }
 

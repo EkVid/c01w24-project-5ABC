@@ -1,11 +1,16 @@
 import Sidebar from "./Sidebar"
+import DashboardHeader from "./DashboardHeader"
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = ({ children, pathname }) => {
     return(
-        <div className="mb-auto">
+        <section className="flex">
             <Sidebar/>
-            {children}
-        </div>
+            <div className='lg:w-4/5 sm:w-2/3'>
+                <DashboardHeader />
+                {children}
+            </div>
+            
+        </section>
     )
 }
 
