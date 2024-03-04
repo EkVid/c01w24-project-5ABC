@@ -1,0 +1,14 @@
+.venv
+.vs
+.vscode
+Sandbox
+*.pyc
+.env
+Files
+pybind11
+build
+out
+*.dll
+node_modules
+backend/data/
+.next
