@@ -125,7 +125,7 @@ const ResetPassword = () => {
 
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
-        style={{ maxWidth: "1200px", width: "100%" }}
+        style={{ maxWidth: "1000px", width: "100%" }}
       >
         <div className="flex flex-col w-full p-16 space-y-8">
           <div className="space-y-6">
