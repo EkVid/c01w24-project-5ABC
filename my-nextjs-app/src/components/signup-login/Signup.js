@@ -51,6 +51,7 @@ const SignUp = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); //  State for showing the success message
   const [display, setDisplay] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
