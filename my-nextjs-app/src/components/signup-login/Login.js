@@ -18,6 +18,9 @@ const Login = () => {
   const [emailValue, setEmailValue] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const router = useRouter();
+  const [display, setDisplay] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -27,17 +30,26 @@ const Login = () => {
     e.preventDefault();
 
     // TODO: route to welcome user landing page otherwise leave him on same page
-    try {
-      const response = axios.post("http://localhost:5000/login", {
-        Email: emailValue,
-        Password: newPassword,
-      });
+    axios.post("http://localhost:5000/login", {
+      Email: emailValue,
+      Password: newPassword,
+    })
+    .then (response => {
       setData(response.data.message);
-      console.log(emailValue, newPassword);
-      console.log(data);
-    } catch (error) {
-      console.log(data);
-    }
+    })
+    .catch(error => {
+      setDisplay(true);
+      setErrorMsg(error.response.data);
+      if (error.response) {
+        
+        console.log(error.response.status);
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log('No response received:', error.request);
+      } else {
+        console.log('Error:', error.message);
+      }
+    });
   };
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -52,15 +64,9 @@ const Login = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* <VerificationFailMessage
-        text={"Login failed. Please double-check your email and password."}
-      />
-      TODO: render this with logic for route 401 */}
-
-      {/* <VerificationFailMessage
-        text={"An unexpected error occured, please try again"}
-      />
-      TODO: render this with logic for route 400 and 500  */}
+      {/* #TODO : ternary operator not working */}
+        {display ? <VerificationFailMessage text={errorMsg}/> : <VerificationFailMessage text={""}/>}
+         
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1200px" }}
