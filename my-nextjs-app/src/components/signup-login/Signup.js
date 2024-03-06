@@ -49,6 +49,8 @@ const SignUp = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [matchError, setMatchError] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); //  State for showing the success message
+  const [display, setDisplay] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
@@ -79,21 +81,32 @@ const SignUp = () => {
     setPasswordError(!validatePassword(newPassword));
     setMatchError(newPassword !== confirmPassword);
 
-    if (validatePassword(newPassword) && newPassword === confirmPassword) {
-      setShowSuccessMessage(true); // Show the verification success message
-    }
-    try {
-      const response = axios.post("http://localhost:5000/signup", {
-        Email: emailValue,
-        Password: newPassword,
-        Usertype: selection,
-      });
+    axios.post("http://localhost:5000/signup", {
+      Email: emailValue,
+      Password: newPassword,
+      Usertype: selection,
+    })
+    .then (response => {
       setData(response.data.message);
-      console.log(data);
-    } catch (error) {
-      console.log(data);
-    }
-  };
+      if (validatePassword(newPassword) && newPassword === confirmPassword) {
+        setShowSuccessMessage(true); // Show the verification success message
+      }
+    })
+    .catch(error => {
+      setDisplay(true);
+      setErrorMsg(error.response.data);
+      if (error.response) {
+        
+        console.log(error.response.status);
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log('No response received:', error.request);
+      } else {
+        console.log('Error:', error.message);
+      }
+    });
+  }
+  
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -113,17 +126,10 @@ const SignUp = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* <VerificationFailMessage
-        text={
-          "Account already exists in the system, you can login directly without signing up"
-        }
-      />
-      TODO: add logic to render this properly for route 409 */}
+      {display ? <VerificationFailMessage text={errorMsg}/> : null}
 
-      {/* <VerificationFailMessage
-        text={"An unexpected error occured, please try again"}
-      />
-      TODO: add logic to render this properly for route 400 */}
+      {/* #TODO : ternary operator not working */}
+
 
       <div className="flex flex-col md:flex-row bg-white shadow-lg overflow-hidden rounded-lg">
         <div className="flex flex-col w-full md:w-4/6 p-12 space-y-6 ">
