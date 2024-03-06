@@ -46,7 +46,7 @@ def register():
         # Checks for duplicate users with the specified email
         duplicateTest = userCollection.find_one({"Email": json['Email']})
         if duplicateTest is not None:
-            return {"message": "Account already exists in the system, you can login directly without signing up."}, 409
+            return {"message": "Account already exists in the system, you can login directly without signing up"}, 409
 
         else:
             salt = bcrypt.gensalt()
@@ -66,7 +66,7 @@ def register():
             return {"message": "User successfully registered"}
 
     else:
-        return {"message": "An unexpected error occured, please try again."}, 400
+        return {"message": "An unexpected error occured, please try again"}, 400
 
 
 @app.route("/login", methods=['POST'])
@@ -81,7 +81,7 @@ def login():
 
         foundUser = userCollection.find_one({"Email": email})
 
-        if foundUser is None: #Either the user is not registered, or they input the wrong email
+        if foundUser is None:  # Either the user is not registered, or they input the wrong email
             return {"message": "Login failed. Please double-check your email and password."}, 401
         else:
             storedPassword = foundUser['Password'].encode('utf-8')
@@ -102,7 +102,7 @@ def login():
                 except Exception as e:
                     return {
                         "Error": "Error generating the JWT TOKEN",
-                        "Message": "An unexpected error occured, please try again."
+                        "message": "An unexpected error occured, please try again"
                     }, 500
 
                 # tells the DB that the user has an active session. This prevents them from accessing the API routes if they have a valid Access Token but have logged out
@@ -121,8 +121,9 @@ def login():
 
             else:
                 return "Login failed. Please double-check your email and password.", 401
+                return "Login failed. Please double-check your email and password.", 401
     else:
-        return {"message": "An unexpected error occured, please try again."}, 400
+        return {"message": "An unexpected error occured, please try again"}, 400
 
 
 @app.route("/reset_password", methods=['POST'])
