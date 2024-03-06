@@ -19,8 +19,7 @@ const Login = () => {
   const [newPassword, setNewPassword] = useState("");
   const router = useRouter();
   const [display, setDisplay] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-
+  const [errorMsg, setErrorMsg] = useState("");
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -30,26 +29,26 @@ const Login = () => {
     e.preventDefault();
 
     // TODO: route to welcome user landing page otherwise leave him on same page
-    axios.post("http://localhost:5000/login", {
-      Email: emailValue,
-      Password: newPassword,
-    })
-    .then (response => {
-      setData(response.data.message);
-    })
-    .catch(error => {
-      setDisplay(true);
-      setErrorMsg(error.response.data);
-      if (error.response) {
-        
-        console.log(error.response.status);
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log('No response received:', error.request);
-      } else {
-        console.log('Error:', error.message);
-      }
-    });
+    axios
+      .post("http://localhost:5000/login", {
+        Email: emailValue,
+        Password: newPassword,
+      })
+      .then((response) => {
+        setData(response.data.message);
+      })
+      .catch((error) => {
+        setDisplay(true);
+        setErrorMsg(error.response.data);
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.data);
+        } else if (error.request) {
+          console.log("No response received:", error.request);
+        } else {
+          console.log("Error:", error.message);
+        }
+      });
   };
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -64,9 +63,8 @@ const Login = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* #TODO : ternary operator not working */}
-        {display ? <VerificationFailMessage text={errorMsg}/> : <VerificationFailMessage text={""}/>}
-         
+      {/* #TODO : fixed the operator, need to check on Alykhan's side since my backend is a bit weird*/}
+      {display && <VerificationFailMessage text={errorMsg} />}
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1200px" }}
