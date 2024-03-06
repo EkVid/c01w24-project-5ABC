@@ -113,6 +113,7 @@ def login():
 
             else:
                 return "Login failed. Please double-check your email and password.", 401
+                return "Login failed. Please double-check your email and password.", 401
     else:
         return {"message": "An unexpected error occured, please try again"}, 400
 
