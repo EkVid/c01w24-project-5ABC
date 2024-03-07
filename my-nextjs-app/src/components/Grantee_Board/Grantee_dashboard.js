@@ -175,7 +175,7 @@ const Grantee_dashboard = () => {
               <div className="rounded-lg shadow-lg overflow-hidden">
                 <img
                   src="https://jdrf.ca/wp-content/uploads/2024/02/GRANT-Blog_Hero-Banner_1280x720-1024x576.jpg"
-                  alt="Card image 1"
+                  alt="Family image"
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
@@ -193,7 +193,7 @@ const Grantee_dashboard = () => {
               <div className="rounded-lg shadow-lg overflow-hidden">
                 <img
                   src="https://otf.ca/sites/default/files/styles/responsive_1040/public/2021-07/YOF_Announcement_July_2021.jpg?itok=uZGXy9B6"
-                  alt="Card image 2"
+                  alt="Students image"
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
@@ -212,7 +212,7 @@ const Grantee_dashboard = () => {
               <div className="rounded-lg shadow-lg overflow-hidden">
                 <img
                   src="https://www.pegasusseniorliving.com/the-oaks-at-inglewood/wp-content/uploads/sites/38/2022/08/oaks-group-of-happy-seniors-friends-1024x683.jpeg"
-                  alt="Card image 3"
+                  alt="Elderly image"
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
