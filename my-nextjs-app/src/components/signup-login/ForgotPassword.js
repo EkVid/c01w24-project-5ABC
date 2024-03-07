@@ -48,33 +48,37 @@ const ForgotPassword = () => {
 
   const router = useRouter(); // used for redirection
 
-  const handleSubmit = (e) => {
+  const handleForgotSubmit = (e) => {
     e.preventDefault();
     // TODO: handle email does not exist in db frontend
     axios
-      .post("http://localhost:5000/forgot_password", {
-        Email: emailValue,
-      })
-      .then((response) => {
-        setData(response.data.message);
-        setResetCode(response.data.code)
-        setResetClicked(true);
-        console.log(response.data.code);
-      })
-      .catch((error) => {
-        setDisplay(true);
-        setErrorMsg(error.response.data.message);
-        setResetClicked(false);
-        if (error.response) {
-          console.log(error.response.status);
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log("No response received:", error.request);
-        } else {
-          console.log("Error:", error.message);
-        }
-      });
+    .post("http://localhost:5000/forgot_password", {
+      Email: emailValue,
+    })
+    .then((response) => {
+      setData(response.data.message);
+      setResetCode(response.data.code)
+      setResetClicked(true);
+      console.log(response.data.code);
+    })
+    .catch((error) => {
+      setDisplay(true);
+      setErrorMsg(error.response.data.message);
+      setResetClicked(false);
+      if (error.response) {
+        console.log(error.response.status);
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log("No response received:", error.request);
+      } else {
+        console.log("Error:", error.message);
+      }
+    });
   };
+
+  const getResetCode = () => {
+    return resetCode;
+  }
 
   const handleCodeChange = (e) => {
     setCode(e.target.value); // Update the code based on input
@@ -87,7 +91,6 @@ const ForgotPassword = () => {
 
   const checkCode = (inputCode) => {
     if (inputCode === resetCode) {
-      // TO DO: change 1234 to the actual code from backend
       setCodeChecked(true);
       setShowWarning(false);
       setShowSuccessMessage(true);
@@ -136,7 +139,7 @@ const ForgotPassword = () => {
               </h3>
               <form
                 className="flex flex-col space-y-6 items-center"
-                onSubmit={handleSubmit}
+                onSubmit={handleForgotSubmit}
               >
                 <input
                   type="email"
@@ -227,7 +230,7 @@ const ForgotPassword = () => {
   );
 };
 export default ForgotPassword;
-export const getMyConst = () => {
-  return resetCode;
-};
+// export default { ForgotPassword, resetCode }
+// we cant export this because resetCode doesnt get populated as soon as page is rendered
+// need to wait for post req to complete then send it like that
 
