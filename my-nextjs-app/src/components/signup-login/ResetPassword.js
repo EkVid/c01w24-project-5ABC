@@ -43,6 +43,7 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showWarning, setShowWarning] = useState(false); // store whether to show the warning or not based on the code
   const [code, setCode] = useState(""); // Store the entered code
+  const [display, setDisplay] = useState(false);
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
@@ -115,14 +116,8 @@ const ResetPassword = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* <VerificationFailMessage text={"Verification Code has expired"} />
-      TODO: render this for route 401 when code expire */}
-
-      {/* <VerificationFailMessage
-        text={"An unexpected error occured, please try again"}
-      />
-      TODO: render this for route 400  */}
-
+      {/* {display && <VerificationFailMessage text={"errorMsg"} />}
+      TODO: set display whenever you click save password but error occurs */}
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1000px", width: "100%" }}
