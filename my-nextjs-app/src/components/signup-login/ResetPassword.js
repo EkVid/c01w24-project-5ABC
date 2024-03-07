@@ -6,7 +6,7 @@ import show_password from "../../../public/password_eye.svg";
 import hide_password from "../../../public/password_eye_cross.svg";
 import Image from "next/image";
 import VerificationFailMessage from "./VerificationFailMessage";
-import { getResetCode } from './ForgotPassword';
+import { tempCode } from './ForgotPassword';
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -86,13 +86,13 @@ const ResetPassword = () => {
     setPasswordError(!validatePassword(newPassword));
     setMatchError(newPassword !== confirmPassword);
 
-    setShowWarning(code !== "1234");
+    setShowWarning(code !== tempCode);
     // TO DO: change 1234 to the actual code from backend
 
     if (
       validatePassword(newPassword) &&
       newPassword === confirmPassword &&
-      code == "1234"
+      code == tempCode
       // TO DO: change 1234 to the actual code from backend
     ) {
       setShowSuccessMessage(true);
