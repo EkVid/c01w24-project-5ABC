@@ -230,6 +230,7 @@ const ForgotPassword = () => {
   );
 };
 export default ForgotPassword;
+export const tempCode = '786110';
 // export default { ForgotPassword, resetCode }
 // we cant export this because resetCode doesnt get populated as soon as page is rendered
 // need to wait for post req to complete then send it like that
