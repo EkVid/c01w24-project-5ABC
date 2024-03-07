@@ -6,6 +6,7 @@ import show_password from "../../../public/password_eye.svg";
 import hide_password from "../../../public/password_eye_cross.svg";
 import Image from "next/image";
 import VerificationFailMessage from "./VerificationFailMessage";
+import { myConst } from './ForgotPassword';
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -43,6 +44,7 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showWarning, setShowWarning] = useState(false); // store whether to show the warning or not based on the code
   const [code, setCode] = useState(""); // Store the entered code
+  console.log(myConst);
   const [display, setDisplay] = useState(false);
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
