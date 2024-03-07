@@ -90,35 +90,44 @@ const Grantee_dashboard = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {recentClaims.map((claim) => (
-                  <div key={claim.id} className="p-2">
-                    <div
-                      className={`${getStatusColor(
-                        claim.status
-                      )} h-2 w-full rounded-t-lg`}
-                    ></div>
-                    {/* Card content */}
-                    <div className="bg-white p-4 rounded-lg shadow shadow-xl">
-                      <div className="flex justify-between items-center mb-4">
-                        <p className="text-md">Status: {claim.status}</p>
-                        <button className="text-green-700 text-md hover:text-green-900 transition duration-150 ease-in-out">
-                          View Details
-                        </button>
-                      </div>
-                      <p className="mb-2 text-md">{claim.applicantName}</p>
+              {recentClaims.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {recentClaims.map((claim) => (
+                    <div key={claim.id} className="p-2">
+                      <div
+                        className={`${getStatusColor(
+                          claim.status
+                        )} h-2 w-full rounded-t-lg`}
+                      ></div>
+                      {/* Card content */}
+                      <div className="bg-white p-4 rounded-lg shadow shadow-xl">
+                        <div className="flex justify-between items-center mb-4">
+                          <p className="text-md">Status: {claim.status}</p>
+                          <button className="text-green-700 text-md hover:text-green-900 transition duration-150 ease-in-out">
+                            View Details
+                          </button>
+                        </div>
+                        <p className="mb-2 text-md">{claim.applicantName}</p>
 
-                      <p className="mb-2">{claim.category}</p>
+                        <p className="mb-2">{claim.category}</p>
 
-                      <div className="flex justify-between items-center">
-                        <p>Date Submitted: {claim.dateSubmitted}</p>
-                        <p>Amount Payable: ${claim.amountPayable}</p>
+                        <div className="flex justify-between items-center">
+                          <p>Date Submitted: {claim.dateSubmitted}</p>
+                          <p>Amount Payable: ${claim.amountPayable}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center mt-20 mb-10">
+                  <p className="text-3xl font-semibold">
+                    You have no recent grants applications. Start applying now!
+                  </p>
+                </div>
+              )}
             </div>
+
             <div className="mt-6 flex justify-between items-start flex-col md:flex-row">
               <div className="flex-1 m-2">
                 <h3 className="text-lg font-semibold mb-4 text-center sm:text-left">
