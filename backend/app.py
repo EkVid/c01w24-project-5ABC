@@ -117,7 +117,7 @@ def login():
         return {"message": "An unexpected error occured, please try again"}, 400
 
 
-@app.route("/resetPassword", methods=['POST'])
+@app.route("/reset_password", methods=['POST'])
 def resetPassword():
     contentType = request.headers.get("Content-Type")
 
@@ -159,32 +159,31 @@ def resetPassword():
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/forgot_password", methods=['GET', 'POST'])
+@app.route("/forgot_password", methods=['POST'])
 def generateResetCode():
     contentType = request.headers.get("Content-Type")
 
-    if (contentType == "application/json"):
+    if(contentType == "application/json"):
         email = request.json['Email']
 
         foundUser = userCollection.find_one({"Email": email})
 
         if foundUser is None:
             return {"message": "Email not found in the system"}, 404
-
-        # generates a reset code with uuid and stamps it with the current date time for expiration
+        
+        #generates a reset code with uuid and stamps it with the current date time for expiration
 
         resetCode = {
             "Code": random.randint(100000, 999999),
             "IssueDate": datetime.datetime.utcnow()
-        }
+            }
 
-        userCollection.update_one(
-            {"Email": email}, {"$set": {"ResetCode": resetCode}})
+        userCollection.update_one({"Email": email}, {"$set": {"ResetCode": resetCode}})
 
         try:
-            code = email + "-" + str(resetCode["Code"])
+            code = str(resetCode["Code"])
             subject = "Reset Password"
-            body = "Please reset you password at http://localhost:3000/reset_password.\nVerification code (include email and code): " + code
+            body = "Reset your password with the verification code: " + code
             sender = "5abc.noreply@gmail.com"
             password = "gpjk gykf fejy eppg"
 
@@ -203,11 +202,11 @@ def generateResetCode():
                 "Message": str(e)
             }, 500
 
-        return {"message": "Verification code "+str(resetCode["Code"])+" successfully sent"}, 200
+        return {"message": "Verification code successfully sent",
+                "code": code}, 200
 
     else:
         return {"message": "Unsupported Content Type"}, 400
-
 
 @app.route("/logout", methods=['GET'])
 @tokenCheck.token_required
