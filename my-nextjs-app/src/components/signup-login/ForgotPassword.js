@@ -41,6 +41,7 @@ const ForgotPassword = () => {
   const [verifyClicked, setVerifyClicked] = useState(false); // State to track verify button click
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); //  State for showing the success message
   const [emailValue, setEmailValue] = useState("");
+  const [display, setDisplay] = useState(false); // for displaying failed msg
 
   const router = useRouter(); // used for redirection
 
@@ -54,6 +55,7 @@ const ForgotPassword = () => {
       });
       setData(response.data.message);
     } catch (error) {
+      setDisplay(true);
       console.log(data);
     }
   };
@@ -97,16 +99,12 @@ const ForgotPassword = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* <VerificationFailMessage
-        text={"The email does not exist, please double check your email"}
-      />
-      TODO: render this with logic for route 404 */}
-
+      {/* {display && <VerificationFailMessage text={"errorMsg"} />} */}
+      {/* TODO: render this with logic for route 404 */}
       {/* <VerificationFailMessage
         text={"An unexpected error occured, please try again later."}
       />
       TODO: render this with logic for route 500 and 400 */}
-
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1200px", width: "100%" }}
