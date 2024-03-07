@@ -45,6 +45,7 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showWarning, setShowWarning] = useState(false); // store whether to show the warning or not based on the code
   const [code, setCode] = useState(""); // Store the entered code
+  console.log(myConst);
   const [display, setDisplay] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
