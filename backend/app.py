@@ -113,36 +113,6 @@ def login():
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/checkResetCode", methods=['POST'])
-def checkResetCode():
-    contentType = request.headers.get("Content-Type")
-
-    if(contentType == "application/json"):
-        email = request.json['Email']
-        ResetCode = request.json['ResetCode']
-
-        foundUser = userCollection.find_one({"Email": email})
-
-        if foundUser is None:
-            return {"message": "Email not found in the system"}, 404
-        
-        storedResetCode = foundUser['ResetCode']
-
-        if(storedResetCode['Code'] == int(ResetCode)):
-            difference = abs(datetime.datetime.utcnow() - storedResetCode['IssueDate'])
-
-            if(difference.seconds < 300): # reset code works within 300 seconds
-                salt = bcrypt.gensalt()
-                return {"message": "Reset Code is valid."}, 200
-            
-            else:
-                return {"message": "Reset Code has expired"}, 401
-        else:
-            return {"message": "Reset Code does not match"}, 401
-    else:
-        return {"message": "Unsupported Content Type"}, 400
-
-
 @app.route("/resetPassword", methods=['POST'])
 def resetPassword():
     contentType = request.headers.get("Content-Type")
