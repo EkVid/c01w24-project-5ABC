@@ -97,16 +97,7 @@ const ForgotPassword = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* <VerificationFailMessage
-        text={"The email does not exist, please double check your email"}
-      />
-      TODO: render this with logic for route 404 */}
-
-      {/* <VerificationFailMessage
-        text={"An unexpected error occured, please try again later."}
-      />
-      TODO: render this with logic for route 500 and 400 */}
-
+      {display && <VerificationFailMessage text={"errorMsg"} />}
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1200px", width: "100%" }}
