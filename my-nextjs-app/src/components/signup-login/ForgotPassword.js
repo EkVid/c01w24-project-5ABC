@@ -60,6 +60,7 @@ const ForgotPassword = () => {
       setResetCode(response.data.code)
       setResetClicked(true);
       console.log(response.data.code);
+      localStorage.setItem('resetCode', JSON.stringify(response.data.code));
     })
     .catch((error) => {
       setDisplay(true);
@@ -230,6 +231,7 @@ const ForgotPassword = () => {
   );
 };
 export default ForgotPassword;
+// export { handleForgotSubmit };
 export const tempCode = '786110';
 // export default { ForgotPassword, resetCode }
 // we cant export this because resetCode doesnt get populated as soon as page is rendered
