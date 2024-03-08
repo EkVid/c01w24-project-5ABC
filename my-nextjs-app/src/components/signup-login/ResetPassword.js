@@ -55,6 +55,10 @@ const ResetPassword = () => {
     console.log('Received value:', value);
   };
 
+  const onValueChange = (value) => {
+    console.log('Received value:', value);
+  };
+
   const validatePassword = (password) => {
     const regex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/;
