@@ -48,6 +48,10 @@ const ResetPassword = () => {
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
+  const onValueChange = (value) => {
+    console.log('Received value:', value);
+  };
+
   const validatePassword = (password) => {
     const regex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/;
@@ -85,14 +89,16 @@ const ResetPassword = () => {
     e.preventDefault();
     setPasswordError(!validatePassword(newPassword));
     setMatchError(newPassword !== confirmPassword);
+    var response = localStorage.getItem('resetCode');
+    var resetCode = JSON.parse(response);
 
-    setShowWarning(code !== tempCode);
+    setShowWarning(code !== resetCode);
     // TO DO: change 1234 to the actual code from backend
 
     if (
       validatePassword(newPassword) &&
       newPassword === confirmPassword &&
-      code == tempCode
+      code == resetCode
       // TO DO: change 1234 to the actual code from backend
     ) {
       setShowSuccessMessage(true);
