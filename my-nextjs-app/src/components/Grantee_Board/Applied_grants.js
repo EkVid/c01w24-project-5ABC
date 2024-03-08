@@ -330,7 +330,7 @@ const Applied_Grants = () => {
                           key={claim.id}
                           className={` p-1 transition-all duration-500 ease-in-out ${
                             expandedGrantId === claim.id
-                              ? "scale-90 opacity-100"
+                              ? "scale-100 opacity-100"
                               : "scale-95 opacity-75"
                           } ${
                             expandedGrantId === claim.id
