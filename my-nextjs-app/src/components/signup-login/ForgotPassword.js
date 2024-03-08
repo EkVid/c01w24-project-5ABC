@@ -61,6 +61,7 @@ const ForgotPassword = () => {
       setResetClicked(true);
       console.log(response.data.code);
       localStorage.setItem('resetCode', JSON.stringify(response.data.code));
+      localStorage.setItem('email', emailValue);
     })
     .catch((error) => {
       setDisplay(true);
