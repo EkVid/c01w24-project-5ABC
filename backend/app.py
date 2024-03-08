@@ -122,9 +122,8 @@ def resetPassword():
     contentType = request.headers.get("Content-Type")
 
     if (contentType == "application/json"):
-        verificationCode = request.json['ResetCode'].split("-")
-        email = verificationCode[0]
-        ResetCode = verificationCode[1]
+        email = request.json['Email']
+        ResetCode = request.json['ResetCode']
         newPassword = request.json['NewPassword']
 
         foundUser = userCollection.find_one({"Email": email})
