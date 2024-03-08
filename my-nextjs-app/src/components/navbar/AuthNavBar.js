@@ -7,6 +7,8 @@ const Navbar = () => {
       <ul>
         <li>
           <Link href="/">
+          {/* TODO: 4 CIRCLES */}
+
             <p>Logo</p>
           </Link>
         </li>
@@ -17,12 +19,12 @@ const Navbar = () => {
         </li>
         <li>
           <Link href="/grants">
-            <p>Grants</p>
+            <p>Explore Grants</p>
           </Link>
         </li>
         <li>
           <Link href="/application">
-            <p>Application</p>
+            <p>Applied Grants</p>
           </Link>
         </li>
       </ul>
