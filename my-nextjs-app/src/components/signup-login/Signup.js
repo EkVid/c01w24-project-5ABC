@@ -95,7 +95,7 @@ const SignUp = () => {
       })
       .catch((error) => {
         setDisplay(true);
-        setErrorMsg(error.response.data);
+        setErrorMsg(error.response.data.message);
         if (error.response) {
           console.log(error.response.status);
           console.log(error.response.data);
@@ -125,7 +125,7 @@ const SignUp = () => {
         backgroundPosition: "center",
       }}
     >
-      {display && <VerificationFailMessage text={"errorMsg"} />}
+      {display && <VerificationFailMessage text={errorMsg} />}
       <div className="flex flex-col md:flex-row bg-white shadow-lg overflow-hidden rounded-lg">
         <div className="flex flex-col w-full md:w-4/6 p-12 space-y-6 ">
           <div className="flex flex-col items-center lg:items-start space-y-4">

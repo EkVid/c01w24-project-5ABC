@@ -7,6 +7,7 @@ import hide_password from "../../../public/password_eye_cross.svg";
 import Image from "next/image";
 import VerificationFailMessage from "./VerificationFailMessage";
 import { tempCode } from './ForgotPassword';
+import axios from "axios";
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -45,6 +46,8 @@ const ResetPassword = () => {
   const [showWarning, setShowWarning] = useState(false); // store whether to show the warning or not based on the code
   const [code, setCode] = useState(""); // Store the entered code
   const [display, setDisplay] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
 
@@ -90,17 +93,39 @@ const ResetPassword = () => {
     setPasswordError(!validatePassword(newPassword));
     setMatchError(newPassword !== confirmPassword);
     var response = localStorage.getItem('resetCode');
+    var emailValue = localStorage.getItem('email');
     var resetCode = JSON.parse(response);
-
+    
     setShowWarning(code !== resetCode);
-    // TO DO: change 1234 to the actual code from backend
 
     if (
       validatePassword(newPassword) &&
       newPassword === confirmPassword &&
       code == resetCode
-      // TO DO: change 1234 to the actual code from backend
     ) {
+      axios
+        .post("http://localhost:5000/reset_password", {
+          Email: emailValue,
+          ResetCode: resetCode,
+          NewPassword: newPassword
+
+        })
+        .then((response) => {
+          setData(response.data.message);
+          console.log(response.data.message);
+        })
+        .catch((error) => {
+          setDisplay(true);
+          // setErrorMsg(error.response.data.message);
+          if (error.response) {
+            console.log(error.response.status);
+            console.log(error.response.data);
+          } else if (error.request) {
+            console.log("No response received:", error.request);
+          } else {
+            console.log("Error:", error.message);
+          }
+        });
       setShowSuccessMessage(true);
     }
   };
@@ -123,8 +148,7 @@ const ResetPassword = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* {display && <VerificationFailMessage text={"errorMsg"} />}
-      TODO: set display whenever you click save password but error occurs */}
+      {display && <VerificationFailMessage text={errorMsg} />}
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1000px", width: "100%" }}
