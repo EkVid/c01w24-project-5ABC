@@ -107,6 +107,8 @@ const Grantee_dashboard = () => {
                             View Details
                           </button>
                         </div>
+                        <div className="border-t border-gray-300 mb-5"></div>
+
                         <p className="mb-2 text-md">{claim.applicantName}</p>
 
                         <p className="mb-2">{claim.category}</p>
