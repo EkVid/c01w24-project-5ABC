@@ -71,7 +71,7 @@ const Grantee_dashboard = () => {
                 Hello, {name}!
               </h1>
               <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mb-4">
-                <h2 className="text-xl font-semibold">
+                <h2 className="text-xl font-semibold text-black">
                   Your Recent Applications
                 </h2>
 
@@ -91,7 +91,7 @@ const Grantee_dashboard = () => {
               </div>
 
               {recentClaims.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
                   {recentClaims.map((claim) => (
                     <div key={claim.id} className="p-2">
                       <div
@@ -120,7 +120,7 @@ const Grantee_dashboard = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center mt-20 mb-10">
+                <div className="text-center mt-20 mb-10 text-black">
                   <p className="text-3xl font-semibold">
                     You have no recent grants applications. Start applying now!
                   </p>
@@ -128,7 +128,7 @@ const Grantee_dashboard = () => {
               )}
             </div>
 
-            <div className="mt-6 flex justify-between items-start flex-col md:flex-row">
+            <div className="mt-6 flex justify-between items-start flex-col md:flex-row text-black">
               <div className="flex-1 m-2">
                 <h3 className="text-lg font-semibold mb-4 text-center sm:text-left">
                   Your Grants Benefits
@@ -168,7 +168,7 @@ const Grantee_dashboard = () => {
                 </div>
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-center sm:text-left mb-5 mt-20">
+            <h3 className="text-lg font-semibold text-center sm:text-left mb-5 mt-20 text-black">
               Read Our Stories
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
