@@ -366,7 +366,7 @@ const Search_grants = () => {
                               className="text-green-700 text-md hover:text-green-900 transition duration-150 ease-in-out"
                             >
                               {expandedGrantId === claim.id
-                                ? "Less Details"
+                                ? "Close"
                                 : "View Details"}
                             </button>
                           </div>
