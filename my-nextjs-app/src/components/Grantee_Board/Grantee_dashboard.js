@@ -186,21 +186,6 @@ const Grantee_dashboard = () => {
                                       </span>
                                       {claim.amountPayable}
                                     </div>
-                                    <div className="mb-2">
-                                      <span class="font-bold">
-                                        Description:
-                                      </span>
-                                    </div>
-                                    <div className="mb-2">
-                                      This is a really great grant! This is a
-                                      really great grant! This is a really great
-                                      grant! This is a really great grant! This
-                                      is a really great grant! This is a really
-                                      great grant! This is a really great grant!
-                                      This is a really great grant! This is a
-                                      really great grant! This is a really great
-                                      grant!
-                                    </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Date Posted:
@@ -211,6 +196,20 @@ const Grantee_dashboard = () => {
                                   </div>
                                 </div>
                                 <h2 className="text-black font-semibold mb-2">
+                                  Grant's Description
+                                </h2>
+                                <div className="bg-slate-100 border-2  rounded p-6">
+                                  <div className="flex justify-between mb-4 text-md">
+                                    This is a really great grant! This is a
+                                    really great grant! This is a really great
+                                    grant! This is a really great grant! This is
+                                    a really great grant! This is a really great
+                                    grant! This is a really great grant! This is
+                                    a really great grant! This is a really great
+                                    grant! This is a really great grant!
+                                  </div>
+                                </div>
+                                <h2 className="text-black font-semibold mb-2 mt-5">
                                   Applicant's Information
                                 </h2>
                                 <div className="bg-slate-100 border-2  rounded p-6">
