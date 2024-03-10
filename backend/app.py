@@ -14,7 +14,8 @@ import datetime
 import json as JSON
 import random
 
-from dataModels import Form
+from dataModels import (Form, Application, TextboxOptions, NumberOptions,
+    MultipleChoiceOptions, CheckboxOptions, DateOptions, FileOptions)
 
 load_dotenv()
 app = Flask(__name__)
@@ -295,3 +296,30 @@ def deleteGrantForm(_id):
         return {"message": "Grant form with the given ID not found"}, 404
 
     return {"message": "Grant form successfully deleted"}, 200
+
+
+@app.route("/createApplication", methods=["POST"])
+#@tokenCheck.token_required
+def createApplication():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+    json = request.json
+
+    objID = ObjectId(json["grantID"])
+    form = grantFormCollection.find_one({"_id": objID}, {"_id": 0})
+    if not form:
+        return {"message": "Grant form with the given ID not found"}, 404
+    
+    # Populate json request with answer constraints from grant to validate
+    for i in range(len(form["questionData"])):
+        json["answerData"][i]["options"] = form["questionData"][i]["options"]
+    
+    try:
+        application = Application.model_validate_json(JSON.dumps(json))
+    except ValidationError as e:
+        return {"message": str(e)}, 400
+    
+    return {"message": "Application successfully validated!"}, 200
+    
+    
+
