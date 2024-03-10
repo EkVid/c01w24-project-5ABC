@@ -20,7 +20,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-client = MongoClient()
+client = MongoClient(os.getenv('DB_URI'))
 db = client['DB']
 userCollection = db.Users
 fileCollection = db.Files
@@ -225,7 +225,7 @@ def logout():
 
 
 @app.route("/createGrantForm", methods=["POST"])
-@tokenCheck.token_required
+#@tokenCheck.token_required
 def createGrantForm():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -299,7 +299,7 @@ def deleteGrantForm(_id):
 
 
 @app.route("/createApplication", methods=["POST"])
-@tokenCheck.token_required
+#@tokenCheck.token_required
 def createApplication():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -315,13 +315,13 @@ def createApplication():
     # Populate json request with answer constraints from grant to validate
     for i in range(len(form["questionData"])):
         json["answerData"][i]["options"] = form["questionData"][i]["options"]
-
+    print(form)
     try:
         Application.model_validate_json(JSON.dumps(json))
     except ValidationError as e:
-        return {"message": e.errors()}, 400
+        return {"message": str(e.errors())}, 400
 
-    id = grantAppCollection.insert_one(json).inserted_id
+    #id = grantAppCollection.insert_one(json).inserted_id
     return {"message": "Grant application successfully created with id: " + str(id)}, 200
 
 
