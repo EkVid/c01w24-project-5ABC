@@ -14,8 +14,7 @@ import datetime
 import json as JSON
 import random
 
-from dataModels import (Form, Application, TextboxOptions, NumberOptions,
-    MultipleChoiceOptions, CheckboxOptions, DateOptions, FileOptions)
+from dataModels import (Form, Application)
 
 load_dotenv()
 app = Flask(__name__)
@@ -26,6 +25,7 @@ db = client['DB']
 userCollection = db.Users
 fileCollection = db.Files
 grantFormCollection = db.GrantForms
+grantAppCollection = db.GrantApplications
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
@@ -127,7 +127,7 @@ def resetPassword():
 
         if foundUser is None:
             return {"message": "Email not found in the system"}, 404
-        
+
         storedResetCode = foundUser['ResetCode']
 
         if(storedResetCode['Code'] == int(ResetCode)):
@@ -162,7 +162,7 @@ def generateResetCode():
 
         if foundUser is None:
             return {"message": "Email not found in the system"}, 404
-        
+
         #generates a reset code with uuid and stamps it with the current date time for expiration
 
         resetCode = {
@@ -233,8 +233,7 @@ def createGrantForm():
     json = request.json
 
     try:
-        form = Form.model_validate_json(JSON.dumps(json))
-        print(type(form.questionData[0].options.minNum))
+        Form.model_validate_json(JSON.dumps(json))
     except ValidationError as e:
         # Do not change e.errors(), the unit tests require an error list in this specific format
         return {"message": e.errors()}, 400
@@ -250,9 +249,9 @@ def createGrantForm():
 def getGrantForm(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
-    objId = ObjectId(_id)
+    objID = ObjectId(_id)
 
-    form = grantFormCollection.find_one({"_id": objId}, {"_id": 0})
+    form = grantFormCollection.find_one({"_id": objID}, {"_id": False})
     if not form:
         return {"message": "Grant form with the given ID not found"}, 404
 
@@ -267,17 +266,18 @@ def updateGrantForm(_id):
 
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
-    objId = ObjectId(_id)
+    objID = ObjectId(_id)
     json = request.json
 
+    # TODO: remove if redundant; _id might already be immutable for each document in MongoDB
     newData = {key: val for (key, val) in json.items() if key != "_id"}     # Updating everything but the ID for now
 
     try:
         Form.model_validate_json(JSON.dumps(newData))
-    except ValidationError as e:    # TODO: use the same error response with e.errors() as in /createGrantForm
-        return {"message": str(e)}, 400
+    except ValidationError as e:
+        return {"message": e.errors()}, 400
 
-    res = grantFormCollection.update_one({"_id": objId}, {"$set": newData})
+    res = grantFormCollection.update_one({"_id": objID}, {"$set": newData})
     if res.matched_count != 1:
         return {"message": "Grant form with the given ID not found"}, 404
 
@@ -289,9 +289,9 @@ def updateGrantForm(_id):
 def deleteGrantForm(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
-    objId = ObjectId(_id)
+    objID = ObjectId(_id)
 
-    res = grantFormCollection.delete_one({"_id": objId})
+    res = grantFormCollection.delete_one({"_id": objID})
     if res.deleted_count != 1:
         return {"message": "Grant form with the given ID not found"}, 404
 
@@ -299,27 +299,81 @@ def deleteGrantForm(_id):
 
 
 @app.route("/createApplication", methods=["POST"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def createApplication():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
     json = request.json
 
+    # TODO: validate form to guarantee it has the fields grantID and answerData before attempting to access them (does
+    # this call for another pydantic model?)
     objID = ObjectId(json["grantID"])
-    form = grantFormCollection.find_one({"_id": objID}, {"_id": 0})
+    form = grantFormCollection.find_one({"_id": objID}, {"_id": False})
     if not form:
         return {"message": "Grant form with the given ID not found"}, 404
-    
+
     # Populate json request with answer constraints from grant to validate
     for i in range(len(form["questionData"])):
         json["answerData"][i]["options"] = form["questionData"][i]["options"]
-    
-    try:
-        application = Application.model_validate_json(JSON.dumps(json))
-    except ValidationError as e:
-        return {"message": str(e)}, 400
-    
-    return {"message": "Application successfully validated!"}, 200
-    
-    
 
+    try:
+        Application.model_validate_json(JSON.dumps(json))
+    except ValidationError as e:
+        return {"message": e.errors()}, 400
+
+    id = grantAppCollection.insert_one(json).inserted_id
+    return {"message": "Grant application successfully created with id: " + str(id)}, 200
+
+
+@app.route("/getApplication/<_id>", methods=["GET"])
+@tokenCheck.token_required
+def getApplication(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objID = ObjectId(_id)
+
+    application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
+
+    if not application:
+        return {"message": "Grant form with the given ID not found"}, 404
+
+    return application, 200
+
+
+@app.route("/getGranteeApplications/<email>", methods=["GET"])
+@tokenCheck.token_required
+def getGranteeApplications(email):
+    applications = list(grantAppCollection.find({"email": email}, {"_id": False}))
+
+    return {"applications": applications}, 200
+
+
+@app.route("/getAllGrantApplications/<_id>", methods=["GET"])
+@tokenCheck.token_required
+def getAllGrantApplications(_id):
+    applications = list(grantAppCollection.find({"grantID": _id}, {"_id": False}))
+
+    return {"applications": applications}, 200
+
+
+@app.route("/updateApplication/<_id>", methods=["PUT"])
+@tokenCheck.token_required
+def updateApplication(_id):
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objID = ObjectId(_id)
+    json = request.json
+
+    try:
+        Application.model_validate_json(JSON.dumps(json))
+    except ValidationError as e:
+        return {"message": e.errors()}, 400
+
+    res = grantAppCollection.update_one({"_id": objID}, {"$set": json})
+    if res.matched_count != 1:
+        return {"message": "Grant application with the given ID not found"}, 404
+
+    return {"message": "Grant application successfully updated"}, 200
