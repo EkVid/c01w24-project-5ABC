@@ -26,7 +26,6 @@ class UserProfile(BaseModel):
 Grant Model
 """
 class GrantBase(BaseModel):
-    grantID: int
     grantorName: str
     title: str
     description: str
@@ -40,7 +39,7 @@ class GrantBase(BaseModel):
 class Grant(GrantBase):
    winnerIDs: list[int]
    appliedIDs: list[int]
-   formID: int
+   formID: str
 
 
 """
@@ -57,12 +56,15 @@ class NumberOptions(BaseModel):
     minNum: Union[int, float]
     maxNum: Union[int, float]
 
+ 
     @validator('minNum', 'maxNum', always=True)
-    def validate_range(cls, value, values):
+    def validate_range(cls, value, values) -> Union[int, float]:
         if values['isIntegerOnly']:
             assert(type(value) == int)
         else:
             assert(type(value) == float)
+
+        return value
 
 class MultipleChoiceOptions(BaseModel):
     answers: Annotated[list[str], Len(min_length=2, max_length=10)]
@@ -100,38 +102,57 @@ class TextboxAnswer(BaseModel):
     text: str
     
     @validator('text', always=True)
-    def validate_text_box(cls, value, values) -> str:
+    def validate_textbox(cls, value, values):
         minChars = values['options'].minCharsNum
         maxChars = values['options'].maxCharsNum
         inRange = minChars <= len(value) and len(value) <= maxChars
         assert(inRange == True)
 
+        return value
+
 class NumberAnswer(BaseModel):
-    num: Union[int, float]
     options: NumberOptions
+    num: Union[int, float]
+
+    @validator('num', always=True)
+    def validate_number(cls, value, values):
+        minNum = values['options'].minNum
+        maxNum = values['options'].maxNum
+        validNum = ((type(value) == type(minNum)) and (minNum <= value <= maxNum))
+        assert(validNum == True)
+
+        return value
 
 class MultipleChoiceAnswer(BaseModel):
-    answers: Annotated[list[str], Len(min_length=1)]
     options: MultipleChoiceOptions
+    selectedChoice: Annotated[list[str], Len(min_length=1, max_length=1)]
 
 class CheckboxAnswer(BaseModel):
-    answers: Annotated[list[str], Len(min_length=1)]
     options: CheckboxOptions
+    selectedBoxes: list[str]
+
+    @validator('selectedBoxes', always=True)
+    def validate_checkbox(cls, value, values):
+        if len(value) == 0:
+            validAnswer = values['options'].isNoneAnOption
+        else:
+            validAnswer = True
+        assert(validAnswer == True)
+
+        return value
 
 class DateAnswer(BaseModel):
+    options: DateOptions
     date: str
-    options:DateOptions
 
 class FileAnswer(BaseModel):
-    type: str
     options: FileOptions
-
+    type: str
 
 """
 Application Model
 """
 class Application(BaseModel):
-    applicationID: int
     grantID: str
     email: str
     dateSubmitted: str  # maybe str
@@ -151,6 +172,5 @@ class Application(BaseModel):
 Form Model
 """
 class Form(BaseModel):
-    formID: int
-    grantID: int
+    grantID: str
     questionData: list[Question]
