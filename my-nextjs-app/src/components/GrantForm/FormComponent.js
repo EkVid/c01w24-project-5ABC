@@ -80,7 +80,7 @@ const testbody = [
   }
 ]
 
-const FormComponent = ({onClickQuit}) => {
+const FormComponent = () => {
   const fontSize = useContext(FontSizeContext);
   const isReduceMotion = useContext(ReducedMotionContext);
   const [questionData, setQuestionData] = useState(null);
@@ -226,11 +226,6 @@ const FormComponent = ({onClickQuit}) => {
     setQuestionData(prev => prev.filter(q => q.id !== questionId));
   }
 
-  const handleOnSelectAnswer = (questionID, answer) => {
-    //console.log("answer: " + answer);
-    // TODO: Store answer that applicant chooses for final version
-  }
-
   const handleOnChangePosition = (questionId, posChange) => {
     const questionIdx = questionData.findIndex(q => q.id === questionId);
     if (questionIdx === 0 && posChange === -1) return;
@@ -259,32 +254,35 @@ const FormComponent = ({onClickQuit}) => {
       onDragCancel={clearStates}
       modifiers={[restrictToVerticalAxisAndWindowEdges]}
     >
+      <title>Form Editor Page</title>
       {/* Header for title and save, exit, view buttons */}
       <div className={`flex items-center sticky top-0 z-30 justify-between h-fit overflow-auto px-2.5 custom-questioncard-background`}>
         <button 
+          aria-label="Quit"
           onClick={() => router.push("/")}
           className="flex min-w-fit rounded custom-interactive-btn px-2 py-1"
         >
           <Image
             src={UndoIcon}
-            alt="Quit"
+            alt="Arrow to go back"
             width={22 * fontSize / 100}
             height={"auto"}
             className="dark:d-white-filter rotate-[30deg]"
           />
           <div className="ml-3 text-xl custom-text dark:d-text">Quit</div>
         </button>
-        <div className="flex-grow text-center mx-8 text-2xl custom-text dark:d-text">
+        <h1 className="flex-grow text-center mx-8 text-2xl custom-text dark:d-text">
           Da Best Form in Da World
-        </div>
+        </h1>
         <div className="min-w-fit flex flex-col justify-between">
           <button 
+            aria-label="Save current questions"
             onClick={handleOnSave}
             className="flex rounded custom-interactive-btn px-2 py-1"
           >
             <Image
               src={SaveIcon}
-              alt="Quit"
+              alt="Floppy disk"
               width={22 * fontSize / 100}
               height={"auto"}
               className="dark:d-white-filter"
@@ -292,12 +290,13 @@ const FormComponent = ({onClickQuit}) => {
             <div className="ml-3 text-xl custom-text dark:d-text">Save</div>
           </button>
           <button 
+            aria-label={isEditMode ? "Preview form" : "Edit form"}
             onClick={() => setIsEditMode(!isEditMode)}
             className="flex rounded custom-interactive-btn px-2 py-1"
           >
             <Image
               src={isEditMode ? EyeIcon : EditIcon}
-              alt="Quit"
+              alt={isEditMode ? "Eye" : "Edit"}
               width={22 * fontSize / 100}
               height={"auto"}
               className="dark:d-white-filter"
@@ -318,7 +317,7 @@ const FormComponent = ({onClickQuit}) => {
             className={`flex flex-col max-w-full flex-auto p-2.5 pb-0 max-h-screen overflow-auto ${isReduceMotion ? "" : "transition"}`} 
             ref={questionPanelRef.setNodeRef}
           >
-            {questionData?.map((q, i) => 
+            {questionData?.map((q, i) =>
               <QuestionBase 
                 key={q.id}
                 questionData={q} 
@@ -327,7 +326,7 @@ const FormComponent = ({onClickQuit}) => {
                 isLastQuestion={i === questionData.length - 1}
                 onChangeQuestionData={newData => handleOnChangeQuestionData(q.id, newData)}
                 onDelete={handleOnDeleteQuestion}
-                onSelectAnswer={answer => handleOnSelectAnswer(q.id, answer)}
+                onSelectAnswer={() => {return}}
                 onChangePosition={posChange => handleOnChangePosition(q.id, posChange)}
               />
             )}

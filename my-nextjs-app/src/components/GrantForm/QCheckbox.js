@@ -67,12 +67,14 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
         <></>
       }
       {answersObj?.map((a, idx) =>
-        <div 
+        <button 
+          aria-label={`Answer: ${a.answer}`}
           key={idx} 
           onClick={() => handleOnSelectAnswer(a.answer)}
           className={`flex items-center p-1 px-2 mb-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
         >
           <input
+            aria-label={`Checkbox for answer ${a.answer}`}
             type="checkbox"
             id={a.id}
             name={formName}
@@ -85,6 +87,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
             <>
               {/* Edit answer */}
               <input
+                aria-label={`Textbox to edit answer ${idx + 1}`}
                 type="text"
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
@@ -94,6 +97,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
                 <button 
+                  aria-label={`Button to delete answer ${idx + 1}`}
                   onClick={() => onDeleteAnswer(a.id)}
                   className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
                 >
@@ -115,11 +119,12 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
               {a.answer.trim() === "" ? "(empty answer)" : a.answer}
             </label>
           }
-        </div>
+        </button>
       )}
       {/* Show add button if in edit mode */}
       {isEditMode ? 
         <button 
+          aria-label="Button to add an additional answer"
           className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode ? "hidden" : ""}`} 
           onClick={handleOnAddAnswer}
         >
@@ -137,8 +142,9 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
       }
       {!isEditMode && options?.isNoneAnOption ? 
         <>
-        <div className="border-2 rounded-3xl max-w-52 my-1.5 dark:d-custom-dark-grey-border"/>
-          <div 
+          <div className="border-2 rounded-3xl max-w-52 my-1.5 dark:d-custom-dark-grey-border"/>
+          <button 
+            aria-label={`Answer: ${process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}`}
             onClick={() => handleOnSelectAnswer(process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE)}
             className={`flex items-center p-1 px-2 mb-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
           >
@@ -153,8 +159,8 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
             />
             <label htmlFor={process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE} className="ml-3 text-sm custom-dark-grey dark:d-text pointer-events-none selection:bg-"> 
                 {process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}
-              </label>
-          </div>
+            </label>
+          </button>
         </>
         :
         <></>

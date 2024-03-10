@@ -8,7 +8,7 @@ import FontSizeContext from '../utils/FontSizeContext';
 import OptionsDiv from './SmallComponents/OptionsDiv';
 
 const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
-  const [currentAnswer, setCurrentAnswer] = useState([])
+  const [currentAnswer, setCurrentAnswer] = useState(null)
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
  
@@ -29,11 +29,11 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
   }
 
   const handleOnClearSelectedAnswer = () => {
-    setCurrentAnswer([]);
-    onSelectAnswer([]);
+    setCurrentAnswer(null);
+    onSelectAnswer(null);
   }
 
-  useEffect(() => setCurrentAnswer([]), [isEditMode]);
+  useEffect(() => setCurrentAnswer(null), [isEditMode]);
 
   return (
     <>
@@ -70,12 +70,13 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
                 <button 
+                  name='delete'
                   onClick={() => onDeleteAnswer(a.id)}
                   className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
                 >
                   <Image
                     src={PlusIcon}
-                    alt="Delete"
+                    alt={`Delete answer ${a.answer}`}
                     width={20 * fontSizeMultiplier}
                     height={"auto"}
                     className="text-sm dark:d-white-filter rotate-45 pointer-events-none"
@@ -95,17 +96,18 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
       )}
       {/* Show add button if in edit mode, or show clear answer button if in final view */}
       <button 
+        name={isEditMode ? "Add Answer" : "Clear Answer"}
         className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswer == null || isRequired) ? "hidden" : ""}`} 
         onClick={isEditMode ? handleOnAddAnswer : handleOnClearSelectedAnswer}
       >
         <Image
           src={PlusIcon}
-          alt={`Add`}
+          alt={""}
           width={18 * fontSizeMultiplier}
           height={'auto'}
           className={`pointer-events-none dark:d-white-filter ${isEditMode ? "" : "rotate-45"}`}
         />
-        <div className='ml-2 custom-dark-grey dark:d-custom-dark-grey'>{isEditMode ? "Add Answer" : "Clear Answer"}</div>
+        <label htmlFor={isEditMode ? "Add Answer" : "Clear Answer"} className='ml-2 custom-dark-grey dark:d-custom-dark-grey'>{isEditMode ? "Add Answer" : "Clear Answer"}</label>
       </button>
     </>
   )

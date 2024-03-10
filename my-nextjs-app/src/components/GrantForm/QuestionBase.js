@@ -151,6 +151,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         {isEditMode ? 
           <div className="flex justify-center mt-2">
             <button 
+              aria-label="Move question up one"
               onClick={() => onChangePosition(-1)}
               className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && questionNum > 1 && !isDragging && !isTemp ? "visible" : "invisible"}`}
             >
@@ -162,6 +163,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               />
             </button>
             <button 
+              aria-label="Drag handle to rearrange question"
               ref={setActivatorNodeRef}
               className="px-2 py-1 mx-6 cursor-move rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black"
               {...listeners}
@@ -174,7 +176,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 className="dark:d-white-filter"
               />
             </button>
-            <button 
+            <button
+              aria-label="Move question down one"
               onClick={() => onChangePosition(1)}
               className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && !isLastQuestion && !isDragging && !isTemp ? "visible" : "invisible"}`}
             >
@@ -200,16 +203,21 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           {isEditMode ?
             <>
               <input 
+                aria-label={`Textbox to type a question for question ${questionNum}`}
                 type="text"
                 className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
                 value={question}
                 placeholder="Enter a question"
                 onInput={e => handleOnChangeQuestion(e.target.value)}
               />
-              <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}>
+              <button 
+                aria-label={`Delete question ${questionNum}`}
+                onClick={() => onDelete(id)} 
+                className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}
+              >
                 <Image
                   src={TrashIcon}
-                  alt="Delete"
+                  alt="Trash icon"
                   width={30 * fontSizeMultiplier}
                   height={"auto"}
                   className="pointer-events-none dark:d-white-filter"
@@ -223,10 +231,14 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           }
         </div>
         {isEditMode ?
-          <button onClick={() => onDelete(id)} className={`p-1.5 mt-1 rounded-lg custom-interactive-btn flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}>
+          <button 
+            aria-label={`Delete question ${questionNum}`}
+            onClick={() => onDelete(id)} 
+            className={`p-1.5 mt-1 rounded-lg custom-interactive-btn flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}
+          >
             <Image
               src={TrashIcon}
-              alt="Delete"
+              alt="Trash icon"
               width={30 * fontSizeMultiplier}
               height={"auto"}
               className="pointer-events-none dark:d-white-filter"
@@ -249,6 +261,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               <label htmlFor={attId} className="text-sm mr-2 custom-text dark:d-text">Attachments:</label>
               <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center">
                 <input
+                  aria-label={`Button to upload an attachment for question ${questionNum}`}
                   type="file"
                   id={attId}
                   className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
@@ -256,6 +269,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                   disabled={!isCurFileDeleting && curFile}
                 />
                 <button 
+                  aria-label="Remove currently attached file"
                   onClick={() => onChangeQuestionData({...questionData, file: null})}
                   className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
                 >
@@ -275,6 +289,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                   {isCurFileDeleting ? "Previous uploaded file will be deleted" : `Current upload: ${curFile.name}`}
                 </div>
                 <button 
+                  aria-label={isCurFileDeleting ? "Restore previously uploaded attachment" : "Delete previously uploaded attachment"}
                   onClick={handleOnUndoCurFile}
                   className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
                 >
