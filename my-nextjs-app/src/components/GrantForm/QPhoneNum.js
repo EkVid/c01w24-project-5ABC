@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
-import OptionsDiv from "./SmallComponents/OptionsDiv";
 
 const QPhoneNum = ({isErr, isEditMode, onSelectAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");

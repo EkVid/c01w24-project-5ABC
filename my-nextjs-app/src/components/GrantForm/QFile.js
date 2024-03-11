@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
-import OptionsDiv from "./SmallComponents/OptionsDiv";
 import Image from "next/image";
 import PlusIcon from "@/../public/plus.svg";
 import FontSizeContext from "../utils/FontSizeContext";

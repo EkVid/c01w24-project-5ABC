@@ -5,7 +5,6 @@ import Image from 'next/image';
 import PlusIcon from "@/../public/plus.svg";
 import ReducedMotionContext from '../utils/ReducedMotionContext';
 import FontSizeContext from '../utils/FontSizeContext';
-import OptionsDiv from './SmallComponents/OptionsDiv';
 
 const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
   const [currentAnswerIdx, setCurrentAnswerIdx] = useState(-1);

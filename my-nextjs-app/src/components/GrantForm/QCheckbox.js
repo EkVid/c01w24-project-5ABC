@@ -8,7 +8,6 @@ import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
 
 const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onChangeOptions, onDeleteAnswer}) => {
-  const [currentAnswers, setCurrentAnswers] = useState([]);
   const [currentAnswersIdx, setCurrentAnswersIdx] = useState([]);
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
