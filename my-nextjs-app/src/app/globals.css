@@ -233,15 +233,15 @@ body {
 
 /* Hover effect for interactable form items */
 .custom-interactive-btn{
-  @apply hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black
+  @apply hover:cursor-pointer hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black
 }
 
 .custom-interactive-input{
-  @apply bg-transparent hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent
+  @apply m-1 bg-transparent hover:custom-hover-white dark:hover:d-custom-hover-black focus:bg-transparent dark:focus:bg-transparent
 }
 
 /* Class for question cards */
 .custom-questioncard-background{
-  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color drop-shadow-lg
+  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color drop-shadow-lg shadow-white
 }
 

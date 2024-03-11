@@ -29,24 +29,28 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
     if (isNoneAnOption && answer === process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE) {
       if (currentAnswers.length === 1 && currentAnswers[0] === process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE) {
         setCurrentAnswers([]);
-        onSelectAnswer([]);
+        onSelectAnswer(null);
       }
       else {
         setCurrentAnswers([process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE]);
-        onSelectAnswer([process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE]);
+        onSelectAnswer({answers: [process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE]});
       }
     }
     else {
       if (currentAnswers.includes(answer)) {
         const newAnswers = currentAnswers.filter(a => a !== answer);
+        const idxArr = newAnswers.map(a => answersObj.findIndex(({answer}) => a === answer));
+        idxArr.sort((a, b) => a - b);
         setCurrentAnswers(newAnswers);
-        onSelectAnswer(newAnswers);
+        onSelectAnswer({answers: idxArr.map(idx => answersObj[idx].answer)});
       }
       else {
         const newAnswers = [...currentAnswers, answer];
         const newAnswersWithoutNone = newAnswers.filter(a => a !== process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE);
+        const idxArr = newAnswersWithoutNone.map(a => answersObj.findIndex(({answer}) => a === answer));
+        idxArr.sort((a, b) => a - b);
         setCurrentAnswers(newAnswersWithoutNone);
-        onSelectAnswer(newAnswersWithoutNone);
+        onSelectAnswer({answers: idxArr.map(idx => answersObj[idx].answer)});
       }
     }
   }
@@ -71,7 +75,8 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
           aria-label={`Answer: ${a.answer}`}
           key={idx} 
           onClick={() => handleOnSelectAnswer(a.answer)}
-          className={`flex items-center p-1 px-2 mb-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
+          className={`flex items-center p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
+          tabIndex={isEditMode ? "-1" : ""}
         >
           <input
             aria-label={`Checkbox for answer ${a.answer}`}
@@ -81,7 +86,8 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
             style={checkboxStyle}
             onChange={() => handleOnSelectAnswer(a.answer)}
             checked={isEditMode ? false : currentAnswers.includes(a.answer)}
-            className="pointer-events-none custom-accent dark:d-custom-accent"
+            className="pointer-events-none custom-accent dark:d-custom-accent mr-2"
+            tabIndex="-1"
           />
           {isEditMode ?
             <>
@@ -92,14 +98,14 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`min-w-5 text-sm custom-text border-b-2 ml-3 dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-err-border" : "border-black dark:border-white"}`}
+                className={`min-w-5 text-sm custom-text border-b-2 dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-err-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
                 <button 
                   aria-label={`Button to delete answer ${idx + 1}`}
                   onClick={() => onDeleteAnswer(a.id)}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
                 >
                   <Image
                     src={PlusIcon}
@@ -125,7 +131,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
       {isEditMode ? 
         <button 
           aria-label="Button to add an additional answer"
-          className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode ? "hidden" : ""}`} 
+          className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode ? "hidden" : ""}`} 
           onClick={handleOnAddAnswer}
         >
           <Image
@@ -133,9 +139,9 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
             alt={`Add`}
             width={18 * fontSizeMultiplier}
             height={'auto'}
-            className={`pointer-events-none dark:d-white-filter`}
+            className="mr-2 dark:d-white-filter"
           />
-          <div className='ml-2 custom-dark-grey dark:d-custom-dark-grey'>Add Answer</div>
+          <div className='custom-dark-grey dark:d-custom-dark-grey'>Add Answer</div>
         </button>
         :
         <></>
@@ -146,7 +152,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
           <button 
             aria-label={`Answer: ${process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}`}
             onClick={() => handleOnSelectAnswer(process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE)}
-            className={`flex items-center p-1 px-2 mb-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
+            className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
           >
             <input
               type="checkbox"

@@ -21,7 +21,7 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
   const handleOnClickAnswer = (answer) => {
     if (isEditMode) return;
     setCurrentAnswer(answer);
-    onSelectAnswer(answer);
+    onSelectAnswer({answer: answer});
   }
 
   const handleOnAddAnswer = () => {
@@ -43,10 +43,10 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
         <></>
       }
       {answersObj?.map((a, idx) =>
-        <div 
+        <button 
           key={idx} 
           onClick={() => handleOnClickAnswer(a.answer)}
-          className={`flex items-center p-1 px-2 mb-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
+          className={`flex items-center p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
         >
           <input
             type="radio"
@@ -55,7 +55,8 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
             style={radioStyle}
             onChange={() => handleOnClickAnswer(a.answer)}
             checked={isEditMode ? false : a.answer === currentAnswer}
-            className="pointer-events-none custom-accent dark:d-custom-accent"
+            className="pointer-events-none custom-accent dark:d-custom-accent mr-2"
+            tabIndex="-1"
           />
           {isEditMode ?
             <>
@@ -65,14 +66,14 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`text-sm custom-text overflow-auto border-b-2 ml-3 dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-err-border" : "border-black dark:border-white"}`}
+                className={`text-sm custom-text overflow-auto border-b-2 dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-err-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
               {answersObj.length > 1 ?
                 <button 
                   name='delete'
                   onClick={() => onDeleteAnswer(a.id)}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
                 >
                   <Image
                     src={PlusIcon}
@@ -92,12 +93,13 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
               {a.answer.trim() === "" ? "(empty answer)" : a.answer}
             </label>
           }
-        </div>
+        </button>
       )}
       {/* Show add button if in edit mode, or show clear answer button if in final view */}
       <button 
+        aria-label={isEditMode ? "Add additional answer" : "Clear currently selected answer"}
         name={isEditMode ? "Add Answer" : "Clear Answer"}
-        className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswer == null || isRequired) ? "hidden" : ""}`} 
+        className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswer == null || isRequired) ? "hidden" : ""}`} 
         onClick={isEditMode ? handleOnAddAnswer : handleOnClearSelectedAnswer}
       >
         <Image
@@ -105,9 +107,9 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
           alt={""}
           width={18 * fontSizeMultiplier}
           height={'auto'}
-          className={`pointer-events-none dark:d-white-filter ${isEditMode ? "" : "rotate-45"}`}
+          className={`pointer-events-none dark:d-white-filter mr-2 ${isEditMode ? "" : "rotate-45"}`}
         />
-        <label htmlFor={isEditMode ? "Add Answer" : "Clear Answer"} className='ml-2 custom-dark-grey dark:d-custom-dark-grey'>{isEditMode ? "Add Answer" : "Clear Answer"}</label>
+        <label htmlFor={isEditMode ? "Add Answer" : "Clear Answer"} className='custom-dark-grey dark:d-custom-dark-grey cursor-pointer'>{isEditMode ? "Add Answer" : "Clear Answer"}</label>
       </button>
     </>
   )

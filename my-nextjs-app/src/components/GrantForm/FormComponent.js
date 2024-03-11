@@ -1,4 +1,3 @@
-'use client'
 import QuestionBase from "@/components/GrantForm/QuestionBase";
 import ToolboxCard from "@/components/GrantForm/SmallComponents/ToolboxCard";
 import Toolbox from "@/components/GrantForm/Toolbox";
@@ -15,72 +14,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from "next/navigation";
 
-const testbody = [
-  {
-    question: "What's your name?",
-    type: process.env.NEXT_PUBLIC_TYPE_TEXT,
-    errMsgArr: ["Example of error"],
-    options:
-    {
-      isMultipleLines: true,
-      minCharsNum: 3,
-      maxCharsNum: null,
-    },
-    curFile: {name: "notactualfile.txt"},
-    isCurFileDeleting: false,
-  },
-  {
-    question: "Any attachments?",
-    type: process.env.NEXT_PUBLIC_TYPE_FILE,
-  },
-  {
-    question: "What's your education time?",
-    type: process.env.NEXT_PUBLIC_TYPE_DATE,
-    options:
-    {
-      isDateRange: true,
-      isBothRequired: false,
-    }
-  },
-  {
-    question: "What's your phone number?",
-    type: process.env.NEXT_PUBLIC_TYPE_PHONE,
-  },
-  {
-    question: "What's your email?",
-    type: process.env.NEXT_PUBLIC_TYPE_EMAIL,
-  },
-  {
-    question: "Do you have a driver's license?",
-    type: process.env.NEXT_PUBLIC_TYPE_MULTI,
-    answers: ["Yes", "No"],
-    isRequired: true,
-    errEmptyAnsIdxArr: [],
-    errDupAnsIdxArr: []
-  },
-  {
-    question: "Select all that apply",
-    type: process.env.NEXT_PUBLIC_TYPE_CHECKBOX,
-    answers: ["Tall", "Smol", "Wide", "Thinn"],
-    isRequired: false,
-    options:
-    {
-      isAllAnOption: false,
-      isNoneAnOption: false
-    }
-  },
-  {
-    question: "Enter your age:",
-    type: process.env.NEXT_PUBLIC_TYPE_NUMBER,
-    options:
-    {
-      isIntegerOnly: false,
-      minNum: 0,
-    }
-  }
-]
-
-const FormComponent = () => {
+const FormComponent = ({title}) => {
   const fontSize = useContext(FontSizeContext);
   const isReduceMotion = useContext(ReducedMotionContext);
   const [questionData, setQuestionData] = useState(null);
@@ -96,18 +30,6 @@ const FormComponent = () => {
 
   const largeFontSize = 140;
   const deltaXToAdd = 240;
-
-  // Load data into form
-  // useEffect(() => {
-  //   const allData = [];
-  //   for (let question of testbody) {
-  //     //question = {...question, id: uuidv4(), errMsgArr: []}
-  //     question = {...question, id: uuidv4()}
-  //     if (question.answers) question = {...question, answersObj: question.answers.map(a => ({answer: a, id: uuidv4()}))}
-  //     allData.push(question);
-  //   }
-  //   setQuestionData(allData);
-  // }, []);
 
   const getNewQuestionObj = (type) => {
     let newQuestion = {
@@ -254,13 +176,13 @@ const FormComponent = () => {
       onDragCancel={clearStates}
       modifiers={[restrictToVerticalAxisAndWindowEdges]}
     >
-      <title>Form Editor Page</title>
+      <title>{`Form editor for ${title}`}</title>
       {/* Header for title and save, exit, view buttons */}
-      <div className={`flex items-center sticky top-0 z-30 justify-between h-fit overflow-auto px-2.5 custom-questioncard-background`}>
+      <div className={`flex items-center sticky top-0 z-30 justify-between h-fit overflow-auto px-1 custom-questioncard-background`}>
         <button 
           aria-label="Quit"
           onClick={() => router.push("/")}
-          className="flex min-w-fit rounded custom-interactive-btn px-2 py-1"
+          className="flex shrink-0 min-w-fit items-center rounded custom-interactive-btn m-1 px-2 py-1 self-stretch"
         >
           <Image
             src={UndoIcon}
@@ -269,16 +191,14 @@ const FormComponent = () => {
             height={"auto"}
             className="dark:d-white-filter rotate-[30deg]"
           />
-          <div className="ml-3 text-xl custom-text dark:d-text">Quit</div>
+          <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Quit</div>
         </button>
-        <h1 className="flex-grow text-center mx-8 text-2xl custom-text dark:d-text">
-          Da Best Form in Da World
-        </h1>
-        <div className="min-w-fit flex flex-col justify-between">
+        <h1 className="flex-grow text-center mx-3 text-2xl custom-text dark:d-text overflow-auto max-h-20">{title}</h1>
+        <div className="min-w-fit flex flex-col">
           <button 
             aria-label="Save current questions"
             onClick={handleOnSave}
-            className="flex rounded custom-interactive-btn px-2 py-1"
+            className="flex shrink-0 rounded items-center custom-interactive-btn mx-1 mt-1 px-2 py-1"
           >
             <Image
               src={SaveIcon}
@@ -287,12 +207,12 @@ const FormComponent = () => {
               height={"auto"}
               className="dark:d-white-filter"
             />
-            <div className="ml-3 text-xl custom-text dark:d-text">Save</div>
+            <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Save</div>
           </button>
           <button 
             aria-label={isEditMode ? "Preview form" : "Edit form"}
             onClick={() => setIsEditMode(!isEditMode)}
-            className="flex rounded custom-interactive-btn px-2 py-1"
+            className="flex shrink-0 rounded items-center custom-interactive-btn mx-1 mb-1 px-2 py-1"
           >
             <Image
               src={isEditMode ? EyeIcon : EditIcon}
@@ -301,12 +221,12 @@ const FormComponent = () => {
               height={"auto"}
               className="dark:d-white-filter"
             />
-            <div className="ml-3 text-xl custom-text dark:d-text">{isEditMode ? "View" : "Edit"}</div>
+            <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">{isEditMode ? "View" : "Edit"}</div>
           </button>
         </div>
       </div>
-      <div className={`${fontSize > largeFontSize ? "flex-col" : "flex flex-col lg:flex-row"} flex-grow bg-transparent`}>
-        <div className={`${fontSize > largeFontSize || !isEditMode ? "" : "lg:flex sticky top-20"} hidden h-fit max-h-[90vh] px-3 py-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col lg:max-w-xs xl:max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition"}`}>
+      <div className={`${fontSize > largeFontSize ? "flex-col" : "flex flex-col lg:flex-row"} flex-auto bg-transparent`}>
+        <div className={`${fontSize > largeFontSize || !isEditMode ? "" : "lg:flex sticky top-24"} hidden h-fit max-h-[85vh] px-3 py-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col lg:max-w-xs xl:max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReduceMotion ? "" : "transition"}`}>
           <Toolbox onClickAdd={handleOnClickAddQuestion}/>
         </div>
         <SortableContext
@@ -314,7 +234,7 @@ const FormComponent = () => {
           strategy={verticalListSortingStrategy}
         >
           <div 
-            className={`flex flex-col max-w-full flex-auto p-2.5 pb-0 max-h-screen overflow-auto ${isReduceMotion ? "" : "transition"}`} 
+            className={`flex flex-col max-w-full flex-auto p-2.5 pb-0 max-h-full overflow-auto ${isReduceMotion ? "" : "transition"}`} 
             ref={questionPanelRef.setNodeRef}
           >
             {questionData?.map((q, i) =>
@@ -378,7 +298,7 @@ const FormComponent = () => {
             null
           }
         </DragOverlay>
-        <div className={`${!isEditMode ? "hidden" : fontSize <= largeFontSize ? "lg:hidden" : ""} flex sticky max-h-[10vh]bottom-0 items-center w-screen p-3 my-3 overflow-auto custom-questioncard-background ${isReduceMotion ? "" : "transition"}`}>
+        <div className={`${!isEditMode ? "hidden" : fontSize <= largeFontSize ? "lg:hidden" : ""} flex sticky h-fit bottom-0 items-center w-screen p-3 mt-3 overflow-auto custom-questioncard-background border-t-2 border-t-black dark:border-t-white ${isReduceMotion ? "" : "transition"}`}>
           <Toolbox isSmallVersion={true} onClickAdd={handleOnClickAddQuestion}/>
         </div>
       </div>

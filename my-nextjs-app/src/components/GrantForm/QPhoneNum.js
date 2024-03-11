@@ -9,7 +9,7 @@ const QPhoneNum = ({isErr, isEditMode, onSelectAnswer}) => {
   const handleOnInput = (newAnswer) => {
     if (isEditMode) return;
     setCurrentAnswer(newAnswer);
-    onSelectAnswer(newAnswer);
+    onSelectAnswer(newAnswer ? {phoneNum: newAnswer} : null);
   }
 
   useEffect(() => setCurrentAnswer(""), [isEditMode]);

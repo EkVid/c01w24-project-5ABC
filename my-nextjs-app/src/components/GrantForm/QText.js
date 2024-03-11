@@ -26,7 +26,7 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
   const handleOnInput = (newAnswer) => {
     if (isEditMode) return;
     setCurrentAnswer(newAnswer);
-    onSelectAnswer(newAnswer);
+    onSelectAnswer(newAnswer ? {text: newAnswer} : null);
   }
 
   useEffect(() => setCurrentAnswer(""), [isEditMode]);
@@ -73,7 +73,7 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
         />
       }
       {rangeStr !== "" && !isEditMode ?
-        <div className="italic text-sm custom-text-shade dark:d-text-shade">{rangeStr}</div>
+        <p className="italic text-sm custom-text-shade dark:d-text-shade">{rangeStr}</p>
         :
         <></>
       }

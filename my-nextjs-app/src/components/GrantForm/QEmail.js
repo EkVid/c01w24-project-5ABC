@@ -9,7 +9,7 @@ const QEmail = ({isErr, isEditMode, onSelectAnswer}) => {
   const handleOnInput = (newAnswer) => {
     if (isEditMode) return;
     setCurrentAnswer(newAnswer);
-    onSelectAnswer(newAnswer);
+    onSelectAnswer(newAnswer ? {email: newAnswer} : null);
   }
 
   useEffect(() => setCurrentAnswer(""), [isEditMode]);

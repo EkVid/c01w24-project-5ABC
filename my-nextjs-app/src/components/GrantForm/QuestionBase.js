@@ -27,7 +27,6 @@ import QPhoneNum from "./QPhoneNum";
 import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
-import { useDndMonitor } from "@dnd-kit/core";
 
 const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -59,16 +58,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     },
     disabled: !isEditMode
   });
-
-  useDndMonitor({
-    onDragStart() {
-      setIsShowingNum(false);
-    },
-    onDragEnd() {
-      setIsShowingNum(true);
-    }
-  })
-
+  
   const dragTransitionSec = 0.1;
 
   const dragStyle = {
@@ -145,15 +135,15 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
-      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging || isTemp ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${(isDragging || isTemp) && isEditMode ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
     >
-      <div className={` flex flex-col  ${isDragging || isTemp ? "invisible" : ""}`}>
+      <div className={`flex flex-col  ${(isDragging || isTemp) && isEditMode ? "invisible" : ""}`}>
         {isEditMode ? 
           <div className="flex justify-center mt-2">
             <button 
               aria-label="Move question up one"
               onClick={() => onChangePosition(-1)}
-              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && questionNum > 1 && !isDragging && !isTemp ? "visible" : "invisible"}`}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn m-1 ${questionNum && questionNum > 1 && !isDragging && !isTemp && isEditMode ? "visible" : "invisible"}`}
             >
               <Image
                 src={UpIcon}
@@ -179,7 +169,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             <button
               aria-label="Move question down one"
               onClick={() => onChangePosition(1)}
-              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && !isLastQuestion && !isDragging && !isTemp ? "visible" : "invisible"}`}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn m-1 ${questionNum && !isLastQuestion && !isDragging && !isTemp ? "visible" : "invisible"}`}
             >
               <Image
                 src={UpIcon}
@@ -194,9 +184,9 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         }
         <div className={`flex items-center mb-6`}>
           {questionNum && isShowingNum ? 
-            <div className="mr-4 font-bold text-xl custom-text dark:d-text">
+            <h2 className="mr-4 font-bold text-xl custom-text dark:d-text">
               Q.{questionNum}
-            </div> 
+            </h2> 
             : 
             <></>
           }
@@ -213,7 +203,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               <button 
                 aria-label={`Delete question ${questionNum}`}
                 onClick={() => onDelete(id)} 
-                className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}
+                className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn m-1 hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}
               >
                 <Image
                   src={TrashIcon}
@@ -225,16 +215,16 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               </button>
             </>
             :
-            <div className="text-xl custom-text dark:d-text">
+            <h2 className="text-xl custom-text dark:d-text">
               {question.trim() === "" ? "(empty question)" : question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
-            </div>
+            </h2>
           }
         </div>
         {isEditMode ?
           <button 
             aria-label={`Delete question ${questionNum}`}
             onClick={() => onDelete(id)} 
-            className={`p-1.5 mt-1 rounded-lg custom-interactive-btn flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}
+            className={`p-1.5 mt-1 rounded-lg custom-interactive-btn m-1 flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}
           >
             <Image
               src={TrashIcon}
@@ -271,7 +261,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 <button 
                   aria-label="Remove currently attached file"
                   onClick={() => onChangeQuestionData({...questionData, file: null})}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
+                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
                 >
                   <Image
                     src={PlusIcon}
@@ -291,7 +281,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 <button 
                   aria-label={isCurFileDeleting ? "Restore previously uploaded attachment" : "Delete previously uploaded attachment"}
                   onClick={handleOnUndoCurFile}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
                 >
                   <Image
                     src={isCurFileDeleting ? UndoIcon : PlusIcon}
@@ -317,7 +307,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           :
           <></>
         }
-        <div className="flex justify-between items-end">
+        <div className="flex justify-between">
           <div className="flex flex-col flex-auto overflow-auto">
             {/* Body of question */}
             {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
@@ -326,7 +316,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 isRequired={isRequired}
                 isEditMode={isEditMode}
                 errAnsIdxArr={errAnsIdxArr}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onAddAnswer={handleOnAddAnswer}
                 onChangeAnswers={handleOnChangeAnswers}
                 onDeleteAnswer={handleOnDeleteAnswer}
@@ -337,7 +327,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 options={options}
                 isEditMode={isEditMode}
                 errAnsIdxArr={errAnsIdxArr}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onAddAnswer={handleOnAddAnswer}
                 onChangeAnswers={handleOnChangeAnswers}
                 onChangeOptions={handleOnChangeOptions}
@@ -348,7 +338,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 options={options}
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
@@ -356,33 +346,33 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 options={options}
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
               <QEmail
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
               <QPhoneNum
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
               <QDate
                 options={options}
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_FILE ?
               <QFile
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               :
               <></>
@@ -391,7 +381,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           </div>
           {/* Question icon in corner */}
           {fontSizeMultiplier < 1.5 ?
-            <div className="shrink-0 ml-4 p-1.5 hidden lg:flex">
+            <div className="shrink-0 ml-4 p-1.5 hidden lg:flex self-end">
               <Image
                 src={
                   type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 

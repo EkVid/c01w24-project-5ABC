@@ -15,7 +15,7 @@ const FormComponent = dynamic(() => import("@/components/GrantForm/FormComponent
   ssr: false,
 });
 
-const FormEditor = () => {
+export default function FormEditor() {
   const [fontSize, setFontSize] = useState(100);
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -32,12 +32,10 @@ const FormEditor = () => {
       <FontSizeContext.Provider value={fontSize}>
         <ThemeContext.Provider value={theme}>
           <ReducedMotionContext.Provider value={isReducedMotion}>
-            <FormComponent/>
+            <FormComponent title={"Need a title here"}/>
           </ReducedMotionContext.Provider>
         </ThemeContext.Provider>
       </FontSizeContext.Provider>
     </div>
   )
 }
-
-export default FormEditor;

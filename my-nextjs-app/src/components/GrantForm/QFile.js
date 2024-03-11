@@ -4,7 +4,6 @@ import OptionsDiv from "./SmallComponents/OptionsDiv";
 
 const QFile = ({isEditMode, onSelectAnswer}) => {
   const isReduceMotion = useContext(ReducedMotionContext);
-  const inputRef = useRef();
 
   return isEditMode ? 
     <>

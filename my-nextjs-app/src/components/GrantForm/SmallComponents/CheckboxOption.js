@@ -22,7 +22,7 @@ const CheckboxOption = ({label, currentValue, onClick}) => {
         checked={value}
         style={checkboxStyle}
         onChange={onClick}
-        className={`flex w-fit rounded-md custom-interactive-btn custom-accent ring-4 ring-transparent hover:ring-opacity-40 hover:ring-gray-400 active:ring-opacity-60 ${isReduceMotion ? "" : "transition"}`}
+        className={`flex w-fit rounded-md custom-interactive-btn m-1 custom-accent ring-4 ring-transparent hover:ring-opacity-40 hover:ring-gray-400 active:ring-opacity-60 ${isReduceMotion ? "" : "transition"}`}
       />
     </div>
   )
