@@ -340,7 +340,7 @@ const Search_grants = () => {
                             Minimum Age:
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             id="minAge"
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter minimum age"
@@ -365,7 +365,7 @@ const Search_grants = () => {
                             htmlFor="MinAmount"
                             className="block mb-2 text-black"
                           >
-                            Minimum Amount:
+                            Minimum Payable Amount:
                           </label>
                           <input
                             type="text"
@@ -390,17 +390,21 @@ const Search_grants = () => {
                         </div>
                         <div className="mb-4">
                           <label
-                            htmlFor="maxAmount"
+                            htmlFor="status"
                             className="block mb-2 text-black"
                           >
                             Veteran Status:
                           </label>
-                          <input
-                            type="text"
-                            id="veteran"
+                          <select
+                            id="status"
                             className="w-full p-2 border border-black rounded text-black"
-                            placeholder="Enter Yes or No"
-                          />
+                          >
+                            <option value="All" selected>
+                              All
+                            </option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </select>
                         </div>
                         <div className="mb-4">
                           <label
