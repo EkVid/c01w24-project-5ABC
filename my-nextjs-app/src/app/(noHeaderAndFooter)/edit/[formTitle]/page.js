@@ -33,6 +33,7 @@ export default function EditPage({params}) {
   const [isEditMode, setIsEditMode] = useState(true);
   const [isToolboxDisabled, setIsToolboxDisabled] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
+  const [isBottomToolboxOpen, setIsBottomToolboxOpen] = useState(true);
   const [tempIdx, setTempIdx] = useState([-1, -1]);
   const title = decodeURI(params.formTitle);
 
@@ -196,7 +197,7 @@ export default function EditPage({params}) {
             >
               <title>{`Form editor for ${title}`}</title>
               {/* Header for title and save, exit, view buttons */}
-              <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background`}>
+              <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background border-b border-b-black dark:border-b-white ${isReducedMotion ? "" : "transition"}`}>
                 <AccessibilityBar 
                   onChangeFont={setFontSize}
                   onChangeTheme={setTheme}
@@ -206,7 +207,7 @@ export default function EditPage({params}) {
                   <button 
                     aria-label="Quit"
                     onClick={() => router.push("/")}
-                    className="flex shrink-0 min-w-fit items-center rounded custom-interactive-btn m-1 p-1 self-stretch"
+                    className={`flex shrink-0 min-w-fit items-center rounded custom-interactive-btn m-1 p-1 self-stretch ${isReducedMotion ? "" : "transition"}`}
                   >
                     <Image
                       src={UndoIcon}
@@ -222,7 +223,7 @@ export default function EditPage({params}) {
                     <button 
                       aria-label="Save current questions"
                       onClick={handleOnSave}
-                      className="flex shrink-0 rounded items-center custom-interactive-btn mx-1 mt-1 px-2 py-1"
+                      className={`flex shrink-0 rounded items-center custom-interactive-btn mx-1 mt-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
                     >
                       <Image
                         src={SaveIcon}
@@ -236,7 +237,7 @@ export default function EditPage({params}) {
                     <button 
                       aria-label={isEditMode ? "Preview form" : "Edit form"}
                       onClick={() => setIsEditMode(!isEditMode)}
-                      className="flex shrink-0 rounded items-center custom-interactive-btn mx-1 mb-1 px-2 py-1"
+                      className={`flex shrink-0 rounded items-center custom-interactive-btn mx-1 mb-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
                     >
                       <Image
                         src={isEditMode ? EyeIcon : EditIcon}
@@ -277,7 +278,7 @@ export default function EditPage({params}) {
                     )}
                     {isEditMode ?
                       !questionData || questionData.length === 0 ?
-                        <div className="flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap">
+                        <div className={`flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap ${isReducedMotion ? "" : "transition"}`}>
                           {!questionData ? 
                             "Use the toolbox to start creating your application form!\n\n\nClick the + icons to start adding questions!" 
                             : 
@@ -323,8 +324,21 @@ export default function EditPage({params}) {
                     null
                   }
                 </DragOverlay>
-                <div className={`${!isEditMode ? "hidden" : fontSize <= largeFontSize ? "lg:hidden" : ""} flex sticky h-fit bottom-0 items-center w-screen p-3 mt-3 overflow-auto custom-questioncard-background border-t-2 border-t-black dark:border-t-white ${isReducedMotion ? "" : "transition"}`}>
-                  <Toolbox isSmallVersion={true} onClickAdd={handleOnClickAddQuestion}/>
+                <div className={`${!isEditMode ? "hidden" : fontSize <= largeFontSize ? "lg:hidden" : ""} flex flex-col sticky h-fit bottom-0 w-screen ${isReducedMotion ? "" : "transition"}`}>
+                  <button 
+                    aria-label={isBottomToolboxOpen ? "Close Toolbox" : "Open Toolbox"} 
+                    onClick={() => setIsBottomToolboxOpen(prev => !prev)}
+                    className={`mx-4 my-2 p-2 rounded self-end custom-text dark:d-text custom-questioncard-background custom-interactive-btn border-2 border-black dark:border-white ${isReducedMotion ? "" : "transition"}`}
+                  >
+                    {isBottomToolboxOpen ? "Close Toolbox" : "Open Toolbox"}
+                  </button>
+                  {isBottomToolboxOpen ? 
+                    <div className={`flex items-center mt-2 p-2 border-t border-t-black dark:border-t-white custom-questioncard-background overflow-auto ${isReducedMotion ? "" : "transition"}`}>
+                      <Toolbox isSmallVersion={true} onClickAdd={handleOnClickAddQuestion}/>
+                    </div>
+                    :
+                    <></>
+                  }
                 </div>
               </div>
             </DndContext>

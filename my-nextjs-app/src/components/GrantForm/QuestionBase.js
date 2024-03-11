@@ -143,7 +143,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             <button 
               aria-label="Move question up one"
               onClick={() => onChangePosition(-1)}
-              className={`px-2 py-1 rounded-lg custom-interactive-btn m-1 ${questionNum && questionNum > 1 && !isDragging && !isTemp && isEditMode ? "visible" : "invisible"}`}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn m-1 ${questionNum && questionNum > 1 && !isDragging && !isTemp && isEditMode ? "visible" : "invisible"} ${isReduceMotion ? "" : "transition-colors"}`}
             >
               <Image
                 src={UpIcon}
@@ -155,7 +155,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             <button 
               aria-label="Drag handle to rearrange question"
               ref={setActivatorNodeRef}
-              className="px-2 py-1 mx-6 cursor-move rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black"
+              className={`px-2 py-1 mx-6 cursor-move rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black ${isReduceMotion ? "" : "transition-colors"}`}
               {...listeners}
               {...attributes} 
             >
@@ -169,7 +169,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             <button
               aria-label="Move question down one"
               onClick={() => onChangePosition(1)}
-              className={`px-2 py-1 rounded-lg custom-interactive-btn m-1 ${questionNum && !isLastQuestion && !isDragging && !isTemp ? "visible" : "invisible"}`}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn m-1 ${questionNum && !isLastQuestion && !isDragging && !isTemp ? "visible" : "invisible"} ${isReduceMotion ? "" : "transition-colors"}`}
             >
               <Image
                 src={UpIcon}
@@ -184,8 +184,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         }
         <div className={`flex items-center mb-6`}>
           {questionNum && isShowingNum ? 
-            <h2 className="font-bold text-xl custom-text dark:d-text">
-              Q.{questionNum}
+            <h2 className={`font-bold text-xl custom-text dark:d-text ${isEditMode ? "" : "self-start"} ${isReduceMotion ? "" : "transition-colors"}`}>
+              Q{questionNum}.
             </h2> 
             : 
             <></>
@@ -210,12 +210,12 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                   alt="Trash icon"
                   width={30 * fontSizeMultiplier}
                   height={"auto"}
-                  className="pointer-events-none dark:d-white-filter"
+                  className={`pointer-events-none dark:d-white-filter ${isReduceMotion ? "" : "transition"}`}
                 />
               </button>
             </>
             :
-            <h2 className="text-xl custom-text dark:d-text ml-3">
+            <h2 className={`text-xl custom-text dark:d-text ml-3 ${isReduceMotion ? "" : "transition-colors"}`}>
               {question.trim() === "" ? "(empty question)" : question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
             </h2>
           }
@@ -231,7 +231,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               alt="Trash icon"
               width={30 * fontSizeMultiplier}
               height={"auto"}
-              className="pointer-events-none dark:d-white-filter"
+              className={`pointer-events-none dark:d-white-filter ${isReduceMotion ? "" : "transition"}`}
             />
           </button>
           :
@@ -240,7 +240,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         {/* Options section for required question and file upload */}
         {isEditMode ? 
           <>
-          <div className="text-sm mb-4 over custom-text dark:d-text">Settings:</div>
+          <div className={`"text-sm mb-4 over custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}"`}>Settings:</div>
           <div className="px-4 mb-4 overflow-auto">
             <CheckboxOption 
               label={"Required question:"} 
@@ -248,7 +248,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
             />
             <div className="flex items-center px-2 py-1">
-              <label htmlFor={attId} className="text-sm mr-2 custom-text dark:d-text">Attachments:</label>
+              <label htmlFor={attId} className={`"text-sm mr-2 custom-text dark:d-text "`}>Attachments:</label>
               <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center">
                 <input
                   aria-label={`Button to upload an attachment for question ${questionNum}`}
