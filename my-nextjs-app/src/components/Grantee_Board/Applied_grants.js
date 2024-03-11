@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 
+// change category to title
+
 const Applied_Grants = () => {
   const allGrants = [
     {
@@ -234,20 +236,17 @@ const Applied_Grants = () => {
                 <form>
                   <div className="mb-4">
                     <label
-                      htmlFor="claimType"
+                      htmlFor="maxAmount"
                       className="block mb-2 text-black"
                     >
-                      Grants Type:
+                      Title:
                     </label>
-                    <select
-                      id="claimType"
+                    <input
+                      type="text"
+                      id="title"
                       className="w-full p-2 border border-black rounded text-black"
-                    >
-                      <option>All</option>
-                      <option>Medical</option>
-                      <option>Study</option>
-                      <option>Travel</option>
-                    </select>
+                      placeholder="Enter keywords in title"
+                    />
                   </div>
                   <div className="mb-4">
                     <label
@@ -273,6 +272,7 @@ const Applied_Grants = () => {
                       type="text"
                       id="memberName"
                       className="w-full p-2 border  border-black rounded text-black"
+                      placeholder="Enter the name of the applicant"
                     />
                   </div>
                   <div className="mb-4">
@@ -378,9 +378,7 @@ const Applied_Grants = () => {
                                   </div>
                                   <div className="bg-slate-100 border-2 rounded p-6">
                                     <div className="flex justify-between mb-2">
-                                      <span className="font-bold">
-                                        Category:
-                                      </span>
+                                      <span className="font-bold">Title:</span>
                                       {claim.category}
                                     </div>
                                     <div className="flex justify-between mb-2">
@@ -388,6 +386,12 @@ const Applied_Grants = () => {
                                         Provider:
                                       </span>
                                       Rawad
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
+                                        Provider Email:
+                                      </span>
+                                      5ABC@gmail.com
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                       <span className="font-bold">
@@ -397,9 +401,39 @@ const Applied_Grants = () => {
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
+                                        Required Race:
+                                      </span>
+                                      None
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
+                                        Required Gender:
+                                      </span>
+                                      None
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
+                                        Veteran Only:
+                                      </span>
+                                      No
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
+                                        Number of Grants Available:
+                                      </span>
+                                      3
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
                                         Date Posted:
                                       </span>
                                       2022-12-20
+                                    </div>
+                                    <div className="flex justify-between items-center mb-2">
+                                      <span className="font-bold">
+                                        Grant Status:
+                                      </span>
+                                      Active
                                     </div>
                                     {/* add more  */}
                                   </div>
@@ -428,6 +462,12 @@ const Applied_Grants = () => {
                                     </span>
                                     {claim.memberName}
                                   </div>
+                                  <div className="flex justify-between mb-2">
+                                    <span className="font-bold">
+                                      Applicant Email:
+                                    </span>
+                                    applicant@gmail.com
+                                  </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Age:</span>
                                     18
@@ -437,6 +477,16 @@ const Applied_Grants = () => {
                                       Nationality:
                                     </span>
                                     Canadian
+                                  </div>
+                                  <div className="flex justify-between mb-4 text-md">
+                                    <span className="font-bold">Race:</span>
+                                    White
+                                  </div>
+                                  <div className="flex justify-between items-center mb-2">
+                                    <span className="font-bold">
+                                      Veteran Status:
+                                    </span>
+                                    Not a veteran
                                   </div>
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="font-bold">

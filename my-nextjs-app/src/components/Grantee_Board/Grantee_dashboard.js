@@ -180,6 +180,12 @@ const Grantee_dashboard = () => {
                                       </span>
                                       Rawad
                                     </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
+                                        Provider Email:
+                                      </span>
+                                      5ABC@gmail.com
+                                    </div>
                                     <div className="flex justify-between items-center mb-2">
                                       <span className="font-bold">
                                         Amount Payable:
@@ -188,9 +194,39 @@ const Grantee_dashboard = () => {
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
+                                        Required Race:
+                                      </span>
+                                      None
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
+                                        Required Gender:
+                                      </span>
+                                      None
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
+                                        Veteran Only:
+                                      </span>
+                                      No
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
+                                        Number of Grants Available:
+                                      </span>
+                                      3
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">
                                         Date Posted:
                                       </span>
                                       2022-12-20
+                                    </div>
+                                    <div className="flex justify-between items-center mb-2">
+                                      <span className="font-bold">
+                                        Grant Status:
+                                      </span>
+                                      Active
                                     </div>
                                     {/* add more  */}
                                   </div>
@@ -219,6 +255,12 @@ const Grantee_dashboard = () => {
                                     </span>
                                     {claim.applicantName}
                                   </div>
+                                  <div className="flex justify-between mb-2">
+                                    <span className="font-bold">
+                                      Applicant Email:
+                                    </span>
+                                    applicant@gmail.com
+                                  </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Age:</span>
                                     18
@@ -228,6 +270,16 @@ const Grantee_dashboard = () => {
                                       Nationality:
                                     </span>
                                     Canadian
+                                  </div>
+                                  <div className="flex justify-between mb-4 text-md">
+                                    <span className="font-bold">Race:</span>
+                                    White
+                                  </div>
+                                  <div className="flex justify-between items-center mb-2">
+                                    <span className="font-bold">
+                                      Veteran Status:
+                                    </span>
+                                    Not a veteran
                                   </div>
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="font-bold">

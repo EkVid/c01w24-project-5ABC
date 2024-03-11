@@ -170,7 +170,7 @@ const Search_grants = () => {
                 <input
                   id="searchInput"
                   type="text"
-                  placeholder="Search for category   (e.g: study, medical)"
+                  placeholder="Search for title   (e.g: study, medical)"
                   className="p-2 w-full text-black"
                 />
               </div>
@@ -215,20 +215,45 @@ const Search_grants = () => {
                       <form>
                         <div className="mb-4">
                           <label
-                            htmlFor="claimType"
+                            htmlFor="maxAmount"
                             className="block mb-2 text-black"
                           >
-                            Grants Type:
+                            Gender:
                           </label>
-                          <select
-                            id="claimType"
+                          <input
+                            type="text"
+                            id="race"
                             className="w-full p-2 border border-black rounded text-black"
+                            placeholder="All"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="maxAmount"
+                            className="block mb-2 text-black"
                           >
-                            <option>All</option>
-                            <option>Medical</option>
-                            <option>Study</option>
-                            <option>Travel</option>
-                          </select>
+                            Race:
+                          </label>
+                          <input
+                            type="text"
+                            id="race"
+                            className="w-full p-2 border border-black rounded text-black"
+                            placeholder="All"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="maxAmount"
+                            className="block mb-2 text-black"
+                          >
+                            Nationality:
+                          </label>
+                          <input
+                            type="text"
+                            id="race"
+                            className="w-full p-2 border border-black rounded text-black"
+                            placeholder="All"
+                          />
                         </div>
                         <div className="mb-4">
                           <label
@@ -256,6 +281,37 @@ const Search_grants = () => {
                             className="w-full p-2 border border-black rounded text-black"
                           />
                         </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="postedAfter"
+                            className="block mb-2 text-black"
+                          >
+                            Available Until:
+                          </label>
+                          <input
+                            type="date"
+                            id="deadline"
+                            className="w-full p-2 border border-black rounded text-black"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="status"
+                            className="block mb-2 text-black"
+                          >
+                            Status:
+                          </label>
+                          <select
+                            id="status"
+                            className="w-full p-2 border border-black rounded text-black"
+                          >
+                            <option value="All" selected>
+                              All
+                            </option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                          </select>
+                        </div>
                       </form>
                     </div>
                     <div class="hidden md:block md:w-px bg-black mx-4"></div>
@@ -280,16 +336,44 @@ const Search_grants = () => {
                             htmlFor="MinAmount"
                             className="block mb-2 text-black"
                           >
+                            Minimum Age:
+                          </label>
+                          <input
+                            type="text"
+                            id="minAge"
+                            className="w-full p-2 border border-black rounded text-black"
+                            placeholder="Enter minimum age"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="maxAmount"
+                            className="block mb-2 text-black"
+                          >
+                            Maximum Age
+                          </label>
+                          <input
+                            type="text"
+                            id="minAge"
+                            className="w-full p-2 border border-black rounded text-black"
+                            placeholder="Enter maximum age"
+                          />
+                        </div>
+                        <div className="mb-5">
+                          <label
+                            htmlFor="MinAmount"
+                            className="block mb-2 text-black"
+                          >
                             Minimum Amount:
                           </label>
                           <input
-                            type="number"
+                            type="text"
                             id="minAmount"
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter minimum amount"
                           />
                         </div>
-                        <div className="mb-6">
+                        <div className="mb-4">
                           <label
                             htmlFor="maxAmount"
                             className="block mb-2 text-black"
@@ -297,10 +381,38 @@ const Search_grants = () => {
                             Maximum Payable Amount:
                           </label>
                           <input
-                            type="number"
+                            type="text"
                             id="maxAmount"
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter maximum amount"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="maxAmount"
+                            className="block mb-2 text-black"
+                          >
+                            Veteran Status:
+                          </label>
+                          <input
+                            type="text"
+                            id="veteran"
+                            className="w-full p-2 border border-black rounded text-black"
+                            placeholder="Enter Yes or No"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="MinAmount"
+                            className="block mb-2 text-black"
+                          >
+                            Number of Grants Available:
+                          </label>
+                          <input
+                            type="text"
+                            id="numGrants"
+                            className="w-full p-2 border border-black rounded text-black"
+                            placeholder="Enter the number of grants available"
                           />
                         </div>
                       </form>
@@ -383,12 +495,18 @@ const Search_grants = () => {
                                 </div>
                                 <div className="bg-slate-100 border-2 rounded p-6">
                                   <div className="flex justify-between mb-2">
-                                    <span className="font-bold">Category:</span>
+                                    <span className="font-bold">Title:</span>
                                     {claim.category}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">Provider:</span>
                                     {claim.grantor}
+                                  </div>
+                                  <div className="flex justify-between mb-2">
+                                    <span className="font-bold">
+                                      Provider Email:
+                                    </span>
+                                    5ABC@gmail.com
                                   </div>
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="font-bold">
@@ -404,9 +522,45 @@ const Search_grants = () => {
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
+                                      Required Age:
+                                    </span>
+                                    10-30
+                                  </div>
+                                  <div className="flex justify-between mb-2">
+                                    <span className="font-bold">
+                                      Required Race:
+                                    </span>
+                                    None
+                                  </div>
+                                  <div className="flex justify-between mb-2">
+                                    <span className="font-bold">
+                                      Required Gender:
+                                    </span>
+                                    None
+                                  </div>
+                                  <div className="flex justify-between mb-2">
+                                    <span className="font-bold">
+                                      Veteran Only:
+                                    </span>
+                                    No
+                                  </div>
+                                  <div className="flex justify-between mb-2">
+                                    <span className="font-bold">
+                                      Number of Grants Available:
+                                    </span>
+                                    3
+                                  </div>
+                                  <div className="flex justify-between mb-2">
+                                    <span className="font-bold">
                                       Date Posted:
                                     </span>
                                     2022-12-20
+                                  </div>
+                                  <div className="flex justify-between items-center mb-2">
+                                    <span className="font-bold">
+                                      Grant Status:
+                                    </span>
+                                    Active
                                   </div>
                                   {/* add more  */}
                                 </div>
