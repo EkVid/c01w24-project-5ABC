@@ -267,13 +267,12 @@ const Applied_Grants = () => {
                       htmlFor="memberName"
                       className="block mb-2 border-black text-black"
                     >
-                      Applicant Name:
+                      Deadline:
                     </label>
                     <input
-                      type="text"
-                      id="memberName"
-                      className="w-full p-2 border  border-black rounded text-black"
-                      placeholder="Enter the name of the applicant"
+                      type="date"
+                      id="deadline"
+                      className="w-full p-2 border border-black rounded text-black"
                     />
                   </div>
                   <div className="mb-4">
