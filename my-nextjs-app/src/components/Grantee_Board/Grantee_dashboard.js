@@ -73,6 +73,7 @@ const Grantee_dashboard = () => {
           "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        backgroundAttachment: "fixed",
       }}
     >
       <div className="min-h-screen p-8">
@@ -412,7 +413,12 @@ const Grantee_dashboard = () => {
                     Search for grants that match your needs.
                   </p>
                   <div className="flex justify-center">
-                    <button className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base">
+                    <button
+                      onClick={() => {
+                        router.push("/search_grants");
+                      }}
+                      className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
+                    >
                       Find Grants
                     </button>
                   </div>
