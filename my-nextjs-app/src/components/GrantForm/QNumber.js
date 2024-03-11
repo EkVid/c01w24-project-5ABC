@@ -61,7 +61,7 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
         max={maxNum}
         id="numAnswer"
         placeholder={"example: 12345"}
-        className={`text-sm max-w-full md:max-w-96 border-b-2 bg-transparent custom-text dark:d-text ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${!isEditMode && isErr ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+        className={`text-sm max-w-full md:max-w-96 border-b-2 bg-transparent custom-text dark:d-text m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${!isEditMode && isErr ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
         onInput={e => handleOnInput(e.target.value)}
         value={currentAnswer}
         disabled={isEditMode}

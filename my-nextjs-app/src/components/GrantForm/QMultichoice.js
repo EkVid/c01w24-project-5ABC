@@ -8,7 +8,7 @@ import FontSizeContext from '../utils/FontSizeContext';
 import OptionsDiv from './SmallComponents/OptionsDiv';
 
 const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
-  const [currentAnswer, setCurrentAnswer] = useState(null)
+  const [currentAnswerIdx, setCurrentAnswerIdx] = useState(-1);
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
  
@@ -18,9 +18,9 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
     transform: `scale(${fontSizeMultiplier * 1.2})`
   }
 
-  const handleOnClickAnswer = (answer) => {
+  const handleOnClickAnswer = (answer, idx) => {
     if (isEditMode) return;
-    setCurrentAnswer(answer);
+    setCurrentAnswerIdx(idx);
     onSelectAnswer({answer: answer});
   }
 
@@ -29,11 +29,11 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
   }
 
   const handleOnClearSelectedAnswer = () => {
-    setCurrentAnswer(null);
+    setCurrentAnswerIdx(-1);
     onSelectAnswer(null);
   }
 
-  useEffect(() => setCurrentAnswer(null), [isEditMode]);
+  useEffect(() => setCurrentAnswerIdx(-1), [isEditMode]);
 
   return (
     <>
@@ -43,20 +43,20 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
         <></>
       }
       {answersObj?.map((a, idx) =>
-        <button 
+        <div 
           key={idx} 
-          onClick={() => handleOnClickAnswer(a.answer)}
-          className={`flex items-center p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
+          onClick={() => handleOnClickAnswer(a.answer, idx)}
+          className={`flex items-center max-w-fit p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
         >
           <input
             type="radio"
             id={a.id}
             name={formName}
             style={radioStyle}
-            onChange={() => handleOnClickAnswer(a.answer)}
-            checked={isEditMode ? false : a.answer === currentAnswer}
-            className="pointer-events-none custom-accent dark:d-custom-accent mr-2"
-            tabIndex="-1"
+            onChange={() => handleOnClickAnswer(a.answer, idx)}
+            checked={isEditMode ? false : idx === currentAnswerIdx}
+            className="pointer-events-none custom-accent dark:d-custom-accent"
+            tabIndex={isEditMode ? "-1" : ""}
           />
           {isEditMode ?
             <>
@@ -66,26 +66,22 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
                 placeholder="Enter an answer"
-                className={`text-sm custom-text overflow-auto border-b-2 dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-err-border" : "border-black dark:border-white"}`}
+                className={`text-sm custom-text overflow-auto border-b-2 dark:d-text custom-interactive-input m-1 ml-3 ${isReduceMotion ? "" : "transition-colors"} ${errAnsIdxArr?.includes(idx) ? "custom-err-border" : "border-black dark:border-white"}`}
               />
               {/* Hide delete answer button if there is only one answer */}
-              {answersObj.length > 1 ?
-                <button 
-                  name='delete'
-                  onClick={() => onDeleteAnswer(a.id)}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
-                >
-                  <Image
-                    src={PlusIcon}
-                    alt={`Delete answer ${a.answer}`}
-                    width={20 * fontSizeMultiplier}
-                    height={"auto"}
-                    className="text-sm dark:d-white-filter rotate-45 pointer-events-none"
-                  />
-                </button>
-                :
-                <></>
-              }
+              <button 
+                name='delete'
+                onClick={() => onDeleteAnswer(a.id)}
+                className={`ml-2 p-0.5 rounded-md custom-interactive-btn m-1 flex ${answersObj.length > 1 ? "visible" : "invisible"} ${isReduceMotion ? "" : "transition-colors"}`}
+              >
+                <Image
+                  src={PlusIcon}
+                  alt={`Delete answer ${a.answer}`}
+                  width={18 * fontSizeMultiplier}
+                  height={"auto"}
+                  className="text-sm dark:d-white-filter rotate-45 pointer-events-none"
+                />
+              </button>
             </>
             :
             // Show answer
@@ -93,13 +89,13 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
               {a.answer.trim() === "" ? "(empty answer)" : a.answer}
             </label>
           }
-        </button>
+        </div>
       )}
       {/* Show add button if in edit mode, or show clear answer button if in final view */}
       <button 
         aria-label={isEditMode ? "Add additional answer" : "Clear currently selected answer"}
         name={isEditMode ? "Add Answer" : "Clear Answer"}
-        className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswer == null || isRequired) ? "hidden" : ""}`} 
+        className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode && (currentAnswerIdx === -1 || isRequired) ? "hidden" : ""}`} 
         onClick={isEditMode ? handleOnAddAnswer : handleOnClearSelectedAnswer}
       >
         <Image

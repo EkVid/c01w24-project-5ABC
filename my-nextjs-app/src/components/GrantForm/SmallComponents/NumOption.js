@@ -15,7 +15,7 @@ const NumOption = ({label, currentValue, onChangeValue}) => {
       <input
         type="text"
         id={formId}
-        className={`text-xs min-w-1 max-w-24 border-b-2 custom-text dark:d-text custom-interactive-input ${!checkIfNum(value) ? "custom-err-border" : "border-black dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+        className={`text-xs min-w-1 max-w-24 border-b-2 custom-text dark:d-text custom-interactive-input m-1 ${!checkIfNum(value) ? "custom-err-border" : "border-black dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
         onInput={e => onChangeValue(e.target.value)}
         value={value}
         placeholder="Enter a number"

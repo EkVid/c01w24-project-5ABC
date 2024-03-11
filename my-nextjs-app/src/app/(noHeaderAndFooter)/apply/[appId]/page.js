@@ -109,7 +109,7 @@ export default function ApplicationPage({params}) {
   const [questionData, setQuestionData] = useState(null);
   const [answerData, setAnswerData] = useState(null);
   const [title, setTitle] = useState("");
-
+console.log(decodeURI(params.appId))
   useEffect(() => setTheme(getTheme()), []);
 
   // Load question data into form
@@ -169,7 +169,7 @@ export default function ApplicationPage({params}) {
                 <button 
                   aria-label="Return to grants"
                   onClick={handleOnQuit}
-                  className={`flex shrink-0 items-center min-w-fit rounded custom-interactive-btn m-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
+                  className={`flex shrink-0 items-center min-w-fit rounded custom-interactive-btn m-1 p-1 ${isReducedMotion ? "" : "transition"}`}
                 >
                   <Image
                     src={UndoIcon}
@@ -180,7 +180,7 @@ export default function ApplicationPage({params}) {
                   />
                   <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex">Quit</p>
                 </button>
-                <h1 className="flex-grow text-center mx-4 text-2xl custom-text dark:d-text overflow-auto max-h-20">{title}</h1>
+                <h1 className="flex-grow self-center text-center mx-4 text-2xl custom-text dark:d-text overflow-auto max-h-20">{title}</h1>
                 <button 
                   aria-label="Review and submit answers"
                   onClick={handleOnReview}

@@ -25,7 +25,7 @@ const QEmail = ({isErr, isEditMode, onSelectAnswer}) => {
       <input
         type="email"
         placeholder={"example: example@domain.com"}
-        className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 border-b-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white "} ${isReduceMotion ? "" : "transition-colors"}`}
+        className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 border-b-2 bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white "} ${isReduceMotion ? "" : "transition-colors"}`}
         onInput={e => handleOnInput(e.target.value)}
         value={currentAnswer}
         disabled={isEditMode}

@@ -184,7 +184,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         }
         <div className={`flex items-center mb-6`}>
           {questionNum && isShowingNum ? 
-            <h2 className="mr-4 font-bold text-xl custom-text dark:d-text">
+            <h2 className="font-bold text-xl custom-text dark:d-text">
               Q.{questionNum}
             </h2> 
             : 
@@ -195,7 +195,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               <input 
                 aria-label={`Textbox to type a question for question ${questionNum}`}
                 type="text"
-                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
+                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input mx-3 my-1 ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
                 value={question}
                 placeholder="Enter a question"
                 onInput={e => handleOnChangeQuestion(e.target.value)}
@@ -203,7 +203,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               <button 
                 aria-label={`Delete question ${questionNum}`}
                 onClick={() => onDelete(id)} 
-                className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn m-1 hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}
+                className={`shrink-0 p-1.5 rounded-lg custom-interactive-btn m-1 hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}
               >
                 <Image
                   src={TrashIcon}
@@ -215,7 +215,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               </button>
             </>
             :
-            <h2 className="text-xl custom-text dark:d-text">
+            <h2 className="text-xl custom-text dark:d-text ml-3">
               {question.trim() === "" ? "(empty question)" : question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
             </h2>
           }
@@ -254,7 +254,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                   aria-label={`Button to upload an attachment for question ${questionNum}`}
                   type="file"
                   id={attId}
-                  className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
+                  className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input m-1 ${isReduceMotion ? "" : "transition-colors"}`}
                   onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0]})}
                   disabled={!isCurFileDeleting && curFile}
                 />
@@ -381,7 +381,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           </div>
           {/* Question icon in corner */}
           {fontSizeMultiplier < 1.5 ?
-            <div className="shrink-0 ml-4 p-1.5 hidden lg:flex self-end">
+            <div className="shrink-0 ml-4 p-1.5 m-1 hidden lg:flex self-end">
               <Image
                 src={
                   type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
