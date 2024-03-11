@@ -171,7 +171,7 @@ const Search_grants = () => {
                 <input
                   id="searchInput"
                   type="text"
-                  placeholder="Search for title   (e.g: study, medical)"
+                  placeholder="Search for keywords in title   (e.g: study, medical)"
                   className="p-2 w-full text-black"
                 />
               </div>
