@@ -37,11 +37,6 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
 
   return (
     <>
-      {isEditMode ? 
-        <OptionsDiv />
-        :
-        <></>
-      }
       {answersObj?.map((a, idx) =>
         <div 
           key={idx} 

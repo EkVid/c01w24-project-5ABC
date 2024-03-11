@@ -12,7 +12,7 @@ import EmailIcon from "@/../public/email.svg"
 import PhoneIcon from "@/../public/phone.svg"
 import DateIcon from "@/../public/date.svg"
 import FileIcon from "@/../public/file.svg"
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
@@ -32,7 +32,6 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
   const formRef = useRef();
-  const [isShowingNum, setIsShowingNum] = useState(true);
 
   const {
     id,
@@ -40,6 +39,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     question, 
     type, 
     file, 
+    fileData,
     curFile, 
     isCurFileDeleting, 
     options, 
@@ -135,7 +135,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
-      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${(isDragging || isTemp) && isEditMode ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 overflow-auto ${(isDragging || isTemp) && isEditMode ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
     >
       <div className={`flex flex-col  ${(isDragging || isTemp) && isEditMode ? "invisible" : ""}`}>
         {isEditMode ? 
@@ -182,8 +182,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           :
           <></>
         }
-        <div className={`flex items-center mb-6`}>
-          {questionNum && isShowingNum ? 
+        <div className={`flex items-center md:mb-5`}>
+          {questionNum ? 
             <h2 className={`font-bold text-xl custom-text dark:d-text ${isEditMode ? "" : "self-start"} ${isReduceMotion ? "" : "transition-colors"}`}>
               Q{questionNum}.
             </h2> 
@@ -215,7 +215,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               </button>
             </>
             :
-            <h2 className={`text-xl custom-text dark:d-text ml-3 ${isReduceMotion ? "" : "transition-colors"}`}>
+            <h2 className={`text-xl custom-text dark:d-text ml-2 ${isReduceMotion ? "" : "transition-colors"}`}>
               {question.trim() === "" ? "(empty question)" : question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
             </h2>
           }
@@ -224,7 +224,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           <button 
             aria-label={`Delete question ${questionNum}`}
             onClick={() => onDelete(id)} 
-            className={`p-1.5 mt-1 rounded-lg custom-interactive-btn m-1 flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}
+            className={`p-1.5 rounded-lg custom-interactive-btn m-1 flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}
           >
             <Image
               src={TrashIcon}
@@ -240,37 +240,51 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         {/* Options section for required question and file upload */}
         {isEditMode ? 
           <>
-          <div className={`"text-sm mb-4 over custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}"`}>Settings:</div>
+          <div className={`text-sm mb-4 over custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}`}>Settings:</div>
           <div className="px-4 mb-4 overflow-auto">
             <CheckboxOption 
               label={"Required question:"} 
               currentValue={isRequired} 
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
             />
-            <div className="flex items-center px-2 py-1">
-              <label htmlFor={attId} className={`"text-sm mr-2 custom-text dark:d-text "`}>Attachments:</label>
-              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center">
-                <input
-                  aria-label={`Button to upload an attachment for question ${questionNum}`}
-                  type="file"
-                  id={attId}
-                  className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input m-1 ${isReduceMotion ? "" : "transition-colors"}`}
-                  onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0]})}
-                  disabled={!isCurFileDeleting && curFile}
-                />
-                <button 
-                  aria-label="Remove currently attached file"
-                  onClick={() => onChangeQuestionData({...questionData, file: null})}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
-                >
-                  <Image
-                    src={PlusIcon}
-                    alt="Delete"
-                    width={20 * fontSizeMultiplier}
-                    height={"auto"}
-                    className="dark:d-white-filter rotate-45 pointer-events-none"
+            <div className="flex px-2 py-1">
+              <label htmlFor={attId} className={`text-sm mr-2 custom-text dark:d-text `}>Attachment:</label>
+              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-start">
+                {file ? 
+                  <>
+                    <a 
+                      aria-label={`Download ${fileData.fileName}`}
+                      href={fileData.fileLink} 
+                      target="_blank" 
+                      rel="noreferrer noopener" 
+                      className={`mb-5 text-sm break-words custom-link`}
+                      >
+                        {fileData.fileName}
+                    </a>
+                    <button 
+                      aria-label="Remove currently attached file"
+                      onClick={() => onChangeQuestionData({...questionData, file: null, fileData: null})}
+                      className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
+                    >
+                      <Image
+                        src={PlusIcon}
+                        alt="Delete"
+                        width={18 * fontSizeMultiplier}
+                        height={"auto"}
+                        className="dark:d-white-filter rotate-45 pointer-events-none"
+                      />
+                    </button>
+                  </>
+                  :
+                  <input
+                    aria-label={`Button to upload an attachment for question ${questionNum}`}
+                    type="file"
+                    id={attId}
+                    className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input m-1 ${isReduceMotion ? "" : "transition-colors"}`}
+                    onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0], fileData: {fileLink: URL.createObjectURL(e.target.files[0]), fileName: e.target.files[0].name}})}
+                    disabled={!isCurFileDeleting && curFile}
                   />
-                </button>
+                }
               </form>
             </div>
             {curFile ? 
@@ -300,10 +314,16 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           :
           <></>
         }
-        {file ?
-          <div>
-
-          </div>
+        {fileData && !isEditMode ?
+          <a 
+            aria-label={`Download ${fileData.fileName}`}
+            href={fileData.fileLink} 
+            target="_blank" 
+            rel="noreferrer noopener" 
+            className={`mb-5 text-sm break-words custom-link`}
+            >
+              {fileData.fileName}
+          </a>
           :
           <></>
         }

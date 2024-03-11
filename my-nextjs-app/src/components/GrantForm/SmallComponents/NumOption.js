@@ -10,7 +10,7 @@ const NumOption = ({label, currentValue, onChangeValue}) => {
   const formId = uuidv4();
 
   return(
-    <div className="px-2 py-1 flex flex-col md:flex-row">
+    <div className="px-2 py-1 flex flex-col md:flex-row md:items-center">
       <label htmlFor={formId} className="text-sm mr-3 custom-text dark:d-text">{label}</label>
       <input
         type="text"

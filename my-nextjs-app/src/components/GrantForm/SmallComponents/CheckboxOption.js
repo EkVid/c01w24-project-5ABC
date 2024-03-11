@@ -14,7 +14,7 @@ const CheckboxOption = ({label, currentValue, onClick}) => {
   const formId = uuidv4();
 
   return (
-    <div className="flex items-center px-2 py-1">
+    <div className="flex items-center px-2 py-1 min-h-8">
       <label htmlFor={formId} className={`mr-4 custom-text dark:d-text text-left text-sm`}>{label}</label>
       <input 
         type="checkbox"

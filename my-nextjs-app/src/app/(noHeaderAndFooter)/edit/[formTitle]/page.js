@@ -51,6 +51,7 @@ export default function EditPage({params}) {
       errMsgArr: [],
       isRequired: false,
       file: null,
+      fileData: null,
     }
     if (type === process.env.NEXT_PUBLIC_TYPE_MULTI || type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX) {
       newQuestion = {...newQuestion, 
@@ -195,7 +196,7 @@ export default function EditPage({params}) {
               onDragCancel={clearStates}
               modifiers={[restrictToVerticalAxisAndWindowEdges]}
             >
-              <title>{`Form editor for ${title}`}</title>
+              <title>{`${title} Editor`}</title>
               {/* Header for title and save, exit, view buttons */}
               <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background border-b border-b-black dark:border-b-white ${isReducedMotion ? "" : "transition"}`}>
                 <AccessibilityBar 

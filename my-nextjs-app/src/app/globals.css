@@ -56,8 +56,12 @@ body {
   color:#535353
 }
 
+.custom-blue{
+  color: #3242ce;
+}
+
 .custom-green{
-  color : #4CAF4F;
+  color: #4CAF4F;
 }
 
 .custom-green-background{
@@ -123,6 +127,10 @@ body {
 
   .d-text-shade{
     color : #7a7a7a;
+  }
+
+  .d-custom-blue{
+    color: #85afee;
   }
   
   .d-custom-dark-grey-background{
@@ -223,6 +231,21 @@ body {
     background-color: #686868;
   }
 
+  .custom-hover-green{
+    color: #50a052;
+  }
+
+  .custom-active-purple{
+    color: #ad4dfc;
+  }
+
+  .d-custom-hover-green{
+    color: #18c71e;
+  }
+
+  .d-custom-active-purple{
+    color: #c887fd;
+  }
 
 }
 
@@ -245,3 +268,7 @@ body {
   @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color drop-shadow-lg shadow-white
 }
 
+/* Class for file links */
+.custom-link{
+  @apply custom-blue dark:d-custom-blue hover:underline hover:cursor-pointer hover:custom-hover-green active:custom-active-purple dark:hover:d-custom-hover-green dark:active:d-custom-active-purple
+}
