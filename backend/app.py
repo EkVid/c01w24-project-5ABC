@@ -1,11 +1,12 @@
 from bson import ObjectId
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pydantic import ValidationError
 from middleware import tokenCheck
 from email.mime.text import MIMEText
+from gridfs import GridFS
 import smtplib
 import os
 import jwt
@@ -22,6 +23,8 @@ CORS(app)
 
 client = MongoClient(os.getenv('DB_URI'))
 db = client['DB']
+fs = GridFS(db, "GridFS")
+
 userCollection = db.Users
 fileCollection = db.Files
 grantFormCollection = db.GrantForms
@@ -29,6 +32,8 @@ grantAppCollection = db.GrantApplications
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
+
+# User Login/Register Routes
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -222,7 +227,69 @@ def logout():
         return {"message": "Sucessfully logged the user out"}
     else:
         return {"message": "Unsupported Content Type"}, 400
+    
 
+# File management routes
+    
+def uploadFile(file, fileName):
+    fs.put(file, filename=fileName)
+    fileID = fs.get_last_version(filename=fileName)._id
+    return str(fileID)
+
+def deleteFile(fileID):
+    try:
+        fs.delete(ObjectId(fileID))
+        return True
+    except Exception as e:
+        return False
+
+
+# testing only, should not be used in production; upload should be handled by create/updateGrantForm
+@app.route("/testUpload", methods=['POST'])
+def testUpload():
+    contentType = request.headers.get("Content-Type")
+    if('multipart/form-data' in contentType):
+        file = request.files['File']
+        return uploadFile(file, file.filename), 200
+    else:
+        return '', 400
+    
+# testing only, should not be used in production; delete should be handled by delete/updateGrantForm
+@app.route("/testDelete", methods=['POST'])
+def testDelete():
+    contentType = request.headers.get("Content-Type")
+    if(contentType == "application/json"):
+        fileID = request.json['File_id']
+        if (deleteFile(fileID)):
+            return '', 200
+        else:
+            return '', 400
+    else:
+        return '', 400
+    
+    
+@app.route("/getFile", methods=['POST'])
+# @CheckToken.token_required
+def getFile():
+    contentType = request.headers.get("Content-Type")
+
+    if(contentType == "application/json"):
+        fileID = request.json['File_id']
+
+        try:
+            file = fs.get(ObjectId(fileID))
+            return send_file(file, download_name=file.filename, as_attachment=True)
+        
+        except Exception as e:
+            return {
+                "Error": "File not found",
+                "Message": str(e)
+            }, 404
+    else:
+        return {"message": "Unsupported Content Type"}, 400
+
+
+# Grant Form Routes
 
 @app.route("/createGrantForm", methods=["POST"])
 #@tokenCheck.token_required
