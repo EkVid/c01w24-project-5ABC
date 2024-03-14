@@ -95,8 +95,9 @@ const Toolbox = ({isSmallVersion, onClickAdd}) => {
         isSmallVersion ?
           <div key={title} className="flex flex-col ml-2 justify-between items-center">
             <button
+              aria-label={`Add '${type}' type question to bottom`}
               onClick={() => onClickAdd(type)}
-              className={`p-1 px-6 shrink-0 rounded-lg custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+              className={`p-1 px-6 shrink-0 rounded-lg custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
             >
               <Image
                 src={PlusIcon}
@@ -121,8 +122,9 @@ const Toolbox = ({isSmallVersion, onClickAdd}) => {
               icon={icon}
             />
             <button
+              aria-label={`Add '${type}' type question to bottom`}
               onClick={() => onClickAdd(type)}
-              className={`ml-2 p-2 shrink-0 rounded-lg custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+              className={`ml-2 p-2 shrink-0 rounded-lg custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
             >
               <Image
                 src={PlusIcon}

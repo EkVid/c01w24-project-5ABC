@@ -15,21 +15,22 @@ const ToolboxCard = ({title, type, desc, icon}) => {
 
   return (
     <button 
+      aria-label={`Drag-and-droppable card for ${title}`}
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className={`flex flex-auto p-2 items-center rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black cursor-move ${isDragging ? "opacity-0" : ""} ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`flex flex-auto p-2 items-center rounded-lg cursor-move ${isDragging ? "opacity-0" : ""} ${isReduceMotion ? "" : "transition-colors"}`}
     >
       <Image
         src={icon}
-        alt="Question icon"
+        alt={`${title} icon`}
         width={20 * fontSizeMultiplier}
         height={"auto"}
         className="mt-1 mx-1 self-start pointer-events-none dark:d-white-filter"
       />
-      <div className="flex flex-col items-start mx-4">
-        <div className="text-lg text-left font-bold custom-text dark:d-text select-none">{title}</div>
-        <div className="text-sm text-left custom-text-shade dark:d-text-shade select-none">{desc}</div>
+      <div className="flex flex-auto flex-col items-start mx-4">
+        <h2 className="text-lg text-left font-bold custom-text dark:d-text select-none">{title}</h2>
+        <p className="text-sm text-left custom-text-shade dark:d-text-shade select-none">{desc}</p>
       </div>
     </button>
   )

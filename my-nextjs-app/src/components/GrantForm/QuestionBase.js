@@ -12,7 +12,7 @@ import EmailIcon from "@/../public/email.svg"
 import PhoneIcon from "@/../public/phone.svg"
 import DateIcon from "@/../public/date.svg"
 import FileIcon from "@/../public/file.svg"
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import QMultichoice from "./QMultichoice";
@@ -27,13 +27,11 @@ import QPhoneNum from "./QPhoneNum";
 import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
-import { useDndMonitor } from "@dnd-kit/core";
 
 const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
   const formRef = useRef();
-  const [isShowingNum, setIsShowingNum] = useState(true);
 
   const {
     id,
@@ -41,6 +39,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     question, 
     type, 
     file, 
+    fileData,
     curFile, 
     isCurFileDeleting, 
     options, 
@@ -59,16 +58,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     },
     disabled: !isEditMode
   });
-
-  useDndMonitor({
-    onDragStart() {
-      setIsShowingNum(false);
-    },
-    onDragEnd() {
-      setIsShowingNum(true);
-    }
-  })
-
+  
   const dragTransitionSec = 0.1;
 
   const dragStyle = {
@@ -145,14 +135,15 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
-      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 ${isDragging || isTemp ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 overflow-auto ${(isDragging || isTemp) && isEditMode ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
     >
-      <div className={` flex flex-col  ${isDragging || isTemp ? "invisible" : ""}`}>
+      <div className={`flex flex-col  ${(isDragging || isTemp) && isEditMode ? "invisible" : ""}`}>
         {isEditMode ? 
           <div className="flex justify-center mt-2">
             <button 
+              aria-label="Move question up one"
               onClick={() => onChangePosition(-1)}
-              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && questionNum > 1 && !isDragging && !isTemp ? "visible" : "invisible"}`}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn m-1 ${questionNum && questionNum > 1 && !isDragging && !isTemp && isEditMode ? "visible" : "invisible"} ${isReduceMotion ? "" : "transition-colors"}`}
             >
               <Image
                 src={UpIcon}
@@ -162,8 +153,9 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               />
             </button>
             <button 
+              aria-label="Drag handle to rearrange question"
               ref={setActivatorNodeRef}
-              className="px-2 py-1 mx-6 cursor-move rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black"
+              className={`px-2 py-1 mx-6 cursor-move rounded-lg hover:custom-hover-white dark:hover:d-custom-hover-black ${isReduceMotion ? "" : "transition-colors"}`}
               {...listeners}
               {...attributes} 
             >
@@ -174,9 +166,10 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 className="dark:d-white-filter"
               />
             </button>
-            <button 
+            <button
+              aria-label="Move question down one"
               onClick={() => onChangePosition(1)}
-              className={`px-2 py-1 rounded-lg custom-interactive-btn ${questionNum && !isLastQuestion && !isDragging && !isTemp ? "visible" : "invisible"}`}
+              className={`px-2 py-1 rounded-lg custom-interactive-btn m-1 ${questionNum && !isLastQuestion && !isDragging && !isTemp ? "visible" : "invisible"} ${isReduceMotion ? "" : "transition-colors"}`}
             >
               <Image
                 src={UpIcon}
@@ -189,47 +182,56 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           :
           <></>
         }
-        <div className={`flex items-center mb-6`}>
-          {questionNum && isShowingNum ? 
-            <div className="mr-4 font-bold text-xl custom-text dark:d-text">
-              Q.{questionNum}
-            </div> 
+        <div className={`flex items-center md:mb-5`}>
+          {questionNum ? 
+            <h2 className={`font-bold text-xl custom-text dark:d-text ${isEditMode ? "" : "self-start"} ${isReduceMotion ? "" : "transition-colors"}`}>
+              Q{questionNum}.
+            </h2> 
             : 
             <></>
           }
           {isEditMode ?
             <>
               <input 
+                aria-label={`Textbox to type a question for question ${questionNum}`}
                 type="text"
-                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
+                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input mx-3 my-1 ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
                 value={question}
                 placeholder="Enter a question"
                 onInput={e => handleOnChangeQuestion(e.target.value)}
               />
-              <button onClick={() => onDelete(id)} className={`ml-4 shrink-0 p-1.5 rounded-lg custom-interactive-btn hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}>
+              <button 
+                aria-label={`Delete question ${questionNum}`}
+                onClick={() => onDelete(id)} 
+                className={`shrink-0 p-1.5 rounded-lg custom-interactive-btn m-1 hidden md:flex ${isReduceMotion ? "" : "transition-colors"}`}
+              >
                 <Image
                   src={TrashIcon}
-                  alt="Delete"
+                  alt="Trash icon"
                   width={30 * fontSizeMultiplier}
                   height={"auto"}
-                  className="pointer-events-none dark:d-white-filter"
+                  className={`pointer-events-none dark:d-white-filter ${isReduceMotion ? "" : "transition"}`}
                 />
               </button>
             </>
             :
-            <div className="text-xl custom-text dark:d-text">
+            <h2 className={`text-xl custom-text dark:d-text ml-2 ${isReduceMotion ? "" : "transition-colors"}`}>
               {question.trim() === "" ? "(empty question)" : question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
-            </div>
+            </h2>
           }
         </div>
         {isEditMode ?
-          <button onClick={() => onDelete(id)} className={`p-1.5 mt-1 rounded-lg custom-interactive-btn flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}>
+          <button 
+            aria-label={`Delete question ${questionNum}`}
+            onClick={() => onDelete(id)} 
+            className={`p-1.5 rounded-lg custom-interactive-btn m-1 flex self-end md:hidden ${isReduceMotion ? "" : "transition-colors"}`}
+          >
             <Image
               src={TrashIcon}
-              alt="Delete"
+              alt="Trash icon"
               width={30 * fontSizeMultiplier}
               height={"auto"}
-              className="pointer-events-none dark:d-white-filter"
+              className={`pointer-events-none dark:d-white-filter ${isReduceMotion ? "" : "transition"}`}
             />
           </button>
           :
@@ -238,35 +240,51 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         {/* Options section for required question and file upload */}
         {isEditMode ? 
           <>
-          <div className="text-sm mb-4 over custom-text dark:d-text">Settings:</div>
+          <div className={`text-sm mb-4 over custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}`}>Settings:</div>
           <div className="px-4 mb-4 overflow-auto">
             <CheckboxOption 
               label={"Required question:"} 
               currentValue={isRequired} 
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
             />
-            <div className="flex items-center px-2 py-1">
-              <label htmlFor={attId} className="text-sm mr-2 custom-text dark:d-text">Attachments:</label>
-              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center">
-                <input
-                  type="file"
-                  id={attId}
-                  className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
-                  onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0]})}
-                  disabled={!isCurFileDeleting && curFile}
-                />
-                <button 
-                  onClick={() => onChangeQuestionData({...questionData, file: null})}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
-                >
-                  <Image
-                    src={PlusIcon}
-                    alt="Delete"
-                    width={20 * fontSizeMultiplier}
-                    height={"auto"}
-                    className="dark:d-white-filter rotate-45 pointer-events-none"
+            <div className="flex px-2 py-1">
+              <label htmlFor={attId} className={`text-sm mr-2 custom-text dark:d-text `}>Attachment:</label>
+              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-start">
+                {file ? 
+                  <>
+                    <a 
+                      aria-label={`Download ${fileData.fileName}`}
+                      href={fileData.fileLink} 
+                      target="_blank" 
+                      rel="noreferrer noopener" 
+                      className={`mb-5 text-sm break-words custom-link`}
+                      >
+                        {fileData.fileName}
+                    </a>
+                    <button 
+                      aria-label="Remove currently attached file"
+                      onClick={() => onChangeQuestionData({...questionData, file: null, fileData: null})}
+                      className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
+                    >
+                      <Image
+                        src={PlusIcon}
+                        alt="Delete"
+                        width={18 * fontSizeMultiplier}
+                        height={"auto"}
+                        className="dark:d-white-filter rotate-45 pointer-events-none"
+                      />
+                    </button>
+                  </>
+                  :
+                  <input
+                    aria-label={`Button to upload an attachment for question ${questionNum}`}
+                    type="file"
+                    id={attId}
+                    className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input m-1 ${isReduceMotion ? "" : "transition-colors"}`}
+                    onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0], fileData: {fileLink: URL.createObjectURL(e.target.files[0]), fileName: e.target.files[0].name}})}
+                    disabled={!isCurFileDeleting && curFile}
                   />
-                </button>
+                }
               </form>
             </div>
             {curFile ? 
@@ -275,8 +293,9 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                   {isCurFileDeleting ? "Previous uploaded file will be deleted" : `Current upload: ${curFile.name}`}
                 </div>
                 <button 
+                  aria-label={isCurFileDeleting ? "Restore previously uploaded attachment" : "Delete previously uploaded attachment"}
                   onClick={handleOnUndoCurFile}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
                 >
                   <Image
                     src={isCurFileDeleting ? UndoIcon : PlusIcon}
@@ -295,14 +314,20 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           :
           <></>
         }
-        {file ?
-          <div>
-
-          </div>
+        {fileData && !isEditMode ?
+          <a 
+            aria-label={`Download ${fileData.fileName}`}
+            href={fileData.fileLink} 
+            target="_blank" 
+            rel="noreferrer noopener" 
+            className={`mb-5 text-sm break-words custom-link`}
+            >
+              {fileData.fileName}
+          </a>
           :
           <></>
         }
-        <div className="flex justify-between items-end">
+        <div className="flex justify-between">
           <div className="flex flex-col flex-auto overflow-auto">
             {/* Body of question */}
             {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
@@ -311,7 +336,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 isRequired={isRequired}
                 isEditMode={isEditMode}
                 errAnsIdxArr={errAnsIdxArr}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onAddAnswer={handleOnAddAnswer}
                 onChangeAnswers={handleOnChangeAnswers}
                 onDeleteAnswer={handleOnDeleteAnswer}
@@ -322,7 +347,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 options={options}
                 isEditMode={isEditMode}
                 errAnsIdxArr={errAnsIdxArr}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onAddAnswer={handleOnAddAnswer}
                 onChangeAnswers={handleOnChangeAnswers}
                 onChangeOptions={handleOnChangeOptions}
@@ -333,7 +358,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 options={options}
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
@@ -341,33 +366,33 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 options={options}
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
               <QEmail
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
               <QPhoneNum
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
               <QDate
                 options={options}
                 isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_FILE ?
               <QFile
                 isEditMode={isEditMode}
-                onSelectAnswer={onSelectAnswer}
+                onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               :
               <></>
@@ -376,7 +401,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           </div>
           {/* Question icon in corner */}
           {fontSizeMultiplier < 1.5 ?
-            <div className="shrink-0 ml-4 p-1.5 hidden lg:flex">
+            <div className="shrink-0 ml-4 p-1.5 m-1 hidden lg:flex self-end">
               <Image
                 src={
                   type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
