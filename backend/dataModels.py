@@ -7,6 +7,7 @@ from datetime import date
 User Profile Models
 """
 class UserProfileReqs(BaseModel):
+    # Optional still means you have to pass in these fields but just with None or "", etc
     minAge: Optional[int]
     maxAge: Optional[int]
     race: Optional[list[str]]
@@ -20,26 +21,6 @@ class UserProfile(BaseModel):
     gender: str
     canadianCitizen: int
     veteran: int
-
-
-"""
-Grant Model
-"""
-class GrantBase(BaseModel):
-    grantorName: str
-    title: str
-    description: str
-    numWinnners: int
-    maxWinners: int
-    deadline: str # maybe change to str for simplicity
-    isActive: bool
-    amountPerApp: float
-    profileReqs: UserProfileReqs
-
-class Grant(GrantBase):
-   winnerIDs: list[int]
-   appliedIDs: list[int]
-   formID: str
 
 
 """
@@ -149,6 +130,27 @@ class FileAnswer(BaseModel):
     options: FileOptions
     type: str
 
+
+"""
+Grant Model
+"""
+class GrantBase(BaseModel):
+    grantorName: str
+    title: str
+    description: str
+    numWinnners: int
+    maxWinners: int
+    deadline: str # maybe change to str for simplicity
+    isActive: bool
+    amountPerApp: float
+    #profileReqs: UserProfileReqs # test later
+
+class Grant(GrantBase):
+   winnerIDs: list[int]
+   appliedIDs: list[int]
+   questionData: list[Question]
+
+
 """
 Application Model
 """
@@ -157,7 +159,7 @@ class Application(BaseModel):
     email: str
     dateSubmitted: str  # maybe str
     status: int
-    #profileData: UserProfile | None = UserProfile()  # remove optional after done
+    #profileData: UserProfile | None = UserProfile()  # test later; remove optional after done
     answerData: list[Union[
         TextboxAnswer,
         NumberAnswer,
@@ -167,10 +169,3 @@ class Application(BaseModel):
         FileAnswer
     ]]
 
-
-"""
-Form Model
-"""
-class Form(BaseModel):
-    grantID: str
-    questionData: list[Question]

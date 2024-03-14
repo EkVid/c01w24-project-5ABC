@@ -1,5 +1,5 @@
 from bson import ObjectId
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -14,17 +14,17 @@ import datetime
 import json as JSON
 import random
 
-from dataModels import (Form, Application)
+from dataModels import (Application, Grant)
 
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-client = MongoClient(os.getenv('DB_URI'))
+client = MongoClient()
 db = client['DB']
 userCollection = db.Users
 fileCollection = db.Files
-grantFormCollection = db.GrantForms
+grantCollection = db.Grants
 grantAppCollection = db.GrantApplications
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -224,74 +224,74 @@ def logout():
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/createGrantForm", methods=["POST"])
+@app.route("/createGrant", methods=["POST"])
 #@tokenCheck.token_required
-def createGrantForm():
-    if request.headers.get("Content-Type") != "application/json":
+def createGant():
+    if request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
         return {"message": "Unsupported Content Type"}, 400
 
-    json = request.json
-
+    grant_dict = JSON.loads(request.form.get("jsonData"))
+   
     try:
-        Form.model_validate_json(JSON.dumps(json))
+        Grant.model_validate(grant_dict)
     except ValidationError as e:
         # Do not change e.errors(), the unit tests require an error list in this specific format
         return {"message": e.errors()}, 400
 
-    id = grantFormCollection.insert_one(json).inserted_id
-    message = "Grant application successfully created with id: " + str(id)
+    id = grantCollection.insert_one(grant_dict).inserted_id
+    message = "Grant successfully created with id: " + str(id)
 
     return {"message": message}, 200
+    
 
-
-@app.route("/getGrantForm/<_id>", methods=["GET"])
-@tokenCheck.token_required
-def getGrantForm(_id):
+@app.route("/getGrant/<_id>", methods=["GET"])
+#@tokenCheck.token_required
+def getGrant(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
 
-    form = grantFormCollection.find_one({"_id": objID}, {"_id": False})
+    form = grantCollection.find_one({"_id": objID}, {"_id": False})
     if not form:
-        return {"message": "Grant form with the given ID not found"}, 404
+        return {"message": "Grant with the given ID not found"}, 404
 
     return form, 200
 
 
-@app.route("/updateGrantForm/<_id>", methods=["PUT"])
-@tokenCheck.token_required
-def updateGrantForm(_id):
-    if request.headers.get("Content-Type") != "application/json":
+@app.route("/updateGrant/<_id>", methods=["PUT"])
+#@tokenCheck.token_required
+def updateGrant(_id):
+    if request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
         return {"message": "Unsupported Content Type"}, 400
 
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
-    json = request.json
+    grant_dict = JSON.loads(request.form.get("jsonData"))
 
     # TODO: remove if redundant; _id might already be immutable for each document in MongoDB
-    newData = {key: val for (key, val) in json.items() if key != "_id"}     # Updating everything but the ID for now
+    newData = {key: val for (key, val) in grant_dict.items() if key != "_id"}     # Updating everything but the ID for now
 
     try:
-        Form.model_validate_json(JSON.dumps(newData))
+        Grant.model_validate_json(JSON.dumps(newData))
     except ValidationError as e:
         return {"message": e.errors()}, 400
 
-    res = grantFormCollection.update_one({"_id": objID}, {"$set": newData})
+    res = grantCollection.update_one({"_id": objID}, {"$set": newData})
     if res.matched_count != 1:
-        return {"message": "Grant form with the given ID not found"}, 404
+        return {"message": "Grant with the given ID not found"}, 404
 
-    return {"message": "Grant form successfully updated"}, 200
+    return {"message": "Grant successfully updated"}, 200
 
 
-@app.route("/deleteGrantForm/<_id>", methods=["DELETE"])
-@tokenCheck.token_required
-def deleteGrantForm(_id):
+@app.route("/deleteGrant/<_id>", methods=["DELETE"])
+#@tokenCheck.token_required
+def deleteGrant(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
 
-    res = grantFormCollection.delete_one({"_id": objID})
+    res = grantCollection.delete_one({"_id": objID})
     if res.deleted_count != 1:
         return {"message": "Grant form with the given ID not found"}, 404
 
@@ -299,7 +299,7 @@ def deleteGrantForm(_id):
 
 
 @app.route("/createApplication", methods=["POST"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def createApplication():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
