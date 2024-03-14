@@ -231,10 +231,73 @@ def logout():
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/createGrantForm", methods=["POST"])
-@tokenCheck.token_required
-def createGrantForm():
-    if request.headers.get("Content-Type") != "application/json":
+
+# Returns the JSON data from the given multipart form data request
+def getJSONData(request):
+    contentType = request.headers.get("Content-Type", None)
+    if contentType is None or request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
+        return None
+
+    return JSON.loads(request.form.get("jsonData", "null"))
+
+
+# File management routes
+    
+def uploadFile(file, fileName):
+    fs.put(file, filename=fileName)
+    fileID = fs.get_last_version(filename=fileName)._id
+    return str(fileID)
+
+def deleteFile(fileID):
+    try:
+        fs.delete(ObjectId(fileID))
+        return True
+    except Exception as e:
+        return False
+
+
+# testing only, should not be used in production; upload should be handled by create/updateGrantForm
+@app.route("/testUpload", methods=['POST'])
+def testUpload():
+    contentType = request.headers.get("Content-Type")
+    if('multipart/form-data' in contentType):
+        file = request.files['File']
+        return uploadFile(file, file.filename), 200
+    else:
+        return '', 400
+    
+# testing only, should not be used in production; delete should be handled by delete/updateGrantForm
+@app.route("/testDelete", methods=['POST'])
+def testDelete():
+    contentType = request.headers.get("Content-Type")
+    if(contentType == "application/json"):
+        fileID = request.json['File_id']
+        if (deleteFile(fileID)):
+            return '', 200
+        else:
+            return '', 400
+    else:
+        return '', 400
+    
+    
+@app.route("/getFile", methods=['POST'])
+# @CheckToken.token_required
+def getFile():
+    contentType = request.headers.get("Content-Type")
+
+    if(contentType == "application/json"):
+        fileID = request.json['File_id']
+
+        try:
+            file = fs.get(ObjectId(fileID))
+            return send_file(file, download_name=file.filename, as_attachment=True)
+        
+        except Exception as e:
+            return {
+                "Error": "File not found",
+                "Message": str(e)
+            }, 404
+    else:
         return {"message": "Unsupported Content Type"}, 400
 
     json = request.json
@@ -302,5 +365,159 @@ def deleteGrantForm(_id):
     res = grantFormCollection.delete_one({"_id": objId})
     if res.deleted_count != 1:
         return {"message": "Grant form with the given ID not found"}, 404
+
+    return {"message": "Grant form successfully deleted"}, 200
+
+
+@app.route("/createApplication", methods=["POST"])
+# @tokenCheck.token_required
+def createApplication():
+    applicationData = getJSONData(request)
+    if applicationData is None:
+        return {"message": "Unsupported Content Type"}, 400
+
+    grantID = applicationData.get("grantID", "")
+    if not ObjectId.is_valid(grantID):
+        return {"message": "Invalid grant ID"}, 400
+    objID = ObjectId(grantID)
+    grant = grantCollection.find_one({"_id": objID}, {"_id": False})
+    if not grant:
+        return {"message": "Grant with the given ID not found"}, 404
+    # TODO: find a better way to check if answerData is present
+    if "answerData" not in applicationData or len(applicationData["answerData"]) != len(grant["questionData"]):
+        return {"message": "Invalid grant application answer data"}, 400
+    # Populate json request with answer constraints from grant to validate
+    for i in range(len(grant["questionData"])):
+        # TODO: need to ensure that applicationData["answerData"][i] is a dict
+        applicationData["answerData"][i]["options"] = grant["questionData"][i]["options"]
+
+    try:
+        Application.model_validate_json(JSON.dumps(applicationData))
+    except ValidationError as e:
+        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
+
+    id = grantAppCollection.insert_one(applicationData).inserted_id
+    return {
+        "message": "Grant application successfully created",
+        "_id": str(id)
+    }, 200
+
+
+# Used in tests; do not remove
+@app.route("/getApplication/<_id>", methods=["GET"])
+# @tokenCheck.token_required
+def getApplication(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objID = ObjectId(_id)
+
+    application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
+    if not application:
+        return {"message": "Grant application with the given ID not found"}, 404
+
+    return application, 200
+
+
+"""Returns all applications submitted by the grantee with the email passed in the request. Note that this route uses
+JSON as opposed to form data.
+"""
+@app.route("/getGranteeApplications", methods=["POST"])
+# @tokenCheck.token_required
+def getGranteeApplications():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
+    email = request.json.get("email", "")
+    if not email:
+        return {"message": "Invalid email"}, 400
+
+    applications = list(grantAppCollection.find({"email": email}, {"_id": False}))
+    return {"applications": applications}, 200
+
+
+"""Returns all applications for the grant with the given ID. Note that this route uses JSON as opposed to form data.
+
+:param str _id: The grant ID.
+"""
+@app.route("/getAllGrantApplications/<_id>", methods=["GET"])
+# @tokenCheck.token_required
+def getAllGrantApplications(_id):
+    applications = list(grantAppCollection.find({"grantID": _id}, {"_id": False}))
+    return {"applications": applications}, 200
+
+
+# TODO: refactor below here based on schema changes and JSON to form data
+
+@app.route("/updateApplication/<_id>", methods=["PUT"])
+# @tokenCheck.token_required
+def updateApplication(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objID = ObjectId(_id)
+
+    applicationData = getJSONData(request)
+    if applicationData is None:
+        return {"message": "Unsupported Content Type"}, 400
+    # TODO: see if there's a better way to do this than using isNotListOfDict
+    elif "answerData" not in applicationData or not isListOfDict(applicationData["answerData"]):
+        return {"message": "No answer data"}, 400
+
+    oldApplication = grantAppCollection.find_one({"_id": objID}, {"_id": False})
+    if oldApplication is None:
+        return {"message": "Grant application with the given ID not found"}, 404
+    # Incorrect number of answers
+    elif len(oldApplication.get("answerData", [])) != len(applicationData.get("answerData", [])):
+        return {"message": "Invalid answer data"}, 400
+
+    # Copy the options from the old application
+    oldAnswerData = oldApplication.get("answerData", [])
+    for i in range(len(oldAnswerData)):
+        options = oldAnswerData[i].get("options", {})
+        applicationData["answerData"][i]["options"] = options
+
+    try:
+        Application.model_validate_json(JSON.dumps(applicationData))
+    except ValidationError as e:
+        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
+
+    grantAppCollection.update_one({"_id": objID}, {"$set": applicationData})
+    return {"message": "Grant application successfully updated"}, 200
+
+
+@app.route("/updateGrantWinners", methods=["PUT"])
+# @tokenCheck.token_required
+def updateGrantWinners():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
+    json = request.json
+    applicationID = json.get("applicationID", "")
+    grantID = json.get("grantID", "")
+    email = json.get("email", "")
+    if not email or not ObjectId.is_valid(applicationID) or not ObjectId.is_valid(grantID):
+        return {"message": "Invalid application ID, grant ID, or email"}, 400
+
+    user = userCollection.find_one({"Email": email})
+    if user is None:
+        return {"message": "Grantee with the given email does not exist"}, 400
+
+    applicationObjID = ObjectId(applicationID)
+    grantObjID = ObjectId(grantID)
+    grantCollection.update_one({"_id": grantObjID}, {"$push": {"winnerIDs": applicationID}})
+    grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": APPLICATION_APPROVED}})
+
+    return {"message": "Application winner successfully added"}, 200
+
+
+@app.route("/deleteApplication/<_id>", methods=["DELETE"])
+# @tokenCheck.token_required
+def deleteApplication(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objID = ObjectId(_id)
+
+    res = grantAppCollection.delete_one({"_id": objID})
+    if res.deleted_count != 1:
+        return {"message": "Grant application with the given ID not found"}, 404
 
     return {"message": "Grant form successfully deleted"}, 200
