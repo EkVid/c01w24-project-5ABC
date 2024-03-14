@@ -15,95 +15,159 @@ const fieldValidityStatus = (field, errorList) => {
   return 'valid';
 }
 
-describe('/createGrantForm tests', () => {
-  test('/createGrantForm - non-JSON data', async () => {
-    const res = await fetch(`${SERVER_URL}/createGrantForm`, {
+// TODO: update unit tests (figure out how Postman translates to Jest with form data)
+
+const getValidQuestionData = () => {
+  return [
+    {
+      question: 'What is your name?',
+      type: 'textbox',
+      isRequired: true,
+      options: {
+        answerType: 'short',
+        minCharsNum: 1,
+        maxCharsNum: 16,
+        isMultipleLines: false
+      }
+    }
+  ];
+}
+
+const getValidGrantFormData = () => {
+  const grantFormData = new FormData()
+  const jsonData = {
+    grantorName: 'A Grantor',
+    title: 'A Generous Grant',
+    description: 'Do apply to this grant',
+    // numWinners: 2,
+    maxWinners: 10,
+    deadline: '2024-04-05',
+    isActive: 'true',
+    amountPerApp: 1499.99,
+    // winnerIDs': [],
+    // appliedIDs': [],
+    questionData: getValidQuestionData()
+  }
+  grantFormData.append('jsonData', JSON.stringify(jsonData));
+
+  return grantFormData;
+}
+
+const deleteFromNestedJSON = (grantData, field) => {
+  const jsonData = JSON.parse(grantData.get('jsonData'));
+  delete jsonData[field];
+  grantData.set('jsonData', JSON.stringify(jsonData));
+}
+
+describe('/createGrant tests', () => {
+  test('/createGrant - invalid content type', async () => {
+    const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST'
     });
 
     expect(res.status).toBe(400);
   });
 
-  test('/createGrantForm - no JSON data', async () => {
-    const res = await fetch(`${SERVER_URL}/createGrantForm`, {
+  test('/createGrant - empty data', async () => {
+    const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
       headers: {
-      'Content-Type': 'application/json',
-      }
+        'Content-Type': 'multipart/form-data',
+        method: 'POST'
+      },
+      body: new FormData()
     });
 
     expect(res.status).toBe(400);
   });
 
-  test('/createGrantForm - missing grant ID', async () => {
-    const res = await fetch(`${SERVER_URL}/createGrantForm`, {
+  // test('/createGrant - missing grant ID', async () => {
+  //   const res = await fetch(`${SERVER_URL}/createGrant`, {
+  //     method: 'POST',
+  //     headers: {
+  //     'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       grantorID: 1,
+  //       grantName: 'A grant',
+  //       questionData: []
+  //     })
+  //   });
+
+  //   expect(res.status).toBe(400);
+  //   const resBody = await res.json();
+  //   expect(fieldValidityStatus('grantID', resBody.message)).toBe('missing');
+  // });
+
+  // test('/createGrant - missing grantor ID', async () => {
+  //   const res = await fetch(`${SERVER_URL}/createGrant`, {
+  //     method: 'POST',
+  //     headers: {
+  //     'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       grantID: 1,
+  //       grantName: 'A grant',
+  //       questionData: []
+  //     })
+  //   });
+
+  //   expect(res.status).toBe(400);
+  //   const resBody = await res.json();
+  //   expect(fieldValidityStatus('grantorID', resBody.message)).toBe('missing');
+  // });
+
+  test('/createGrant - missing grantor name', async () => {
+    const grantData = getValidGrantFormData();
+    deleteFromNestedJSON(grantData, 'grantorName');
+
+    console.log('\n\n\n\n');
+    console.log(grantData);
+
+    const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
       headers: {
-      'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
-      body: JSON.stringify({
-        grantorID: 1,
-        grantName: 'A grant',
-        questionData: []
-      })
+      body: grantData
     });
 
     expect(res.status).toBe(400);
     const resBody = await res.json();
-    expect(fieldValidityStatus('grantID', resBody.message)).toBe('missing');
+
+    console.log(resBody);
+    expect(fieldValidityStatus('grantorName', resBody.message)).toBe('missing');
   });
 
-  test('/createGrantForm - missing grantor ID', async () => {
-    const res = await fetch(`${SERVER_URL}/createGrantForm`, {
+  test('/createGrant - missing array of questions', async () => {
+    const grantData = getValidGrantFormData();
+
+    deleteFromNestedJSON(grantData, 'questionData');
+
+    const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
       headers: {
-      'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
-      body: JSON.stringify({
-        grantID: 1,
-        grantName: 'A grant',
-        questionData: []
-      })
-    });
-
-    expect(res.status).toBe(400);
-    const resBody = await res.json();
-    expect(fieldValidityStatus('grantorID', resBody.message)).toBe('missing');
-  });
-
-  test('/createGrantForm - missing grantor name', async () => {
-    const res = await fetch(`${SERVER_URL}/createGrantForm`, {
-      method: 'POST',
-      headers: {
-      'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        grantID: 1,
-        grantorID: 2,
-        questionData: []
-      })
-    });
-
-    expect(res.status).toBe(400);
-    const resBody = await res.json();
-    expect(fieldValidityStatus('grantName', resBody.message)).toBe('missing');
-  });
-
-  test('/createGrantForm - missing array of questions', async () => {
-    const res = await fetch(`${SERVER_URL}/createGrantForm`, {
-      method: 'POST',
-      headers: {
-      'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        grantID: 1,
-        grantorID: 2,
-        grantName: 'A grant'
-      })
+      body: grantData
     });
 
     expect(res.status).toBe(400);
     const resBody = await res.json();
     expect(fieldValidityStatus('questionData', resBody.message)).toBe('missing');
   });
+
+  test('/createGrant - valid data', async () => {
+    const grantData = getValidGrantFormData();
+
+    const res = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: grantData
+    });
+
+    expect(res.status).toBe(200);
+  })
 });

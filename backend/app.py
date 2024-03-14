@@ -225,7 +225,16 @@ def logout():
         return {"message": "Sucessfully logged the user out"}
     else:
         return {"message": "Unsupported Content Type"}, 400
-    
+
+
+# Returns the JSON data from the given multipart form data request
+def getJSONData(request):
+    contentType = request.headers.get("Content-Type", None)
+    if contentType is None or request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
+        return None
+
+    return JSON.loads(request.form.get("jsonData", "null"))
+
 
 # File management routes
     
@@ -468,6 +477,8 @@ def getAllGrantApplications(_id):
     applications = list(grantAppCollection.find({"grantID": _id}, {"_id": False}))
     return {"applications": applications}, 200
 
+
+# TODO: refactor below here based on schema changes and JSON to form data
 
 @app.route("/updateApplication/<_id>", methods=["PUT"])
 # @tokenCheck.token_required
