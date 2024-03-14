@@ -61,7 +61,7 @@ const FormComponent = ({title}) => {
     // TODO: Do save and make request
 
     // Carter: setting the question data into grant form
-    const newGrant = {...grant, form:questionData}
+    const newGrant = {...grant, form:{...grant.form, questionData:questionData}}
     localStorage.setItem('grant', JSON.stringify(newGrant))
 
     console.log("Congratulations. You clicked the save button. Way to go. This button doesn't work btw.");
@@ -190,7 +190,6 @@ const FormComponent = ({title}) => {
       {/* Header for title and save, exit, view buttons */}
       <div className={`flex items-center sticky top-0 z-30 justify-between h-fit overflow-auto px-1 custom-questioncard-background`}>
         <button 
-          // onClick={() => router.push("/")}
           onClick={() => router.back()}
           className="flex min-w-fit rounded custom-interactive-btn px-2 py-1"
         >

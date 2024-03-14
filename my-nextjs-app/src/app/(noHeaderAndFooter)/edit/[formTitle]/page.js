@@ -24,10 +24,14 @@ const AccessibilityBar = dynamic(
 );
 
 export default function EditPage({params}) {
+   // Carter: initializing the question data from grant form
+   const grant = JSON.parse(localStorage.getItem('grant'))
+   const initQuestions = grant ? grant.QuestionData : null
+
   const [fontSize, setFontSize] = useState(100);
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
-  const [questionData, setQuestionData] = useState(null);
+  const [questionData, setQuestionData] = useState(initQuestions);
   const [activeQuestion, setActiveQuestion] = useState(null);
   const [newDraggedObj, setNewDraggedObj] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
@@ -67,6 +71,10 @@ export default function EditPage({params}) {
 
   const handleOnSave = () => {
     // TODO: Do save and make request
+
+    // Carter: setting the question data into grant form
+    const newGrant = {...grant, QuestionData:questionData}
+    localStorage.setItem('grant', JSON.stringify(newGrant))
     console.log("Congratulations. You clicked the save button. Way to go. This button doesn't work btw.");
   }
 
@@ -207,7 +215,7 @@ export default function EditPage({params}) {
                 <div className="flex items-center justify-between p-2 overflow-auto">
                   <button 
                     aria-label="Quit"
-                    onClick={() => router.push("/")}
+                    onClick={() => router.back()}
                     className={`flex shrink-0 min-w-fit items-center rounded custom-interactive-btn m-1 p-1 self-stretch ${isReducedMotion ? "" : "transition"}`}
                   >
                     <Image
