@@ -1,7 +1,8 @@
 from pydantic import BaseModel, validator, PositiveInt
 from annotated_types import Len
 from typing import Literal, Optional, Annotated, Union
-from datetime import date
+
+# TODO: put constants here for canadianCitizen and veteran once decided
 
 """
 User Profile Models
@@ -37,7 +38,7 @@ class NumberOptions(BaseModel):
     minNum: Union[int, float]
     maxNum: Union[int, float]
 
- 
+
     @validator('minNum', 'maxNum', always=True)
     def validate_range(cls, value, values) -> Union[int, float]:
         if values['isIntegerOnly']:
@@ -81,7 +82,7 @@ Answer Models
 class TextboxAnswer(BaseModel):
     options: TextboxOptions
     text: str
-    
+
     @validator('text', always=True)
     def validate_textbox(cls, value, values):
         minChars = values['options'].minCharsNum
@@ -138,7 +139,7 @@ class GrantBase(BaseModel):
     grantorName: str
     title: str
     description: str
-    numWinnners: int
+    numWinners: int
     maxWinners: int
     deadline: str # maybe change to str for simplicity
     isActive: bool
@@ -146,8 +147,8 @@ class GrantBase(BaseModel):
     #profileReqs: UserProfileReqs # test later
 
 class Grant(GrantBase):
-   winnerIDs: list[int]
-   appliedIDs: list[int]
+   winnerIDs: list[str]
+   appliedIDs: list[str]
    questionData: list[Question]
 
 
@@ -168,4 +169,3 @@ class Application(BaseModel):
         DateAnswer,
         FileAnswer
     ]]
-
