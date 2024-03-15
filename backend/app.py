@@ -303,10 +303,6 @@ def getFile():
 @app.route("/createGrantForm", methods=["POST"])
 #@tokenCheck.token_required
 def createGrant():
-    # if request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
-    #     return {"message": "Unsupported Content Type"}, 400
-
-    # grantDict = JSON.loads(request.form.get("jsonData"))
     grantDict = getJSONData(request)
     if grantDict is None:
         return {"message": "Unsupported Content Type"}, 400
@@ -314,13 +310,17 @@ def createGrant():
     try:
         Grant.model_validate(grantDict)
     except ValidationError as e:
-        # Do not change e.errors(), the unit tests require an error list in this specific format
+        # Do not change e.errors(), the tests require an error list in this specific format
         return {"message": e.errors()}, 400
 
     id = grantCollection.insert_one(grantDict).inserted_id
-    message = "Grant successfully created with ID: " + str(id)
+    # message = "Grant successfully created with ID: " + str(id)
 
-    return {"message": message}, 200
+    # Do not change "_id": str(id), the tests require this to keep track of inserted data
+    return {
+        "message": "Grant successfully created",
+        "_id": str(id)
+    }, 200
 
 
 @app.route("/getGrant/<_id>", methods=["GET"])
@@ -340,13 +340,10 @@ def getGrant(_id):
 @app.route("/updateGrant/<_id>", methods=["PUT"])
 #@tokenCheck.token_required
 def updateGrant(_id):
-    # if request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
-    #     return {"message": "Unsupported Content Type"}, 400
-
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
-    # grantDict = JSON.loads(request.form.get("jsonData"))
+
     grantDict = getJSONData(request)
     if grantDict is None:
         return {"message": "Unsupported Content Type"}, 400
@@ -357,7 +354,7 @@ def updateGrant(_id):
     try:
         Grant.model_validate_json(JSON.dumps(newData))
     except ValidationError as e:
-        return {"message": e.errors()}, 400
+        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
 
     res = grantCollection.update_one({"_id": objID}, {"$set": newData})
     if res.matched_count != 1:
@@ -383,9 +380,6 @@ def deleteGrant(_id):
 @app.route("/createApplication", methods=["POST"])
 # @tokenCheck.token_required
 def createApplication():
-    # if request.headers.get("Content-Type") != "application/json":
-    #     return {"message": "Unsupported Content Type"}, 400
-    # json = request.json
     applicationData = getJSONData(request)
     if applicationData is None:
         return {"message": "Unsupported Content Type"}, 400
@@ -408,10 +402,14 @@ def createApplication():
     try:
         Application.model_validate_json(JSON.dumps(applicationData))
     except ValidationError as e:
-        return {"message": e.errors()}, 400
+        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
 
     id = grantAppCollection.insert_one(applicationData).inserted_id
-    return {"message": "Grant application successfully created with ID: " + str(id)}, 200
+    # return {"message": "Grant application successfully created with ID: " + str(id)}, 200
+    return {
+        "message": "Grant application successfully created",
+        "_id": str(id)
+    }, 200
 
 
 @app.route("/getApplication/<_id>", methods=["GET"])
@@ -458,21 +456,35 @@ def getAllGrantApplications(_id):
 @app.route("/updateApplication/<_id>", methods=["PUT"])
 # @tokenCheck.token_required
 def updateApplication(_id):
-    if request.headers.get("Content-Type") != "application/json":
-        return {"message": "Unsupported Content Type"}, 400
-
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
-    json = request.json
+
+    applicationData = getJSONData(request)
+    if applicationData is None:
+        return {"message": "Unsupported Content Type"}, 400
 
     try:
-        Application.model_validate_json(JSON.dumps(json))
+        Application.model_validate_json(JSON.dumps(applicationData))
     except ValidationError as e:
-        return {"message": e.errors()}, 400
+        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
 
-    res = grantAppCollection.update_one({"_id": objID}, {"$set": json})
+    res = grantAppCollection.update_one({"_id": objID}, {"$set": applicationData})
     if res.matched_count != 1:
         return {"message": "Grant application with the given ID not found"}, 404
 
     return {"message": "Grant application successfully updated"}, 200
+
+
+@app.route("/deleteApplication/<_id>", methods=["DELETE"])
+# @tokenCheck.token_required
+def deleteApplication(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objID = ObjectId(_id)
+
+    res = grantAppCollection.delete_one({"_id": objID})
+    if res.deleted_count != 1:
+        return {"message": "Grant application with the given ID not found"}, 404
+
+    return {"message": "Grant form successfully deleted"}, 200
