@@ -15,8 +15,8 @@ const fieldValidityStatus = (field, errorList) => {
   return 'valid';
 }
 
-const getValidQuestionData = () => {
-  return [
+const validQuestionData = [
+  [
     {
       question: 'What is your name?',
       type: 'textbox',
@@ -28,12 +28,10 @@ const getValidQuestionData = () => {
         isMultipleLines: false
       }
     }
-  ];
-}
+  ]
+]
 
 const getValidGrantFormData = () => {
-  const grantFormData = new FormData()
-
   const jsonData = {
     grantorName: 'A Grantor',
     title: 'A Generous Grant',
@@ -45,17 +43,24 @@ const getValidGrantFormData = () => {
     amountPerApp: 1499.99,
     winnerIDs: [],
     appliedIDs: [],
-    questionData: getValidQuestionData()
-  }
+    questionData: validQuestionData[0]
+  };
+  const grantFormData = new FormData()
   grantFormData.append('jsonData', JSON.stringify(jsonData));
 
   return grantFormData;
 }
 
-const deleteFromNestedJSON = (grantData, field) => {
+const deleteFromNestedJSONGrantData = (grantData, field) => {
   const jsonData = JSON.parse(grantData.get('jsonData'));
   delete jsonData[field];
   grantData.set('jsonData', JSON.stringify(jsonData));
+}
+
+// Keeps track of the MongoDB documents to delete after all tests are completed
+const insertedData = {
+  grantIDs: [],
+  applicationIDs: []
 }
 
 // Do not explicitly set the Content-Type header to multipart/form-data (see the warning at
@@ -80,42 +85,115 @@ describe('/createGrant tests', () => {
 
   test('/createGrant - missing grantor name', async () => {
     const grantData = getValidGrantFormData();
-    deleteFromNestedJSON(grantData, 'grantorName');
+    deleteFromNestedJSONGrantData(grantData, 'grantorName');
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
       body: grantData
     });
-
-    expect(res.status).toBe(400);
     const resBody = await res.json();
 
+    expect(res.status).toBe(400);
     expect(fieldValidityStatus('grantorName', resBody.message)).toBe('missing');
   });
 
   test('/createGrant - missing array of questions', async () => {
     const grantData = getValidGrantFormData();
 
-    deleteFromNestedJSON(grantData, 'questionData');
+    deleteFromNestedJSONGrantData(grantData, 'questionData');
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
       body: grantData
     });
+    const resBody = await res.json();
 
     expect(res.status).toBe(400);
-    const resBody = await res.json();
     expect(fieldValidityStatus('questionData', resBody.message)).toBe('missing');
   });
 
   test('/createGrant - valid data', async () => {
-    const grantData = getValidGrantFormData();
-
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
-      body: grantData
+      body: getValidGrantFormData()
     });
+    const resBody = await res.json();
+    const grantID = resBody._id;
 
     expect(res.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
   })
 });
+
+const getValidApplicationData = (grantID) => {
+  const applicationData = {
+    grantID: grantID,
+    email: "foo@bar.com",
+    dateSubmitted: "2024-03-14",
+    status: 0,
+    answerData: [
+        {
+            text: "Bob"
+        }
+    ]
+  };
+  const formData = new FormData();
+  formData.append('jsonData', JSON.stringify(applicationData));
+
+  return formData;
+}
+
+describe('/createApplication tests', () => {
+  let grantID;
+
+  // Create a grant and store its ID
+  beforeAll(async () => {
+    const res = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: getValidGrantFormData()
+    });
+    const resBody = await res.json();
+    grantID = resBody._id;
+
+    expect(res.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+  })
+
+  test('/createApplication - valid data', async () => {
+    // Create an application for the new grant
+    const res = await fetch(`${SERVER_URL}/createApplication`, {
+      method: 'POST',
+      body: getValidApplicationData(grantID)
+    });
+    const resBody = await res.json();
+    const applicationID = resBody._id;
+
+    expect(res.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  })
+});
+
+// Delete all inserted data
+afterAll(async () => {
+  console.log('Deleting all data inserted during tests');
+  console.log(insertedData);
+
+  for (const applicationID of insertedData.applicationIDs) {
+    console.log(`${SERVER_URL}/deleteApplication/${applicationID}`);
+    const res = await fetch(`${SERVER_URL}/deleteApplication/${applicationID}`, {
+      method: 'DELETE'
+    });
+    expect(res.status).toBe(200);
+  }
+
+  for (const grantID of insertedData.grantIDs) {
+    console.log(`${SERVER_URL}/deleteGrant/${grantID}`);
+    const res = await fetch(`${SERVER_URL}/deleteGrant/${grantID}`, {
+      method: 'DELETE'
+    });
+    expect(res.status).toBe(200);
+  }
+})
