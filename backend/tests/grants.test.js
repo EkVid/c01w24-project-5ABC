@@ -425,3 +425,25 @@ afterAll(async () => {
     expect(res.status).toBe(200);
   }
 });
+
+// Delete all inserted data
+afterAll(async () => {
+  console.log('Deleting all data inserted during tests');
+  console.log(insertedData);
+
+  for (const applicationID of insertedData.applicationIDs) {
+    console.log(`${SERVER_URL}/deleteApplication/${applicationID}`);
+    const res = await fetch(`${SERVER_URL}/deleteApplication/${applicationID}`, {
+      method: 'DELETE'
+    });
+    expect(res.status).toBe(200);
+  }
+
+  for (const grantID of insertedData.grantIDs) {
+    console.log(`${SERVER_URL}/deleteGrant/${grantID}`);
+    const res = await fetch(`${SERVER_URL}/deleteGrant/${grantID}`, {
+      method: 'DELETE'
+    });
+    expect(res.status).toBe(200);
+  }
+})
