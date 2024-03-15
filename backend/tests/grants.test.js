@@ -15,8 +15,6 @@ const fieldValidityStatus = (field, errorList) => {
   return 'valid';
 }
 
-// TODO: update unit tests (figure out how Postman translates to Jest with form data)
-
 const getValidQuestionData = () => {
   return [
     {
@@ -35,17 +33,18 @@ const getValidQuestionData = () => {
 
 const getValidGrantFormData = () => {
   const grantFormData = new FormData()
+
   const jsonData = {
     grantorName: 'A Grantor',
     title: 'A Generous Grant',
     description: 'Do apply to this grant',
-    // numWinners: 2,
+    numWinners: 0,
     maxWinners: 10,
     deadline: '2024-04-05',
     isActive: 'true',
     amountPerApp: 1499.99,
-    // winnerIDs': [],
-    // appliedIDs': [],
+    winnerIDs: [],
+    appliedIDs: [],
     questionData: getValidQuestionData()
   }
   grantFormData.append('jsonData', JSON.stringify(jsonData));
@@ -59,6 +58,8 @@ const deleteFromNestedJSON = (grantData, field) => {
   grantData.set('jsonData', JSON.stringify(jsonData));
 }
 
+// Do not explicitly set the Content-Type header to multipart/form-data (see the warning at
+// https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest_API/Using_FormData_Objects)
 describe('/createGrant tests', () => {
   test('/createGrant - invalid content type', async () => {
     const res = await fetch(`${SERVER_URL}/createGrant`, {
@@ -71,71 +72,24 @@ describe('/createGrant tests', () => {
   test('/createGrant - empty data', async () => {
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        method: 'POST'
-      },
       body: new FormData()
     });
 
     expect(res.status).toBe(400);
   });
 
-  // test('/createGrant - missing grant ID', async () => {
-  //   const res = await fetch(`${SERVER_URL}/createGrant`, {
-  //     method: 'POST',
-  //     headers: {
-  //     'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       grantorID: 1,
-  //       grantName: 'A grant',
-  //       questionData: []
-  //     })
-  //   });
-
-  //   expect(res.status).toBe(400);
-  //   const resBody = await res.json();
-  //   expect(fieldValidityStatus('grantID', resBody.message)).toBe('missing');
-  // });
-
-  // test('/createGrant - missing grantor ID', async () => {
-  //   const res = await fetch(`${SERVER_URL}/createGrant`, {
-  //     method: 'POST',
-  //     headers: {
-  //     'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       grantID: 1,
-  //       grantName: 'A grant',
-  //       questionData: []
-  //     })
-  //   });
-
-  //   expect(res.status).toBe(400);
-  //   const resBody = await res.json();
-  //   expect(fieldValidityStatus('grantorID', resBody.message)).toBe('missing');
-  // });
-
   test('/createGrant - missing grantor name', async () => {
     const grantData = getValidGrantFormData();
     deleteFromNestedJSON(grantData, 'grantorName');
 
-    console.log('\n\n\n\n');
-    console.log(grantData);
-
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
       body: grantData
     });
 
     expect(res.status).toBe(400);
     const resBody = await res.json();
 
-    console.log(resBody);
     expect(fieldValidityStatus('grantorName', resBody.message)).toBe('missing');
   });
 
@@ -146,9 +100,6 @@ describe('/createGrant tests', () => {
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
       body: grantData
     });
 
@@ -162,9 +113,6 @@ describe('/createGrant tests', () => {
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
       body: grantData
     });
 
