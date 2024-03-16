@@ -176,6 +176,54 @@ describe('/createApplication tests', () => {
   })
 });
 
+
+const updateNestedJSONDataField = (data, field, newValue) => {
+  const jsonData = JSON.parse(data.get('jsonData'));
+  jsonData[field] = newValue;
+  data.set('jsonData', JSON.stringify(jsonData));
+}
+
+describe('/updateApplication tests', () => {
+  let grantID;
+  let applicationID;
+
+  // Create a grant and store its ID
+  beforeAll(async () => {
+    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: getValidGrantFormData()
+    });
+    const createGrantResBody = await createGrantRes.json();
+    grantID = createGrantResBody._id;
+
+    expect(createGrantRes.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+
+    const createApplicationRes = await fetch(`${SERVER_URL}/createApplication`, {
+      method: 'POST',
+      body: getValidApplicationData(grantID)
+    });
+    const createApplicationResBody = await createApplicationRes.json();
+    applicationID = createApplicationResBody._id;
+
+    expect(createApplicationRes.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  })
+
+  test('/updateApplication - valid data', async () => {
+    const applicationData = getValidApplicationData(grantID);
+    updateNestedJSONDataField(applicationData, 'dateSubmitted', '2024-04-01');
+    const res = await fetch(`${SERVER_URL}/updateApplication/${applicationID}`, {
+      method: 'PUT',
+      body: applicationData
+    });
+
+    expect(res.status).toBe(200);
+  });
+});
+
 // Delete all inserted data
 afterAll(async () => {
   console.log('Deleting all data inserted during tests');

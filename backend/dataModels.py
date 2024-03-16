@@ -85,6 +85,8 @@ class TextboxAnswer(BaseModel):
 
     @validator('text', always=True)
     def validate_textbox(cls, value, values):
+        # TODO: check that "options" is a valid key and minCharsNum/maxCharsNum are present
+        # This would cause an error when attempting to update a non-existent application
         minChars = values['options'].minCharsNum
         maxChars = values['options'].maxCharsNum
         inRange = minChars <= len(value) and len(value) <= maxChars

@@ -247,8 +247,6 @@ def createGrant():
         return {"message": e.errors()}, 400
 
     id = grantCollection.insert_one(grantDict).inserted_id
-    # message = "Grant successfully created with ID: " + str(id)
-
     # Do not change "_id": str(id), the tests require this to keep track of inserted data
     return {
         "message": "Grant successfully created",
@@ -282,7 +280,7 @@ def updateGrant(_id):
         return {"message": "Unsupported Content Type"}, 400
 
     # TODO: remove if redundant; _id might already be immutable for each document in MongoDB
-    newData = {key: val for (key, val) in grantDict.items() if key != "_id"}     # Updating everything but the ID for now
+    newData = {key: val for (key, val) in grantDict.items() if key != "_id"}    # Maybe use dict.pop instead
 
     try:
         Grant.model_validate_json(JSON.dumps(newData))
@@ -338,7 +336,6 @@ def createApplication():
         return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
 
     id = grantAppCollection.insert_one(applicationData).inserted_id
-    # return {"message": "Grant application successfully created with ID: " + str(id)}, 200
     return {
         "message": "Grant application successfully created",
         "_id": str(id)
@@ -354,7 +351,7 @@ def getApplication(_id):
 
     application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
     if not application:
-        return {"message": "Grant form with the given ID not found"}, 404
+        return {"message": "Grant application with the given ID not found"}, 404
 
     return application, 200
 
@@ -384,7 +381,18 @@ def getAllGrantApplications(_id):
     return {"applications": applications}, 200
 
 
-# TODO: refactor below here based on schema changes and JSON to form data
+"""Returns True if `listCandidate` is of type list[dict] and False otherwise.
+"""
+def isListOfDict(listCandidate):
+    if not isinstance(listCandidate, list):
+        return False
+
+    for dictCandidate in listCandidate:
+        if not isinstance(dictCandidate, dict):
+            return False
+
+    return True
+
 
 @app.route("/updateApplication/<_id>", methods=["PUT"])
 # @tokenCheck.token_required
@@ -396,16 +404,29 @@ def updateApplication(_id):
     applicationData = getJSONData(request)
     if applicationData is None:
         return {"message": "Unsupported Content Type"}, 400
+    # TODO: see if there's a better way to do this than using isNotListOfDict
+    elif "answerData" not in applicationData or not isListOfDict(applicationData["answerData"]):
+        return {"message": "No answer data"}, 400
+
+    oldApplication = grantAppCollection.find_one({"_id": objID}, {"_id": False})
+    if oldApplication is None:
+        return {"message": "Grant application with the given ID not found"}, 404
+    # Incorrect number of answers
+    elif len(oldApplication.get("answerData", [])) != len(applicationData.get("answerData", [])):
+        return {"message": "Invalid answer data"}, 400
+
+    # Copy the options from the old application
+    oldAnswerData = oldApplication.get("answerData", [])
+    for i in range(len(oldAnswerData)):
+        options = oldAnswerData[i].get("options", {})
+        applicationData["answerData"][i]["options"] = options
 
     try:
         Application.model_validate_json(JSON.dumps(applicationData))
     except ValidationError as e:
         return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
 
-    res = grantAppCollection.update_one({"_id": objID}, {"$set": applicationData})
-    if res.matched_count != 1:
-        return {"message": "Grant application with the given ID not found"}, 404
-
+    grantAppCollection.update_one({"_id": objID}, {"$set": applicationData})
     return {"message": "Grant application successfully updated"}, 200
 
 
