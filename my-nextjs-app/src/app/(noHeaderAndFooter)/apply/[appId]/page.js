@@ -114,7 +114,7 @@ export default function ApplicationPage({params}) {
   const [questionData, setQuestionData] = useState(null);
   const [answerData, setAnswerData] = useState(null);
   const [title, setTitle] = useState("");
-console.log(decodeURI(params.appId))
+
   useEffect(() => setTheme(getTheme()), []);
 
   // Load question data into form
@@ -155,7 +155,7 @@ console.log(decodeURI(params.appId))
   }
 
   const handleOnSelectAnswer = (questionId, answer) => {
-    
+    // Store answers 
   }
  
   return (
@@ -164,17 +164,17 @@ console.log(decodeURI(params.appId))
         <ThemeContext.Provider value={theme}>
           <ReducedMotionContext.Provider value={isReducedMotion}>
             <title>{`${title} Application`}</title>
-            <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background`}>
+            <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background border-b border-b-black dark:border-b-white`}>
               <AccessibilityBar 
                 onChangeFont={setFontSize}
                 onChangeTheme={setTheme}
                 onChangeMotion={setIsReducedMotion}
               />
-              <div className="flex justify-between p-2 overflow-auto">
+              <div className="flex justify-between p-2 overflow-auto ">
                 <button 
                   aria-label="Return to grants"
                   onClick={handleOnQuit}
-                  className={`flex shrink-0 items-center min-w-fit rounded custom-interactive-btn m-1 p-1 ${isReducedMotion ? "" : "transition"}`}
+                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 p-1 ${isReducedMotion ? "" : "transition"}`}
                 >
                   <Image
                     src={UndoIcon}
@@ -189,7 +189,7 @@ console.log(decodeURI(params.appId))
                 <button 
                   aria-label="Review and submit answers"
                   onClick={handleOnReview}
-                  className={`flex shrink-0 items-center rounded custom-interactive-btn m-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
+                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
                 >
                   <Image
                     src={SubmitIcon}

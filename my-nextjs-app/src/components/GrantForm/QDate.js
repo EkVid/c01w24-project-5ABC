@@ -61,7 +61,7 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
           placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
           className={`text-sm w-fit md:max-w-96 border-b-2 bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-text dark:d-text custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
           onInput={e => handleOnInput(e.target.value, false)}
-          value={currentAnswer}
+          value={currentAnswer?.startDate}
           disabled={isEditMode}
         />
       </div>
@@ -76,7 +76,7 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
               placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
               className={`text-sm w-fit md:max-w-96 border-b-2 bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-text dark:d-text custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
               onInput={e => handleOnInput(e.target.value, true)}
-              value={currentAnswer}
+              value={currentAnswer?.endDate}
               disabled={isEditMode}
             />
           </div>
