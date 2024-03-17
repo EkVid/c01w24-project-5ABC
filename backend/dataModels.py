@@ -1,12 +1,14 @@
 from pydantic import BaseModel, validator, PositiveInt
 from annotated_types import Len
 from typing import Literal, Optional, Annotated, Union
-from datetime import date
+
+# TODO: put constants here for canadianCitizen and veteran once decided
 
 """
 User Profile Models
 """
 class UserProfileReqs(BaseModel):
+    # Optional still means you have to pass in these fields but just with None or "", etc
     minAge: Optional[int]
     maxAge: Optional[int]
     race: Optional[list[str]]
@@ -23,26 +25,6 @@ class UserProfile(BaseModel):
 
 
 """
-Grant Model
-"""
-class GrantBase(BaseModel):
-    grantorName: str
-    title: str
-    description: str
-    numWinnners: int
-    maxWinners: int
-    deadline: str # maybe change to str for simplicity
-    isActive: bool
-    amountPerApp: float
-    profileReqs: UserProfileReqs
-
-class Grant(GrantBase):
-   winnerIDs: list[int]
-   appliedIDs: list[int]
-   formID: str
-
-
-"""
 Question Option and Question Models
 """
 class TextboxOptions(BaseModel):
@@ -56,7 +38,7 @@ class NumberOptions(BaseModel):
     minNum: Union[int, float]
     maxNum: Union[int, float]
 
- 
+
     @validator('minNum', 'maxNum', always=True)
     def validate_range(cls, value, values) -> Union[int, float]:
         if values['isIntegerOnly']:
@@ -100,9 +82,11 @@ Answer Models
 class TextboxAnswer(BaseModel):
     options: TextboxOptions
     text: str
-    
+
     @validator('text', always=True)
     def validate_textbox(cls, value, values):
+        # TODO: check that "options" is a valid key and minCharsNum/maxCharsNum are present
+        # This would cause an error when attempting to update a non-existent application
         minChars = values['options'].minCharsNum
         maxChars = values['options'].maxCharsNum
         inRange = minChars <= len(value) and len(value) <= maxChars
@@ -149,6 +133,27 @@ class FileAnswer(BaseModel):
     options: FileOptions
     type: str
 
+
+"""
+Grant Model
+"""
+class GrantBase(BaseModel):
+    grantorName: str
+    title: str
+    description: str
+    numWinners: int
+    maxWinners: int
+    deadline: str # maybe change to str for simplicity
+    isActive: bool
+    amountPerApp: float
+    #profileReqs: UserProfileReqs # test later
+
+class Grant(GrantBase):
+   winnerIDs: list[str]
+   appliedIDs: list[str]
+   questionData: list[Question]
+
+
 """
 Application Model
 """
@@ -157,7 +162,7 @@ class Application(BaseModel):
     email: str
     dateSubmitted: str  # maybe str
     status: int
-    #profileData: UserProfile | None = UserProfile()  # remove optional after done
+    #profileData: UserProfile | None = UserProfile()  # test later; remove optional after done
     answerData: list[Union[
         TextboxAnswer,
         NumberAnswer,
@@ -166,11 +171,3 @@ class Application(BaseModel):
         DateAnswer,
         FileAnswer
     ]]
-
-
-"""
-Form Model
-"""
-class Form(BaseModel):
-    grantID: str
-    questionData: list[Question]
