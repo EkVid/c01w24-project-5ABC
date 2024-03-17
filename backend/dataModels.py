@@ -138,7 +138,7 @@ class FileAnswer(BaseModel):
 Grant Model
 """
 class GrantBase(BaseModel):
-    grantorName: str
+    grantorEmail: str
     title: str
     description: str
     numWinners: int
