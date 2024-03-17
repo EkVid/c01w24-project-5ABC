@@ -16,6 +16,7 @@ import json as JSON
 import random
 
 from dataModels import (Application, Grant)
+from helpers import (getJSONData, isListOfDict)
 
 load_dotenv()
 app = Flask(__name__)
@@ -291,15 +292,6 @@ def getFile():
 
 # Grant Form Routes
 
-# Returns the JSON data from the given multipart form data request
-def getJSONData(request):
-    contentType = request.headers.get("Content-Type", None)
-    if contentType is None or request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
-        return None
-
-    return JSON.loads(request.form.get("jsonData", "null"))
-
-
 @app.route("/createGrant", methods=["POST"])
 #@tokenCheck.token_required
 def createGrant():
@@ -321,18 +313,33 @@ def createGrant():
     }, 200
 
 
-@app.route("/getGrant/<_id>", methods=["GET"])
-#@tokenCheck.token_required
-def getGrant(_id):
-    if not ObjectId.is_valid(_id):
-        return {"message": "Invalid ID"}, 400
-    objID = ObjectId(_id)
+# TODO: remove if redundant
+# @app.route("/getGrant/<_id>", methods=["GET"])
+# #@tokenCheck.token_required
+# def getGrant(_id):
+#     if not ObjectId.is_valid(_id):
+#         return {"message": "Invalid ID"}, 400
+#     objID = ObjectId(_id)
 
-    form = grantCollection.find_one({"_id": objID}, {"_id": False})
-    if not form:
-        return {"message": "Grant with the given ID not found"}, 404
+#     form = grantCollection.find_one({"_id": objID}, {"_id": False})
+#     if not form:
+#         return {"message": "Grant with the given ID not found"}, 404
 
-    return form, 200
+#     return form, 200
+
+
+"""Returns all grants created by the grantor with the email passed in the request. Note that this route uses JSON as
+opposed to form data.
+"""
+@app.route("/getGrantorGrants", methods=["POST"])
+# @tokenCheck.token_required
+def getGrantorGrants():
+    email = request.json.get("grantorEmail", "")
+    if not email:
+        return {"message": "Invalid grantor email"}, 400
+
+    grants = list(grantCollection.find({"grantorEmail": email}, {"_id": False}))
+    return {"grants": grants}, 200
 
 
 @app.route("/updateGrant/<_id>", methods=["PUT"])
@@ -409,21 +416,22 @@ def createApplication():
     }, 200
 
 
-@app.route("/getApplication/<_id>", methods=["GET"])
-# @tokenCheck.token_required
-def getApplication(_id):
-    if not ObjectId.is_valid(_id):
-        return {"message": "Invalid ID"}, 400
-    objID = ObjectId(_id)
+# TODO: remove if redundant
+# @app.route("/getApplication/<_id>", methods=["GET"])
+# # @tokenCheck.token_required
+# def getApplication(_id):
+#     if not ObjectId.is_valid(_id):
+#         return {"message": "Invalid ID"}, 400
+#     objID = ObjectId(_id)
 
-    application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
-    if not application:
-        return {"message": "Grant application with the given ID not found"}, 404
+#     application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
+#     if not application:
+#         return {"message": "Grant application with the given ID not found"}, 404
 
-    return application, 200
+#     return application, 200
 
 
-"""Returns the applications submitted by the grantee with the email passed in the request. Note that this route uses
+"""Returns all applications submitted by the grantee with the email passed in the request. Note that this route uses
 JSON as opposed to form data.
 """
 @app.route("/getGranteeApplications", methods=["POST"])
@@ -437,7 +445,7 @@ def getGranteeApplications():
     return {"applications": applications}, 200
 
 
-"""Returns the applications for the grant with the given ID. Note that this route uses JSON as opposed to form data.
+"""Returns all applications for the grant with the given ID. Note that this route uses JSON as opposed to form data.
 
 :param str _id: The grant ID.
 """
@@ -446,19 +454,6 @@ def getGranteeApplications():
 def getAllGrantApplications(_id):
     applications = list(grantAppCollection.find({"grantID": _id}, {"_id": False}))
     return {"applications": applications}, 200
-
-
-"""Returns True if `listCandidate` is of type list[dict] and False otherwise.
-"""
-def isListOfDict(listCandidate):
-    if not isinstance(listCandidate, list):
-        return False
-
-    for dictCandidate in listCandidate:
-        if not isinstance(dictCandidate, dict):
-            return False
-
-    return True
 
 
 @app.route("/updateApplication/<_id>", methods=["PUT"])
