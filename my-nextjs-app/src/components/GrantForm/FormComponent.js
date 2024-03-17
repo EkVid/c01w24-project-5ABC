@@ -8,7 +8,7 @@ import Image from "next/image";
 import UndoIcon from "@/../public/undo.svg";
 import EditIcon from "@/../public/edit.svg";
 import SaveIcon from "@/../public/save.svg";
-import EyeIcon from "@/../public/password-eye.svg"
+import EyeIcon from "@/../public/password_eye.svg"
 import { DndContext, DragOverlay, rectIntersection, useDroppable} from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useContext, useEffect, useMemo, useState } from "react";
