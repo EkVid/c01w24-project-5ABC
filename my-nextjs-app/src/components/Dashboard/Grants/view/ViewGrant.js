@@ -1,4 +1,5 @@
 import ViewApplication from "./viewApplication"
+import axios from "axios"
 
 export default function ViewGrant({ grant, setViewGrant }){
     
@@ -10,8 +11,38 @@ export default function ViewGrant({ grant, setViewGrant }){
         return string.substring(1)
     }
 
+    function prepareGrant(grant){
+        const form = new FormData()
+        let fileIdx = 0
+        let fileArr = []
+        const finalQuestionArr = grant.QuestionData.map(question => {
+            let newQuestion = {...question}
+            if(question.file){
+                fileArr.push(question.file)
+                newQuestion.fileIdx = fileIdx
+                fileIdx++
+                delete newQuestion.file
+            }
+            return newQuestion
+        })
+        const finalGrant = {...grant, QuestionData: finalQuestionArr}
+        form.append('Grant', JSON.stringify(finalGrant))
+        form.append('Files', fileArr)
+    }
+
     function PostGrant(){
-        console.log('post grant')
+        const form = prepareGrant(grant)
+        const headers = {
+            'Content-Type': 'Multipart/form-data',
+            'Bearer' : 'my token'
+        }
+
+        try{
+
+        }
+        catch(err){
+
+        }
     }
 
     return (
