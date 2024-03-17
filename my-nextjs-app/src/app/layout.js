@@ -28,6 +28,7 @@ export default function RootLayout({ children }) {
         <main className="flex flex-col flex-grow custom-offwhite-background dark:bg-[#1f1f1f]">
           {children}
         </main>
+<<<<<<< HEAD
     <html id="root" lang="en">
       <body className={inter.className}>
         <div className="flex flex-col min-h-screen">
@@ -39,6 +40,8 @@ export default function RootLayout({ children }) {
           {showFooter && <Footer />}
 >>>>>>> 548595b (Added routes for login & Signup)
         </div>
+=======
+>>>>>>> 0996ef1 (grants integrations)
       </body>
     </html>
   );
