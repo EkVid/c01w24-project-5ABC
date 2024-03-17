@@ -31,9 +31,36 @@ const validQuestionData = [
   ]
 ]
 
+const veteranStatus = {
+  veteran: 0,
+  nonVeteran: 1
+}
+
+const validProfileReqs = [
+  {
+    minAge: 18,
+    maxAge: 24,
+    race: ['Asian', 'African American', 'White'],
+    gender: ['Man', 'Woman', 'Non-binary'],
+    // nationality: ['Canadian', 'American'],
+    nationality: 'Canadian',
+    veteran: veteranStatus.nonVeteran
+  }
+]
+
+const validProfileData = [
+  {
+    age: 21,
+    race: 'White',
+    gender: 'Man',
+    nationality: 'Canadian',
+    veteran: veteranStatus.nonVeteran
+  }
+]
+
 const getValidGrantFormData = () => {
   const jsonData = {
-    grantorName: 'A Grantor',
+    grantorEmail: 'grantor@website.com',
     title: 'A Generous Grant',
     description: 'Do apply to this grant',
     numWinners: 0,
@@ -41,6 +68,7 @@ const getValidGrantFormData = () => {
     deadline: '2024-04-05',
     isActive: 'true',
     amountPerApp: 1499.99,
+    profileReqs: validProfileReqs[0],
     winnerIDs: [],
     appliedIDs: [],
     questionData: validQuestionData[0]
@@ -49,6 +77,25 @@ const getValidGrantFormData = () => {
   grantFormData.append('jsonData', JSON.stringify(jsonData));
 
   return grantFormData;
+}
+
+const getValidApplicationData = (grantID) => {
+  const applicationData = {
+    grantID: grantID,
+    email: 'foo@bar.com',
+    dateSubmitted: '2024-03-14',
+    status: 0,
+    profileData: validProfileData[0],
+    answerData: [
+        {
+            text: 'Bob'
+        }
+    ]
+  };
+  const formData = new FormData();
+  formData.append('jsonData', JSON.stringify(applicationData));
+
+  return formData;
 }
 
 const deleteFromNestedJSONGrantData = (grantData, field) => {
@@ -85,7 +132,7 @@ describe('/createGrant tests', () => {
 
   test('/createGrant - missing grantor name', async () => {
     const grantData = getValidGrantFormData();
-    deleteFromNestedJSONGrantData(grantData, 'grantorName');
+    deleteFromNestedJSONGrantData(grantData, 'grantorEmail');
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
@@ -94,7 +141,7 @@ describe('/createGrant tests', () => {
     const resBody = await res.json();
 
     expect(res.status).toBe(400);
-    expect(fieldValidityStatus('grantorName', resBody.message)).toBe('missing');
+    expect(fieldValidityStatus('grantorEmail', resBody.message)).toBe('missing');
   });
 
   test('/createGrant - missing array of questions', async () => {
@@ -126,23 +173,6 @@ describe('/createGrant tests', () => {
   })
 });
 
-const getValidApplicationData = (grantID) => {
-  const applicationData = {
-    grantID: grantID,
-    email: "foo@bar.com",
-    dateSubmitted: "2024-03-14",
-    status: 0,
-    answerData: [
-        {
-            text: "Bob"
-        }
-    ]
-  };
-  const formData = new FormData();
-  formData.append('jsonData', JSON.stringify(applicationData));
-
-  return formData;
-}
 
 describe('/createApplication tests', () => {
   let grantID;
@@ -182,6 +212,7 @@ const updateNestedJSONDataField = (data, field, newValue) => {
   jsonData[field] = newValue;
   data.set('jsonData', JSON.stringify(jsonData));
 }
+
 
 describe('/updateApplication tests', () => {
   let grantID;
@@ -224,7 +255,7 @@ describe('/updateApplication tests', () => {
   });
 });
 
-// Delete all inserted data
+// Delete all inserted data; this implicitly tests the delete routes
 afterAll(async () => {
   console.log('Deleting all data inserted during tests');
   console.log(insertedData);

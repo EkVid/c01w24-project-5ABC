@@ -2,7 +2,7 @@ from pydantic import BaseModel, validator, PositiveInt
 from annotated_types import Len
 from typing import Literal, Optional, Annotated, Union
 
-# TODO: put constants here for canadianCitizen and veteran once decided
+# TODO: put constants here for veteran status once decided
 
 """
 User Profile Models
@@ -13,14 +13,14 @@ class UserProfileReqs(BaseModel):
     maxAge: Optional[int]
     race: Optional[list[str]]
     gender: Optional[list[str]]
-    canadianCitizen: Optional[int]
+    nationality: Optional[str]
     veteran: Optional[int]
 
 class UserProfile(BaseModel):
     age: int
-    race: list[str]
+    race: str
     gender: str
-    canadianCitizen: int
+    nationality: str
     veteran: int
 
 
@@ -146,7 +146,7 @@ class GrantBase(BaseModel):
     deadline: str # maybe change to str for simplicity
     isActive: bool
     amountPerApp: float
-    #profileReqs: UserProfileReqs # test later
+    profileReqs: UserProfileReqs # test later
 
 class Grant(GrantBase):
    winnerIDs: list[str]
@@ -162,7 +162,8 @@ class Application(BaseModel):
     email: str
     dateSubmitted: str  # maybe str
     status: int
-    #profileData: UserProfile | None = UserProfile()  # test later; remove optional after done
+    # profileData: UserProfile | None = UserProfile()  # test later; remove optional after done
+    profileData: UserProfile
     answerData: list[Union[
         TextboxAnswer,
         NumberAnswer,
