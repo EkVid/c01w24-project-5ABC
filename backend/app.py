@@ -231,16 +231,6 @@ def logout():
         return {"message": "Unsupported Content Type"}, 400
 
 
-
-# Returns the JSON data from the given multipart form data request
-def getJSONData(request):
-    contentType = request.headers.get("Content-Type", None)
-    if contentType is None or request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
-        return None
-
-    return JSON.loads(request.form.get("jsonData", "null"))
-
-
 # File management routes
     
 def uploadFile(file, fileName):
@@ -411,11 +401,11 @@ def getApplication(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
 
-    application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
-    if not application:
-        return {"message": "Grant application with the given ID not found"}, 404
+#     application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
+#     if not application:
+#         return {"message": "Grant application with the given ID not found"}, 404
 
-    return application, 200
+#     return application, 200
 
 
 """Returns all applications submitted by the grantee with the email passed in the request. Note that this route uses
