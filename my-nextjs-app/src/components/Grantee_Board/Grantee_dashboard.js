@@ -4,8 +4,43 @@ import dynamic from "next/dynamic";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import axios from "axios";
+
+
 
 const Grantee_dashboard = () => {
+  const [data, setData] = useState("");
+  const [appliedGrants, setAppliedGrants] = useState("");
+
+  const handleSubmit = () => {
+    axios
+      .post("http://localhost:5000/applied_grants", {
+        email: "avers07@gmail.com"
+      })
+      .then((response) => {
+        setData(response.data.applications);
+        const indexedData = response.data.applications.map(entry => ({
+          email: entry.email,
+          dateSubmitted: entry.dateSubmitted,
+          grantID: entry.grantID,
+          status: entry.status
+        }));
+        console.log(indexedData)
+        localStorage.setItem('applications', JSON.stringify(indexedData))
+        router.push('/applied_grants');
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.data);
+        } else if (error.request) {
+          console.log("No response received:", error.request);
+        } else {
+          console.log("Error:", error.message);
+        }
+      });
+  };
+  const name = "Rawad";
   // Mock data for claims
   const recentGrants = [
     {
@@ -89,16 +124,16 @@ const Grantee_dashboard = () => {
 
                 <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
                   <button
-                    onClick={() => {
-                      router.push("/applied_grants");
-                    }}
+                    onClick={
+                      handleSubmit
+                    }
                     className="text-green-700 hover:text-green-900 transition-colors px-4 py-2 sm:px-5 sm:py-2 rounded-full text-sm sm:text-base"
                   >
                     View My Applications
                   </button>
                   <button
                     onClick={() => {
-                      router.push("/search_grants");
+                      router.push("/search_grants")
                     }}
                     className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
                   >
