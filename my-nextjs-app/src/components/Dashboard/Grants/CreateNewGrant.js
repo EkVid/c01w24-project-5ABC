@@ -2,6 +2,9 @@
 import DashboardInnerContainer from "../InnerContainer"
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { v4 as uuidv4 } from 'uuid';
+import xMark from "@/../public/x.svg"
+import Image from "next/image";
 
 // TODO: Vefiry max age is filled out when min age isnt
 
@@ -22,7 +25,7 @@ const CreateNewGrant = () => {
             maxAge: 0,
             race: [],
             gender: [],
-            nationality: "",
+            nationality: [],
             veteran: 2,
         },
         Active: true,
@@ -33,11 +36,15 @@ const CreateNewGrant = () => {
     const initGrant = progressGrant ? progressGrant : defaultGrant
 
     const [ grant, setGrant ] = useState(initGrant)
+    const [ race, setRace ] = useState('')
+    const [ gender , setGender ] = useState('')
+    const [ nationality, setNationality ] = useState('')
 
     // Only show undo if there was a previous deletion
     const undoShow = localStorage.getItem('clearedGrant') !== null
 
-    // Form onChange handlers
+
+    // --------------- Form handlers ---------------
     function setTitle(e){
         setGrant(prevGrant => ({...prevGrant, Title:e.target.value}))
     }
@@ -89,9 +96,7 @@ const CreateNewGrant = () => {
     }
 
     function checkAgeAboveZero(e){
-        console.log('here')
         if(e.target.value < 0){
-            console.log('in')
             setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, minAge:0}}))
         }
     }
@@ -100,20 +105,118 @@ const CreateNewGrant = () => {
         setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:e.target.value}}))
     }
 
-    function checkAboveMin(e){
+    function verifyMaxAge(e){
+        if(e.target.value < 0){
+            setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:0}}))
+            return
+        }
         const minAge = grant.profileReqs.minAge
         if(e.target.value < minAge){
             setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:minAge}}))
         }
     }
-    
-    function handleUndo(){
-        const oldGrant = JSON.parse(localStorage.getItem('clearedGrant', JSON.stringify(grant)))
-        localStorage.removeItem('clearedGrant')
-        setGrant(oldGrant)
+
+    function addRace(e){
+        // If the user presses enter
+        if(e.keyCode === 13){
+            const raceArr = grant.profileReqs.race
+            raceArr.push(race)
+            setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, race:raceArr}}))
+            setRace('')
+        }
     }
 
-    // Button functions
+    function removeRace(race){
+        const raceArr = grant.profileReqs.race
+        const idx = raceArr.indexOf(race)
+        if(idx > -1){
+            raceArr.splice(idx, 1)
+        }
+        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, race:raceArr}}))
+    }
+
+    const raceElements = grant.profileReqs.race.map(race => {
+        return (
+            <div className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()}>
+                {race}
+                <Image 
+                    src={xMark}
+                    alt='delete'
+                    className='ms-2 w-6 h-6 dark:d-white-filter cursor-pointer hover:scale-110'
+                    onClick={() => removeRace(race)}
+                />
+            </div>
+        )
+    })
+
+    function addGender(e){
+        // If the user presses enter
+        if(e.keyCode === 13){
+            const genderArr = grant.profileReqs.gender
+            genderArr.push(gender)
+            setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, gender:genderArr}}))
+            setGender('')
+        }
+    }
+
+    function removeGender(gender){
+        const genderArr = grant.profileReqs.gender
+        const idx = genderArr.indexOf(gender)
+        if(idx > -1){
+            genderArr.splice(idx, 1)
+        }
+        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, gender:genderArr}}))
+    }
+
+    const genderElements = grant.profileReqs.gender.map(gender => {
+        return (
+            <div className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()}>
+                {gender}
+                <Image 
+                    src={xMark}
+                    alt='delete'
+                    className='ms-2 w-6 h-6 dark:d-white-filter cursor-pointer hover:scale-110'
+                    onClick={() => removeGender(gender)}
+                />
+            </div>
+        )
+    })
+
+    function addNationality(e){
+        // If the user presses enter
+        if(e.keyCode === 13){
+            const nationalityArr = grant.profileReqs.nationality
+            nationalityArr.push(nationality)
+            setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, nationality: nationalityArr}}))
+            setNationality('')
+        }
+    }
+
+    function removeNationality(nationality){
+        const nationalityArr = grant.profileReqs.nationality
+        const idx = nationalityArr.indexOf(nationality)
+        if(idx > -1){
+            nationalityArr.splice(idx, 1)
+        }
+        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, nationality:nationalityArr}}))
+    }
+
+    const nationalityElements = grant.profileReqs.nationality.map(nationality => {
+        return (
+            <div className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()}>
+                {nationality}
+                <Image 
+                    src={xMark}
+                    alt='delete'
+                    className='ms-2 w-6 h-6 dark:d-white-filter cursor-pointer hover:scale-110'
+                    onClick={() => removeNationality(nationality)}
+                />
+            </div>
+        )
+    })
+
+
+    // --------------- Button functions ---------------
     function clearForm(){
         localStorage.setItem('clearedGrant', JSON.stringify(grant))
         setGrant(defaultGrant)
@@ -123,6 +226,12 @@ const CreateNewGrant = () => {
         e.preventDefault()
         console.log("form submitted")
         // localStorage.removeItem('grant')
+    }
+
+    function handleUndo(){
+        const oldGrant = JSON.parse(localStorage.getItem('clearedGrant', JSON.stringify(grant)))
+        localStorage.removeItem('clearedGrant')
+        setGrant(oldGrant)
     }
 
     // Set form to session storage for preservation on page refresh
@@ -201,9 +310,9 @@ const CreateNewGrant = () => {
 
                         <div className="w-full flex md:flex-row flex-col items-center ms-4 mb-10">
                             <p className="self-start md:self-auto dark:d-text">Application Form*&nbsp;:</p>
-                            <div className="flex-grow w-full md:w-fit ms-4 me-8 flex flex-row items-center rounded-md custom-dark-grey-background border-2 border-neutral-300 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700">
+                            <div className="md:max-w-xl sm:min-w-60 sm:max-w-60 min-w-40 ms-4 me-8 flex flex-col sm:flex-row items-center rounded-md custom-dark-grey-background border-2 border-neutral-300 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700">
                                 <p 
-                                    className="mx-auto text-center dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
+                                    className="mx-auto max-w-full text-center truncate dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
                                 >
                                     {grant.Title ? grant.Title : 'Default'} Form
                                 </p>
@@ -228,28 +337,83 @@ const CreateNewGrant = () => {
                         <div className="flex flex-col items-top ms-4 mb-20">
                             <p className="w-full pt-2 dark:d-text">Grantee Profile - Tell us about your ideal applicant: </p>
                             <div 
-                                className="self-center md:mx-4 mx-0 p-2 my-4 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                className="self-center flex flex-col md:mx-4 mx-0 p-2 my-4 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
                             >
-                                <label className="">
-                                    Age:
-                                    <input 
-                                        type="number"
-                                        className="mx-4 p-2 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                        value={grant.profileReqs.minAge} 
-                                        onChange={setMinAge}
-                                        step='1'
-                                        onBlur={checkAgeAboveZero}
-                                        placeholder="0"
-                                    />
-                                    -
-                                    <input 
-                                        type="number"
-                                        className="mx-4 p-2 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                        value={grant.profileReqs.maxAge} 
-                                        onChange={setMaxAge}
-                                        onBlur={checkAboveMin}
-                                        placeholder="0"
-                                    />
+                                <p className="mb-8">Blank sections indicate no specification</p>
+                                <label className="flex flex-col my-2">
+                                    Age range:
+                                    <div className="my-4">
+                                        <input 
+                                            type="number"
+                                            className="w-1/12 min-w-16 mx-4 p-2 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                            value={grant.profileReqs.minAge} 
+                                            onChange={setMinAge}
+                                            step='1'
+                                            onBlur={checkAgeAboveZero}
+                                            placeholder="0"
+                                        />
+                                        -
+                                        <input 
+                                            type="number"
+                                            className="w-1/12 min-w-16 mx-4 p-2 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                            value={grant.profileReqs.maxAge} 
+                                            onChange={setMaxAge}
+                                            onBlur={verifyMaxAge}
+                                            placeholder="0"
+                                        />
+                                    </div>
+                                    
+                                </label>
+
+                                <label className="flex flex-col my-2">
+                                    Race (press enter to add):
+                                    <div className="flex flex-col lg:flex-row">
+                                        <input 
+                                            type="text"
+                                            className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                            value={race} 
+                                            onChange={(e) => setRace(e.target.value)}
+                                            onKeyDown={addRace}
+                                        />
+
+                                        <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
+                                            {raceElements}
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label className="flex flex-col my-2">
+                                    Gender (press enter to add):
+                                    <div className="flex flex-col lg:flex-row">
+                                        <input 
+                                            type="text"
+                                            className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                            value={gender} 
+                                            onChange={(e) => setGender(e.target.value)}
+                                            onKeyDown={addGender}
+                                        />
+
+                                        <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
+                                            {genderElements}
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label className="flex flex-col my-2">
+                                    Nationality (press enter to add):
+                                    <div className="flex flex-col lg:flex-row">
+                                        <input 
+                                            type="text"
+                                            className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                            value={nationality} 
+                                            onChange={(e) => setNationality(e.target.value)}
+                                            onKeyDown={addNationality}
+                                        />
+
+                                        <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
+                                            {nationalityElements}
+                                        </div>
+                                    </div>
                                 </label>
 
                             </div>
@@ -280,9 +444,7 @@ const CreateNewGrant = () => {
                                 Confirm
                             </button>
                         </div>
-                        
                     </form>
-                    
                 </div>
             </div>
         </DashboardInnerContainer>
