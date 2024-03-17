@@ -57,19 +57,17 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
       <input
         type="text"
         id="numAnswer"
-        placeholder={"example: 12345"}
+        placeholder={"example: 123"}
         className={`text-sm max-w-full md:max-w-96 border-b-2 bg-transparent custom-text dark:d-text m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${!isEditMode && isErr ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
         onInput={e => handleOnInput(e.target.value)}
         value={currentAnswer}
         disabled={isEditMode}
       />
-      {rangeStr !== "" && !isEditMode ?
-        <p className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">{rangeStr}</p>
-        :
-        <></>
-      }
-      {isIntegerOnly && !isEditMode ?
-        <p className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">Integer answers only</p>
+      {!isEditMode ?
+        <>
+          <p className="italic text-sm custom-text-shade dark:d-text-shade">{rangeStr}</p>
+          <p className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">{isIntegerOnly ? "Integer answers only" : ""}</p>
+        </>
         :
         <></>
       }

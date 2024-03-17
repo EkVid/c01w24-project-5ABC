@@ -107,15 +107,17 @@ const testbody = [
   },
 ]
 
+const EMAIL_REGEX = /^[^!#\$%&~\.]+(\.[^!#\$%&~\.]+)*@([^!#\$%&~\.]{1,63}\.)+[^!#\$%&~\.]{2,}$/;
+const PHONE_REGEX = /^(\+\d( )?)?(\(|-)?\d{3}(\)|-| )?\d{3}(-| )?\d{4}(,? ?(ext\.?|extension|x){1}\d+)?$/i;
+
 export default function ApplicationPage({params}) {
   const [fontSize, setFontSize] = useState(100);
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const [isRequiredVis, setIsRequiredVis] = useState(false);
   const [questionData, setQuestionData] = useState(null);
   const [answerData, setAnswerData] = useState(null);
   const [title, setTitle] = useState("");
-
-  useEffect(() => setTheme(getTheme()), []);
 
   // Load question data into form
   useEffect(() => {
@@ -132,6 +134,8 @@ export default function ApplicationPage({params}) {
     setTitle("Poot Title Here");
     setQuestionData(questData);
     setAnswerData(questData.map(q => null));
+    setTheme(getTheme());
+    setIsRequiredVis(questData.filter(q => q.isRequired).length > 0);
   }, []);
 
   const handleOnQuit = () => {
@@ -156,6 +160,7 @@ export default function ApplicationPage({params}) {
     for (let i = 0; i < questionData.length; i++) {
       const question = questionData[i];
       const answer = answerData[i];
+      if (!question.isRequired && !answer) continue;
       if (question.isRequired && !answer) {
         allErrMsg[i] = "Please enter an answer";
         continue;
@@ -196,12 +201,15 @@ export default function ApplicationPage({params}) {
         }
       }
       else if (question.type === process.env.NEXT_PUBLIC_TYPE_EMAIL) {
-        // TODO: check email format
+        const email = answer?.email;
+        if (!EMAIL_REGEX.test(email)) {
+          allErrMsg[i] = "You must enter a valid email address";
+          continue;
+        }
       }
       else if (question.type === process.env.NEXT_PUBLIC_TYPE_PHONE) {
-        const regex = /^(\+\d( )?)?(\(|-)?\d{3}(\)|-| )?\d{3}(-| )?\d{4}(,? ?(ext\.?|extension|x){1}\d+)?$/i;
         const phoneNum = answer?.phoneNum;
-        if (!regex.test(phoneNum)) {
+        if (!PHONE_REGEX.test(phoneNum)) {
           allErrMsg[i] = "You must enter a valid phone number";
           continue;
         }
@@ -241,7 +249,7 @@ export default function ApplicationPage({params}) {
     });
     setQuestionData(prev => prev.map(q => q.id === questionId ? {...q, errMsg: null} : q));
   }
-useEffect(() => console.log(answerData), [answerData])
+//useEffect(() => console.log(answerData), [answerData])
   return (
     <div className="flex flex-col flex-grow">
       <FontSizeContext.Provider value={fontSize}>
@@ -286,6 +294,13 @@ useEffect(() => console.log(answerData), [answerData])
                 </button>
               </div>
             </div>
+            {isRequiredVis ?
+              <p className="mx-3 px-3 mt-6">
+                <font className="custom-red dark:d-custom-red mr-1">*</font> Indicates required question
+              </p>
+              :
+              <></>
+            }
             {questionData ? 
               <div className={`flex flex-col max-w-full flex-auto px-3 mx-3 mt-6 h-full overflow-auto`}>
                 {questionData?.map((q, i) =>

@@ -80,13 +80,9 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
               disabled={isEditMode}
             />
           </div>
-          {isBothRequired && !isEditMode? 
+          {!isEditMode ? 
             <p className="italic text-sm mt-2 custom-text-shade dark:d-text-shade">
-              Both start and end dates are required
-            </p>
-            : !isBothRequired && !isEditMode ?
-            <p className="italic text-sm mt-2 custom-text-shade dark:d-text-shade">
-              You may enter either a start or end date
+              {isBothRequired ? "Both start and end dates are required" : "You may enter either a start or end date"}
             </p>
             : 
             <></>
