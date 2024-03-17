@@ -128,6 +128,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     for (let v of Object.values(tempCountObj)) {
       if (v.length > 1) v.forEach(i => dupAnsArr.push(i));
     }
+    emptyAnsArr.sort((a, b) => a - b);
+    dupAnsArr.sort((a, b) => a - b);
     onChangeQuestionData({...questionData, answersObj: newAnswersObjArr, errEmptyAnsIdxArr: emptyAnsArr, errDupAnsIdxArr: dupAnsArr});
   }
 
@@ -195,7 +197,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               <input 
                 aria-label={`Textbox to type a question for question ${questionNum}`}
                 type="text"
-                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input mx-3 my-1 ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
+                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input mx-3 my-1 ${isReduceMotion ? "" : "transition-colors"} ${question.trim() === "" ? "custom-err-border" : "border-black dark:border-white "}`}
                 value={question}
                 placeholder="Enter a question"
                 onInput={e => handleOnChangeQuestion(e.target.value)}

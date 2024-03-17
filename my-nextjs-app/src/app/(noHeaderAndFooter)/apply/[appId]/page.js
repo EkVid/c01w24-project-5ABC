@@ -233,10 +233,8 @@ export default function ApplicationPage({params}) {
         }
       }
     }
-    if (allErrMsg.filter(e => e != null).length > 0) {
-      setQuestionData(prev => prev.map((q, i) => ({...q, errMsg: allErrMsg[i]})));
-    }
-    else {
+    setQuestionData(prev => prev.map((q, i) => ({...q, errMsg: allErrMsg[i]})));
+    if (allErrMsg.filter(e => e != null).length === 0) {
       console.log("No problems, go to review")
       // TODO: Go to review page
     }
@@ -253,7 +251,7 @@ export default function ApplicationPage({params}) {
   return (
     <div className="flex flex-col flex-grow">
       <FontSizeContext.Provider value={fontSize}>
-        <ThemeContext.Provider value={theme}>
+        <ThemeContext.Provider value={theme === "light"}>
           <ReducedMotionContext.Provider value={isReducedMotion}>
             <title>{`${title} Application`}</title>
             <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background border-b border-b-black dark:border-b-white`}>
