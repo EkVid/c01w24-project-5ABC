@@ -8,17 +8,41 @@ import ViewDate from "./viewQuestions/viewDate"
 import ViewFile from "./viewQuestions/viewFile"
 
 export default function ViewApplication({ QuestionData }){
+
+    function mapQuestions(QuestionData){
+        const questionElements = QuestionData.map(question => {
+            if(question.type === 'multiple choice'){
+                return <ViewMC question={question} />
+            }
+            else if(question.type === 'checkbox'){
+                return <ViewCheckbox question={question} />
+            }
+            else if(question.type === 'textbox'){
+                return <ViewText question={question} />
+            }
+            else if(question.type === 'number'){
+                return <ViewNumber question={question} />
+            }
+            else if(question.type === 'email'){
+                return <ViewEmail question={question} />
+            }
+            else if(question.type === 'phone number'){
+                return <ViewPhoneNum question={question} />
+            }
+            else if(question.type === 'date'){
+                return <ViewDate question={question} />
+            }
+            else if(question.type === 'file'){
+                return <ViewFile question={question} />
+            }
+        })
+
+        return questionElements
+    }
+
     return(
         <>
-            <ViewMC question={QuestionData[0]} />
-            <ViewCheckbox question={QuestionData[1]} />
-            <ViewText question={QuestionData[2]} />
-            <ViewNumber question={QuestionData[3]} />
-            <ViewEmail question={QuestionData[4]} />
-            <ViewPhoneNum question={QuestionData[5]} />
-            <ViewDate question={QuestionData[6]} />
-            <ViewFile question={QuestionData[7]} />
-            
+            {mapQuestions(QuestionData)}
         </>
     )
 }

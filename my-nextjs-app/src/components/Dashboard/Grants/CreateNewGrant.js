@@ -483,7 +483,7 @@ const CreateNewGrant = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 my-2 md:my-0 text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:d-text dark:border-neutral-700"
+                                    className="px-6 my-2 md:my-0 text-white text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:border-neutral-700"
                                     disabled={!(grant.Title && grant.Description && grant.MaxWinners > 0 && grant.AmountPerApp > 0 && grant.QuestionData && grant.Deadline !== '0000-00-00')}
                                 >
                                     Confirm

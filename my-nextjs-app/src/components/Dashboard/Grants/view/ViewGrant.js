@@ -1,12 +1,17 @@
 import ViewApplication from "./viewApplication"
 
 export default function ViewGrant({ grant, setViewGrant }){
+    
     function stringifyArray(arr){
         let string = ''
         for(let i = 0; i < arr.length; i++){
             string = string + ", " + arr[i]
         }
         return string.substring(1)
+    }
+
+    function PostGrant(){
+        console.log('post grant')
     }
 
     return (
@@ -80,7 +85,8 @@ export default function ViewGrant({ grant, setViewGrant }){
                     Back
                 </button>
                 <button
-                    className="px-6 my-2 md:my-0 text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:d-text dark:border-neutral-700"
+                    className="px-6 my-2 md:my-0 text-white text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent border-2 border-neutral-300 dark:d-text dark:border-neutral-700"
+                    onClick={PostGrant}
                 >
                     Post Grant
                 </button>
