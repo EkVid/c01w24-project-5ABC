@@ -185,7 +185,7 @@ const CreateNewGrant = () => {
 
     function addNationality(e){
         // If the user presses enter
-        if(e.keyCode === 13){
+        if(e.key === 'Enter'){
             const nationalityArr = grant.profileReqs.nationality
             nationalityArr.push(nationality)
             setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, nationality: nationalityArr}}))
@@ -262,7 +262,7 @@ const CreateNewGrant = () => {
                     </p>
 
                     <div className="w-full shadow-2xl rounded-xl p-8 dark:shadow-none dark:border-2 dark:border-neutral-600">
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}>
                             <label>
                                 <input 
                                     className="w-full mb-10 text-3xl dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"

@@ -12,28 +12,28 @@ export default function ViewApplication({ QuestionData }){
     function mapQuestions(QuestionData){
         const questionElements = QuestionData.map(question => {
             if(question.type === 'multiple choice'){
-                return <ViewMC question={question} />
+                return <ViewMC question={question} key={question.id}/>
             }
             else if(question.type === 'checkbox'){
-                return <ViewCheckbox question={question} />
+                return <ViewCheckbox question={question} key={question.id}/>
             }
             else if(question.type === 'textbox'){
-                return <ViewText question={question} />
+                return <ViewText question={question} key={question.id}/>
             }
             else if(question.type === 'number'){
-                return <ViewNumber question={question} />
+                return <ViewNumber question={question} key={question.id}/>
             }
             else if(question.type === 'email'){
-                return <ViewEmail question={question} />
+                return <ViewEmail question={question} key={question.id}/>
             }
             else if(question.type === 'phone number'){
-                return <ViewPhoneNum question={question} />
+                return <ViewPhoneNum question={question} key={question.id}/>
             }
             else if(question.type === 'date'){
-                return <ViewDate question={question} />
+                return <ViewDate question={question} key={question.id}/>
             }
             else if(question.type === 'file'){
-                return <ViewFile question={question} />
+                return <ViewFile question={question} key={question.id}/>
             }
         })
 
