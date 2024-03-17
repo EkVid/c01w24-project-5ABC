@@ -44,7 +44,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     isCurFileDeleting, 
     options, 
     isRequired, 
-    errMsgArr, 
+    errMsg, 
     errEmptyAnsIdxArr, 
     errDupAnsIdxArr,
     isTemp
@@ -85,8 +85,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     onChangeQuestionData({...questionData, question: newQuestion})
   }
 
-  const handleOnChangeOptions = (newOptions) => {
-    onChangeQuestionData({...questionData, options: newOptions});
+  const handleOnChangeOptions = (newOptions, newIsRequired) => {
+    onChangeQuestionData({...questionData, options: newOptions, isRequired: newIsRequired ? newIsRequired : isRequired});
   }
 
   const handleOnSubmitFile = (e) => {
@@ -94,7 +94,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     formRef.current.reset();
   }
 
-  const handleOnUndoCurFile = (e) => {
+  const handleOnUndoCurFile = () => {
     formRef.current.reset();
     onChangeQuestionData({...questionData, isCurFileDeleting: !isCurFileDeleting, file: null})
   }
@@ -135,7 +135,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
-      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 overflow-auto ${(isDragging || isTemp) && isEditMode ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 overflow-auto ${(isDragging || isTemp) && isEditMode ? "border-dashed border-black dark:border-white bg-transparent" : errMsg ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
     >
       <div className={`flex flex-col  ${(isDragging || isTemp) && isEditMode ? "invisible" : ""}`}>
         {isEditMode ? 
@@ -356,7 +356,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               : type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
               <QNumber
                 options={options}
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
@@ -364,27 +364,27 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
               <QText
                 options={options}
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
               <QEmail
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
               <QPhoneNum
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
               <QDate
                 options={options}
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
@@ -397,7 +397,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               :
               <></>
             }
-            {errMsgArr?.map((err, i) => <ErrTextbox msg={err} key={i}/>)}
+            {errMsg ? <ErrTextbox msg={errMsg}/> : <></>}
           </div>
           {/* Question icon in corner */}
           {fontSizeMultiplier < 1.5 ?

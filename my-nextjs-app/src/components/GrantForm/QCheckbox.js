@@ -72,7 +72,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
           aria-label={`Answer: ${a.answer}`}
           key={idx} 
           onClick={() => handleOnSelectAnswer(a.answer, idx)}
-          className={`flex items-center max-w-fit px-2 py-1 m-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
+          className={`flex items-center min-w-fit px-2 py-1 m-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
         >
           <input
             aria-label={`Checkbox for answer ${a.answer}`}

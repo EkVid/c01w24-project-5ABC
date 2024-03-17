@@ -36,7 +36,7 @@ const FormComponent = ({title}) => {
       id: uuidv4(),
       question: "",
       type: type,
-      errMsgArr: [],
+      errMsg: null,
       isRequired: false,
       file: null,
     }

@@ -88,7 +88,7 @@ const testbody = [
   {
     question: "Start and end date of last job",
     type: process.env.NEXT_PUBLIC_TYPE_DATE,
-    isRequired: false,
+    isRequired: true,
     options:
     {
       isDateRange: true,
@@ -122,7 +122,7 @@ export default function ApplicationPage({params}) {
     //const fetchedQuestData = fetch(`localhost:4000/idkUrl/${params.appId}`);
     const fetchedQuestData = testbody;
     const questData = fetchedQuestData.map(q => {
-      let newQuestObj = {...q, id: uuidv4(), errMsgArr: []};
+      let newQuestObj = {...q, id: uuidv4(), errMsg: null};
       if (q.answers) {
         newQuestObj = {...newQuestObj, answersObj: q.answers.map(a => ({answer: a, id: uuidv4()}))};
         delete newQuestObj.answers;
@@ -149,15 +149,99 @@ export default function ApplicationPage({params}) {
     // Navigate back to application page
   }
 
+  // Checks answers and validates them and shows error message for issues
+  // If no problems, shows preview page
   const handleOnReview = () => {
-    // Verify answers and yell at them for issues in answers
-    // Navigate to review answers page if no problem
+    const allErrMsg = questionData.map(q => null);
+    for (let i = 0; i < questionData.length; i++) {
+      const question = questionData[i];
+      const answer = answerData[i];
+      if (question.isRequired && !answer) {
+        allErrMsg[i] = "Please enter an answer";
+        continue;
+      }
+      if (question.type === process.env.NEXT_PUBLIC_TYPE_TEXT) {
+        const minCharsNum = question.options?.minCharsNum;
+        const maxCharsNum = question.options?.maxCharsNum;
+        const text = answer?.text;
+        if (minCharsNum && text && text.length < minCharsNum) {
+          allErrMsg[i] = `Answer too short (current: ${text.length}, min: ${minCharsNum})`;
+          continue;
+        }
+        if (maxCharsNum && text && text.length > maxCharsNum) {
+          allErrMsg[i] = `Answer too long (current: ${text.length}, max: ${maxCharsNum})`;
+          continue;
+        }
+      }
+      else if (question.type === process.env.NEXT_PUBLIC_TYPE_NUMBER) {
+        const isInt = question.options?.isIntegerOnly;
+        const minNum = question.options?.minNum;
+        const maxNum = question.options?.maxNum;
+        const value = answer?.value;
+        if (isNaN(value)) {
+          allErrMsg[i] = "Answer must be a number";
+          continue;
+        }
+        if (isInt && value && !Number.isSafeInteger(parseFloat(value))) {
+          allErrMsg[i] = "Answer must be an integer";
+          continue;
+        }
+        if (minNum && value && value < minNum) {
+          allErrMsg[i] = `Number too low (current: ${value}, min: ${minNum})`;
+          continue;
+        }
+        if (maxNum && value && value > minNum) {
+          allErrMsg[i] = `Number too high (current: ${value}, max: ${maxNum})`;
+          continue;
+        }
+      }
+      else if (question.type === process.env.NEXT_PUBLIC_TYPE_EMAIL) {
+        // TODO: check email format
+      }
+      else if (question.type === process.env.NEXT_PUBLIC_TYPE_PHONE) {
+        const regex = /^(\+\d( )?)?(\(|-)?\d{3}(\)|-| )?\d{3}(-| )?\d{4}(,? ?(ext\.?|extension|x){1}\d+)?$/i;
+        const phoneNum = answer?.phoneNum;
+        if (!regex.test(phoneNum)) {
+          allErrMsg[i] = "You must enter a valid phone number";
+          continue;
+        }
+      }
+      else if (question.type === process.env.NEXT_PUBLIC_TYPE_DATE) {
+        const isDateRange = question.options?.isDateRange;
+        const isBothRequired = question.options?.isBothRequired;
+        const startDate = answer?.startDate;
+        const endDate = answer?.endDate;
+        if (isDateRange && isBothRequired && !startDate && endDate) {
+          allErrMsg[i] = "You must enter a start date";
+          continue;
+        }
+        if (isDateRange && isBothRequired && startDate && !endDate) {
+          allErrMsg[i] = "You must enter an end date";
+          continue;
+        }
+        if (new Date(startDate) > new Date(endDate)) {
+          allErrMsg[i] = "Start date cannot be later than end date";
+          continue;
+        }
+      }
+    }
+    if (allErrMsg.filter(e => e != null).length > 0) {
+      setQuestionData(prev => prev.map((q, i) => ({...q, errMsg: allErrMsg[i]})));
+    }
+    else {
+      console.log("No problems, go to review")
+      // TODO: Go to review page
+    }
   }
 
   const handleOnSelectAnswer = (questionId, answer) => {
-    // Store answers 
+    setAnswerData(prev => {
+      const questionIdx = questionData.findIndex(q => q.id === questionId);
+      return prev.map((a, i) => i === questionIdx ? answer : a);
+    });
+    setQuestionData(prev => prev.map(q => q.id === questionId ? {...q, errMsg: null} : q));
   }
- 
+useEffect(() => console.log(answerData), [answerData])
   return (
     <div className="flex flex-col flex-grow">
       <FontSizeContext.Provider value={fontSize}>
@@ -211,7 +295,7 @@ export default function ApplicationPage({params}) {
                     questionNum={i + 1}
                     isEditMode={false}
                     isLastQuestion={i === questionData.length - 1}
-                    onSelectAnswer={() => {return}}
+                    onSelectAnswer={handleOnSelectAnswer}
                   />
                 )}
                 {!questionData || questionData.length === 0 ?
