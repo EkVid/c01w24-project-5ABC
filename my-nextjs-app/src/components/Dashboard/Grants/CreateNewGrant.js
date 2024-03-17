@@ -1,5 +1,6 @@
 'use client'
 import DashboardInnerContainer from "../InnerContainer"
+import ViewGrant from "./view/ViewGrant"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { v4 as uuidv4 } from 'uuid';
@@ -31,7 +32,6 @@ const CreateNewGrant = () => {
         Active: true,
         AmountPerApp: 0,
         QuestionData: null,
-        Files: [],
     }
     const initGrant = progressGrant ? progressGrant : defaultGrant
 
@@ -39,6 +39,7 @@ const CreateNewGrant = () => {
     const [ race, setRace ] = useState('')
     const [ gender , setGender ] = useState('')
     const [ nationality, setNationality ] = useState('')
+    const [ viewGrant, setViewGrant ] = useState(false)
 
     // Only show undo if there was a previous deletion
     const undoShow = localStorage.getItem('clearedGrant') !== null
@@ -215,6 +216,11 @@ const CreateNewGrant = () => {
         )
     })
 
+    function setVeteran(e){
+        console.log('v', e.target.value)
+        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, veteran:e.target.value}}))
+    }
+
 
     // --------------- Button functions ---------------
     function clearForm(){
@@ -224,8 +230,7 @@ const CreateNewGrant = () => {
 
     function handleSubmit(e){
         e.preventDefault()
-        console.log("form submitted")
-        // localStorage.removeItem('grant')
+        setViewGrant(true)
     }
 
     function handleUndo(){
@@ -242,211 +247,253 @@ const CreateNewGrant = () => {
 
     return(
         <DashboardInnerContainer>
-            <div>
-                <h1 className="text-3xl dark:d-text">
-                    Create New Grant
-                </h1>
+            { viewGrant ? 
+                <ViewGrant grant={grant} setViewGrant={setViewGrant}/>
+            :
+                <div>
+                    <h1 className="text-3xl dark:d-text">
+                        Create New Grant
+                    </h1>
 
-                <p className="text-lg dark:d-text my-6 ms-6">
-                    Seamlessly create new grants with a quick and easy application 
-                    form builder. Drag and drop any question type and customize it 
-                    to your needs. Mix and match to create the perfect form!
-                </p>
+                    <p className="text-lg dark:d-text my-6 ms-6">
+                        Seamlessly create new grants with a quick and easy application 
+                        form builder. Drag and drop any question type and customize it 
+                        to your needs. Mix and match to create the perfect form!
+                    </p>
 
-                <div className="w-full shadow-2xl rounded-xl p-8 dark:shadow-none dark:border-2 dark:border-neutral-600">
-                    <form onSubmit={handleSubmit}>
-                        <label>
-                            <input 
-                                className="w-full mb-10 text-3xl dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
-                                type="text" 
-                                value={grant.Title}
-                                onChange={setTitle}
-                                placeholder="My Grant Title*"
-                                required
-                            />
-                        </label>
+                    <div className="w-full shadow-2xl rounded-xl p-8 dark:shadow-none dark:border-2 dark:border-neutral-600">
+                        <form onSubmit={handleSubmit}>
+                            <label>
+                                <input 
+                                    className="w-full mb-10 text-3xl dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
+                                    type="text" 
+                                    value={grant.Title}
+                                    onChange={setTitle}
+                                    placeholder="My Grant Title*"
+                                    required
+                                />
+                            </label>
 
-                        <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
-                            <p className="pt-2 dark:d-text">Desctipion*&nbsp;:</p>
-                            <textarea 
-                                className="md:mx-4 mx-0 p-2 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                value={grant.Description} 
-                                onChange={setDescription}
-                                placeholder="The description of my grant..."
-                                required
-                            >
-                            </textarea>
-                        </label>
-
-                        <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
-                            <p className="pt-2 dark:d-text">Number of Grant Winners*&nbsp;:</p>
-                            <input 
-                                type="number"
-                                className="mx-4 p-2 custom-dark-grey-background rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                value={grant.MaxWinners} 
-                                onChange={setMaxWinners}
-                                onBlur={checkMaxWinners}
-                                required
-                            />
-                        </label>
-
-                        <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
-                            <p className="pt-2 dark:d-text">Amount Per Winner (CAD $)*&nbsp;:</p>
-                            <input 
-                                type="number"
-                                className="mx-4 p-2 custom-dark-grey-background rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                value={grant.AmountPerApp} 
-                                onChange={setAmountPerApp}
-                                step='0.01'
-                                min={0}
-                                onBlur={(e) => {
-                                    roundAmount(e)
-                                    checkAmountAboveZero(e, 'AmountPerApp')
-                                }}
-                                placeholder="0.00"
-                                required
-                            />
-                        </label>
-
-                        <div className="w-full flex md:flex-row flex-col items-center ms-4 mb-10">
-                            <p className="self-start md:self-auto dark:d-text">Application Form*&nbsp;:</p>
-                            <div className="md:max-w-xl sm:min-w-60 sm:max-w-60 min-w-40 ms-4 me-8 flex flex-col sm:flex-row items-center rounded-md custom-dark-grey-background border-2 border-neutral-300 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700">
-                                <p 
-                                    className="mx-auto max-w-full text-center truncate dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
+                            <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                                <p className="pt-2 dark:d-text">Desctipion*&nbsp;:</p>
+                                <textarea 
+                                    className="md:mx-4 mx-0 p-2 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                    value={grant.Description} 
+                                    onChange={setDescription}
+                                    placeholder="The description of my grant..."
+                                    required
                                 >
-                                    {grant.Title ? grant.Title : 'Default'} Form
-                                </p>
-                                <Link href={`/edit/${grant.Title}`} className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">
-                                    Edit
-                                </Link>
-                            </div> 
-                        </div>
+                                </textarea>
+                            </label>
 
-                        <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
-                            <p className="pt-2 dark:d-text">Application Deadline*&nbsp;:</p>
-                            <input 
-                                type="date"
-                                className="mx-4 p-2 custom-dark-grey-background rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                value={grant.Deadline} 
-                                onChange={setDeadline}
-                                onBlur={checkDeadlineValidity}
-                                required
-                            />
-                        </label>
+                            <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                                <p className="pt-2 dark:d-text">Number of Grant Winners*&nbsp;:</p>
+                                <input 
+                                    type="number"
+                                    className="mx-4 p-2 custom-dark-grey-background rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                    value={grant.MaxWinners} 
+                                    onChange={setMaxWinners}
+                                    onBlur={checkMaxWinners}
+                                    required
+                                />
+                            </label>
 
-                        <div className="flex flex-col items-top ms-4 mb-20">
-                            <p className="w-full pt-2 dark:d-text">Grantee Profile - Tell us about your ideal applicant: </p>
-                            <div 
-                                className="self-center flex flex-col md:mx-4 mx-0 p-2 my-4 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                            >
-                                <p className="mb-8">Blank sections indicate no specification</p>
-                                <label className="flex flex-col my-2">
-                                    Age range:
-                                    <div className="my-4">
-                                        <input 
-                                            type="number"
-                                            className="w-1/12 min-w-16 mx-4 p-2 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                            value={grant.profileReqs.minAge} 
-                                            onChange={setMinAge}
-                                            step='1'
-                                            onBlur={checkAgeAboveZero}
-                                            placeholder="0"
-                                        />
-                                        -
-                                        <input 
-                                            type="number"
-                                            className="w-1/12 min-w-16 mx-4 p-2 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                            value={grant.profileReqs.maxAge} 
-                                            onChange={setMaxAge}
-                                            onBlur={verifyMaxAge}
-                                            placeholder="0"
-                                        />
-                                    </div>
-                                    
-                                </label>
+                            <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                                <p className="pt-2 dark:d-text">Amount Per Winner (CAD $)*&nbsp;:</p>
+                                <input 
+                                    type="number"
+                                    className="mx-4 p-2 custom-dark-grey-background rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                    value={grant.AmountPerApp} 
+                                    onChange={setAmountPerApp}
+                                    step='0.01'
+                                    min={0}
+                                    onBlur={(e) => {
+                                        roundAmount(e)
+                                        checkAmountAboveZero(e, 'AmountPerApp')
+                                    }}
+                                    placeholder="0.00"
+                                    required
+                                />
+                            </label>
 
-                                <label className="flex flex-col my-2">
-                                    Race (press enter to add):
-                                    <div className="flex flex-col lg:flex-row">
-                                        <input 
-                                            type="text"
-                                            className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                            value={race} 
-                                            onChange={(e) => setRace(e.target.value)}
-                                            onKeyDown={addRace}
-                                        />
-
-                                        <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
-                                            {raceElements}
-                                        </div>
-                                    </div>
-                                </label>
-
-                                <label className="flex flex-col my-2">
-                                    Gender (press enter to add):
-                                    <div className="flex flex-col lg:flex-row">
-                                        <input 
-                                            type="text"
-                                            className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                            value={gender} 
-                                            onChange={(e) => setGender(e.target.value)}
-                                            onKeyDown={addGender}
-                                        />
-
-                                        <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
-                                            {genderElements}
-                                        </div>
-                                    </div>
-                                </label>
-
-                                <label className="flex flex-col my-2">
-                                    Nationality (press enter to add):
-                                    <div className="flex flex-col lg:flex-row">
-                                        <input 
-                                            type="text"
-                                            className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
-                                            value={nationality} 
-                                            onChange={(e) => setNationality(e.target.value)}
-                                            onKeyDown={addNationality}
-                                        />
-
-                                        <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
-                                            {nationalityElements}
-                                        </div>
-                                    </div>
-                                </label>
-
+                            <div className="w-full flex md:flex-row flex-col items-center ms-4 mb-10">
+                                <p className="self-start md:self-auto dark:d-text">Application Form*&nbsp;:</p>
+                                <div className="md:max-w-xl sm:min-w-60 sm:max-w-60 min-w-40 ms-4 me-8 flex flex-col sm:flex-row items-center rounded-md custom-dark-grey-background border-2 border-neutral-300 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700">
+                                    <p 
+                                        className="mx-auto max-w-full text-center truncate dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
+                                    >
+                                        {grant.Title ? grant.Title : 'Default'} Form
+                                    </p>
+                                    <Link href={`/edit/${grant.Title}`} className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">
+                                        Edit
+                                    </Link>
+                                </div> 
                             </div>
-                        </div>
 
-                        <div className="w-full flex sm:flex-row flex-col items-center justify-end sm:gap-6">
-                            <button 
-                                type="button"
-                                id='undo-btn'
-                                className={`${undoShow ? '' : 'hidden'} hover:underline dark:d-text`} 
-                                onClick={handleUndo}
-                            >
-                                Restore
-                            </button>
-                            <button
-                                type="button"
-                                className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md hover:scale-105 bg-white hover:bg-red-600 border-2 border-neutral-300 disabled:text-neutral-400 disabled:bg-transparent dark:d-text dark:disabled:bg-transparent dark:disabled:text-neutral-400 dark:d-custom-dark-grey-background dark:hover:bg-red-600 dark:border-neutral-700"
-                                onClick={clearForm}
-                                disabled={(!grant.Title && !grant.Description && grant.MaxWinners === 0 && !grant.AmountPerApp && !grant.QuestionData && grant.Deadline === '0000-00-00')}
-                            >
-                                Clear
-                            </button>
-                            <button
-                                type="submit"
-                                className="px-6 my-2 md:my-0 text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:d-text dark:border-neutral-700"
-                                disabled={!(grant.Title && grant.Description && grant.MaxWinners > 0 && grant.AmountPerApp > 0 && grant.QuestionData && grant.Deadline !== '0000-00-00')}
-                            >
-                                Confirm
-                            </button>
-                        </div>
-                    </form>
+                            <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                                <p className="pt-2 dark:d-text">Application Deadline*&nbsp;:</p>
+                                <input 
+                                    type="date"
+                                    className="mx-4 p-2 custom-dark-grey-background rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                    value={grant.Deadline} 
+                                    onChange={setDeadline}
+                                    onBlur={checkDeadlineValidity}
+                                    required
+                                />
+                            </label>
+
+                            <div className="flex flex-col items-top ms-4 mb-20">
+                                <p className="w-full pt-2 dark:d-text">Grantee Profile - Tell us about your ideal applicant: </p>
+                                <div 
+                                    className="self-center flex flex-col md:mx-4 mx-0 p-2 my-4 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                >
+                                    <p className="mb-8">Blank sections indicate no specification</p>
+                                    <label className="flex flex-col my-2">
+                                        Age range:
+                                        <div className="my-4">
+                                            <input 
+                                                type="number"
+                                                className="w-1/12 min-w-16 mx-4 p-2 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                                value={grant.profileReqs.minAge} 
+                                                onChange={setMinAge}
+                                                step='1'
+                                                onBlur={checkAgeAboveZero}
+                                                placeholder="0"
+                                            />
+                                            -
+                                            <input 
+                                                type="number"
+                                                className="w-1/12 min-w-16 mx-4 p-2 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                                value={grant.profileReqs.maxAge} 
+                                                onChange={setMaxAge}
+                                                onBlur={verifyMaxAge}
+                                                placeholder="0"
+                                            />
+                                        </div>
+                                        
+                                    </label>
+
+                                    <label className="flex flex-col my-2">
+                                        Race (press enter to add):
+                                        <div className="flex flex-col lg:flex-row">
+                                            <input 
+                                                type="text"
+                                                className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                                value={race} 
+                                                onChange={(e) => setRace(e.target.value)}
+                                                onKeyDown={addRace}
+                                            />
+
+                                            <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
+                                                {raceElements}
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label className="flex flex-col my-2">
+                                        Gender (press enter to add):
+                                        <div className="flex flex-col lg:flex-row">
+                                            <input 
+                                                type="text"
+                                                className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                                value={gender} 
+                                                onChange={(e) => setGender(e.target.value)}
+                                                onKeyDown={addGender}
+                                            />
+
+                                            <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
+                                                {genderElements}
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label className="flex flex-col my-2">
+                                        Nationality (press enter to add):
+                                        <div className="flex flex-col lg:flex-row">
+                                            <input 
+                                                type="text"
+                                                className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
+                                                value={nationality} 
+                                                onChange={(e) => setNationality(e.target.value)}
+                                                onKeyDown={addNationality}
+                                            />
+
+                                            <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
+                                                {nationalityElements}
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label className="flex flex-col my-2">
+                                        Are they a veteran:
+                                        <div className="flex flex-col lg:flex-row gap-x-10">
+                                            <label>
+                                                <input 
+                                                    type="radio"
+                                                    name="veteran"
+                                                    value={0}
+                                                    className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
+                                                    onChange={setVeteran}
+                                                />
+                                                No
+                                            </label>
+                                            <label>
+                                                <input 
+                                                    type="radio"
+                                                    name="veteran"
+                                                    value={1}
+                                                    className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
+                                                    onChange={setVeteran}
+                                                />
+                                                Yes
+                                            </label>
+                                            <label>
+                                                <input 
+                                                    type="radio"
+                                                    name="veteran"
+                                                    value={2}
+                                                    className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
+                                                    onChange={setVeteran}
+                                                    defaultChecked
+                                                />
+                                                N/A
+                                            </label>
+                                        </div>
+                                    </label>
+
+                                </div>
+                            </div>
+
+                            <div className="w-full flex sm:flex-row flex-col items-center justify-end sm:gap-6">
+                                <button 
+                                    type="button"
+                                    id='undo-btn'
+                                    className={`${undoShow ? '' : 'hidden'} hover:underline dark:d-text`} 
+                                    onClick={handleUndo}
+                                >
+                                    Restore
+                                </button>
+                                <button
+                                    type="button"
+                                    className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md hover:scale-105 bg-white hover:bg-red-600 border-2 border-neutral-300 disabled:text-neutral-400 disabled:bg-transparent dark:d-text dark:disabled:bg-transparent dark:disabled:text-neutral-400 dark:d-custom-dark-grey-background dark:hover:bg-red-600 dark:border-neutral-700"
+                                    onClick={clearForm}
+                                    disabled={(!grant.Title && !grant.Description && grant.MaxWinners === 0 && !grant.AmountPerApp && !grant.QuestionData && grant.Deadline === '0000-00-00')}
+                                >
+                                    Clear
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-6 my-2 md:my-0 text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:d-text dark:border-neutral-700"
+                                    disabled={!(grant.Title && grant.Description && grant.MaxWinners > 0 && grant.AmountPerApp > 0 && grant.QuestionData && grant.Deadline !== '0000-00-00')}
+                                >
+                                    Confirm
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            }
+            
         </DashboardInnerContainer>
     )
 }
