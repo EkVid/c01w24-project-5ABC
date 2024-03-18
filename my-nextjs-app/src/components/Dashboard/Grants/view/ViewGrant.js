@@ -50,11 +50,11 @@ export default function ViewGrant({ grant, setViewGrant }){
     async function PostGrant(){
         const userData = JSON.parse(sessionStorage.getItem('userData'))
 
-        if(!userInfo){
+        if(!userData){
             router.push('/login')
         }
 
-        const form = prepareGrant(grant, userInfo.email)
+        const form = prepareGrant(grant, userData.email)
         if(!form){
             console.error('error formatting grant')
             return null
