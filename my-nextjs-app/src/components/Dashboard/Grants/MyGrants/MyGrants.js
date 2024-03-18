@@ -1,3 +1,4 @@
+import Link from "next/link"
 import DashboardInnerContainer from "../../InnerContainer"
 
 const testGrants = [{
@@ -177,24 +178,31 @@ const MyGrants = () => {
                         <p className="pt-2 dark:d-text">Amount Per Winner (CAD $): {grant.AmountPerApp}</p>
                         <p className="pt-2 dark:d-text">Application Deadline: {grant.Deadline}</p>
 
-                        {grant.Active ? 
-                            <button 
-                                onClick={() => closeGrant(grant)}
-                                className="rounded px-4 py-2 hover:scale-105 text-white mt-6 self-start bg-[#d76b65]"
-                            >
-                                Close Grant
-                            </button>
-                        :
-                            grant.NumWinners < grant.MaxWinners ?
+                        <div className="w-full flex flex-col sm:flex-row">
+                            {grant.Active ? 
                                 <button 
-                                    onClick={() => openGrant(grant)}
-                                    className="rounded px-4 py-2 hover:scale-105 dark:d-text mt-6 self-start custom-green"
+                                    onClick={() => closeGrant(grant)}
+                                    className="rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 bg-[#d76b65]"
                                 >
-                                    Open Grant
+                                    Close Grant
                                 </button>
                             :
-                                <></>
-                        }
+                                grant.NumWinners < grant.MaxWinners ?
+                                    <button 
+                                        onClick={() => openGrant(grant)}
+                                        className="rounded text-center px-4 py-2 hover:scale-105 dark:d-text mt-6 custom-green"
+                                    >
+                                        Open Grant
+                                    </button>
+                                :
+                                    <></>
+                            }
+
+                            <Link href='#' className="rounded text-center border border-black dark:border-white px-4 py-2 hover:scale-105 ms-0 sm:ms-auto dark:d-text mt-6">
+                                View Applications
+                            </Link>
+                        </div>
+                        
                     </div>
 
                 </details>
