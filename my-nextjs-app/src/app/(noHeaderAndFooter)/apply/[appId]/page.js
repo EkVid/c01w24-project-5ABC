@@ -10,6 +10,7 @@ import Image from "next/image";
 import UndoIcon from "@/../public/undo.svg";
 import SubmitIcon from "@/../public/submit.svg";
 import QuestionBase from "@/components/GrantForm/QuestionBase";
+import ErrTextbox from "@/components/GrantForm/SmallComponents/ErrTextbox";
 
 const AccessibilityBar = dynamic(
   () => import("@/components/AccessibilityBar"),
@@ -115,6 +116,7 @@ export default function ApplicationPage({params}) {
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [isRequiredVis, setIsRequiredVis] = useState(false);
+  const [isErrVis, setIsErrVis] = useState(false);
   const [questionData, setQuestionData] = useState(null);
   const [answerData, setAnswerData] = useState(null);
   const [title, setTitle] = useState("");
@@ -137,6 +139,11 @@ export default function ApplicationPage({params}) {
     setTheme(getTheme());
     setIsRequiredVis(questData.filter(q => q.isRequired).length > 0);
   }, []);
+
+  useEffect(() => {
+    if (!questionData) setIsErrVis(false);
+    else setIsErrVis(questionData.filter(q => q.errMsg).length > 0);
+  }, [questionData]);
 
   const handleOnQuit = () => {
     let isDataStored = false;
@@ -247,6 +254,7 @@ export default function ApplicationPage({params}) {
     });
     setQuestionData(prev => prev.map(q => q.id === questionId ? {...q, errMsg: null} : q));
   }
+
 //useEffect(() => console.log(answerData), [answerData])
   return (
     <div className="flex flex-col flex-grow">
@@ -254,17 +262,17 @@ export default function ApplicationPage({params}) {
         <ThemeContext.Provider value={theme === "light"}>
           <ReducedMotionContext.Provider value={isReducedMotion}>
             <title>{`${title} Application`}</title>
-            <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background border-b border-b-black dark:border-b-white`}>
+            <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background`}>
               <AccessibilityBar 
                 onChangeFont={setFontSize}
                 onChangeTheme={setTheme}
                 onChangeMotion={setIsReducedMotion}
               />
-              <div className="flex justify-between p-2 overflow-auto ">
+              <div className="flex justify-between overflow-auto m-2">
                 <button 
                   aria-label="Return to grants"
                   onClick={handleOnQuit}
-                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 p-1 ${isReducedMotion ? "" : "transition"}`}
+                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 p-2 ${isReducedMotion ? "" : "transition"}`}
                 >
                   <Image
                     src={UndoIcon}
@@ -279,7 +287,7 @@ export default function ApplicationPage({params}) {
                 <button 
                   aria-label="Review and submit answers"
                   onClick={handleOnReview}
-                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
+                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 px-2 py-1 ${isErrVis ? "hidden" : ""} ${isReducedMotion ? "" : "transition"}`}
                 >
                   <Image
                     src={SubmitIcon}
@@ -290,11 +298,18 @@ export default function ApplicationPage({params}) {
                   />
                   <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex">Review / Submit</p>
                 </button>
+                {isErrVis ?
+                  <div className="flex items-center mx-2">
+                    <ErrTextbox msg={"Fix all errors\nto review and\nsubmit form"}/>
+                  </div>
+                  :
+                  <></>
+                }
               </div>
             </div>
             {isRequiredVis ?
               <p className="mx-3 px-3 mt-6">
-                <font className="custom-red dark:d-custom-red mr-1">*</font> Indicates required question
+                <font className="custom-red dark:d-custom-red mr-1 text-xl">*</font>Indicates required question
               </p>
               :
               <></>
@@ -316,24 +331,30 @@ export default function ApplicationPage({params}) {
                     There are no questions to preview
                   </h3>
                   :
-                  <div className="flex flex-col mt-5 mb-10">
+                  <div className="flex flex-col items-center mt-5 mb-10">
                     <p className="text-center text-3xl font-bold custom-text dark:d-text opacity-50 whitespace-pre-wrap">
                       {'You have reached the end of the application!'}
                     </p>
-                    <button 
-                      aria-label="Review and submit answers"
-                      onClick={handleOnReview}
-                      className={`flex rounded custom-interactive-btn m-1 mt-5 p-3 self-center custom-questioncard-background ${isReducedMotion ? "" : "transition-colors"}`}
-                    >
-                      <Image
-                        src={SubmitIcon}
-                        alt="Checkmark"
-                        width={22 * fontSize / 100}
-                        height={"auto"}
-                        className="dark:d-white-filter"
-                      />
-                      <div className="ml-2.5 text-xl custom-text dark:d-text">Review / Submit</div>
-                    </button>
+                    {isErrVis ?
+                      <div className="flex items-center p-4">
+                        <ErrTextbox msg={"Fix all errors to review and submit form"}/>
+                      </div>
+                      :
+                      <button 
+                        aria-label="Review and submit answers"
+                        onClick={handleOnReview}
+                        className={`flex rounded custom-interactive-btn m-1 mt-5 p-3 self-center custom-questioncard-background ${isReducedMotion ? "" : "transition-colors"}`}
+                      >
+                        <Image
+                          src={SubmitIcon}
+                          alt="Checkmark"
+                          width={22 * fontSize / 100}
+                          height={"auto"}
+                          className="dark:d-white-filter"
+                        />
+                        <div className="ml-2.5 text-xl custom-text dark:d-text">Review / Submit</div>
+                      </button>
+                    }
                   </div>
                 }
               </div>

@@ -17,11 +17,18 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import ThemeContext from "@/components/utils/ThemeContext";
 import { getTheme } from "@/components/utils/theme";
+import ErrTextbox from "@/components/GrantForm/SmallComponents/ErrTextbox";
 
 const AccessibilityBar = dynamic(
   () => import("@/components/AccessibilityBar"),
   { ssr: false }
 );
+
+const DELTA_X_TO_ADD = 270;
+const LARGE_FONT_SIZE = 140;
+
+const NO_QUESTION_MSG = "Add a question\nto preview or\nsave form";
+const FIX_ERR_MSG = "Fix all issues\nto save or\npreview form";
 
 export default function EditPage({params}) {
   const [fontSize, setFontSize] = useState(100);
@@ -34,14 +41,12 @@ export default function EditPage({params}) {
   const [isToolboxDisabled, setIsToolboxDisabled] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isBottomToolboxOpen, setIsBottomToolboxOpen] = useState(true);
+  const [cornerMsg, setCornerMsg] = useState(NO_QUESTION_MSG);
   const [tempIdx, setTempIdx] = useState([-1, -1]);
   const title = decodeURI(params.formTitle);
 
   const questionPanelRef = useDroppable({ id: "questionPanel"});
   const router = useRouter();
-
-  const largeFontSize = 140;
-  const deltaXToAdd = 270;
 
   const getNewQuestionObj = (type) => {
     let newQuestion = {
@@ -159,6 +164,13 @@ export default function EditPage({params}) {
     else setQuestionData([newQuestion]);
   }
 
+  useEffect(() => setTheme(getTheme()), []);
+  useEffect(() => {
+    if (questionData == null || questionData.length === 0) setCornerMsg(NO_QUESTION_MSG);
+    else if (questionData.filter(q => q.errMsg).length > 0) setCornerMsg(FIX_ERR_MSG);
+    else setCornerMsg(null);
+  }, [questionData]);
+
   // ---------------- Drag handlers ----------------
 
   const clearStates = () => {
@@ -191,11 +203,11 @@ export default function EditPage({params}) {
   const handleOnDragMove = ({active, over, delta}) => {
     const activeCont = active.data?.current?.cont;
     const overId = over?.id;
-    setIsAddingNew(delta.x >= deltaXToAdd);
+    setIsAddingNew(delta.x >= DELTA_X_TO_ADD);
 
     // For dragging from toolbox
     if (activeCont === "toolbox") {
-      if (delta.x < deltaXToAdd && newDraggedObj) return clearTemp();
+      if (delta.x < DELTA_X_TO_ADD && newDraggedObj) return clearTemp();
       if (questionData == null || questionData.length === 0) return setQuestionData([tempObj]);
       if (questionData.filter(q => q.isTemp).length === 0) return setQuestionData([...questionData, tempObj]);
       const newTempIdx = questionData.findIndex(q => q.id === overId);
@@ -216,7 +228,7 @@ export default function EditPage({params}) {
     }
 
     if (activeCont === "toolbox") {
-      if (questionData && questionData.length === 1 && questionData[0].isTemp && delta.x >= deltaXToAdd) handleOnClickAddQuestion(type);
+      if (questionData && questionData.length === 1 && questionData[0].isTemp && delta.x >= DELTA_X_TO_ADD) handleOnClickAddQuestion(type);
       else if (tempIdx[1] !== -1) {
         const newQuestion = getNewQuestionObj(type);
         setQuestionData(prev => [...prev.slice(0, tempIdx[1]), newQuestion, ...prev.slice(tempIdx[1])]);
@@ -235,7 +247,7 @@ export default function EditPage({params}) {
       });
     }, 50);
     
-  }, [tempIdx])
+  }, [tempIdx]);
 
   // ---------------- Question handlers ---------------- 
 
@@ -265,8 +277,6 @@ export default function EditPage({params}) {
 
     return value;
   }
-
-  useEffect(() => setTheme(getTheme()), []);
  
   return (
     <div className="flex flex-col flex-grow justify-between">
@@ -284,17 +294,17 @@ export default function EditPage({params}) {
             >
               <title>{`${title} Editor`}</title>
               {/* Header for title and save, exit, view buttons */}
-              <div className={`flex flex-col sticky top-0 z-30 h-fit custom-questioncard-background border-b border-b-black dark:border-b-white ${isReducedMotion ? "" : "transition"}`}>
+              <div className={`flex flex-col sticky top-0 z-30 min-h-fit custom-questioncard-background ${isReducedMotion ? "" : "transition"}`}>
                 <AccessibilityBar 
                   onChangeFont={setFontSize}
                   onChangeTheme={setTheme}
                   onChangeMotion={setIsReducedMotion}
                 />
-                <div className="flex items-center justify-between p-2 overflow-auto">
+                <div className="flex items-center justify-between overflow-auto mx-2">
                   <button 
                     aria-label="Quit"
                     onClick={handleOnQuit}
-                    className={`flex shrink-0 min-w-fit items-center rounded custom-interactive-btn m-1 p-1 self-stretch ${isReducedMotion ? "" : "transition"}`}
+                    className={`flex shrink-0 min-w-fit items-center rounded custom-interactive-btn m-1 p-2 ${isReducedMotion ? "" : "transition"}`}
                   >
                     <Image
                       src={UndoIcon}
@@ -306,40 +316,45 @@ export default function EditPage({params}) {
                     <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Quit</div>
                   </button>
                   <h1 className="flex-grow text-center mx-3 text-2xl custom-text dark:d-text overflow-auto max-h-20">{title}</h1>
-                  <div className="min-w-fit flex flex-col">
-                    <button 
-                      aria-label="Save current questions"
-                      onClick={handleOnSave}
-                      className={`flex shrink-0 rounded items-center custom-interactive-btn mx-1 mt-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
-                    >
-                      <Image
-                        src={SaveIcon}
-                        alt="Floppy disk"
-                        width={22 * fontSize / 100}
-                        height={"auto"}
-                        className="dark:d-white-filter"
-                      />
-                      <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Save</div>
-                    </button>
-                    <button 
-                      aria-label={isEditMode ? "Preview form" : "Edit form"}
-                      onClick={handleOnPreview}
-                      className={`flex shrink-0 rounded items-center custom-interactive-btn mx-1 mb-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
-                    >
-                      <Image
-                        src={isEditMode ? EyeIcon : EditIcon}
-                        alt={isEditMode ? "Eye" : "Edit"}
-                        width={22 * fontSize / 100}
-                        height={"auto"}
-                        className="dark:d-white-filter"
-                      />
-                      <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">{isEditMode ? "View" : "Edit"}</div>
-                    </button>
+                  <div className="min-w-fit flex items-center">
+                    <div className={`min-w-fit flex flex-col ${cornerMsg ? "invisible" : ""}`}>
+                      <button 
+                        aria-label="Save current questions"
+                        onClick={handleOnSave}
+                        className={`flex shrink-0 rounded items-center custom-interactive-btn mx-1 mt-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
+                      >
+                        <Image
+                          src={SaveIcon}
+                          alt="Floppy disk"
+                          width={22 * fontSize / 100}
+                          height={"auto"}
+                          className="dark:d-white-filter"
+                        />
+                        <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Save</div>
+                      </button>
+                      <button 
+                        aria-label={isEditMode ? "Preview form" : "Edit form"}
+                        onClick={handleOnPreview}
+                        className={`flex shrink-0 rounded items-center custom-interactive-btn mx-1 mb-1 px-2 py-1 ${isReducedMotion ? "" : "transition"}`}
+                      >
+                        <Image
+                          src={isEditMode ? EyeIcon : EditIcon}
+                          alt={isEditMode ? "Eye" : "Edit"}
+                          width={22 * fontSize / 100}
+                          height={"auto"}
+                          className="dark:d-white-filter"
+                        />
+                        <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">{isEditMode ? "View" : "Edit"}</div>
+                      </button>
+                    </div>
+                    <div className={`items-center ${cornerMsg ? "flex" : "hidden"}`}>
+                      <ErrTextbox msg={cornerMsg}/>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className={`${fontSize > largeFontSize ? "flex-col" : "flex flex-col lg:flex-row"} flex-auto bg-transparent`}>
-                <div className={`${fontSize > largeFontSize || !isEditMode ? "" : "lg:flex sticky top-36"} hidden h-fit max-h-[85vh] px-3 py-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col lg:max-w-xs xl:max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReducedMotion ? "" : "transition"}`}>
+              <div className={`${fontSize > LARGE_FONT_SIZE ? "flex-col" : "flex flex-col lg:flex-row"} flex-auto bg-transparent`}>
+                <div className={`${fontSize > LARGE_FONT_SIZE || !isEditMode ? "" : "lg:flex sticky top-32"} hidden h-fit max-h-[85vh] px-3 py-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col lg:max-w-xs xl:max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReducedMotion ? "" : "transition"}`}>
                   <Toolbox onClickAdd={handleOnClickAddQuestion}/>
                 </div>
                 <SortableContext
@@ -411,7 +426,7 @@ export default function EditPage({params}) {
                     null
                   }
                 </DragOverlay>
-                <div className={`${!isEditMode ? "hidden" : fontSize <= largeFontSize ? "lg:hidden" : ""} flex flex-col sticky h-fit bottom-0 w-screen ${isReducedMotion ? "" : "transition"}`}>
+                <div className={`${!isEditMode ? "hidden" : fontSize <= LARGE_FONT_SIZE ? "lg:hidden" : ""} flex flex-col sticky h-fit bottom-0 w-screen ${isReducedMotion ? "" : "transition"}`}>
                   <button 
                     aria-label={isBottomToolboxOpen ? "Close Toolbox" : "Open Toolbox"} 
                     onClick={() => setIsBottomToolboxOpen(prev => !prev)}

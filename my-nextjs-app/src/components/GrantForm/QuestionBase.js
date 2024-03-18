@@ -399,7 +399,13 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               :
               <></>
             }
-            {errMsg ? <ErrTextbox msg={errMsg}/> : <></>}
+            {errMsg ? 
+              <div className="flex items-center mx-1 mt-4">
+                <ErrTextbox msg={errMsg}/>
+              </div> 
+              : 
+              <></>
+            }
           </div>
           {/* Question icon in corner */}
           {fontSizeMultiplier < 1.5 ?
