@@ -120,7 +120,7 @@ const Applied_Grants = () => {
         <div className="max-w-7xl w-full mx-auto px-4">
           <div className="mt-10 bg-sky-50 rounded-lg shadow overflow-hidden">
             <h1 className="text-black lg:text-4xl md:text-3xl text-3xl text-center sm:text-left font-semibold mb-6 p-6">
-              Rawad's Application History
+              Application History
             </h1>
 
             <div className="flex lg:flex-row md:flex-row flex-col">
