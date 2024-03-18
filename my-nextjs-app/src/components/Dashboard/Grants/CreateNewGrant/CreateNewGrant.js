@@ -434,6 +434,7 @@ const CreateNewGrant = () => {
                                                     value={0}
                                                     className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
                                                     onChange={setVeteran}
+                                                    defaultChecked={grant.profileReqs.veteran === 0}
                                                 />
                                                 No
                                             </label>
@@ -444,6 +445,7 @@ const CreateNewGrant = () => {
                                                     value={1}
                                                     className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
                                                     onChange={setVeteran}
+                                                    defaultChecked={grant.profileReqs.veteran === 1}
                                                 />
                                                 Yes
                                             </label>
@@ -454,7 +456,7 @@ const CreateNewGrant = () => {
                                                     value={2}
                                                     className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
                                                     onChange={setVeteran}
-                                                    defaultChecked
+                                                    defaultChecked={grant.profileReqs.veteran === 2}
                                                 />
                                                 N/A
                                             </label>
