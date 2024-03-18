@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const Grantee_dashboard = () => {
-  const name = "Rawad";
   // Mock data for claims
   const recentGrants = [
     {
@@ -67,7 +66,7 @@ const Grantee_dashboard = () => {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen"
+      className="flex items-center justify-center min-h-screen pt-10"
       style={{
         backgroundImage:
           "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')",
@@ -81,7 +80,7 @@ const Grantee_dashboard = () => {
           <div className="bg-white p-6 rounded-lg shadow-xl">
             <div className="bg-white p-6 rounded-lg">
               <h1 className="text-black lg:text-4xl md:text-3xl text-3xl text-center sm:text-left font-semibold mb-20 text-left">
-                Hello, {name}!
+                Your journey starts here...
               </h1>
               <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mb-4">
                 <h2 className="text-xl font-semibold text-black text-center sm:text-left">
