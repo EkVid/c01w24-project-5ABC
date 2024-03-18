@@ -1,5 +1,5 @@
 'use client'
-import CreateGrantElement from "@/components/Dashboard/Grants/CreateNewGrant";
+import CreateGrantElement from "@/components/Dashboard/Grants/CreateNewGrant/CreateNewGrant";
 
 const CreateNewGrant = () => {
  

@@ -1,6 +1,6 @@
 'use client'
-import DashboardInnerContainer from "../InnerContainer"
-import ViewGrant from "./view/ViewGrant"
+import DashboardInnerContainer from "../../InnerContainer"
+import ViewGrant from "../view/ViewGrant"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { v4 as uuidv4 } from 'uuid';
@@ -217,7 +217,6 @@ const CreateNewGrant = () => {
     })
 
     function setVeteran(e){
-        console.log('v', e.target.value)
         setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, veteran:e.target.value}}))
     }
 

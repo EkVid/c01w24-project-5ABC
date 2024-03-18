@@ -1,5 +1,5 @@
 'use client'
-import MyGrantsElement from "@/components/Dashboard/Grants/MyGrants";
+import MyGrantsElement from "@/components/Dashboard/Grants/MyGrants/MyGrants";
 
 const MyGrants = () => {
  
