@@ -13,7 +13,7 @@ class UserProfileReqs(BaseModel):
     maxAge: Optional[int]
     race: Optional[list[str]]
     gender: Optional[list[str]]
-    nationality: Optional[str]
+    nationality: Optional[list[str]]
     veteran: Optional[int]
 
 class UserProfile(BaseModel):
