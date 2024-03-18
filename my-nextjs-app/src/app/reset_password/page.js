@@ -1,4 +1,4 @@
-import ResetPassword from "@/components/ResetPassword";
+import ResetPassword from "@/components/signup-login/ResetPassword";
 import BaseLayout from "@/app/layout";
 import dynamic from "next/dynamic";
 

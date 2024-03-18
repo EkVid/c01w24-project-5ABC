@@ -3,7 +3,8 @@ import React, { useState } from "react";
 
 
 const Applied_Grants = () => {
-<<<<<<< HEAD
+  const allGrantsFromDB = localStorage.getItem('grants');
+  const allApplications = localStorage.getItem('applications');
   const allGrants = [
     {
       answerData: [
@@ -54,177 +55,6 @@ const Applied_Grants = () => {
       status: 0,
     },
   ];
-=======
-  const allGrants = localStorage.getItem('applications');
-  // const allGrants = [
-  //   {
- // status  (int) 0 = Draft, 1 = In Review, 2 = Rejected, 3 = Approved
-  //     id: 1,
-  //     serviceDate: "2023-01-01",
-  //     receivedOn: "2023-01-02",
-  //     claimType: "Type A",
-  //     memberName: "John Doe",
-  //     amountPaid: "$1000",
-  //     paidTo: "Provider A",
-  //     category: "Category 1",
-  //     status: "Pending",
-  //   }
-    // {
-    //   id: 2,
-    //   serviceDate: "2023-02-01",
-    //   receivedOn: "2023-02-05",
-    //   claimType: "Type B",
-    //   memberName: "Jane Doe",
-    //   amountPaid: "$1500",
-    //   paidTo: "Provider B",
-    //   category: "Category 2",
-    //   status: "Rejected",
-    // },
-    // {
-    //   id: 3,
-    //   serviceDate: "2023-03-01",
-    //   receivedOn: "2023-03-03",
-    //   claimType: "Type C",
-    //   memberName: "Mike Smith",
-    //   amountPaid: "$2000",
-    //   paidTo: "Provider C",
-    //   category: "Category 3",
-    //   status: "Approved",
-    // },
-    // {
-    //   id: 4,
-    //   serviceDate: "2023-01-01",
-    //   receivedOn: "2023-01-02",
-    //   claimType: "Type A",
-    //   memberName: "John Doe",
-    //   amountPaid: "$1000",
-    //   paidTo: "Provider A",
-    //   category: "Category 1",
-    //   status: "Approved",
-    // },
-    // {
-    //   id: 5,
-    //   serviceDate: "2023-02-01",
-    //   receivedOn: "2023-02-05",
-    //   claimType: "Type B",
-    //   memberName: "Jane Doe",
-    //   amountPaid: "$1500",
-    //   paidTo: "Provider B",
-    //   category: "Category 2",
-    //   status: "In Review",
-    // },
-    // {
-    //   id: 6,
-    //   serviceDate: "2023-03-01",
-    //   receivedOn: "2023-03-03",
-    //   claimType: "Type C",
-    //   memberName: "Mike Smith",
-    //   amountPaid: "$2000",
-    //   paidTo: "Provider C",
-    //   category: "Category 3",
-    //   status: "Approved",
-    // },
-    // {
-    //   id: 7,
-    //   serviceDate: "2023-01-01",
-    //   receivedOn: "2023-01-02",
-    //   claimType: "Type A",
-    //   memberName: "John Doe",
-    //   amountPaid: "$1000",
-    //   paidTo: "Provider A",
-    //   category: "Category 1",
-    //   status: "Submitted",
-    // },
-    // {
-    //   id: 8,
-    //   serviceDate: "2023-02-01",
-    //   receivedOn: "2023-02-05",
-    //   claimType: "Type B",
-    //   memberName: "Jane Doe",
-    //   amountPaid: "$1500",
-    //   paidTo: "Provider B",
-    //   category: "Category 2",
-    //   status: "In Review",
-    // },
-    // {
-    //   id: 9,
-    //   serviceDate: "2023-03-01",
-    //   receivedOn: "2023-03-03",
-    //   claimType: "Type C",
-    //   memberName: "Mike Smith",
-    //   amountPaid: "$2000",
-    //   paidTo: "Provider C",
-    //   category: "Category 3",
-    //   status: "Approved",
-    // },
-    // {
-    //   id: 10,
-    //   serviceDate: "2023-02-01",
-    //   receivedOn: "2023-02-05",
-    //   claimType: "Type B",
-    //   memberName: "Jane Doe",
-    //   amountPaid: "$1500",
-    //   paidTo: "Provider B",
-    //   category: "Category 2",
-    //   status: "In Review",
-    // },
-    // {
-    //   id: 11,
-    //   serviceDate: "2023-03-01",
-    //   receivedOn: "2023-03-03",
-    //   claimType: "Type C",
-    //   memberName: "Mike Smith",
-    //   amountPaid: "$2000",
-    //   paidTo: "Provider C",
-    //   category: "Category 3",
-    //   status: "Approved",
-    // },
-    // {
-    //   id: 12,
-    //   serviceDate: "2023-02-01",
-    //   receivedOn: "2023-02-05",
-    //   claimType: "Type B",
-    //   memberName: "Jane Doe",
-    //   amountPaid: "$1500",
-    //   paidTo: "Provider B",
-    //   category: "Category 2",
-    //   status: "In Review",
-    // },
-    // {
-    //   id: 13,
-    //   serviceDate: "2023-03-01",
-    //   receivedOn: "2023-03-03",
-    //   claimType: "Type C",
-    //   memberName: "Mike Smith",
-    //   amountPaid: "$2000",
-    //   paidTo: "Provider C",
-    //   category: "Category 3",
-    //   status: "Approved",
-    // },
-    // {
-    //   id: 14,
-    //   serviceDate: "2023-02-01",
-    //   receivedOn: "2023-02-05",
-    //   claimType: "Type B",
-    //   memberName: "Jane Doe",
-    //   amountPaid: "$1500",
-    //   paidTo: "Provider B",
-    //   category: "Category 2",
-    //   status: "In Review",
-    // },
-    // {
-    //   id: 15,
-    //   serviceDate: "2023-03-01",
-    //   receivedOn: "2023-03-03",
-    //   claimType: "Type C",
-    //   memberName: "Mike Smith",
-    //   amountPaid: "$2000",
-    //   paidTo: "Provider C",
-    //   category: "Category 3",
-    //   status: "Approved",
-    // },
- // ];
->>>>>>> 0996ef1 (grants integrations)
 
   const grantsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
@@ -232,9 +62,9 @@ const Applied_Grants = () => {
 
   const indexOfLastGrant = currentPage * grantsPerPage;
   const indexOfFirstGrant = indexOfLastGrant - grantsPerPage;
-  // const currentGrants = allGrants.slice(indexOfFirstGrant, indexOfLastGrant);
-  const currentGrants = allGrants
-  console.log(currentGrants);
+  const currentGrants = allGrants.slice(indexOfFirstGrant, indexOfLastGrant);
+  console.log(allGrants);
+  console.log(allApplications);
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
     setExpandedGrantId(null); // Collapse any expanded card when paginating

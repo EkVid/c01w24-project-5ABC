@@ -1,9 +1,6 @@
-import Signup from "@/components/Signup";
+import Signup from "@/components/signup-login/Signup";
 import BaseLayout from "@/app/layout";
-<<<<<<< HEAD
 import dynamic from "next/dynamic";
-=======
->>>>>>> 548595b (Added routes for login & Signup)
 
 const SignupPage = () => {
   return (
@@ -13,8 +10,4 @@ const SignupPage = () => {
   );
 };
 
-<<<<<<< HEAD
 export default dynamic(() => Promise.resolve(SignupPage), { ssr: false });
-=======
-export default SignupPage;
->>>>>>> 548595b (Added routes for login & Signup)
