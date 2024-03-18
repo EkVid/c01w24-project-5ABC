@@ -1,5 +1,7 @@
 import Link from "next/link"
 import DashboardInnerContainer from "../../InnerContainer"
+import { useRouter } from 'next/navigation'
+import axios from "axios"
 
 // const testGrants = [{
 //     "grantorEmail": "test@test.com",
@@ -141,6 +143,12 @@ import DashboardInnerContainer from "../../InnerContainer"
 // }]
 
 const MyGrants = ({ grants }) => {
+    const router = useRouter()
+    const userData = sessionStorage.getItem('userData')
+
+    if(!userData){
+        router.push('/login')
+    }
 
     function getGrantStatus(grant){
         if(grant.NumWinners === grant.MaxWinners) return 'Awarded'
@@ -148,12 +156,48 @@ const MyGrants = ({ grants }) => {
         return 'Open'
     }
 
-    function openGrant(grant){
-        //Query backend to update grant status
+    async function openGrant(grant){
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${userData.token}`
+        }
+        
+        const body= {
+            grantID: grant._id,
+            active: true,
+        }
+
+        // Waiting for backend routes
+        // try{
+        //     const response = await axios.post('http://localhost:5000/updateGrantStatus', body, {headers: headers})
+        //     console.log(response)
+        //     router.reload()
+        // }
+        // catch(err){
+        //     console.error(err)
+        // }
     }
 
-    function closeGrant(grant){
-        //Query backend to update grant status
+    async function closeGrant(grant){
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${userData.token}`
+        }
+        
+        const body= {
+            grantID: grant._id,
+            active: false,
+        }
+
+        // Waiting for backend routes
+        // try{
+        //     const response = await axios.post('http://localhost:5000/updateGrantStatus', body, {headers: headers})
+        //     console.log(response)
+        //     router.reload()
+        // }
+        // catch(err){
+        //     console.error(err)
+        // }
     }
 
     function getGrantElements(grants){
