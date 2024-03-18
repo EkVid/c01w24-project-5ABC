@@ -397,7 +397,14 @@ const Grantee_dashboard = () => {
                     benefits.
                   </p>
                   <div className="flex justify-center">
-                    <button className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base">
+                    <button
+                      className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
+                      onClick={() => {
+                        router.push(
+                          "https://www.canada.ca/en/government/grants-funding.html"
+                        );
+                      }}
+                    >
                       Check Eligibility
                     </button>
                   </div>
