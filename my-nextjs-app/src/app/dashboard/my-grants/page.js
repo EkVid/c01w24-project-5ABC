@@ -10,7 +10,6 @@ export async function getData(){
     }
 
     const response = await axios.post('http://localhost:5000/getGrantorGrants', {grantorEmail: userData.email}, {headers: headers})
-    console.log(response)
     if(response.status !== 200){
       throw new Error('Failed to fetch grant data')
     }

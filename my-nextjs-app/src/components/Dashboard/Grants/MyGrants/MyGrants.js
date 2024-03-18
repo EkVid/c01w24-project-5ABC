@@ -242,7 +242,7 @@ const MyGrants = ({ grants }) => {
                                     <></>
                             }
 
-                            <Link href='#' className="rounded text-center border border-black dark:border-white px-4 py-2 hover:scale-105 ms-0 sm:ms-auto dark:d-text mt-6">
+                            <Link href={`/dashboard/my-grants/${grant._id}`} className="rounded text-center border border-black dark:border-white px-4 py-2 hover:scale-105 ms-0 sm:ms-auto dark:d-text mt-6">
                                 View Applications
                             </Link>
                         </div>
