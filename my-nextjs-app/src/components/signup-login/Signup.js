@@ -82,7 +82,7 @@ const SignUp = () => {
     setMatchError(newPassword !== confirmPassword);
 
     axios
-      .post("http://localhost:5000/signup", {
+      .post("http://localhost:5000/register", {
         Email: emailValue,
         Password: newPassword,
         Usertype: selection,

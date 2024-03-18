@@ -13,6 +13,7 @@ const CreateNewGrant = () => {
     // Initialize grant to default or last in-progress one
     const progressGrant = JSON.parse(localStorage.getItem('grant'))
     const defaultGrant = {
+        grantorEmail: '',
         Title: "",
         Description: "",
         WinnerIDs: [],
@@ -55,7 +56,7 @@ const CreateNewGrant = () => {
     }
 
     function setMaxWinners(e){
-        setGrant(prevGrant => ({...prevGrant, MaxWinners:e.target.value}))
+        setGrant(prevGrant => ({...prevGrant, MaxWinners:e.target.valueAsNumber}))
     }
 
     function checkMaxWinners(e){
@@ -66,7 +67,7 @@ const CreateNewGrant = () => {
     }
 
     function setAmountPerApp(e){
-        setGrant(prevGrant => ({...prevGrant, AmountPerApp:e.target.value}))
+        setGrant(prevGrant => ({...prevGrant, AmountPerApp:e.target.valueAsNumber}))
     }
 
     function roundAmount(e){
@@ -93,7 +94,7 @@ const CreateNewGrant = () => {
     }
 
     function setMinAge(e){
-        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, minAge:e.target.value}}))
+        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, minAge:e.target.valueAsNumber}}))
     }
 
     function checkAgeAboveZero(e){
@@ -103,7 +104,7 @@ const CreateNewGrant = () => {
     }
 
     function setMaxAge(e){
-        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:e.target.value}}))
+        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:e.target.valueAsNumber}}))
     }
 
     function verifyMaxAge(e){
@@ -217,7 +218,7 @@ const CreateNewGrant = () => {
     })
 
     function setVeteran(e){
-        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, veteran:e.target.value}}))
+        setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, veteran:parseInt(e.target.value)}}))
     }
 
 

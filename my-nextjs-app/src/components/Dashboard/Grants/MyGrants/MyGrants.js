@@ -1,21 +1,22 @@
 import DashboardInnerContainer from "../../InnerContainer"
 
 const testGrants = [{
+    "grantorEmail": "test@test.com",
     "Title": "New Grant",
-    "Description": "My new grant is great, you should apply!",
+    "Description": "desc",
     "WinnerIDs": [],
     "AppliedIDs": [],
     "NumWinners": 0,
-    "MaxWinners": "6",
+    "MaxWinners": 7,
     "Deadline": "2024-03-29",
-    "PostedDate": null,
+    "PostedDate": "2024-03-18",
     "profileReqs": {
-        "minAge": "18",
-        "maxAge": "20",
+        "minAge": 18,
+        "maxAge": 21,
         "race": [
             "White",
-            "Asian",
-            "Black"
+            "Black",
+            "Asian"
         ],
         "gender": [
             "Male",
@@ -25,14 +26,35 @@ const testGrants = [{
         "nationality": [
             "Canadian"
         ],
-        "veteran": "1"
+        "veteran": 1
     },
     "Active": true,
     "AmountPerApp": 500,
     "QuestionData": [
         {
-            "id": "218dad96-a376-42da-8db4-59c0b676ffa5",
-            "question": "Are you sure?",
+            "id": "14b603b5-71fe-4d8c-8034-f93ddfc507a2",
+            "question": "Q1",
+            "type": "multiple choice",
+            "errMsgArr": [],
+            "isRequired": false,
+            "file": null,
+            "fileData": null,
+            "answersObj": [
+                {
+                    "answer": "Yes",
+                    "id": "0c054680-da27-46f2-8df7-48a381b1ee62"
+                },
+                {
+                    "answer": "No",
+                    "id": "2db720f2-d6e1-481c-81c8-815c2368eef5"
+                }
+            ],
+            "errEmptyAnsIdxArr": [],
+            "errDupAnsIdxArr": []
+        },
+        {
+            "id": "05dc0202-00e5-4d19-83a5-6262ff3807ed",
+            "question": "Q2",
             "type": "checkbox",
             "errMsgArr": [],
             "isRequired": true,
@@ -40,55 +62,47 @@ const testGrants = [{
             "fileData": null,
             "answersObj": [
                 {
-                    "answer": "Yes",
-                    "id": "a85dcbb0-4671-463a-94b2-69f50e1863f9"
+                    "answer": "1",
+                    "id": "17d188a0-d968-4727-a93d-29d9504a21c7"
                 },
                 {
-                    "answer": "No",
-                    "id": "1b740c90-d24c-4fe7-9994-342e5adb3d46"
+                    "answer": "2",
+                    "id": "2acef650-1ba1-43a0-8aa9-5df6f0fe225c"
                 }
             ],
             "errEmptyAnsIdxArr": [],
             "errDupAnsIdxArr": []
         },
         {
-            "id": "de810331-cfe3-4f05-bd63-589736ee085a",
-            "question": "On a scale of 1-10, how much do you want it?",
+            "id": "a3dc752c-568c-447e-afb4-0da5a582df88",
+            "question": "Q3",
+            "type": "textbox",
+            "errMsgArr": [],
+            "isRequired": true,
+            "file": null,
+            "fileData": null,
+            "options": {
+                "minCharsNum": "10",
+                "maxCharsNum": "1000"
+            }
+        },
+        {
+            "id": "8b4ea7db-412d-44dd-b6ec-133ce292fbe7",
+            "question": "Q4",
             "type": "number",
             "errMsgArr": [],
             "isRequired": true,
             "file": null,
             "fileData": null,
             "options": {
-                "isIntegerOnly": true,
                 "minNum": "1",
-                "maxNum": "10"
+                "maxNum": "10",
+                "isIntegerOnly": true
             }
         },
         {
-            "id": "4b31f404-976d-40a5-9f7b-6bb17a363eb8",
-            "question": "Do you want this grant?",
-            "type": "multiple choice",
-            "errMsgArr": [],
-            "isRequired": true,
-            "file": null,
-            "fileData": null,
-            "answersObj": [
-                {
-                    "answer": "Yes",
-                    "id": "aa80e5f6-f709-4889-8d3b-bc435b4caef7"
-                },
-                {
-                    "answer": "No",
-                    "id": "b3acd332-4b29-4f4f-994f-7f00bc8ecb90"
-                }
-            ],
-            "errEmptyAnsIdxArr": [],
-            "errDupAnsIdxArr": []
-        },
-        {
-            "id": "c381623d-e1fd-4df7-a7db-3c5af0b670d3",
-            "question": "What's your email?",
+            "id": "178eefc5-05a9-4b7b-aafb-ad1045aea20c",
+            "question": "Q5",
             "type": "email",
             "errMsgArr": [],
             "isRequired": true,
@@ -96,55 +110,33 @@ const testGrants = [{
             "fileData": null
         },
         {
-            "id": "c0df2659-77b6-4341-a7fa-a5eaf5c1658a",
-            "question": "What's your phone number?",
+            "id": "4ea288f2-161d-4ab9-870f-081b0766a015",
+            "question": "Q6",
             "type": "phone number",
             "errMsgArr": [],
-            "isRequired": false,
+            "isRequired": true,
             "file": null,
             "fileData": null
         },
         {
-            "id": "25f1a4b1-a9a3-492a-b5db-56bd1927c9e2",
-            "question": "Upload a cool picture",
-            "type": "file",
-            "errMsgArr": [],
-            "isRequired": true,
-            "file": {},
-            "fileData": {
-                "fileLink": "blob:http://localhost:3000/c2764a07-170a-44ef-9591-52010be55a78",
-                "fileName": "Purple-Space-Background.jpg"
-            }
-        },
-        {
-            "id": "b6879294-81a1-4958-9269-ba9330bd5dc6",
-            "question": "Explain why you do or do not want this grant.",
-            "type": "textbox",
-            "errMsgArr": [],
-            "isRequired": true,
-            "file": null,
-            "fileData": null,
-            "options": {
-                "isMultipleLines": true,
-                "maxCharsNum": "1000",
-                "minCharsNum": "100"
-            }
-        },
-        {
-            "id": "93c89af2-0bf7-4119-a95e-51d53e8f6db9",
-            "question": "When were you born?",
+            "id": "50e979dc-60cc-4c81-bf1c-5e9634a85b2a",
+            "question": "Q7",
             "type": "date",
             "errMsgArr": [],
             "isRequired": true,
             "file": null,
-            "fileData": null,
-            "options": {
-                "isDateRange": false,
-                "isBothRequired": false
-            }
+            "fileData": null
+        },
+        {
+            "id": "40d883b4-990e-49f9-a266-f5ec655b6819",
+            "question": "Q8",
+            "type": "file",
+            "errMsgArr": [],
+            "isRequired": true,
+            "file": null,
+            "fileData": null
         }
-    ],
-    "Files": []
+    ]
 }]
 
 const MyGrants = () => {
@@ -153,7 +145,14 @@ const MyGrants = () => {
         if(grant.NumWinners === grant.MaxWinners) return 'Awarded'
         if(!grant.Active) return 'Closed'
         return 'Open'
-        
+    }
+
+    function openGrant(grant){
+        //Query backend to update grant status
+    }
+
+    function closeGrant(grant){
+        //Query backend to update grant status
     }
 
     function getGrantElements(grants){
@@ -161,16 +160,41 @@ const MyGrants = () => {
             const grantStatus = getGrantStatus(grant)
             
             return( 
-                <details className="group px-4 py-4 rounded-md border border-black dark:border-white">
+                //TODO: make key unique, likely from grantID returned
+                <details className="group px-4 py-4 rounded-md border border-black dark:border-white" key={grant.Title}>
                     <summary className="flex flex-col sm:flex-row hover:cursor-pointer group-open:mb-5 justify-between items-center">
                         <h2 className="dark:d-text text-xl text-centerfont-bold">{grant.Title}</h2>
+                        {/* Set proper color classes after merch with applicant dashboard */}
                         <div className={`rounded-full text-center text-white px-4 py-2 mt-2 sm:mt-0 ${grantStatus === 'Awarded' ? 'custom-green' : (grantStatus === 'Open' ? 'bg-[#d1aa64]' : 'bg-[#d76b65]')}`}>
                             {grantStatus}
                         </div>
                     </summary>
 
-                    <div>
-                        <p>Description: {grant.Description}</p>
+                    <div className="flex flex-col gap-y-2 sm:gap-y-0">
+                        <p className="pt-2 dark:d-text">Description: {grant.Description}</p>
+                        <p className="pt-2 dark:d-text">Grant Winners Picked: {grant.NumWinners}</p>
+                        <p className="pt-2 dark:d-text">Maximum Number of Grant Winners: {grant.MaxWinners}</p>
+                        <p className="pt-2 dark:d-text">Amount Per Winner (CAD $): {grant.AmountPerApp}</p>
+                        <p className="pt-2 dark:d-text">Application Deadline: {grant.Deadline}</p>
+
+                        {grant.Active ? 
+                            <button 
+                                onClick={() => closeGrant(grant)}
+                                className="rounded px-4 py-2 hover:scale-105 text-white mt-6 self-start bg-[#d76b65]"
+                            >
+                                Close Grant
+                            </button>
+                        :
+                            grant.NumWinners < grant.MaxWinners ?
+                                <button 
+                                    onClick={() => openGrant(grant)}
+                                    className="rounded px-4 py-2 hover:scale-105 dark:d-text mt-6 self-start custom-green"
+                                >
+                                    Open Grant
+                                </button>
+                            :
+                                <></>
+                        }
                     </div>
 
                 </details>

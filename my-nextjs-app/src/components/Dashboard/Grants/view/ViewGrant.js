@@ -1,5 +1,6 @@
 import ViewApplication from "./viewApplication"
 import axios from "axios"
+import { router } from 'next/navigation'
 
 export default function ViewGrant({ grant, setViewGrant }){
     
@@ -11,11 +12,23 @@ export default function ViewGrant({ grant, setViewGrant }){
         return string.substring(1)
     }
 
-    function prepareGrant(grant){
+    function signGrant(grant, email){
+        if(!email){
+            console.error('error, no email')
+            return null
+        }
+        const today = new Date()
+        const signedGrant = {...grant, grantorEmail:email, PostedDate: today.toISOString().split('T')[0]}
+
+        return signedGrant
+    }
+
+    function prepareGrant(grant, email){
+        const signedGrant = signGrant(grant, email)
         const form = new FormData()
         let fileIdx = 0
         let fileArr = []
-        const finalQuestionArr = grant.QuestionData.map(question => {
+        const finalQuestionArr = signedGrant.QuestionData.map(question => {
             let newQuestion = {...question}
             if(question.file){
                 fileArr.push(question.file)
@@ -25,23 +38,37 @@ export default function ViewGrant({ grant, setViewGrant }){
             }
             return newQuestion
         })
-        const finalGrant = {...grant, QuestionData: finalQuestionArr}
-        form.append('Grant', JSON.stringify(finalGrant))
-        form.append('Files', fileArr)
+        const finalGrant = {...signedGrant, QuestionData: finalQuestionArr}
+        console.log(finalGrant)
+        form.append('jsonData', JSON.stringify(finalGrant))
+        form.append('files', fileArr)
+        return form
     }
 
-    function PostGrant(){
-        const form = prepareGrant(grant)
+    async function PostGrant(){
+        const userInfo = JSON.parse(sessionStorage.getItem('userData'))
+
+        if(!userInfo){
+            router.push('/login')
+        }
+
+        const form = prepareGrant(grant, userInfo.email)
+        if(!form){
+            console.error('error formatting grant')
+            return null
+        }
         const headers = {
-            'Content-Type': 'Multipart/form-data',
-            'Bearer' : 'my token'
+            'Content-Type': 'multipart/form-data',
+            'Bearer' : userInfo.token
         }
 
         try{
-
+            const response = await axios.post('http://localhost:5000/createGrant', form, {headers: headers})
+            console.log(response)
+            // router.push('/dashboard/my-grants')
         }
         catch(err){
-
+            console.error(err)
         }
     }
 
