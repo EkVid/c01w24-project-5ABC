@@ -393,6 +393,24 @@ def deleteGrant(_id):
 
     return {"message": "Grant form successfully deleted"}, 200
 
+@app.route("/updateGrantStatus", methods=["POST"])
+# @tokenCheck.token_required
+def updateGrantStatus():
+    contentType = request.headers.get('Content-Type')
+    if contentType == 'application/json':
+        grantID = request.json["grantID"]
+        active = request.json["active"]
+        id = ObjectId(grantID)
+    
+        res = grantCollection.update_one({"_id": id}, {"$set": { "Active": active}})
+        if res.matched_count != 1:
+            return {"message": "Grant with the given ID not found"}, 404
+        else:
+            return {"message": "Grant status successfully updated"}, 200
+    else:
+        return {"message": "Unsupported Content Type"}, 400
+
+
 
 @app.route("/createApplication", methods=["POST"])
 # @tokenCheck.token_required

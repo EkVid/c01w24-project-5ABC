@@ -66,7 +66,7 @@ class FileOptions(BaseModel):
 
 class Question(BaseModel):
     question: str
-    type: Literal['textbox', 'number', 'multiple choice', 'checkbox', 'date', 'file', 'email', 'phone number',]
+    type: Literal['textbox', 'number', 'multiple choice', 'checkbox', 'date', 'file', 'email', 'phone number']
     isRequired: bool
     options: Optional[Union[
         TextboxOptions,
