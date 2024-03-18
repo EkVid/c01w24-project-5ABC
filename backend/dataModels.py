@@ -2,6 +2,10 @@ from pydantic import BaseModel, validator, PositiveInt
 from annotated_types import Len
 from typing import Literal, Optional, Annotated, Union
 
+APPLICATION_DRAFT = 0
+APPLICATION_IN_REVIEW = 1
+APPLICATION_REJECTED = 2
+APPLICATION_APPROVED = 3
 # TODO: put constants here for veteran status once decided
 
 """

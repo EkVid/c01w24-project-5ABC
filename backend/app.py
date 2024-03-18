@@ -15,7 +15,7 @@ import datetime
 import json as JSON
 import random
 
-from dataModels import (Application, Grant)
+from dataModels import (Application, Grant, APPLICATION_APPROVED)
 from helpers import (getJSONData, isListOfDict)
 
 load_dotenv()
@@ -53,6 +53,7 @@ def register():
             encodedPassword = json['Password'].encode('utf-8')
             hashedPassword = bcrypt.hashpw(encodedPassword, salt) #salts and hashes the password before storage
 
+            # TODO: define constants for Usertype options in dataModels.py
             userToAdd = {
                 "Email": json['Email'],
                 "Password": hashedPassword.decode('utf-8'),
@@ -292,6 +293,16 @@ def getFile():
 
 # Grant Form Routes
 
+# Used in the tests only
+@app.route("/deleteUser", methods=["DELETE"])
+# @tokenCheck.token_required
+def deleteUser():
+    email = request.json.get("Email", "")
+    userCollection.delete_one({"Email": email})
+
+    return {"message": "User deleted successfully"}, 200
+
+
 @app.route("/createGrant", methods=["POST"])
 #@tokenCheck.token_required
 def createGrant():
@@ -313,19 +324,19 @@ def createGrant():
     }, 200
 
 
-# TODO: remove if redundant
-# @app.route("/getGrant/<_id>", methods=["GET"])
-# #@tokenCheck.token_required
-# def getGrant(_id):
-#     if not ObjectId.is_valid(_id):
-#         return {"message": "Invalid ID"}, 400
-#     objID = ObjectId(_id)
+# Used in tests; do not remove
+@app.route("/getGrant/<_id>", methods=["GET"])
+#@tokenCheck.token_required
+def getGrant(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objID = ObjectId(_id)
 
-#     form = grantCollection.find_one({"_id": objID}, {"_id": False})
-#     if not form:
-#         return {"message": "Grant with the given ID not found"}, 404
+    grant = grantCollection.find_one({"_id": objID}, {"_id": False})
+    if not grant:
+        return {"message": "Grant with the given ID not found"}, 404
 
-#     return form, 200
+    return grant, 200
 
 
 """Returns all grants created by the grantor with the email passed in the request. Note that this route uses JSON as
@@ -334,6 +345,9 @@ opposed to form data.
 @app.route("/getGrantorGrants", methods=["POST"])
 # @tokenCheck.token_required
 def getGrantorGrants():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
     email = request.json.get("grantorEmail", "")
     if not email:
         return {"message": "Invalid grantor email"}, 400
@@ -416,19 +430,19 @@ def createApplication():
     }, 200
 
 
-# TODO: remove if redundant
-# @app.route("/getApplication/<_id>", methods=["GET"])
-# # @tokenCheck.token_required
-# def getApplication(_id):
-#     if not ObjectId.is_valid(_id):
-#         return {"message": "Invalid ID"}, 400
-#     objID = ObjectId(_id)
+# Used in tests; do not remove
+@app.route("/getApplication/<_id>", methods=["GET"])
+# @tokenCheck.token_required
+def getApplication(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
+    objID = ObjectId(_id)
 
-#     application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
-#     if not application:
-#         return {"message": "Grant application with the given ID not found"}, 404
+    application = grantAppCollection.find_one({"_id": objID}, {"_id": False})
+    if not application:
+        return {"message": "Grant application with the given ID not found"}, 404
 
-#     return application, 200
+    return application, 200
 
 
 """Returns all applications submitted by the grantee with the email passed in the request. Note that this route uses
@@ -437,6 +451,9 @@ JSON as opposed to form data.
 @app.route("/getGranteeApplications", methods=["POST"])
 # @tokenCheck.token_required
 def getGranteeApplications():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
     email = request.json.get("email", "")
     if not email:
         return {"message": "Invalid email"}, 400
@@ -490,6 +507,31 @@ def updateApplication(_id):
 
     grantAppCollection.update_one({"_id": objID}, {"$set": applicationData})
     return {"message": "Grant application successfully updated"}, 200
+
+
+@app.route("/updateGrantWinners", methods=["PUT"])
+# @tokenCheck.token_required
+def updateGrantWinners():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
+    json = request.json
+    applicationID = json.get("applicationID", "")
+    grantID = json.get("grantID", "")
+    email = json.get("email", "")
+    if not email or not ObjectId.is_valid(applicationID) or not ObjectId.is_valid(grantID):
+        return {"message": "Invalid application ID, grant ID, or email"}, 400
+
+    user = userCollection.find_one({"Email": email})
+    if user is None:
+        return {"message": "Grantee with the given email does not exist"}, 400
+
+    applicationObjID = ObjectId(applicationID)
+    grantObjID = ObjectId(grantID)
+    grantCollection.update_one({"_id": grantObjID}, {"$push": {"winnerIDs": applicationID}})
+    grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": APPLICATION_APPROVED}})
+
+    return {"message": "Application winner successfully added"}, 200
 
 
 @app.route("/deleteApplication/<_id>", methods=["DELETE"])
