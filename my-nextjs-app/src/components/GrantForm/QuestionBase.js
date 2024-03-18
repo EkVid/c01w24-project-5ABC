@@ -40,8 +40,6 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     type, 
     file, 
     fileData,
-    curFile, 
-    isCurFileDeleting, 
     options, 
     isRequired, 
     errMsg, 
@@ -92,11 +90,6 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
   const handleOnSubmitFile = (e) => {
     e.preventDefault();
     formRef.current.reset();
-  }
-
-  const handleOnUndoCurFile = () => {
-    formRef.current.reset();
-    onChangeQuestionData({...questionData, isCurFileDeleting: !isCurFileDeleting, file: null})
   }
 
   // --------- Handlers for questions that have answers (multiple choice, checkbox) -----------
@@ -249,9 +242,9 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               currentValue={isRequired} 
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
             />
-            <div className="flex px-2 py-1">
+            <div className="flex px-2 py-1 items-center h-8">
               <label htmlFor={attId} className={`text-sm mr-2 custom-text dark:d-text `}>Attachment:</label>
-              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-start">
+              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center">
                 {file ? 
                   <>
                     <a 
@@ -259,7 +252,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                       href={fileData.fileLink} 
                       target="_blank" 
                       rel="noreferrer noopener" 
-                      className={`mb-5 text-sm break-words custom-link`}
+                      className={`text-sm break-words custom-link`}
                       >
                         {fileData.fileName}
                     </a>
@@ -284,33 +277,10 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                     id={attId}
                     className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input m-1 ${isReduceMotion ? "" : "transition-colors"}`}
                     onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0], fileData: {fileLink: URL.createObjectURL(e.target.files[0]), fileName: e.target.files[0].name}})}
-                    disabled={!isCurFileDeleting && curFile}
                   />
                 }
               </form>
             </div>
-            {curFile ? 
-              <div className="flex items-center">
-                <div className="text-sm custom-text-shade dark:d-text-shade pl-8">
-                  {isCurFileDeleting ? "Previous uploaded file will be deleted" : `Current upload: ${curFile.name}`}
-                </div>
-                <button 
-                  aria-label={isCurFileDeleting ? "Restore previously uploaded attachment" : "Delete previously uploaded attachment"}
-                  onClick={handleOnUndoCurFile}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
-                >
-                  <Image
-                    src={isCurFileDeleting ? UndoIcon : PlusIcon}
-                    alt={isCurFileDeleting ? "Restore" : "Delete"}
-                    width={20 * fontSizeMultiplier}
-                    height={"auto"}
-                    className={`text-sm dark:d-white-filter shrink-0 pointer-events-none opacity-50 ${isCurFileDeleting ? "" : "rotate-45"}`}
-                  />
-                </button>
-              </div>
-              :
-              <></>
-            }
           </div>
           </>
           :

@@ -11,6 +11,7 @@ import UndoIcon from "@/../public/undo.svg";
 import SubmitIcon from "@/../public/submit.svg";
 import QuestionBase from "@/components/GrantForm/QuestionBase";
 import ErrTextbox from "@/components/GrantForm/SmallComponents/ErrTextbox";
+import { useRouter } from "next/navigation";
 
 const AccessibilityBar = dynamic(
   () => import("@/components/AccessibilityBar"),
@@ -121,8 +122,11 @@ export default function ApplicationPage({params}) {
   const [answerData, setAnswerData] = useState(null);
   const [title, setTitle] = useState("");
 
+  const router = useRouter();
+
   // Load question data into form
   useEffect(() => {
+    // TODO: Get question data array into fetchedQuestData, also get and set title
     //const fetchedQuestData = fetch(`localhost:4000/idkUrl/${params.appId}`);
     const fetchedQuestData = testbody;
     const questData = fetchedQuestData.map(q => {
@@ -146,18 +150,12 @@ export default function ApplicationPage({params}) {
   }, [questionData]);
 
   const handleOnQuit = () => {
-    let isDataStored = false;
-    for (let answerObj of answerData) {
-      if (answerObj.answers) {
-        isDataStored = true;
-        break;
-      }
+    if (answerData.filter(a => a != null).length > 0) {
+      // TODO: Use better looking prompt to prompt user to confirm to leave page (they will lose their answers if they confirm)
+      if(!confirm("Are you sure you want to leave? You will lose your answers")) return;
     }
-    if (isDataStored) {
-      // Prompt user to confirm to leave page bc they will lose data if they do
-      // If they cancel quitting, return early
-    }
-    // Navigate back to application page
+    // TODO: Navigate back to application page
+    router.push("/");
   }
 
   // Checks answers and validates them and shows error message for issues
@@ -255,7 +253,6 @@ export default function ApplicationPage({params}) {
     setQuestionData(prev => prev.map(q => q.id === questionId ? {...q, errMsg: null} : q));
   }
 
-//useEffect(() => console.log(answerData), [answerData])
   return (
     <div className="flex flex-col flex-grow">
       <FontSizeContext.Provider value={fontSize}>

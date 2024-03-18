@@ -71,7 +71,10 @@ export default function EditPage({params}) {
   const tempObj = {...getNewQuestionObj(process.env.NEXT_PUBLIC_TYPE_EMAIL), isTemp: true}
 
   const handleOnQuit = () => {
-    // TODO: prompt if grantor wants to leave without saving
+    if (questionData && questionData.length > 0) {
+      // TODO: Use better looking prompt to prompt grantor if they want to leave
+      if(!confirm("Are you sure you want to leave? You will lose your questions")) return;
+    }
     router.push("/");
   }
 
