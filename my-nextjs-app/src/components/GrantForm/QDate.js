@@ -43,7 +43,7 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
             <CheckboxOption 
               label={"Require both start and end:"}
               currentValue={isBothRequired} 
-              onClick={() => onChangeOptions({...options, isBothRequired: !isBothRequired})}
+              onClick={() => onChangeOptions({...options, isBothRequired: !isBothRequired}, true)}
             />
             :
             <></>
@@ -61,32 +61,28 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
           placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
           className={`text-sm w-fit md:max-w-96 border-b-2 bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-text dark:d-text custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
           onInput={e => handleOnInput(e.target.value, false)}
-          value={currentAnswer}
+          value={currentAnswer?.startDate ?? ""}
           disabled={isEditMode}
         />
       </div>
       {isDateRange ?
         <>
-          <label htmlFor="startDate" className="mb-1 custom-text dark:d-text flex md:hidden">End:</label>
+          <label htmlFor="endDate" className="mb-1 custom-text dark:d-text flex md:hidden">End:</label>
           <div className="flex">
-            <label htmlFor="startDate" className="custom-text dark:d-text mr-4 hidden md:flex">End:</label>
+            <label htmlFor="endDate" className="custom-text dark:d-text mr-4 hidden md:flex">End:</label>
             <input
               type="date"
-              id="startDate"
+              id="endDate"
               placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
               className={`text-sm w-fit md:max-w-96 border-b-2 bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-text dark:d-text custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
               onInput={e => handleOnInput(e.target.value, true)}
-              value={currentAnswer}
+              value={currentAnswer?.endDate ?? ""}
               disabled={isEditMode}
             />
           </div>
-          {isBothRequired && !isEditMode? 
+          {!isEditMode ? 
             <p className="italic text-sm mt-2 custom-text-shade dark:d-text-shade">
-              Both start and end dates are required
-            </p>
-            : !isBothRequired && !isEditMode ?
-            <p className="italic text-sm mt-2 custom-text-shade dark:d-text-shade">
-              You may enter either a start or end date
+              {isBothRequired ? "Both start and end dates are required" : "You may enter either a start or end date"}
             </p>
             : 
             <></>

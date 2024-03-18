@@ -40,11 +40,9 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     type, 
     file, 
     fileData,
-    curFile, 
-    isCurFileDeleting, 
     options, 
     isRequired, 
-    errMsgArr, 
+    errMsg, 
     errEmptyAnsIdxArr, 
     errDupAnsIdxArr,
     isTemp
@@ -85,18 +83,13 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     onChangeQuestionData({...questionData, question: newQuestion})
   }
 
-  const handleOnChangeOptions = (newOptions) => {
-    onChangeQuestionData({...questionData, options: newOptions});
+  const handleOnChangeOptions = (newOptions, newIsRequired) => {
+    onChangeQuestionData({...questionData, options: newOptions, isRequired: newIsRequired ? newIsRequired : isRequired});
   }
 
   const handleOnSubmitFile = (e) => {
     e.preventDefault();
     formRef.current.reset();
-  }
-
-  const handleOnUndoCurFile = (e) => {
-    formRef.current.reset();
-    onChangeQuestionData({...questionData, isCurFileDeleting: !isCurFileDeleting, file: null})
   }
 
   // --------- Handlers for questions that have answers (multiple choice, checkbox) -----------
@@ -128,6 +121,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     for (let v of Object.values(tempCountObj)) {
       if (v.length > 1) v.forEach(i => dupAnsArr.push(i));
     }
+    emptyAnsArr.sort((a, b) => a - b);
+    dupAnsArr.sort((a, b) => a - b);
     onChangeQuestionData({...questionData, answersObj: newAnswersObjArr, errEmptyAnsIdxArr: emptyAnsArr, errDupAnsIdxArr: dupAnsArr});
   }
 
@@ -135,7 +130,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     <div 
       ref={setNodeRef} 
       style={dragStyle}
-      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 overflow-auto ${(isDragging || isTemp) && isEditMode ? "border-dashed border-black dark:border-white bg-transparent" : errMsgArr && errMsgArr.length > 0 ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
+      className={`p-5 ${isEditMode ? "pt-0" : ""} mb-5 rounded-xl border-4 overflow-auto ${(isDragging || isTemp) && isEditMode ? "border-dashed border-black dark:border-white bg-transparent" : errMsg ? "custom-err-border custom-questioncard-background" : "custom-questioncard-background border-transparent"} ${isReduceMotion ? "" : "transition-colors"}`}
     >
       <div className={`flex flex-col  ${(isDragging || isTemp) && isEditMode ? "invisible" : ""}`}>
         {isEditMode ? 
@@ -195,7 +190,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               <input 
                 aria-label={`Textbox to type a question for question ${questionNum}`}
                 type="text"
-                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input mx-3 my-1 ${isReduceMotion ? "" : "transition-colors"} ${question === "" ? "custom-err-border" : "border-black dark:border-white "}`}
+                className={`flex-auto min-w-5 text-xl border-b-2 custom-text dark:d-text custom-interactive-input mx-3 my-1 ${isReduceMotion ? "" : "transition-colors"} ${question.trim() === "" ? "custom-err-border" : "border-black dark:border-white "}`}
                 value={question}
                 placeholder="Enter a question"
                 onInput={e => handleOnChangeQuestion(e.target.value)}
@@ -247,9 +242,9 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               currentValue={isRequired} 
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
             />
-            <div className="flex px-2 py-1">
+            <div className="flex px-2 py-1 items-center h-8">
               <label htmlFor={attId} className={`text-sm mr-2 custom-text dark:d-text `}>Attachment:</label>
-              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-start">
+              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center">
                 {file ? 
                   <>
                     <a 
@@ -257,7 +252,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                       href={fileData.fileLink} 
                       target="_blank" 
                       rel="noreferrer noopener" 
-                      className={`mb-5 text-sm break-words custom-link`}
+                      className={`text-sm break-words custom-link`}
                       >
                         {fileData.fileName}
                     </a>
@@ -282,33 +277,10 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                     id={attId}
                     className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input m-1 ${isReduceMotion ? "" : "transition-colors"}`}
                     onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0], fileData: {fileLink: URL.createObjectURL(e.target.files[0]), fileName: e.target.files[0].name}})}
-                    disabled={!isCurFileDeleting && curFile}
                   />
                 }
               </form>
             </div>
-            {curFile ? 
-              <div className="flex items-center">
-                <div className="text-sm custom-text-shade dark:d-text-shade pl-8">
-                  {isCurFileDeleting ? "Previous uploaded file will be deleted" : `Current upload: ${curFile.name}`}
-                </div>
-                <button 
-                  aria-label={isCurFileDeleting ? "Restore previously uploaded attachment" : "Delete previously uploaded attachment"}
-                  onClick={handleOnUndoCurFile}
-                  className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
-                >
-                  <Image
-                    src={isCurFileDeleting ? UndoIcon : PlusIcon}
-                    alt={isCurFileDeleting ? "Restore" : "Delete"}
-                    width={20 * fontSizeMultiplier}
-                    height={"auto"}
-                    className={`text-sm dark:d-white-filter shrink-0 pointer-events-none opacity-50 ${isCurFileDeleting ? "" : "rotate-45"}`}
-                  />
-                </button>
-              </div>
-              :
-              <></>
-            }
           </div>
           </>
           :
@@ -356,7 +328,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               : type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
               <QNumber
                 options={options}
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
@@ -364,27 +336,27 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
               <QText
                 options={options}
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
               <QEmail
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
               <QPhoneNum
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
               : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
               <QDate
                 options={options}
-                isErr={!isEditMode && errMsgArr && errMsgArr.length > 0}
+                isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
@@ -397,7 +369,13 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               :
               <></>
             }
-            {errMsgArr?.map((err, i) => <ErrTextbox msg={err} key={i}/>)}
+            {errMsg ? 
+              <div className="flex items-center mx-1 mt-4">
+                <ErrTextbox msg={errMsg}/>
+              </div> 
+              : 
+              <></>
+            }
           </div>
           {/* Question icon in corner */}
           {fontSizeMultiplier < 1.5 ?

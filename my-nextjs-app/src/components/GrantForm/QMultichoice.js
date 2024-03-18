@@ -40,7 +40,7 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
         <div 
           key={idx} 
           onClick={() => handleOnClickAnswer(a.answer, idx)}
-          className={`flex items-center max-w-fit p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
+          className={`flex items-center min-w-fit p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
         >
           <input
             type="radio"

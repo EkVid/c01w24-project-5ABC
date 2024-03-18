@@ -16,7 +16,7 @@ const QPhoneNum = ({isErr, isEditMode, onSelectAnswer}) => {
   return (
     <input
       type="tel"
-      placeholder={"example: 123-456-7890"}
+      placeholder={"example: 555-555-5555, ext. 555"}
       className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 border-b-2 bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white "} ${isReduceMotion ? "" : "transition-colors"}`}
       onInput={e => handleOnInput(e.target.value)}
       value={currentAnswer}
