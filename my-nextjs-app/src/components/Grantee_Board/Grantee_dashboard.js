@@ -392,8 +392,7 @@ const Grantee_dashboard = () => {
                     Calculate your grants amount
                   </p>
                   <p className="mb-4">
-                    Calculate how much you could be approved for your eligible
-                    benefits.
+                    Calculate how much you could be approved for your benefits.
                   </p>
                   <div className="flex justify-center">
                     <button
@@ -416,7 +415,8 @@ const Grantee_dashboard = () => {
                 <div className="bg-white p-6 rounded-lg shadow-lg">
                   <p className="font-semibold mb-4">Find a grant for you</p>
                   <p className="mb-4">
-                    Search for grants that match your needs.
+                    Search for grants that precisely align with your individual
+                    needs.
                   </p>
                   <div className="flex justify-center">
                     <button
@@ -431,6 +431,7 @@ const Grantee_dashboard = () => {
                 </div>
               </div>
             </div>
+
             <h3 className="text-lg font-semibold text-center sm:text-left mb-5 mt-20 text-black">
               Read Our Stories
             </h3>
