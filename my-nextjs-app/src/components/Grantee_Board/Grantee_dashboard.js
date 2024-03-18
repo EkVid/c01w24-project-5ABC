@@ -15,18 +15,13 @@ const Grantee_dashboard = () => {
   const handleSubmit = () => {
     axios
       .post("http://localhost:5000/applied_grants", {
-        email: "avers07@gmail.com"
+        grantorEmail: "aversi07@gmail.com"
       })
       .then((response) => {
-        setData(response.data.applications);
-        const indexedData = response.data.applications.map(entry => ({
-          email: entry.email,
-          dateSubmitted: entry.dateSubmitted,
-          grantID: entry.grantID,
-          status: entry.status
-        }));
-        console.log(indexedData)
-        localStorage.setItem('applications', JSON.stringify(indexedData))
+        setData(response.data);
+        console.log(response.data)
+        localStorage.setItem('applications', JSON.stringify(response.data.applications))
+        localStorage.setItem('grants', JSON.stringify(response.data.grants))
         router.push('/applied_grants');
       })
       .catch((error) => {
