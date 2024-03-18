@@ -3,23 +3,6 @@ import ApplicationList from "@/components/Dashboard/Grants/MyGrants/applications
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 
-export async function getData(){
-    const userData = JSON.parse(sessionStorage.getItem('userData'))
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${userData.token}`
-    }
-
-    const response = await axios.post('http://localhost:5000/getGrantorGrants', {grantorEmail: userData.email}, {headers: headers})
-    console.log(response)
-    if(response.status !== 200){
-      throw new Error('Failed to fetch grant data')
-    }
-
-    return response.data.grants
-
-}
-
 const MyGrants = async () => {
     const params = useParams()
     const router = useRouter()
