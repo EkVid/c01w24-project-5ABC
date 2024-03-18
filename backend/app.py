@@ -36,7 +36,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # User Login/Register Routes
 
-@app.route("/register", methods=["POST"])
+@app.route("/signup", methods=["POST"])
 def register():
     contentType = request.headers.get('Content-Type')
 
@@ -46,7 +46,7 @@ def register():
         #Checks for duplicate users with the specified email
         duplicateTest = userCollection.find_one({"Email": json['Email']})
         if duplicateTest is not None:
-            return {"message": "Email already exists in the system"}, 409
+            return {"message": "Account already exists in the system, you can login directly without signing up."}, 409
 
         else:
             salt = bcrypt.gensalt()
@@ -64,7 +64,7 @@ def register():
             return {"message": "User successfully registered"}
 
     else:
-        return {"message": "Unsupported Content Type"}, 400
+        return {"message": "An unexpected error occured, please try again."}, 400
 
 
 @app.route("/login", methods=['POST'])
@@ -80,7 +80,7 @@ def login():
         foundUser = userCollection.find_one({"Email": email})
 
         if foundUser is None: #Either the user is not registered, or they input the wrong email
-            return {"message": "Invalid login information"}, 401
+            return {"message": "Login failed. Please double-check your email and password."}, 401
         else:
             storedPassword = foundUser['Password'].encode('utf-8')
             enteredPassword = password.encode('utf-8')
@@ -99,7 +99,7 @@ def login():
                 except Exception as e:
                     return {
                         "Error": "Error generating the JWT TOKEN",
-                        "Message": str(e)
+                        "Message": "An unexpected error occured, please try again."
                     }, 500
 
                 #tells the DB that the user has an active session. This prevents them from accessing the API routes if they have a valid Access Token but have logged out
@@ -116,12 +116,12 @@ def login():
                 }, 200
 
             else:
-                return "Invalid login information", 401
+                return "Login failed. Please double-check your email and password.", 401
     else:
-        return {"message": "Unsupported Content Type"}, 400
+        return {"message": "An unexpected error occured, please try again."}, 400
 
 
-@app.route("/resetPassword", methods=['POST'])
+@app.route("/reset_password", methods=['POST'])
 def resetPassword():
     contentType = request.headers.get("Content-Type")
 
@@ -137,28 +137,25 @@ def resetPassword():
 
         storedResetCode = foundUser['ResetCode']
 
-        if(storedResetCode['Code'] == int(ResetCode)):
-            difference = abs(datetime.datetime.utcnow() - storedResetCode['IssueDate'])
+        difference = abs(datetime.datetime.utcnow() - storedResetCode['IssueDate'])
 
-            if(difference.seconds < 300): # reset code works within 300 seconds
-                salt = bcrypt.gensalt()
-                encodedPassword = newPassword.encode('utf-8')
-                hashedPassword = bcrypt.hashpw(encodedPassword, salt)
+        if(difference.seconds < 300): # reset code works within 300 seconds
+            salt = bcrypt.gensalt()
+            encodedPassword = newPassword.encode('utf-8')
+            hashedPassword = bcrypt.hashpw(encodedPassword, salt)
 
-                userCollection.update_one({"Email": email}, {"$set": {"Password": hashedPassword.decode('utf-8')}})
+            userCollection.update_one({"Email": email}, {"$set": {"Password": hashedPassword.decode('utf-8')}})
 
-                userCollection.update_one({"Email": email}, {"$set": {"ResetCode": {}}})
+            userCollection.update_one({"Email": email}, {"$set": {"ResetCode": {}}})
 
-                return {"message": "Password reset successful"}, 200
-            else:
-                return {"message": "Reset Code has expired"}, 401
+            return {"message": "Password reset successful"}, 200
         else:
-            return {"message": "Reset Code does not match"}, 401
+            return {"message": "Reset Code has expired"}, 401
     else:
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/emailResetCode", methods=['POST'])
+@app.route("/forgot_password", methods=['POST'])
 def generateResetCode():
     contentType = request.headers.get("Content-Type")
 
