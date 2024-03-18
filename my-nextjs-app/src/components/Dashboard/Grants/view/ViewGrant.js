@@ -1,8 +1,10 @@
+'use client'
 import ViewApplication from "./viewApplication"
 import axios from "axios"
-import { router } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function ViewGrant({ grant, setViewGrant }){
+    const router = useRouter()
     
     function stringifyArray(arr){
         let string = ''
@@ -46,7 +48,7 @@ export default function ViewGrant({ grant, setViewGrant }){
     }
 
     async function PostGrant(){
-        const userInfo = JSON.parse(sessionStorage.getItem('userData'))
+        const userData = JSON.parse(sessionStorage.getItem('userData'))
 
         if(!userInfo){
             router.push('/login')
@@ -59,16 +61,16 @@ export default function ViewGrant({ grant, setViewGrant }){
         }
         const headers = {
             'Content-Type': 'multipart/form-data',
-            'Bearer' : userInfo.token
+            'Authorization': `Bearer ${userData.token}`
         }
 
         try{
             const response = await axios.post('http://localhost:5000/createGrant', form, {headers: headers})
             console.log(response)
-            // router.push('/dashboard/my-grants')
             // Remove grant objects from local storage
-            // localStorage.removeItem('grant')
-            // localStorage.removeItem('clearedGrant')
+            localStorage.removeItem('grant')
+            localStorage.removeItem('clearedGrant')
+            router.push('/dashboard/my-grants')
         }
         catch(err){
             console.error(err)
