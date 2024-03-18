@@ -6,169 +6,52 @@ import React, { useState } from "react";
 const Applied_Grants = () => {
   const allGrants = [
     {
-      id: 1,
-      serviceDate: "2023-01-01",
-      receivedOn: "2023-01-02",
-      claimType: "Type A",
-      memberName: "John Doe",
-      amountPaid: "$1000",
-      paidTo: "Provider A",
-      category: "Category 1",
-      status: "Pending",
+      answerData: [
+        {
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          text: "Bob",
+        },
+      ],
+      dateSubmitted: "2024-03-14",
+      email: "avers07@gmail.com",
+      grantID: "65f749445c287cfeb9f3c573",
+      profileData: {
+        age: 21,
+        gender: "Man",
+        nationality: "Canadian",
+        race: "White",
+        veteran: 1,
+      },
+      status: 2,
     },
     {
-      id: 2,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Jane Doe",
-      amountPaid: "$1500",
-      paidTo: "Provider B",
-      category: "Category 2",
-      status: "Rejected",
-    },
-    {
-      id: 3,
-      serviceDate: "2023-03-01",
-      receivedOn: "2023-03-03",
-      claimType: "Type C",
-      memberName: "Mike Smith",
-      amountPaid: "$2000",
-      paidTo: "Provider C",
-      category: "Category 3",
-      status: "Approved",
-    },
-    {
-      id: 4,
-      serviceDate: "2023-01-01",
-      receivedOn: "2023-01-02",
-      claimType: "Type A",
-      memberName: "John Doe",
-      amountPaid: "$1000",
-      paidTo: "Provider A",
-      category: "Category 1",
-      status: "Approved",
-    },
-    {
-      id: 5,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Jane Doe",
-      amountPaid: "$1500",
-      paidTo: "Provider B",
-      category: "Category 2",
-      status: "In Review",
-    },
-    {
-      id: 6,
-      serviceDate: "2023-03-01",
-      receivedOn: "2023-03-03",
-      claimType: "Type C",
-      memberName: "Mike Smith",
-      amountPaid: "$2000",
-      paidTo: "Provider C",
-      category: "Category 3",
-      status: "Approved",
-    },
-    {
-      id: 7,
-      serviceDate: "2023-01-01",
-      receivedOn: "2023-01-02",
-      claimType: "Type A",
-      memberName: "John Doe",
-      amountPaid: "$1000",
-      paidTo: "Provider A",
-      category: "Category 1",
-      status: "Submitted",
-    },
-    {
-      id: 8,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Jane Doe",
-      amountPaid: "$1500",
-      paidTo: "Provider B",
-      category: "Category 2",
-      status: "In Review",
-    },
-    {
-      id: 9,
-      serviceDate: "2023-03-01",
-      receivedOn: "2023-03-03",
-      claimType: "Type C",
-      memberName: "Mike Smith",
-      amountPaid: "$2000",
-      paidTo: "Provider C",
-      category: "Category 3",
-      status: "Approved",
-    },
-    {
-      id: 10,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Jane Doe",
-      amountPaid: "$1500",
-      paidTo: "Provider B",
-      category: "Category 2",
-      status: "In Review",
-    },
-    {
-      id: 11,
-      serviceDate: "2023-03-01",
-      receivedOn: "2023-03-03",
-      claimType: "Type C",
-      memberName: "Mike Smith",
-      amountPaid: "$2000",
-      paidTo: "Provider C",
-      category: "Category 3",
-      status: "Approved",
-    },
-    {
-      id: 12,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Jane Doe",
-      amountPaid: "$1500",
-      paidTo: "Provider B",
-      category: "Category 2",
-      status: "In Review",
-    },
-    {
-      id: 13,
-      serviceDate: "2023-03-01",
-      receivedOn: "2023-03-03",
-      claimType: "Type C",
-      memberName: "Mike Smith",
-      amountPaid: "$2000",
-      paidTo: "Provider C",
-      category: "Category 3",
-      status: "Approved",
-    },
-    {
-      id: 14,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Jane Doe",
-      amountPaid: "$1500",
-      paidTo: "Provider B",
-      category: "Category 2",
-      status: "In Review",
-    },
-    {
-      id: 15,
-      serviceDate: "2023-03-01",
-      receivedOn: "2023-03-03",
-      claimType: "Type C",
-      memberName: "Mike Smith",
-      amountPaid: "$2000",
-      paidTo: "Provider C",
-      category: "Category 3",
-      status: "Approved",
+      answerData: [
+        {
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          text: "Bob",
+        },
+      ],
+      dateSubmitted: "2024-03-14",
+      email: "avers07@gmail.com",
+      grantID: "65f749445c287cfeb9f3c572",
+      profileData: {
+        age: 21,
+        gender: "Man",
+        nationality: "Canadian",
+        race: "White",
+        veteran: 1,
+      },
+      status: 0,
     },
   ];
 
@@ -196,14 +79,29 @@ const Applied_Grants = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Approved":
+      case 3:
         return "bg-green-600"; // Green for approved
-      case "Rejected":
+      case 2:
         return "bg-red-600"; // Red for rejected
-      case "Pending":
+      case 1:
         return "bg-yellow-600"; // Yellow for pending
       default:
         return "bg-gray-400"; // Gray for any other status or if no status is provided
+    }
+  };
+
+  const getStatusText = (statusInt) => {
+    switch (statusInt) {
+      case 0:
+        return "Draft";
+      case 1:
+        return "In Review";
+      case 2:
+        return "Rejected";
+      case 3:
+        return "Approved";
+      default:
+        return "Unknown";
     }
   };
 
@@ -321,19 +219,20 @@ const Applied_Grants = () => {
                   {currentGrants.map((claim) => {
                     // Check if the card should be expanded or if no card is expanded
                     const shouldDisplay =
-                      expandedGrantId === null || expandedGrantId === claim.id;
+                      expandedGrantId === null ||
+                      expandedGrantId === claim.grantID;
 
                     // Only render the card if it should be displayed based on the above condition
                     if (shouldDisplay) {
                       return (
                         <div
-                          key={claim.id}
+                          key={claim.grantID}
                           className={` p-1 transition-all duration-500 ease-in-out ${
-                            expandedGrantId === claim.id
+                            expandedGrantId === claim.grantID
                               ? "scale-100 opacity-100"
                               : "scale-95 opacity-75"
                           } ${
-                            expandedGrantId === claim.id
+                            expandedGrantId === claim.grantID
                               ? "col-span-3 lg:col-span-3"
                               : "md:col-span-2 lg:col-span-1"
                           }`}
@@ -346,25 +245,27 @@ const Applied_Grants = () => {
 
                           <div className="bg-white p-2 rounded-lg shadow shadow-xl">
                             <div className="flex justify-between items-center mb-4">
-                              <p className="text-md">Status: {claim.status}</p>
+                              <p className="text-md">
+                                Status: {getStatusText(claim.status)}
+                              </p>
                               <button
                                 onClick={() =>
                                   toggleCardExpansion(
-                                    expandedGrantId === claim.id
+                                    expandedGrantId === claim.grantID
                                       ? null
-                                      : claim.id
+                                      : claim.grantID
                                   )
                                 }
                                 className="text-green-700 text-md hover:text-green-900 transition duration-150 ease-in-out"
                               >
-                                {expandedGrantId === claim.id
+                                {expandedGrantId === claim.grantID
                                   ? "Close"
                                   : "View Details"}
                               </button>
                             </div>
 
                             <div className="border-t border-gray-300 mb-5"></div>
-                            {expandedGrantId === claim.id ? (
+                            {expandedGrantId === claim.grantID ? (
                               <div>
                                 {/* Expanded view content */}
                                 <div className="mb-5">
@@ -379,61 +280,61 @@ const Applied_Grants = () => {
                                   <div className="bg-slate-100 border-2 rounded p-6">
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">Title:</span>
-                                      {claim.category}
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Provider:
                                       </span>
-                                      Rawad
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Provider Email:
                                       </span>
-                                      5ABC@gmail.com
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                       <span className="font-bold">
                                         Amount Payable:
                                       </span>
-                                      {claim.amountPaid}
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Required Race:
                                       </span>
-                                      None
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Required Gender:
                                       </span>
-                                      None
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Veteran Only:
                                       </span>
-                                      No
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Number of Grants Available:
                                       </span>
-                                      3
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Date Posted:
                                       </span>
-                                      2022-12-20
+                                      to be changed
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                       <span className="font-bold">
                                         Grant Status:
                                       </span>
-                                      Active
+                                      to be changed
                                     </div>
                                     {/* add more  */}
                                   </div>
@@ -443,13 +344,7 @@ const Applied_Grants = () => {
                                 </h2>
                                 <div className="bg-slate-100 border-2  rounded p-6">
                                   <div className="flex justify-between mb-4 text-md">
-                                    This is a really great grant! This is a
-                                    really great grant! This is a really great
-                                    grant! This is a really great grant! This is
-                                    a really great grant! This is a really great
-                                    grant! This is a really great grant! This is
-                                    a really great grant! This is a really great
-                                    grant! This is a really great grant!
+                                    to be changed
                                   </div>
                                 </div>
                                 <h2 className="text-black font-semibold mb-2 mt-5">
@@ -458,41 +353,35 @@ const Applied_Grants = () => {
                                 <div className="bg-slate-100 border-2  rounded p-6">
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">
-                                      Applicant Name:
-                                    </span>
-                                    {claim.memberName}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
                                       Applicant Email:
                                     </span>
-                                    applicant@gmail.com
+                                    {claim.email}
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Age:</span>
-                                    18
+                                    {claim.profileData.age}
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">
                                       Nationality:
                                     </span>
-                                    Canadian
+                                    {claim.profileData.nationality}
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Race:</span>
-                                    White
+                                    {claim.profileData.race}
                                   </div>
-                                  <div className="flex justify-between items-center mb-2">
+                                  <div className="flex justify-between items-center mb-4">
                                     <span className="font-bold">
                                       Veteran Status:
                                     </span>
-                                    Not a veteran
+                                    {claim.profileData.veteran}
                                   </div>
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="font-bold">
                                       Date Submitted:
                                     </span>
-                                    {claim.receivedOn}
+                                    {claim.dateSubmitted}
                                   </div>
                                   {/* add more */}
                                 </div>
@@ -554,13 +443,11 @@ const Applied_Grants = () => {
                             ) : (
                               <div>
                                 {/* Small view content */}
-                                <p className="mb-2 text-md">
-                                  {claim.memberName}
-                                </p>
-                                <p className="mb-2">{claim.category}</p>
+                                <p className="mb-2 text-md">{claim.email}</p>
+                                <p className="mb-2">title</p>
                                 <div className="flex justify-between items-center">
-                                  <p>Date Submitted: {claim.receivedOn}</p>
-                                  <p>Amount Payable: {claim.amountPaid}</p>
+                                  <p>Date Submitted: {claim.dateSubmitted}</p>
+                                  <p>Amount Payable: TBC</p>
                                 </div>
                               </div>
                             )}
