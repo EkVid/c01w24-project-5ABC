@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
 import "@/app/globals.css";
-import chevronDown from "../../public/chevron-down.svg"
-import sun from "../../public/sun.svg"
-import moon from "../../public/moon.svg"
+import chevronDown from "../../public/chevron-down.svg";
+import sun from "../../public/sun.svg";
+import moon from "../../public/moon.svg";
 import Image from "next/image.js";
 import { useState } from "react";
-import { scaleFont, resetFont, getFont } from "./utils/scaleFont.js"
-import { initTheme, changeTheme, getTheme } from "./utils/theme.js"
+import { scaleFont, resetFont, getFont } from "./utils/scaleFont.js";
+import { initTheme, changeTheme, getTheme } from "./utils/theme.js";
 import FontSizeContext from "./utils/FontSizeContext";
 import ReducedMotionContext from "./utils/ReducedMotionContext";
 import ThemeContext from "./utils/ThemeContext";
@@ -20,13 +20,13 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   // TODO: add handler for setting isReducedMotion when option is changed
 
   const handleScaleFontDown = () => {
-    scaleFont('down');
+    scaleFont("down");
     setFontSize(getFont());
     if (onChangeFont) onChangeFont(getFont());
   }
 
   const handleScaleFontUp = () => {
-    scaleFont('up')
+    scaleFont("up");
     setFontSize(getFont());
     if (onChangeFont) onChangeFont(getFont());
   }
@@ -51,7 +51,6 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
     <div className="h-fit custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm transition-colors">
       {/* Dropdown */}
       <details className="group">
-
         {/* Dropdown Closed Content */}
         <summary className="list-none flex flex-nowrap justify-end items-center cursor-pointer">
           <h1 className="custom-dark-grey dark:d-text cs-text-lg text-center">Accessibility Settings</h1>
@@ -69,7 +68,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
               <h3 className="text-center cs-text-xl dark:d-text">Font Size </h3>
               <button className="cs-text-2xl ms-3 cursor-pointer dark:d-text" onClick={handleResetFont}>&#8635;</button>
             </div>
-            
+
             <div className="flex space-x-4 justify-center items-center">
               <button 
                 className="cs-text-5xl font-light hover:cursor-pointer dark:d-text" 
@@ -85,7 +84,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
                   +
               </button>
             </div>
-            <hr className="border border-[#4D4D4D] dark:border-white"/>
+            <hr className="border border-[#4D4D4D] dark:border-white" />
           </div>
 
           {/* Theme */}
@@ -142,7 +141,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
         </ThemeContext.Provider>
       </FontSizeContext.Provider>
     </div>
-  )
-}
+  );
+};
 
-export default AccessibilityBar
+export default AccessibilityBar;

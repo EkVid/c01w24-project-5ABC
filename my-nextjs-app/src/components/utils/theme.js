@@ -24,4 +24,4 @@ const getTheme = () => {
     return 'dark';
 }
 
-export { initTheme, changeTheme, getTheme }
+export { initTheme, changeTheme, getTheme };
