@@ -32,16 +32,14 @@ class UserProfile(BaseModel):
 Question Option and Question Models
 """
 class TextboxOptions(BaseModel):
-    answerType: str
     minCharsNum: PositiveInt
     maxCharsNum: PositiveInt
-    isMultipleLines: bool
+    isMultipleLines: Optional[bool] = None
 
 class NumberOptions(BaseModel):
     isIntegerOnly: bool
     minNum: Union[int, float]
     maxNum: Union[int, float]
-
 
     @validator('minNum', 'maxNum', always=True)
     def validate_range(cls, value, values) -> Union[int, float]:
@@ -60,24 +58,24 @@ class CheckboxOptions(BaseModel):
     isNoneAnOption: bool
 
 class DateOptions(BaseModel):
-    isDateRange: bool
-    isBothRequired: bool
+    isDateRange: Optional[bool] = None
+    isBothRequired: Optional[bool] = None
 
 class FileOptions(BaseModel):
     type: str
 
-class Question(BaseModel):  # TODO: implement phone number and email options if needed
+class Question(BaseModel):
     question: str
-    type: Literal['textbox', 'number', 'multiple choice', 'checkbox', 'date', 'file']
+    type: Literal['textbox', 'number', 'multiple choice', 'checkbox', 'date', 'file', 'email', 'phone number',]
     isRequired: bool
-    options: Union[
+    options: Optional[Union[
         TextboxOptions,
         NumberOptions,
         MultipleChoiceOptions,
         CheckboxOptions,
         DateOptions,
         FileOptions
-    ]
+    ]] = None
 
 
 """
@@ -143,19 +141,20 @@ Grant Model
 """
 class GrantBase(BaseModel):
     grantorEmail: str
-    title: str
-    description: str
-    numWinners: int
-    maxWinners: int
-    deadline: str # maybe change to str for simplicity
-    isActive: bool
-    amountPerApp: float
+    Title: str
+    Description: str
+    NumWinners: int
+    MaxWinners: int
+    Deadline: str # maybe change to str for simplicity
+    PostedDate: str
+    Active: bool
+    AmountPerApp: float
     profileReqs: UserProfileReqs # test later
 
 class Grant(GrantBase):
-   winnerIDs: list[str]
-   appliedIDs: list[str]
-   questionData: list[Question]
+   WinnerIDs: list[str]
+   AppliedIDs: list[str]
+   QuestionData: list[Question]
 
 
 """

@@ -310,7 +310,7 @@ def createGrant():
         Grant.model_validate(grantDict)
     except ValidationError as e:
         # Do not change e.errors(), the tests require an error list in this specific format
-        return {"message": e.errors()}, 400
+        return {"message": e.errors()}, 403
 
     id = grantCollection.insert_one(grantDict).inserted_id
     # Do not change "_id": str(id), the tests require this to keep track of inserted data
@@ -348,7 +348,9 @@ def getGrantorGrants():
     if not email:
         return {"message": "Invalid grantor email"}, 400
 
-    grants = list(grantCollection.find({"grantorEmail": email}, {"_id": False}))
+    grants = list(grantCollection.find({"grantorEmail": email}))
+    for grant in grants:
+        grant["_id"] = str(grant["_id"])
     return {"grants": grants}, 200
 
 
