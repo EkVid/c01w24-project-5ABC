@@ -20,7 +20,7 @@ const CreateNewGrant = () => {
         AppliedIDs: [],
         NumWinners: 0,
         MaxWinners: 0,
-        Deadline: '0000-00-00',
+        Deadline: '1111-11-11',
         PostedDate: null,
         profileReqs: {
             minAge: 0,
@@ -324,7 +324,7 @@ const CreateNewGrant = () => {
                                     >
                                         {grant.Title ? grant.Title : 'Default'} Form
                                     </p>
-                                    <Link href={`/edit/${grant.Title}`} className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">
+                                    <Link href={`/edit/${grant.Title ? grant.TItle : 'Default Form'}`} className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">
                                         Edit
                                     </Link>
                                 </div> 
