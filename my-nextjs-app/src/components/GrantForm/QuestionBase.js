@@ -1,7 +1,6 @@
 import Image from "next/image";
 import TrashIcon from "@/../public/trash-icon.svg"
 import PlusIcon from "@/../public/plus.svg"
-import UndoIcon from "@/../public/undo.svg"
 import DragIcon from "@/../public/drag.svg"
 import UpIcon from "@/../public/up-arrow.svg"
 import MultichoiceIcon from "@/../public/multichoice.svg"
@@ -27,6 +26,9 @@ import QPhoneNum from "./QPhoneNum";
 import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
+
+const MAX_FILE_SIZE_BYTE = 1000 * 1000 * 500;
+const MAX_SIZE_STR = "500 MB";
 
 const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -87,9 +89,29 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     onChangeQuestionData({...questionData, options: newOptions, isRequired: newIsRequired ? newIsRequired : isRequired});
   }
 
-  const handleOnSubmitFile = (e) => {
+  const handleOnAddFile = (e) => {
+    const fileObj = e.target.files[0];
+    if (fileObj.size > MAX_FILE_SIZE_BYTE) return onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: `File is too large (max: ${MAX_SIZE_STR})`}});
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result;
+      if (!result) return reader.abort();
+      const base64str = result.replace(/^data:.+,/, "");
+      const fileTypeArr = result.match(/(?<=^data:.+\/).+(?=;base64,)/);
+      console.log(fileTypeArr);
+      const fileType = fileTypeArr && fileTypeArr[0] !== "octet-stream" ? fileTypeArr[0] : "bin";
+      onChangeQuestionData({...questionData, file: base64str, fileData: {fileLink: URL.createObjectURL(fileObj), fileName: `${fileObj.name} (${fileType})`}});
+    };
+    reader.onerror = err => onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: `Failed to upload file`}});
+    reader.readAsDataURL(fileObj);
+    onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: "Uploading..."}});
+  }
+
+  const handleOnClearFile = (e) => {
     e.preventDefault();
     formRef.current.reset();
+    if (fileData?.fileLink) URL.revokeObjectURL(fileData.fileLink);
+    onChangeQuestionData({...questionData, file: null, fileData: null});
   }
 
   // --------- Handlers for questions that have answers (multiple choice, checkbox) -----------
@@ -242,24 +264,30 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               currentValue={isRequired} 
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
             />
-            <div className="flex px-2 py-1 items-center h-8">
-              <label htmlFor={attId} className={`text-sm mr-2 custom-text dark:d-text `}>Attachment:</label>
-              <form ref={formRef} onSubmit={handleOnSubmitFile} className="flex items-center">
-                {file ? 
+            <div className="flex px-2 py-1 items-center min-h-8">
+              <label htmlFor={attId} className={`text-sm mr-2 custom-text dark:d-text `}>Attachment: </label>
+              <form ref={formRef} onSubmit={e => e.preventDefault()} className="flex items-center">
+                {file != null ? 
                   <>
-                    <a 
-                      aria-label={`Download ${fileData.fileName}`}
-                      href={fileData.fileLink} 
-                      target="_blank" 
-                      rel="noreferrer noopener" 
-                      className={`text-sm break-words custom-link`}
-                      >
+                    {fileData?.fileLink ?
+                      <a 
+                        aria-label={`Download ${fileData.fileName}`}
+                        href={fileData.fileLink} 
+                        target="_blank" 
+                        rel="noreferrer noopener" 
+                        className={`text-sm break-words custom-link`}
+                        >
+                          {fileData.fileName}
+                      </a>
+                      :
+                      <p className={`text-sm break-words`}>
                         {fileData.fileName}
-                    </a>
+                      </p>
+                    }
                     <button 
                       aria-label="Remove currently attached file"
-                      onClick={() => onChangeQuestionData({...questionData, file: null, fileData: null})}
-                      className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
+                      onClick={handleOnClearFile}
+                      className={`shrink-0 ml-2 p-0.5 rounded-md custom-interactive-btn ${file != null ? "flex" : "hidden"} ${isReduceMotion ? "" : "transition-colors"}`}
                     >
                       <Image
                         src={PlusIcon}
@@ -275,8 +303,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                     aria-label={`Button to upload an attachment for question ${questionNum}`}
                     type="file"
                     id={attId}
-                    className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input m-1 ${isReduceMotion ? "" : "transition-colors"}`}
-                    onInput={e => onChangeQuestionData({...questionData, file: e.target.files[0], fileData: {fileLink: URL.createObjectURL(e.target.files[0]), fileName: e.target.files[0].name}})}
+                    className={`text-sm custom-text dark:d-text md:max-w-96 rounded-md bg-transparent custom-interactive-input mx-1 ${isReduceMotion ? "" : "transition-colors"}`}
+                    onInput={handleOnAddFile}
                   />
                 }
               </form>
