@@ -27,6 +27,7 @@ import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
 import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_STR, TYPE_MULTI, TYPE_CHECKBOX, TYPE_TEXT, TYPE_NUMBER, TYPE_EMAIL, TYPE_PHONE, TYPE_DATE, TYPE_FILE } from "../utils/constants";
+import { uploadFile } from "../utils/uploadFile";
 
 const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -88,27 +89,19 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
   }
 
   const handleOnAddFile = (e) => {
-    const fileObj = e.target.files[0];
-    if (fileObj.size > MAX_FILE_SIZE_BYTES) return onChangeQuestionData({
-      ...questionData, 
-      file: "", 
-      fileData: {
-        fileLink: null, 
-        fileName: `File is too large (max: ${MAX_FILE_SIZE_STR})`
-      }
-    });
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = reader.result;
-      if (!result) return reader.abort();
-      const base64str = result.replace(/^data:.+,/, "");
-      const fileTypeArr = result.match(/(?<=^data:.+\/).+(?=;base64,)/);
-      const fileType = fileTypeArr && fileTypeArr[0] !== "octet-stream" ? fileTypeArr[0] : "bin";
-      onChangeQuestionData({...questionData, file: base64str, fileData: {fileLink: URL.createObjectURL(fileObj), fileName: `${fileObj.name} (${fileType})`}});
-    };
-    reader.onerror = err => onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: `Failed to upload file`}});
-    reader.readAsDataURL(fileObj);
-    onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: "Uploading..."}});
+    try {
+      onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: "Uploading..."}});
+      uploadFile(e.target.files[0])
+        .then(({base64str, url, fileName, fileType}) => 
+          onChangeQuestionData({...questionData, file: base64str, fileData: {fileLink: url, fileName: `${fileName} (${fileType})`}
+        }))
+        .catch(msg => 
+          onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: msg}
+        }));
+    }
+    catch {
+      onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: "Upload failed"}});
+    }
   }
 
   const handleOnClearFile = (e) => {

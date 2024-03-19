@@ -3,6 +3,7 @@ import ReducedMotionContext from "../utils/ReducedMotionContext";
 import Image from "next/image";
 import PlusIcon from "@/../public/plus.svg";
 import FontSizeContext from "../utils/FontSizeContext";
+import { uploadFile } from "../utils/uploadFile";
 
 const QFile = ({isEditMode, onSelectAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState(null);
@@ -13,18 +14,29 @@ const QFile = ({isEditMode, onSelectAnswer}) => {
 
   const handleOnUpload = (file) => {
     if (isEditMode) return;
-    setCurrentAnswer(file);
-    onSelectAnswer(file);
-  }
-
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    formRef.current.reset();
+    try {
+      setCurrentAnswer({fileLink: "", fileName: "Uploading..."});
+      uploadFile(file)
+        .then(({base64str, url, fileName}) => {
+          setCurrentAnswer({fileLink: url, fileName: fileName});
+          onSelectAnswer(base64str);
+        })
+        .catch(msg => {
+          setCurrentAnswer({fileLink: null, fileName: msg});
+          onSelectAnswer(null);
+        });
+    }
+    catch {
+      setCurrentAnswer({fileLink: "", fileName: "Upload failed"});
+      onSelectAnswer(null);
+    }
   }
 
   const handleOnClearFile = () => {
+    if (currentAnswer?.fileLink) URL.revokeObjectURL(currentAnswer.fileLink);
     setCurrentAnswer(null);
     onSelectAnswer(null);
+    formRef.current.reset();
   }
 
   useEffect(() => handleOnClearFile(), [isEditMode]);
@@ -41,18 +53,24 @@ const QFile = ({isEditMode, onSelectAnswer}) => {
     :
     <>
       <p className={`text-sm custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}`}>Your file:</p>
-      <form ref={formRef} onSubmit={handleOnSubmit} className="my-1">
+      <form ref={formRef} onSubmit={e => e.preventDefault()} className="my-1 min-h-8">
         {currentAnswer ? 
           <div className="flex items-start">
-            <a 
-              aria-label={`Download ${currentAnswer.name}`}
-              href={URL.createObjectURL(currentAnswer)} 
-              target="_blank" 
-              rel="noreferrer noopener" 
-              className={`text-sm break-words custom-link`}
-            >
-              {currentAnswer.name}
-            </a>
+            {currentAnswer.fileLink ?
+              <a 
+                aria-label={`Download ${currentAnswer.fileName}`}
+                href={currentAnswer.fileLink} 
+                target="_blank" 
+                rel="noreferrer noopener" 
+                className={`text-sm break-words custom-link`}
+              >
+                {currentAnswer.fileName}
+              </a>
+              :
+              <p className={`text-sm break-words`}>
+                {currentAnswer.fileName}
+              </p>
+            }
             <button 
               aria-label="Remove currently attached file"
               onClick={handleOnClearFile}
