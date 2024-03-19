@@ -26,7 +26,7 @@ import QPhoneNum from "./QPhoneNum";
 import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
-import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_STR, TYPE_MULTI, TYPE_CHECKBOX, TYPE_TEXT, TYPE_NUMBER, TYPE_EMAIL, TYPE_PHONE, TYPE_DATE, TYPE_FILE } from "../utils/constants";
+import { TYPE_MULTI, TYPE_CHECKBOX, TYPE_TEXT, TYPE_NUMBER, TYPE_EMAIL, TYPE_PHONE, TYPE_DATE, TYPE_FILE } from "../utils/constants";
 import { uploadFile } from "../utils/uploadFile";
 
 const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
@@ -88,19 +88,14 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
     onChangeQuestionData({...questionData, options: newOptions, isRequired: newIsRequired ? newIsRequired : isRequired});
   }
 
-  const handleOnAddFile = (e) => {
+  const handleOnAddFile = async (e) => {
+    onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: "Uploading..."}});
     try {
-      onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: "Uploading..."}});
-      uploadFile(e.target.files[0])
-        .then(({base64str, url, fileName, fileType}) => 
-          onChangeQuestionData({...questionData, file: base64str, fileData: {fileLink: url, fileName: `${fileName} (${fileType})`}
-        }))
-        .catch(msg => 
-          onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: msg}
-        }));
+      const {base64str, url, fileName, fileType} = await uploadFile(e.target.files[0]);
+      onChangeQuestionData({...questionData, file: base64str, fileData: {fileLink: url, fileName: `${fileName} (${fileType})`}});
     }
-    catch {
-      onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: "Upload failed"}});
+    catch (errMsg) {
+      onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: errMsg}});
     }
   }
 

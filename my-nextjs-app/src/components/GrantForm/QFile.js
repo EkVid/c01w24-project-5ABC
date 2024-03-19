@@ -12,22 +12,16 @@ const QFile = ({isEditMode, onSelectAnswer}) => {
 
   const formRef = useRef();
 
-  const handleOnUpload = (file) => {
+  const handleOnUpload = async (file) => {
     if (isEditMode) return;
+    setCurrentAnswer({fileLink: "", fileName: "Uploading..."});
     try {
-      setCurrentAnswer({fileLink: "", fileName: "Uploading..."});
-      uploadFile(file)
-        .then(({base64str, url, fileName}) => {
-          setCurrentAnswer({fileLink: url, fileName: fileName});
-          onSelectAnswer(base64str);
-        })
-        .catch(msg => {
-          setCurrentAnswer({fileLink: null, fileName: msg});
-          onSelectAnswer(null);
-        });
+      const {base64str, url, fileName} = await uploadFile(file);
+      setCurrentAnswer({fileLink: url, fileName: fileName});
+      onSelectAnswer(base64str);
     }
-    catch {
-      setCurrentAnswer({fileLink: "", fileName: "Upload failed"});
+    catch (errMsg) {
+      setCurrentAnswer({fileLink: "", fileName: errMsg});
       onSelectAnswer(null);
     }
   }
