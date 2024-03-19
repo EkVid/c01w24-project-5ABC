@@ -26,9 +26,7 @@ import QPhoneNum from "./QPhoneNum";
 import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
-
-const MAX_FILE_SIZE_BYTE = 1000 * 1000 * 500;   // 1 (B) * 1000 (KB) * 1000 (MB) * 500 = 500 MB
-const MAX_SIZE_STR = "500 MB";
+import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_STR, TYPE_MULTI, TYPE_CHECKBOX, TYPE_TEXT, TYPE_NUMBER, TYPE_EMAIL, TYPE_PHONE, TYPE_DATE, TYPE_FILE } from "../utils/constants";
 
 const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
@@ -91,14 +89,20 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
 
   const handleOnAddFile = (e) => {
     const fileObj = e.target.files[0];
-    if (fileObj.size > MAX_FILE_SIZE_BYTE) return onChangeQuestionData({...questionData, file: "", fileData: {fileLink: null, fileName: `File is too large (max: ${MAX_SIZE_STR})`}});
+    if (fileObj.size > MAX_FILE_SIZE_BYTES) return onChangeQuestionData({
+      ...questionData, 
+      file: "", 
+      fileData: {
+        fileLink: null, 
+        fileName: `File is too large (max: ${MAX_FILE_SIZE_STR})`
+      }
+    });
     const reader = new FileReader();
     reader.onloadend = () => {
       const result = reader.result;
       if (!result) return reader.abort();
       const base64str = result.replace(/^data:.+,/, "");
       const fileTypeArr = result.match(/(?<=^data:.+\/).+(?=;base64,)/);
-      console.log(fileTypeArr);
       const fileType = fileTypeArr && fileTypeArr[0] !== "octet-stream" ? fileTypeArr[0] : "bin";
       onChangeQuestionData({...questionData, file: base64str, fileData: {fileLink: URL.createObjectURL(fileObj), fileName: `${fileObj.name} (${fileType})`}});
     };
@@ -330,7 +334,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
         <div className="flex justify-between">
           <div className="flex flex-col flex-auto overflow-auto">
             {/* Body of question */}
-            {type === process.env.NEXT_PUBLIC_TYPE_MULTI ?
+            {type === TYPE_MULTI ?
               <QMultichoice
                 answersObj={answersObj}
                 isRequired={isRequired}
@@ -341,7 +345,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 onChangeAnswers={handleOnChangeAnswers}
                 onDeleteAnswer={handleOnDeleteAnswer}
               />
-              : type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ?
+              : type === TYPE_CHECKBOX ?
               <QCheckbox
                 answersObj={answersObj}
                 options={options}
@@ -353,7 +357,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 onChangeOptions={handleOnChangeOptions}
                 onDeleteAnswer={handleOnDeleteAnswer}
               />
-              : type === process.env.NEXT_PUBLIC_TYPE_NUMBER ?
+              : type === TYPE_NUMBER ?
               <QNumber
                 options={options}
                 isErr={!isEditMode && errMsg}
@@ -361,7 +365,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
-              : type === process.env.NEXT_PUBLIC_TYPE_TEXT ?
+              : type === TYPE_TEXT ?
               <QText
                 options={options}
                 isErr={!isEditMode && errMsg}
@@ -369,19 +373,19 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
-              : type === process.env.NEXT_PUBLIC_TYPE_EMAIL ?
+              : type === TYPE_EMAIL ?
               <QEmail
                 isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
-              : type === process.env.NEXT_PUBLIC_TYPE_PHONE ?
+              : type === TYPE_PHONE ?
               <QPhoneNum
                 isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
               />
-              : type === process.env.NEXT_PUBLIC_TYPE_DATE ?
+              : type === TYPE_DATE ?
               <QDate
                 options={options}
                 isErr={!isEditMode && errMsg}
@@ -389,7 +393,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
               />
-              : type === process.env.NEXT_PUBLIC_TYPE_FILE ?
+              : type === TYPE_FILE ?
               <QFile
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
@@ -410,22 +414,22 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             <div className="shrink-0 ml-4 p-1.5 m-1 hidden lg:flex self-end">
               <Image
                 src={
-                  type === process.env.NEXT_PUBLIC_TYPE_MULTI ? MultichoiceIcon : 
-                  type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? CheckboxIcon : 
-                  type === process.env.NEXT_PUBLIC_TYPE_TEXT ? TextIcon :
-                  type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? NumberIcon :
-                  type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? EmailIcon :
-                  type === process.env.NEXT_PUBLIC_TYPE_PHONE ? PhoneIcon :
-                  type === process.env.NEXT_PUBLIC_TYPE_DATE ? DateIcon :
-                  type === process.env.NEXT_PUBLIC_TYPE_FILE ? FileIcon : ""}
-                alt={type === process.env.NEXT_PUBLIC_TYPE_MULTI ? "Multiple choice type question" : 
-                  type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX ? "Checkbox type question" : 
-                  type === process.env.NEXT_PUBLIC_TYPE_TEXT ? "Texbox type question" :
-                  type === process.env.NEXT_PUBLIC_TYPE_NUMBER ? "Numeric type question" :
-                  type === process.env.NEXT_PUBLIC_TYPE_EMAIL ? "Email type question" :
-                  type === process.env.NEXT_PUBLIC_TYPE_PHONE ? "Phone number type question" :
-                  type === process.env.NEXT_PUBLIC_TYPE_DATE ? "Date type question" :
-                  type === process.env.NEXT_PUBLIC_TYPE_FILE ? "File upload type question" : ""}
+                  type === TYPE_MULTI ? MultichoiceIcon : 
+                  type === TYPE_CHECKBOX ? CheckboxIcon : 
+                  type === TYPE_TEXT ? TextIcon :
+                  type === TYPE_NUMBER ? NumberIcon :
+                  type === TYPE_EMAIL ? EmailIcon :
+                  type === TYPE_PHONE ? PhoneIcon :
+                  type === TYPE_DATE ? DateIcon :
+                  type === TYPE_FILE ? FileIcon : ""}
+                alt={type === TYPE_MULTI ? "Multiple choice type question" : 
+                  type === TYPE_CHECKBOX ? "Checkbox type question" : 
+                  type === TYPE_TEXT ? "Texbox type question" :
+                  type === TYPE_NUMBER ? "Numeric type question" :
+                  type === TYPE_EMAIL ? "Email type question" :
+                  type === TYPE_PHONE ? "Phone number type question" :
+                  type === TYPE_DATE ? "Date type question" :
+                  type === TYPE_FILE ? "File upload type question" : ""}
                 width={30 * fontSizeMultiplier}
                 height={"auto"}
                 className="pointer-events-none opacity-40 dark:opacity-30 dark:d-white-filter"
