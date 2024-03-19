@@ -27,7 +27,7 @@ import QDate from "./QDate";
 import QFile from "./QFile";
 import { useSortable } from "@dnd-kit/sortable";
 
-const MAX_FILE_SIZE_BYTE = 1000 * 1000 * 500;
+const MAX_FILE_SIZE_BYTE = 1000 * 1000 * 500;   // 1 (B) * 1000 (KB) * 1000 (MB) * 500 = 500 MB
 const MAX_SIZE_STR = "500 MB";
 
 const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
