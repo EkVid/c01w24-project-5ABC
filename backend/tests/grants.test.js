@@ -20,6 +20,11 @@ const validUsers = [
     Password: 'applicantpass',
     Usertype: 'Grantee',
   },
+  {
+    Email: 'other@website.com',
+    Password: 'otherpass',
+    Usertype: 'Grantee',
+  },
 ];
 
 const validQuestionData = [
@@ -95,10 +100,10 @@ const getValidGrantFormData = () => {
   return grantFormData;
 };
 
-const getValidApplicationData = (grantID) => {
+const getValidApplicationData = (grantID, email = validUsers[0].Email) => {
   const applicationData = {
     grantID: grantID,
-    email: validUsers[0].Email,
+    email: email,
     dateSubmitted: '2024-03-14',
     status: 0,
     profileData: validProfileData[0],
@@ -139,29 +144,31 @@ const insertedData = {
 };
 
 beforeAll(async () => {
-  const signupRes = await fetch(`${SERVER_URL}/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(validUsers[0]),
-  });
-  expect([200, 409]).toContain(signupRes.status); // 409 means the user exists already
-  if (signupRes.status === 200) {
-    insertedData.userEmails.push(validUsers[0].Email);
-  }
+  for (const user of validUsers) {
+    const signupRes = await fetch(`${SERVER_URL}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+    expect([200, 409]).toContain(signupRes.status); // 409 means the user exists already
+    if (signupRes.status === 200) {
+      insertedData.userEmails.push(user.Email);
+    }
 
-  const loginRes = await fetch(`${SERVER_URL}/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      Email: validUsers[0].Email,
-      Password: validUsers[0].Password,
-    }),
-  });
-  expect(loginRes.status).toBe(200); // Check that the password matches for when the user already exists
+    const loginRes = await fetch(`${SERVER_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Email: user.Email,
+        Password: user.Password,
+      }),
+    });
+    expect(loginRes.status).toBe(200); // Check that the password matches for when the user already exists
+  }
 });
 
 // Do not explicitly set the Content-Type header to multipart/form-data (see the warning at
@@ -307,6 +314,65 @@ describe('/updateApplication tests', () => {
     );
 
     expect(res.status).toBe(200);
+  });
+});
+
+describe('/getGranteeApplications tests', () => {
+  let grantID;
+  let applicationID;
+
+  beforeAll(async () => {
+    // Applicant with two grants
+    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: getValidGrantFormData(),
+    });
+    const createGrantResBody = await createGrantRes.json();
+    grantID = createGrantResBody._id;
+
+    expect(createGrantRes.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+
+    const createApplicationRes = await fetch(
+      `${SERVER_URL}/createApplication`,
+      {
+        method: 'POST',
+        body: getValidApplicationData(grantID),
+      }
+    );
+    const createApplicationResBody = await createApplicationRes.json();
+    applicationID = createApplicationResBody._id;
+
+    expect(createApplicationRes.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  });
+
+  test('/getGranteeApplications - valid data', async () => {
+    const res = await fetch(`${SERVER_URL}/getGranteeApplications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: validUsers[0].Email,
+      }),
+    });
+    const resBody = await res.json();
+    expect(res.status).toBe(200);
+
+    const applicationWithQuestions = resBody.applicationsWithQuestions;
+    expect(applicationWithQuestions.length).toBeGreaterThan(0);
+
+    for (const applicationWithGrant of applicationWithQuestions) {
+      const applicationData = applicationWithGrant.ApplicationData;
+      const questionData = applicationWithGrant.QuestionData;
+
+      expect(questionData).toBeTruthy();
+      expect(applicationData).toBeTruthy();
+      expect(applicationData.email).toBe(validUsers[0].Email);
+    }
   });
 });
 
