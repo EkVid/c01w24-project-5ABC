@@ -11,8 +11,31 @@ import axios from "axios";
 const Grantee_dashboard = () => {
   const [data, setData] = useState("");
   const [appliedGrants, setAppliedGrants] = useState("");
+  const handleSearchGrantApplications = () => {
+    axios
+      .post("http://localhost:5000/search_grants", {
+        grantorEmail: "aversi07@gmail.com"
+      })
+      .then((response) => {
+        setData(response.data);
+        console.log(response.data)
+        localStorage.setItem('applications', JSON.stringify(response.data.applications))
+        localStorage.setItem('grants', JSON.stringify(response.data.grants))
+        router.push('/search_grants');
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.data);
+        } else if (error.request) {
+          console.log("No response received:", error.request);
+        } else {
+          console.log("Error:", error.message);
+        }
+      });
+  };
 
-  const handleSubmit = () => {
+  const handleViewApplications = () => {
     axios
       .post("http://localhost:5000/applied_grants", {
         grantorEmail: "aversi07@gmail.com"
@@ -120,16 +143,16 @@ const Grantee_dashboard = () => {
                 <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
                   <button
                     onClick={
-                      handleSubmit
+                      handleViewApplications
                     }
                     className="text-green-700 hover:text-green-900 transition-colors px-4 py-2 sm:px-5 sm:py-2 rounded-full text-sm sm:text-base"
                   >
                     View My Applications
                   </button>
                   <button
-                    onClick={() => {
-                      router.push("/search_grants")
-                    }}
+                    onClick={
+                      handleSearchGrantApplications
+                    }
                     className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
                   >
                     Submit an Application
@@ -450,9 +473,9 @@ const Grantee_dashboard = () => {
                   </p>
                   <div className="flex justify-center">
                     <button
-                      onClick={() => {
-                        router.push("/search_grants");
-                      }}
+                      onClick={
+                        handleSearchGrantApplications
+                      }
                       className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
                     >
                       Find Grants

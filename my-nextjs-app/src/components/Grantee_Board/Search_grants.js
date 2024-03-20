@@ -1,8 +1,38 @@
 "use client";
 
 import React, { useState } from "react";
+import axios from "axios";
 
 const Search_grants = () => {
+  const allGrantsFromDB = localStorage.getItem('grants');
+  console.log(allGrantsFromDB)
+  // this is how allgrantsfromDB come in
+//    [{"_id":"65f7822fd9506bb59950983f",
+//   "amountPerApp":1499.99,
+//   "appliedIDs":[],
+//   "deadline":"2024-04-05",
+//   "description":"Do apply to this grant",
+//   "grantorEmail":"aversi07@gmail.com",
+//   "isActive":"true","maxWinners":10,
+//   "numWinners":0,
+//   "profileReqs":{"gender":["Man","Woman","Non-binary"],
+//   "maxAge":24,"minAge":18,
+//   "nationality":"Canadian",
+//   "race":["Asian","African American","White"],
+//   "veteran":1},
+//   "questionData":[
+//     {"isRequired":true,
+//     "options":
+//     {"answerType":"short",
+//     "isMultipleLines":false,
+//     "maxCharsNum":16,
+//     "minCharsNum":1
+//   },
+//   "question":"What is your name?",
+//   "type":"textbox"}
+// ],
+// "title":"A Generous Grant",
+// "winnerIDs":[]}]
   const allGrants = [
     {
       id: 1,
