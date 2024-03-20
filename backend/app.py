@@ -225,10 +225,10 @@ def logout():
         return {"message": "Sucessfully logged the user out"}
     else:
         return {"message": "Unsupported Content Type"}, 400
-    
+
 
 # File management routes
-    
+
 def uploadFile(file, fileName):
     fs.put(file, filename=fileName)
     fileID = fs.get_last_version(filename=fileName)._id
@@ -251,7 +251,7 @@ def testUpload():
         return uploadFile(file, file.filename), 200
     else:
         return '', 400
-    
+
 # testing only, should not be used in production; delete should be handled by delete/updateGrantForm
 @app.route("/testDelete", methods=['POST'])
 def testDelete():
@@ -264,8 +264,8 @@ def testDelete():
             return '', 400
     else:
         return '', 400
-    
-    
+
+
 @app.route("/getFile", methods=['POST'])
 # @CheckToken.token_required
 def getFile():
@@ -277,7 +277,7 @@ def getFile():
         try:
             file = fs.get(ObjectId(fileID))
             return send_file(file, download_name=file.filename, as_attachment=True)
-        
+
         except Exception as e:
             return {
                 "Error": "File not found",
@@ -398,10 +398,10 @@ def deleteGrant(_id):
 def updateGrantStatus():
     contentType = request.headers.get('Content-Type')
     if contentType == 'application/json':
-        grantID = request.json["grantID"]
+        grantID = request.json["grantID"]   # TODO: use dict.get
         active = request.json["active"]
         id = ObjectId(grantID)
-    
+
         res = grantCollection.update_one({"_id": id}, {"$set": { "Active": active}})
         if res.matched_count != 1:
             return {"message": "Grant with the given ID not found"}, 404
@@ -409,7 +409,6 @@ def updateGrantStatus():
             return {"message": "Grant status successfully updated"}, 200
     else:
         return {"message": "Unsupported Content Type"}, 400
-
 
 
 @app.route("/createApplication", methods=["POST"])
@@ -427,12 +426,12 @@ def createApplication():
     if not grant:
         return {"message": "Grant with the given ID not found"}, 404
     # TODO: find a better way to check if answerData is present
-    if "answerData" not in applicationData or len(applicationData["answerData"]) != len(grant["questionData"]):
+    if "answerData" not in applicationData or len(applicationData["answerData"]) != len(grant["QuestionData"]):
         return {"message": "Invalid grant application answer data"}, 400
     # Populate json request with answer constraints from grant to validate
-    for i in range(len(grant["questionData"])):
+    for i in range(len(grant["QuestionData"])):
         # TODO: need to ensure that applicationData["answerData"][i] is a dict
-        applicationData["answerData"][i]["options"] = grant["questionData"][i]["options"]
+        applicationData["answerData"][i]["options"] = grant["QuestionData"][i]["options"]
 
     try:
         Application.model_validate_json(JSON.dumps(applicationData))
@@ -544,7 +543,7 @@ def updateGrantWinners():
 
     applicationObjID = ObjectId(applicationID)
     grantObjID = ObjectId(grantID)
-    grantCollection.update_one({"_id": grantObjID}, {"$push": {"winnerIDs": applicationID}})
+    grantCollection.update_one({"_id": grantObjID}, {"$push": {"WinnerIDs": applicationID}})
     grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": APPLICATION_APPROVED}})
 
     return {"message": "Application winner successfully added"}, 200

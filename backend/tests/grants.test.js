@@ -57,8 +57,8 @@ const validProfileReqs = [
     maxAge: 24,
     race: ['Asian', 'African American', 'White'],
     gender: ['Man', 'Woman', 'Non-binary'],
-    // nationality: ['Canadian', 'American'],
-    nationality: 'Canadian',
+    nationality: ['Canadian', 'American'],
+    // nationality: 'Canadian',
     veteran: VeteranStatus.nonVeteran,
   },
 ];
@@ -76,17 +76,18 @@ const validProfileData = [
 const getValidGrantFormData = () => {
   const jsonData = {
     grantorEmail: 'grantor@website.com',
-    title: 'A Generous Grant',
-    description: 'Do apply to this grant',
-    numWinners: 0,
-    maxWinners: 10,
-    deadline: '2024-04-05',
-    isActive: 'true',
-    amountPerApp: 1499.99,
+    Title: 'A Generous Grant',
+    Description: 'Do apply to this grant',
+    NumWinners: 0,
+    MaxWinners: 10,
+    Deadline: '2024-04-05',
+    PostedDate: '2024-04-01',
+    Active: 'true',
+    AmountPerApp: 1499.99,
     profileReqs: validProfileReqs[0],
-    winnerIDs: [],
-    appliedIDs: [],
-    questionData: validQuestionData[0],
+    WinnerIDs: [],
+    AppliedIDs: [],
+    QuestionData: validQuestionData[0],
   };
   const grantFormData = new FormData();
   grantFormData.append('jsonData', JSON.stringify(jsonData));
@@ -138,15 +139,15 @@ const insertedData = {
 };
 
 beforeAll(async () => {
-  const registerRes = await fetch(`${SERVER_URL}/register`, {
+  const signupRes = await fetch(`${SERVER_URL}/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(validUsers[0]),
   });
-  expect([200, 409]).toContain(registerRes.status); // 409 means the user exists already
-  if (registerRes.status === 200) {
+  expect([200, 409]).toContain(signupRes.status); // 409 means the user exists already
+  if (signupRes.status === 200) {
     insertedData.userEmails.push(validUsers[0].Email);
   }
 
@@ -193,7 +194,7 @@ describe('/createGrant tests', () => {
     });
     const resBody = await res.json();
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(403);
     expect(fieldValidityStatus('grantorEmail', resBody.message)).toBe(
       'missing'
     );
@@ -202,7 +203,7 @@ describe('/createGrant tests', () => {
   test('/createGrant - missing array of questions', async () => {
     const grantData = getValidGrantFormData();
 
-    deleteNestedJSONField(grantData, 'questionData');
+    deleteNestedJSONField(grantData, 'QuestionData');
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
@@ -210,8 +211,8 @@ describe('/createGrant tests', () => {
     });
     const resBody = await res.json();
 
-    expect(res.status).toBe(400);
-    expect(fieldValidityStatus('questionData', resBody.message)).toBe(
+    expect(res.status).toBe(403);
+    expect(fieldValidityStatus('QuestionData', resBody.message)).toBe(
       'missing'
     );
   });
@@ -323,7 +324,7 @@ describe('/updateGrantWinners tests', () => {
     });
     const createGrantResBody = await createGrantRes.json();
     grantID = createGrantResBody._id;
-    oldWinners = getNestedJSONField(grantData, 'winnerIDs');
+    oldWinners = getNestedJSONField(grantData, 'WinnerIDs');
 
     expect(createGrantRes.status).toBe(200);
     expect(grantID).toBeTruthy();
@@ -365,7 +366,7 @@ describe('/updateGrantWinners tests', () => {
     });
     expect(grantRes.status).toBe(200);
     const grantResBody = await grantRes.json();
-    const newWinners = grantResBody.winnerIDs;
+    const newWinners = grantResBody.WinnerIDs;
 
     expect(newWinners.length).toBe(oldWinners.length + 1);
     for (const winnerID of oldWinners) {
