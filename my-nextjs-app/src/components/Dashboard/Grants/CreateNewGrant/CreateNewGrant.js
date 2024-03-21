@@ -20,7 +20,7 @@ const CreateNewGrant = () => {
         AppliedIDs: [],
         NumWinners: 0,
         MaxWinners: 0,
-        Deadline: '1111-11-11',
+        Deadline: new Date().toISOString().split('T')[0],
         PostedDate: null,
         profileReqs: {
             minAge: 0,
@@ -45,6 +45,7 @@ const CreateNewGrant = () => {
     // Only show undo if there was a previous deletion
     const undoShow = localStorage.getItem('clearedGrant') !== null
 
+    useEffect(() => {console.log(grant)}, [grant])
 
     // --------------- Form handlers ---------------
     function setTitle(e){
@@ -97,9 +98,13 @@ const CreateNewGrant = () => {
         setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, minAge:e.target.valueAsNumber}}))
     }
 
-    function checkAgeAboveZero(e){
+    function verifyMinAge(e){
         if(e.target.value < 0){
             setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, minAge:0}}))
+        }
+        const maxAge = grant.profileReqs.maxAge
+        if(e.target.value > maxAge){
+            setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:e.target.valueAsNumber}}))
         }
     }
 
@@ -324,7 +329,7 @@ const CreateNewGrant = () => {
                                     >
                                         {grant.Title ? grant.Title : 'Default'} Form
                                     </p>
-                                    <Link href={`/edit/${grant.Title ? grant.TItle : 'Default Form'}`} className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">
+                                    <Link href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">
                                         Edit
                                     </Link>
                                 </div> 
@@ -357,7 +362,7 @@ const CreateNewGrant = () => {
                                                 value={grant.profileReqs.minAge} 
                                                 onChange={setMinAge}
                                                 step='1'
-                                                onBlur={checkAgeAboveZero}
+                                                onBlur={verifyMinAge}
                                                 placeholder="0"
                                             />
                                             -

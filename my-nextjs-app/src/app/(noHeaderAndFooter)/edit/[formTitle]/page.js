@@ -80,7 +80,7 @@ export default function EditPage({params}) {
       // TODO: Use better looking prompt to prompt grantor if they want to leave
       if(!confirm("Are you sure you want to leave? You will lose your questions")) return;
     }
-    router.push("/");
+    router.back();
   }
 
   const handleOnSave = () => {

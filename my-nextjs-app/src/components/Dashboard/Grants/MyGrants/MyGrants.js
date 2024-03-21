@@ -91,7 +91,7 @@ const MyGrants = ({ grants }) => {
                                 grant.NumWinners < grant.MaxWinners ?
                                     <button 
                                         onClick={() => openGrant(grant)}
-                                        className="rounded text-center px-4 py-2 hover:scale-105 dark:d-text mt-6 custom-green-background"
+                                        className="rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 custom-green-background"
                                     >
                                         Open Grant
                                     </button>

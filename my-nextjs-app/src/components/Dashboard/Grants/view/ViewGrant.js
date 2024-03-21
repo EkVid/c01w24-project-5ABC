@@ -8,6 +8,7 @@ export default function ViewGrant({ grant, setViewGrant }){
     
     function stringifyArray(arr){
         let string = ''
+        if(arr.length === 0) return 'Any'
         for(let i = 0; i < arr.length; i++){
             string = string + ", " + arr[i]
         }
@@ -36,12 +37,15 @@ export default function ViewGrant({ grant, setViewGrant }){
                 fileArr.push(question.file)
                 newQuestion.fileIdx = fileIdx
                 fileIdx++
-                delete newQuestion.file
             }
+            delete newQuestion.file
+            delete newQuestion.id
+            delete newQuestion.errMsg
             return newQuestion
         })
         const finalGrant = {...signedGrant, QuestionData: finalQuestionArr}
         console.log(finalGrant)
+        console.log(fileArr)
         form.append('jsonData', JSON.stringify(finalGrant))
         form.append('files', fileArr)
         return form
@@ -118,7 +122,7 @@ export default function ViewGrant({ grant, setViewGrant }){
                     className="self-center flex flex-col md:mx-4 mx-0 p-2 my-4 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
                 >
                     <div className="flex flex-col my-2">
-                        Age range: {grant.profileReqs.minAge} - {grant.profileReqs.maxAge}
+                        Age range: {!grant.profileReqs.minAge && !grant.profileReqs.maxAge ? 'Any' : `${grant.profileReqs.minAge} - ${grant.profileReqs.maxAge}`}
                     </div>
 
                     <div className="flex flex-col my-2">
