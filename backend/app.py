@@ -448,8 +448,29 @@ def getGranteeApplications():
     if not email:
         return {"message": "Invalid email"}, 400
 
-    applications = list(grantAppCollection.find({"email": email}, {"_id": False}))
-    return {"applications": applications}, 200
+    applicationDatas = list(grantAppCollection.find({"email": email}, {"_id": False}))
+    grantIDs = [ObjectId(application["grantID"]) for application in applicationDatas]
+    grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
+
+    if len(applicationDatas) != len(grants):
+        return {"message": "Question data retrieval error"}, 403
+
+    # Assign grantIDs to link each application to its grant
+    for grant in grants:
+        grant["grantID"] = str(grant["_id"])
+        del grant["_id"]
+
+    applicationsWithQuestions = []
+    # Tradeoff for having only two DB calls
+    for applicationData in applicationDatas:
+        for grant in grants:
+            if applicationData["grantID"] == grant["grantID"]:
+                applicationsWithQuestions.append({
+                    "ApplicationData": applicationData,
+                    "QuestionData": grant["QuestionData"]
+                })
+
+    return {"applicationsWithQuestions": applicationsWithQuestions}, 200
 
 
 """Returns all applications for the grant with the given ID. Note that this route uses JSON as opposed to form data.
