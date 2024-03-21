@@ -320,7 +320,7 @@ def createGrant():
     }, 200
 
 
-# Used in tests; do not remove
+# Used in frontend as well, not just tests
 @app.route("/getGrant/<_id>", methods=["GET"])
 #@tokenCheck.token_required
 def getGrant(_id):
@@ -354,32 +354,6 @@ def getGrantorGrants():
     return {"grants": grants}, 200
 
 
-@app.route("/updateGrant/<_id>", methods=["PUT"])
-#@tokenCheck.token_required
-def updateGrant(_id):
-    if not ObjectId.is_valid(_id):
-        return {"message": "Invalid ID"}, 400
-    objID = ObjectId(_id)
-
-    grantDict = getJSONData(request)
-    if grantDict is None:
-        return {"message": "Unsupported Content Type"}, 400
-
-    # TODO: remove if redundant; _id might already be immutable for each document in MongoDB
-    newData = {key: val for (key, val) in grantDict.items() if key != "_id"}    # Maybe use dict.pop instead
-
-    try:
-        Grant.model_validate_json(JSON.dumps(newData))
-    except ValidationError as e:
-        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
-
-    res = grantCollection.update_one({"_id": objID}, {"$set": newData})
-    if res.matched_count != 1:
-        return {"message": "Grant with the given ID not found"}, 404
-
-    return {"message": "Grant successfully updated"}, 200
-
-
 @app.route("/deleteGrant/<_id>", methods=["DELETE"])
 #@tokenCheck.token_required
 def deleteGrant(_id):
@@ -392,6 +366,7 @@ def deleteGrant(_id):
         return {"message": "Grant form with the given ID not found"}, 404
 
     return {"message": "Grant form successfully deleted"}, 200
+
 
 @app.route("/updateGrantStatus", methods=["POST"])
 # @tokenCheck.token_required
