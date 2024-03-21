@@ -14,9 +14,10 @@ import bcrypt
 import datetime
 import json as JSON
 import random
+import base64
 
 from dataModels import (Application, Grant, APPLICATION_APPROVED)
-from helpers import (getJSONData, isListOfDict)
+from helpers import (getJSONData, getFileData, isListOfDict)
 
 load_dotenv()
 app = Flask(__name__)
@@ -242,7 +243,7 @@ def deleteFile(fileID):
         return False
 
 
-# testing only, should not be used in production; upload should be handled by create/updateGrantForm
+# testing only, should not be used in production; upload should be handled by create GrantForm
 @app.route("/testUpload", methods=['POST'])
 def testUpload():
     contentType = request.headers.get("Content-Type")
@@ -252,7 +253,8 @@ def testUpload():
     else:
         return '', 400
 
-# testing only, should not be used in production; delete should be handled by delete/updateGrantForm
+
+# testing only, should not be used in production; delete should be handled by delete GrantForm
 @app.route("/testDelete", methods=['POST'])
 def testDelete():
     contentType = request.headers.get("Content-Type")
@@ -266,6 +268,7 @@ def testDelete():
         return '', 400
 
 
+# For Frontend Use
 @app.route("/getFile", methods=['POST'])
 # @CheckToken.token_required
 def getFile():
@@ -303,14 +306,20 @@ def deleteUser():
 #@tokenCheck.token_required
 def createGrant():
     grantDict = getJSONData(request)
+    files = getFileData(request)
+
     if grantDict is None:
         return {"message": "Unsupported Content Type"}, 400
-
     try:
         Grant.model_validate(grantDict)
     except ValidationError as e:
         # Do not change e.errors(), the tests require an error list in this specific format
         return {"message": e.errors()}, 403
+    
+    # checking for files that need to be stored
+    for question in grantDict["QuestionData"]:
+        if question["fileData"] != None:
+            question["fileData"]["fileLink"] = uploadFile(base64.b64decode(files[question["fileIdx"]]), question["fileData"]["fileName"])
 
     id = grantCollection.insert_one(grantDict).inserted_id
     # Do not change "_id": str(id), the tests require this to keep track of inserted data
@@ -361,9 +370,13 @@ def deleteGrant(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
 
-    res = grantCollection.delete_one({"_id": objID})
-    if res.deleted_count != 1:
+    grant = grantCollection.find_one_and_delete({"_id": objID})
+    if grant == None:
         return {"message": "Grant form with the given ID not found"}, 404
+    
+    for question in grant["QuestionData"]:
+        if question["fileData"] != None:
+            deleteFile(question["fileData"]["fileLink"])
 
     return {"message": "Grant form successfully deleted"}, 200
 
