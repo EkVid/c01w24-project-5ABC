@@ -1,5 +1,5 @@
 'use client'
-import ViewApplication from "./viewApplication"
+import ViewApplication from "./viewForm"
 import axios from "axios"
 import { useRouter } from 'next/navigation'
 
