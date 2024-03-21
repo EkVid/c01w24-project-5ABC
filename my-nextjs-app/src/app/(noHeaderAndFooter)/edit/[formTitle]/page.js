@@ -18,6 +18,7 @@ import dynamic from "next/dynamic";
 import ThemeContext from "@/components/utils/ThemeContext";
 import { getTheme } from "@/components/utils/theme";
 import ErrTextbox from "@/components/GrantForm/SmallComponents/ErrTextbox";
+import { TYPE_CHECKBOX, TYPE_EMAIL, TYPE_MULTI, TYPE_NUMBER, TYPE_TEXT } from "@/components/utils/constants";
 
 const AccessibilityBar = dynamic(
   () => import("@/components/AccessibilityBar"),
@@ -62,7 +63,7 @@ export default function EditPage({params}) {
       file: null,
       fileData: null,
     }
-    if (type === process.env.NEXT_PUBLIC_TYPE_MULTI || type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX) {
+    if (type === TYPE_MULTI || type === TYPE_CHECKBOX) {
       newQuestion = {...newQuestion, 
         answersObj: [{answer: "", id: uuidv4()}],
         errEmptyAnsIdxArr: [0], 
@@ -72,7 +73,7 @@ export default function EditPage({params}) {
     return newQuestion;
   }
 
-  const tempObj = {...getNewQuestionObj(process.env.NEXT_PUBLIC_TYPE_EMAIL), isTemp: true}
+  const tempObj = {...getNewQuestionObj(TYPE_EMAIL), isTemp: true}
 
   const handleOnQuit = () => {
     if (questionData && questionData.length > 0) {
@@ -113,7 +114,7 @@ export default function EditPage({params}) {
         errMsgArr[i] = "Question cannot be empty";
         continue;
       }
-      if (type === process.env.NEXT_PUBLIC_TYPE_MULTI || type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX) {
+      if (type === TYPE_MULTI || type === TYPE_CHECKBOX) {
         const errEmptyAnsIdxArr = question.errEmptyAnsIdxArr;
         const errDupAnsIdxArr = question.errDupAnsIdxArr;
         if (errEmptyAnsIdxArr.length > 0) {
@@ -125,7 +126,7 @@ export default function EditPage({params}) {
           continue;
         }
       }
-      if (type === process.env.NEXT_PUBLIC_TYPE_TEXT) {
+      if (type === TYPE_TEXT) {
         const minCharsNum = question.options?.minCharsNum;
         const maxCharsNum = question.options?.maxCharsNum;
         if (minCharsNum && !Number.isSafeInteger(parseFloat(minCharsNum))) {
@@ -149,7 +150,7 @@ export default function EditPage({params}) {
           continue;
         }
       }
-      if (type === process.env.NEXT_PUBLIC_TYPE_NUMBER) {
+      if (type === TYPE_NUMBER) {
         const minNum = question.options?.minNum;
         const maxNum = question.options?.maxNum;
         if (minNum && Number.isNaN(parseFloat(minNum))) {

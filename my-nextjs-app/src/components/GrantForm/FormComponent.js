@@ -45,7 +45,7 @@ const FormComponent = ({title}) => {
       isRequired: false,
       file: null,
     }
-    if (type === process.env.NEXT_PUBLIC_TYPE_MULTI || type === process.env.NEXT_PUBLIC_TYPE_CHECKBOX) {
+    if (type === TYPE_MULTI || type === TYPE_CHECKBOX) {
       newQuestion = {...newQuestion, 
         answersObj: [{answer: "", id: uuidv4()}],
         errEmptyAnsIdxArr: [0], 

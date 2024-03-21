@@ -12,6 +12,7 @@ import SubmitIcon from "@/../public/submit.svg";
 import QuestionBase from "@/components/GrantForm/QuestionBase";
 import ErrTextbox from "@/components/GrantForm/SmallComponents/ErrTextbox";
 import { useRouter } from "next/navigation";
+import { TYPE_CHECKBOX, TYPE_EMAIL, TYPE_MULTI, TYPE_TEXT, TYPE_PHONE, TYPE_NUMBER, TYPE_DATE, TYPE_FILE } from "@/components/utils/constants";
 
 const AccessibilityBar = dynamic(
   () => import("@/components/AccessibilityBar"),
@@ -21,7 +22,7 @@ const AccessibilityBar = dynamic(
 const testbody = [
   {
     question: "What's your name?",
-    type: process.env.NEXT_PUBLIC_TYPE_TEXT,
+    type: TYPE_TEXT,
     isRequired: true,
     options:
     {
@@ -33,17 +34,17 @@ const testbody = [
   },
   {
     question: "What's your email?",
-    type: process.env.NEXT_PUBLIC_TYPE_EMAIL,
+    type: TYPE_EMAIL,
     isRequired: true,
   },
   {
     question: "What's your phone number?",
-    type: process.env.NEXT_PUBLIC_TYPE_PHONE,
+    type: TYPE_PHONE,
     isRequired: false,
   },
   {
     question: "Enter your age:",
-    type: process.env.NEXT_PUBLIC_TYPE_NUMBER,
+    type: TYPE_NUMBER,
     isRequired: true,
     options:
     {
@@ -53,7 +54,7 @@ const testbody = [
   },
   {
     question: "What is your GPA on a 4.0 scale?",
-    type: process.env.NEXT_PUBLIC_TYPE_NUMBER,
+    type: TYPE_NUMBER,
     isRequired: false,
     options:
     {
@@ -64,13 +65,13 @@ const testbody = [
   },
   {
     question: "Do you have a driver's license?",
-    type: process.env.NEXT_PUBLIC_TYPE_MULTI,
+    type: TYPE_MULTI,
     answers: ["Yes", "No"],
     isRequired: true,
   },
   {
     question: "Select all that apply",
-    type: process.env.NEXT_PUBLIC_TYPE_CHECKBOX,
+    type: TYPE_CHECKBOX,
     answers: ["Tall", "Smol", "Wide", "Thinn"],
     isRequired: false,
     options:
@@ -80,7 +81,7 @@ const testbody = [
   },
   {
     question: "When did you graduate high school?",
-    type: process.env.NEXT_PUBLIC_TYPE_DATE,
+    type: TYPE_DATE,
     isRequired: false,
     options:
     {
@@ -89,7 +90,7 @@ const testbody = [
   },
   {
     question: "Start and end date of last job",
-    type: process.env.NEXT_PUBLIC_TYPE_DATE,
+    type: TYPE_DATE,
     isRequired: true,
     options:
     {
@@ -99,7 +100,7 @@ const testbody = [
   },
   {
     question: "Download and complete attached file",
-    type: process.env.NEXT_PUBLIC_TYPE_FILE,
+    type: TYPE_FILE,
     isRequired: true,
     fileData: 
     {
@@ -170,7 +171,7 @@ export default function ApplicationPage({params}) {
         allErrMsg[i] = "Please enter an answer";
         continue;
       }
-      if (question.type === process.env.NEXT_PUBLIC_TYPE_TEXT) {
+      if (question.type === TYPE_TEXT) {
         const minCharsNum = question.options?.minCharsNum;
         const maxCharsNum = question.options?.maxCharsNum;
         const text = answer?.text;
@@ -183,7 +184,7 @@ export default function ApplicationPage({params}) {
           continue;
         }
       }
-      else if (question.type === process.env.NEXT_PUBLIC_TYPE_NUMBER) {
+      else if (question.type === TYPE_NUMBER) {
         const isInt = question.options?.isIntegerOnly;
         const minNum = question.options?.minNum;
         const maxNum = question.options?.maxNum;
@@ -205,21 +206,21 @@ export default function ApplicationPage({params}) {
           continue;
         }
       }
-      else if (question.type === process.env.NEXT_PUBLIC_TYPE_EMAIL) {
+      else if (question.type === TYPE_EMAIL) {
         const email = answer?.email;
         if (!EMAIL_REGEX.test(email)) {
           allErrMsg[i] = "You must enter a valid email address";
           continue;
         }
       }
-      else if (question.type === process.env.NEXT_PUBLIC_TYPE_PHONE) {
+      else if (question.type === TYPE_PHONE) {
         const phoneNum = answer?.phoneNum;
         if (!PHONE_REGEX.test(phoneNum)) {
           allErrMsg[i] = "You must enter a valid phone number";
           continue;
         }
       }
-      else if (question.type === process.env.NEXT_PUBLIC_TYPE_DATE) {
+      else if (question.type === TYPE_DATE) {
         const isDateRange = question.options?.isDateRange;
         const isBothRequired = question.options?.isBothRequired;
         const startDate = answer?.startDate;
