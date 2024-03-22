@@ -35,7 +35,19 @@ const Login = () => {
         Password: newPassword,
       })
       .then((response) => {
+        const userData = {
+          email: response.data.UserInfo.Email,
+          token: response.data.token,
+          type: response.data.UserInfo.Usertype,
+        }
+        sessionStorage.setItem('userData', JSON.stringify(userData))
         setData(response.data.message);
+        if(response.data.UserInfo.Usertype === 'grantor'){
+          router.push('/dashboard')
+        }
+        else if(response.data.UserInfo.Usertype === 'grantee'){
+          router.push('/grantee-dashboard')
+        }
       })
       .catch((error) => {
         setDisplay(true);

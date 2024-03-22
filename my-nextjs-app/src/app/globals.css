@@ -8,13 +8,13 @@
   --background-end-rgb: 255, 255, 255; 
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 255, 255, 255; 
     --background-end-rgb: 255, 255, 255; 
-  }
-}
+  } */
+/* } */
 
 @layer base {
   ::selection {
@@ -56,8 +56,12 @@ body {
   color:#535353
 }
 
+.custom-blue{
+  color: #3242ce;
+}
+
 .custom-green{
-  color : #4CAF4F;
+  color: #4CAF4F;
 }
 
 .custom-green-background{
@@ -85,11 +89,11 @@ body {
 }
 
 .custom-red{
-  color: #8d0808;
+  color: #a50f0f;
 }
 
 .custom-red-border{
-  border-color: #8d0808;
+  border-color: #a50f0f;
 }
 
 .custom-questioncard-bg-color{
@@ -123,6 +127,10 @@ body {
 
   .d-text-shade{
     color : #7a7a7a;
+  }
+
+  .d-custom-blue{
+    color: #85afee;
   }
   
   .d-custom-dark-grey-background{
@@ -223,6 +231,21 @@ body {
     background-color: #686868;
   }
 
+  .custom-hover-green{
+    color: #50a052;
+  }
+
+  .custom-active-purple{
+    color: #ad4dfc;
+  }
+
+  .d-custom-hover-green{
+    color: #18c71e;
+  }
+
+  .d-custom-active-purple{
+    color: #c887fd;
+  }
 
 }
 
@@ -233,7 +256,7 @@ body {
 
 /* Hover effect for interactable form items */
 .custom-interactive-btn{
-  @apply hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black
+  @apply hover:cursor-pointer hover:custom-hover-white dark:hover:d-custom-hover-black active:custom-active-white dark:active:d-custom-active-black
 }
 
 .custom-interactive-input{
@@ -242,6 +265,14 @@ body {
 
 /* Class for question cards */
 .custom-questioncard-background{
-  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color drop-shadow-lg
+  @apply custom-questioncard-bg-color dark:d-custom-questioncard-bg-color drop-shadow-lg shadow-white
 }
 
+/* Class for file links */
+.custom-link{
+  @apply custom-blue dark:d-custom-blue hover:underline hover:cursor-pointer hover:custom-hover-green active:custom-active-purple dark:hover:d-custom-hover-green dark:active:d-custom-active-purple
+}/* Box shadow for inner dashboard elements */
+
+.custom-inner-shadow{
+  box-shadow: inset 2px 4px 6px -1px rgb(0 0 0 / 0.1), inset 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}

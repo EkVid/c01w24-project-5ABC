@@ -14,7 +14,7 @@ const Hero = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-20 py-16 md:px-8 lg:px-12 items-center justify-center md:ml-20 sm:ml-10 min-w-">
       <div className="flex justify-end items-center">
         <div className="flex flex-col gap-8 items-center text-center lg:items-start lg:text-left text-align:ceter">
-          <h1 className="custom-text dark:text-white text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
+          <h1 className="custom-text dark:d-text text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
             Funding futures,{" "}
             <span className="custom-green">changing lives</span>.
           </h1>

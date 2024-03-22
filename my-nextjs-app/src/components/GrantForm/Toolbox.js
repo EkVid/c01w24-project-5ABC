@@ -13,55 +13,56 @@ import { useContext } from "react";
 import FontSizeContext from "../utils/FontSizeContext";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 import SmallToolboxCard from "./SmallComponents/SmallToolboxCard";
+import { TYPE_MULTI, TYPE_CHECKBOX, TYPE_TEXT, TYPE_NUMBER, TYPE_EMAIL, TYPE_PHONE, TYPE_DATE, TYPE_FILE } from "../utils/constants";
 
 const toolboxData = [
   {
     title: "Multiple\n Choice",
     desc: "Multiple pre-defined responses, only one can be selected",
     icon: MultichoiceIcon,
-    type: process.env.NEXT_PUBLIC_TYPE_MULTI
+    type: TYPE_MULTI
   },
   {
     title: "Checkbox",
     desc: "Multiple pre-defined responses, any number can be selected",
     icon: CheckboxIcon,
-    type: process.env.NEXT_PUBLIC_TYPE_CHECKBOX
+    type: TYPE_CHECKBOX
   },
   {
     title: "Textbox",
     desc: "Open-ended questions and responses",
     icon: TextIcon,
-    type: process.env.NEXT_PUBLIC_TYPE_TEXT
+    type: TYPE_TEXT
   },
   {
     title: "Number",
     desc: "Only numeric responses, can be restricted to integers or a range",
     icon: NumberIcon,
-    type: process.env.NEXT_PUBLIC_TYPE_NUMBER
+    type: TYPE_NUMBER
   },
   {
     title: "Email",
     desc: "Responses must be an email address",
     icon: EmailIcon,
-    type: process.env.NEXT_PUBLIC_TYPE_EMAIL
+    type: TYPE_EMAIL
   },
   {
     title: "Phone\n Number",
     desc: "Responses must be a phone number",
     icon: PhoneIcon,
-    type: process.env.NEXT_PUBLIC_TYPE_PHONE
+    type: TYPE_PHONE
   },
   {
     title: "Date",
     desc: "Responses can be a single date or a date range",
     icon: DateIcon,
-    type: process.env.NEXT_PUBLIC_TYPE_DATE
+    type: TYPE_DATE
   },
   {
     title: "File\n Upload",
     desc: "Applicants can upload a file",
     icon: FileIcon,
-    type: process.env.NEXT_PUBLIC_TYPE_FILE
+    type: TYPE_FILE
   }
 ]
 
@@ -95,8 +96,9 @@ const Toolbox = ({isSmallVersion, onClickAdd}) => {
         isSmallVersion ?
           <div key={title} className="flex flex-col ml-2 justify-between items-center">
             <button
+              aria-label={`Add '${type}' type question to bottom`}
               onClick={() => onClickAdd(type)}
-              className={`p-1 px-6 shrink-0 rounded-lg custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+              className={`p-1 px-6 shrink-0 rounded-lg custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
             >
               <Image
                 src={PlusIcon}
@@ -121,8 +123,9 @@ const Toolbox = ({isSmallVersion, onClickAdd}) => {
               icon={icon}
             />
             <button
+              aria-label={`Add '${type}' type question to bottom`}
               onClick={() => onClickAdd(type)}
-              className={`ml-2 p-2 shrink-0 rounded-lg custom-interactive-btn ${isReduceMotion ? "" : "transition-colors"}`}
+              className={`ml-2 p-2 shrink-0 rounded-lg custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
             >
               <Image
                 src={PlusIcon}

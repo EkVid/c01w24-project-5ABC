@@ -4,19 +4,31 @@ import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
 
 const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) => {
-  const [currentAnswer, setCurrentAnswer] = useState("");
+  const [currentAnswer, setCurrentAnswer] = useState({startDate: ""});
   const isReduceMotion = useContext(ReducedMotionContext);
 
   const isDateRange = options?.isDateRange ?? false;
   const isBothRequired = options?.isBothRequired && isDateRange ? options.isBothRequired : false;
 
-  const handleOnInput = (newAnswer) => {
+  const handleOnInput = (newAnswer, isEndDate) => {
     if (isEditMode) return;
-    setCurrentAnswer(newAnswer);
-    onSelectAnswer(newAnswer);
+    const newStartDate = !isEndDate ? newAnswer : currentAnswer.startDate;
+    const newEndDate = isEndDate ? newAnswer : currentAnswer?.endDate ?? "";
+    if (isDateRange) {
+      const dataToSave = {startDate: newStartDate, endDate: newEndDate};
+      setCurrentAnswer(dataToSave);
+      if (newStartDate || newEndDate) onSelectAnswer(dataToSave);
+      else onSelectAnswer(null);
+    }
+    else {
+      const dataToSave = {startDate: newStartDate};
+      setCurrentAnswer(dataToSave);
+      if (newStartDate) onSelectAnswer(dataToSave);
+      else onSelectAnswer(null);
+    }
   }
 
-  useEffect(() => setCurrentAnswer(""), [isEditMode]);
+  useEffect(() => setCurrentAnswer({startDate: ""}), [isEditMode]);
 
   return (
     <>
@@ -31,7 +43,7 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
             <CheckboxOption 
               label={"Require both start and end:"}
               currentValue={isBothRequired} 
-              onClick={() => onChangeOptions({...options, isBothRequired: !isBothRequired})}
+              onClick={() => onChangeOptions({...options, isBothRequired: !isBothRequired}, true)}
             />
             :
             <></>
@@ -47,35 +59,31 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
           type="date"
           id="startDate"
           placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
-          className={`text-sm w-fit md:max-w-96 border-b-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-text dark:d-text custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
-          onInput={e => handleOnInput(e.target.value, 0)}
-          value={currentAnswer}
+          className={`text-sm w-fit md:max-w-96 border-b-2 bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-text dark:d-text custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+          onInput={e => handleOnInput(e.target.value, false)}
+          value={currentAnswer?.startDate ?? ""}
           disabled={isEditMode}
         />
       </div>
       {isDateRange ?
         <>
-          <label htmlFor="startDate" className="mb-1 custom-text dark:d-text flex md:hidden">End:</label>
+          <label htmlFor="endDate" className="mb-1 custom-text dark:d-text flex md:hidden">End:</label>
           <div className="flex">
-            <label htmlFor="startDate" className="custom-text dark:d-text mr-4 hidden md:flex">End:</label>
+            <label htmlFor="endDate" className="custom-text dark:d-text mr-4 hidden md:flex">End:</label>
             <input
               type="date"
-              id="startDate"
+              id="endDate"
               placeholder={isEditMode ? "User will enter answer here" : "Enter your answer"}
-              className={`text-sm w-fit md:max-w-96 border-b-2 bg-transparent ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-text dark:d-text custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
-              onInput={e => handleOnInput(e.target.value, 1)}
-              value={currentAnswer}
+              className={`text-sm w-fit md:max-w-96 border-b-2 bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-text dark:d-text custom-interactive-input"} ${isErr && !isEditMode ? "custom-err-border" : "dark:border-white"} ${isReduceMotion ? "" : "transition-colors"}`}
+              onInput={e => handleOnInput(e.target.value, true)}
+              value={currentAnswer?.endDate ?? ""}
               disabled={isEditMode}
             />
           </div>
-          {isBothRequired && !isEditMode? 
-            <div className="italic text-sm mt-2 custom-text-shade dark:d-text-shade">
-              Both start and end dates are required
-            </div>
-            : !isBothRequired && !isEditMode ?
-            <div className="italic text-sm mt-2 custom-text-shade dark:d-text-shade">
-              You may enter either a start or end date
-            </div>
+          {!isEditMode ? 
+            <p className="italic text-sm mt-2 custom-text-shade dark:d-text-shade">
+              {isBothRequired ? "Both start and end dates are required" : "You may enter either a start or end date"}
+            </p>
             : 
             <></>
           }

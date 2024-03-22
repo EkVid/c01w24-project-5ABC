@@ -15,17 +15,17 @@ const Footer = () => {
           {/* Navigation/Quick Links */}
           <ul className="flex flex-col sm:flex-row mt-5 justify-center items-center sm:items-center lg:space-x-30 md:space-x-10 space-y-5 sm:space-y-0 sm:space-x-5">
             <li>
-              <a href="#" className="hover:underline text-sm sm:text-base">
+              <a href="/dashboard" className="hover:underline text-sm sm:text-base">
                 Dashboard
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline text-sm sm:text-base">
+              <a href="/dashboard/my-grants" className="hover:underline text-sm sm:text-base">
                 Grants
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline text-sm sm:text-base">
+              <a href="/dashboard/create-new-grant" className="hover:underline text-sm sm:text-base">
                 Application
               </a>
             </li>
