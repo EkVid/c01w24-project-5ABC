@@ -1,60 +1,18 @@
+'use client'
 import Link from "next/link"
 import DashboardInnerContainer from "../../InnerContainer"
 import { useRouter } from 'next/navigation'
-import axios from "axios"
+import { useContext } from "react";
+import { getGrantStatus, openGrant, closeGrant } from "./utils";
+import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 
 const MyGrants = ({ grants }) => {
     const router = useRouter()
-    const userData = sessionStorage.getItem('userData')
+    const isReduceMotion = useContext(ReducedMotionContext);
+    const userData = JSON.parse(sessionStorage.getItem('userData'))
 
     if(!userData){
         router.push('/login')
-    }
-
-    function getGrantStatus(grant){
-        if(grant.NumWinners === grant.MaxWinners) return 'Awarded'
-        if(!grant.Active) return 'Closed'
-        return 'Open'
-    }
-
-    async function openGrant(grant){
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userData.token}`
-        }
-        
-        const body= {
-            grantID: grant._id,
-            active: true,
-        }
-
-        try{
-            const response = await axios.post('http://localhost:5000/updateGrantStatus', body, {headers: headers})
-            router.refresh()
-        }
-        catch(err){
-            console.error(err)
-        }
-    }
-
-    async function closeGrant(grant){
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userData.token}`
-        }
-        
-        const body= {
-            grantID: grant._id,
-            active: false,
-        }
-
-        try{
-            const response = await axios.post('http://localhost:5000/updateGrantStatus', body, {headers: headers})
-            router.refresh()
-        }
-        catch(err){
-            console.error(err)
-        }
     }
 
     function getGrantElements(grants){
@@ -62,7 +20,6 @@ const MyGrants = ({ grants }) => {
             const grantStatus = getGrantStatus(grant)
             
             return( 
-                //TODO: make key unique, likely from grantID returned
                 <details className="group px-4 py-4 my-4 rounded-md border border-black dark:border-white" key={grant._id}>
                     <summary className="flex flex-col sm:flex-row hover:cursor-pointer group-open:mb-5 justify-between items-center">
                         <h2 className="dark:d-text text-xl text-centerfont-bold">{grant.Title}</h2>
@@ -82,7 +39,10 @@ const MyGrants = ({ grants }) => {
                         <div className="w-full flex flex-col sm:flex-row">
                             {grant.Active ? 
                                 <button 
-                                    onClick={() => closeGrant(grant)}
+                                    onClick={() => {
+                                        closeGrant(grant._id, userData)
+                                        router.refresh()
+                                    }}
                                     className="rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 bg-[#d76b65]"
                                 >
                                     Close Grant
@@ -90,7 +50,10 @@ const MyGrants = ({ grants }) => {
                             :
                                 grant.NumWinners < grant.MaxWinners ?
                                     <button 
-                                        onClick={() => openGrant(grant)}
+                                        onClick={() => {
+                                            openGrant(grant._id, userData)
+                                            router.refresh()
+                                        }}
                                         className="rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 custom-green-background"
                                     >
                                         Open Grant

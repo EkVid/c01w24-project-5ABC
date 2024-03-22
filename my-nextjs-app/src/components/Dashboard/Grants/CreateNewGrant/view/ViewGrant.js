@@ -84,9 +84,7 @@ export default function ViewGrant({ grant, setViewGrant }){
     return (
         <>
             <div>
-                <h2 
-                    className="w-full mb-10 text-3xl dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
-                >
+                <h2 className="w-full mb-10 text-3xl dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300">
                     Review '{grant.Title}'
                 </h2>
             </div>
@@ -140,7 +138,6 @@ export default function ViewGrant({ grant, setViewGrant }){
                     <div className="flex flex-col my-2">
                         Are they a veteran: {grant.profileReqs.veteran === 0 ? 'No' : (grant.profileReqs.veteran === 1 ? 'Yes' : 'N/A')}
                     </div>
-
                 </div>
             </div>
 

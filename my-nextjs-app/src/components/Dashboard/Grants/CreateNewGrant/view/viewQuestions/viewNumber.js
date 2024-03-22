@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import ReducedMotionContext from '../../../../utils/ReducedMotionContext';
+import ReducedMotionContext from '../../../../../utils/ReducedMotionContext';
 
 export default function ViewNumber({ question }){
     const isReduceMotion = useContext(ReducedMotionContext);

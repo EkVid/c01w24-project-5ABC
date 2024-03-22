@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import ReducedMotionContext from '../../../../utils/ReducedMotionContext';
-import FontSizeContext from '../../../../utils/FontSizeContext';
+import ReducedMotionContext from '../../../../../utils/ReducedMotionContext';
+import FontSizeContext from '../../../../../utils/FontSizeContext';
 
 export default function ViewMC({ question }){
     const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
