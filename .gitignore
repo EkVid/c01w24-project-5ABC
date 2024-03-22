@@ -11,3 +11,5 @@ out
 *.dll
 node_modules
 backend/data/
+app.py
+backend/app.py
