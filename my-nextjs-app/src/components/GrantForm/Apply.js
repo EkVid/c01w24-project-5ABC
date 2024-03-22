@@ -13,6 +13,7 @@ import QuestionBase from "@/components/GrantForm/QuestionBase";
 import ErrTextbox from "@/components/GrantForm/SmallComponents/ErrTextbox";
 import { useRouter } from "next/navigation";
 import { TYPE_EMAIL, TYPE_TEXT, TYPE_PHONE, TYPE_NUMBER, TYPE_DATE } from "@/components/utils/constants";
+import axios from "axios";
 
 const AccessibilityBar = dynamic(
   () => import("@/components/AccessibilityBar"),
@@ -22,12 +23,14 @@ const AccessibilityBar = dynamic(
 const EMAIL_REGEX = /^[^!#\$%&~\.]+(\.[^!#\$%&~\.]+)*@([^!#\$%&~\.]{1,63}\.)+[^!#\$%&~\.]{2,}$/;
 const PHONE_REGEX = /^(\+\d( )?)?(\(|-)?\d{3}(\)|-| )?\d{3}(-| )?\d{4}(,? ?(ext\.?|extension|x){1}\d+)?$/i;
 
+const ERR_INVALID_ANSWERS = "Fix all errors\nto submit form";
+
 const Apply = ({title, fetchedQuestData}) => {
   const [fontSize, setFontSize] = useState(100);
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [isRequiredVis, setIsRequiredVis] = useState(false);
-  const [isErrVis, setIsErrVis] = useState(false);
+  const [errMsg, setErrMsg] = useState(null);
   const [questionData, setQuestionData] = useState(null);
   const [answerData, setAnswerData] = useState(null);
   const router = useRouter();
@@ -49,8 +52,8 @@ const Apply = ({title, fetchedQuestData}) => {
   }, []);
 
   useEffect(() => {
-    if (!questionData) setIsErrVis(false);
-    else setIsErrVis(questionData.filter(q => q.errMsg).length > 0);
+    if (!questionData) setErrMsg(null);
+    else setErrMsg(questionData.filter(q => q.errMsg).length > 0 ? ERR_INVALID_ANSWERS : null);
   }, [questionData]);
 
   const handleOnQuit = () => {
@@ -64,7 +67,7 @@ const Apply = ({title, fetchedQuestData}) => {
 
   // Checks answers and validates them and shows error message for issues
   // If no problems, shows preview page
-  const handleOnReview = () => {
+  const handleOnSubmit = async () => {
     const allErrMsg = questionData.map(q => null);
     for (let i = 0; i < questionData.length; i++) {
       const question = questionData[i];
@@ -104,7 +107,7 @@ const Apply = ({title, fetchedQuestData}) => {
           allErrMsg[i] = `Number too low (current: ${value}, min: ${minNum})`;
           continue;
         }
-        if (maxNum && value && value > minNum) {
+        if (maxNum && value && value > maxNum) {
           allErrMsg[i] = `Number too high (current: ${value}, max: ${maxNum})`;
           continue;
         }
@@ -144,8 +147,18 @@ const Apply = ({title, fetchedQuestData}) => {
     }
     setQuestionData(prev => prev.map((q, i) => ({...q, errMsg: allErrMsg[i]})));
     if (allErrMsg.filter(e => e != null).length === 0) {
-      console.log("No problems, go to review")
-      // TODO: Go to review page
+      setErrMsg(null);
+      if (!confirm("Are you sure you want to submit?")) return;
+      const body = {answers: answerData}
+      try {
+        await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN + process.env.NEXT_PUBLIC_APPEND}/createApplication`, body);
+        alert(`Application for ${title} has been submitted! Returning to dashboard.`);
+        router.back();
+      }
+      catch (e) {
+        if (e.response?.data?.message) setErrMsg(e.response.data.message);
+        else setErrMsg("Something went wrong, try again later");
+      }
     }
   }
 
@@ -186,9 +199,9 @@ const Apply = ({title, fetchedQuestData}) => {
                 </button>
                 <h1 className="flex-grow self-center text-center mx-4 text-2xl custom-text dark:d-text overflow-auto max-h-20">{title}</h1>
                 <button 
-                  aria-label="Review and submit answers"
-                  onClick={handleOnReview}
-                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 px-2 py-1 ${isErrVis ? "hidden" : ""} ${isReducedMotion ? "" : "transition"}`}
+                  aria-label="Submit answers"
+                  onClick={handleOnSubmit}
+                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 px-2 py-1 ${errMsg === ERR_INVALID_ANSWERS ? "hidden" : ""} ${isReducedMotion ? "" : "transition"}`}
                 >
                   <Image
                     src={SubmitIcon}
@@ -197,11 +210,11 @@ const Apply = ({title, fetchedQuestData}) => {
                     height={"auto"}
                     className="dark:d-white-filter"
                   />
-                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex">Review / Submit</p>
+                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex">Submit</p>
                 </button>
-                {isErrVis ?
+                {errMsg ?
                   <div className="flex items-center mx-2">
-                    <ErrTextbox msg={"Fix all errors\nto review and\nsubmit form"}/>
+                    <ErrTextbox msg={errMsg}/>
                   </div>
                   :
                   <></>
@@ -229,33 +242,30 @@ const Apply = ({title, fetchedQuestData}) => {
                 )}
                 {!questionData || questionData.length === 0 ?
                   <h3 className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">
-                    There are no questions to preview
+                    There are no questions to show
                   </h3>
                   :
                   <div className="flex flex-col items-center mt-5 mb-10">
                     <p className="text-center text-3xl font-bold custom-text dark:d-text opacity-50 whitespace-pre-wrap">
                       {'You have reached the end of the application!'}
                     </p>
-                    {isErrVis ?
-                      <div className="flex items-center p-4">
-                        <ErrTextbox msg={"Fix all errors to review and submit form"}/>
-                      </div>
-                      :
-                      <button 
-                        aria-label="Review and submit answers"
-                        onClick={handleOnReview}
-                        className={`flex rounded custom-interactive-btn m-1 mt-5 p-3 self-center custom-questioncard-background ${isReducedMotion ? "" : "transition-colors"}`}
-                      >
-                        <Image
-                          src={SubmitIcon}
-                          alt="Checkmark"
-                          width={22 * fontSize / 100}
-                          height={"auto"}
-                          className="dark:d-white-filter"
-                        />
-                        <div className="ml-2.5 text-xl custom-text dark:d-text">Review / Submit</div>
-                      </button>
-                    }
+                    <button 
+                      aria-label="Submit answers"
+                      onClick={handleOnSubmit}
+                      className={`flex rounded custom-interactive-btn m-1 mt-5 p-3 self-center custom-questioncard-background ${errMsg === ERR_INVALID_ANSWERS ? "hidden" : "flex"} ${isReducedMotion ? "" : "transition-colors"}`}
+                    >
+                      <Image
+                        src={SubmitIcon}
+                        alt="Checkmark"
+                        width={22 * fontSize / 100}
+                        height={"auto"}
+                        className="dark:d-white-filter"
+                      />
+                      <div className="ml-2.5 text-xl custom-text dark:d-text">Submit</div>
+                    </button>
+                    <div className={`items-center p-4 ${errMsg ? "flex" : "hidden"}`}>
+                      <ErrTextbox msg={errMsg}/>
+                    </div>
                   </div>
                 }
               </div>

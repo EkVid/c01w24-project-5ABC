@@ -18,7 +18,7 @@ const testbody = [
   {
     question: "What's your email?",
     type: TYPE_EMAIL,
-    isRequired: true,
+    isRequired: false,
   },
   {
     question: "What's your phone number?",
