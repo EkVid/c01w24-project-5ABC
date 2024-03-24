@@ -474,7 +474,7 @@ describe('/updateGrantWinners tests', () => {
   });
 });
 
-describe('/filterGrants tests', () => {
+describe('/getFilteredGrants tests', () => {
   // Create a grant and application, storing their IDs to be deleted at end
   beforeAll(async () => {
     const grantData = getValidGrantFormData();
@@ -505,17 +505,19 @@ describe('/filterGrants tests', () => {
     insertedData.applicationIDs.push(applicationID);
   });
 
-  test('/filterGrants valid data', async () => {
+  test('/getFilteredGrants valid data', async () => {
     console.log(`${SERVER_URL}/filterGrants`);
-    const res = await fetch(`${SERVER_URL}/filterGrants`, {
+    const res = await fetch(`${SERVER_URL}/getFilteredGrants`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(validGrantFilterData),
     });
+    const resBody = await res.json();
+    console.log(resBody);
+    
     expect(res.status).toBe(200);
-
   });  
 });
 

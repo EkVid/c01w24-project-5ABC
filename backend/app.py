@@ -578,9 +578,9 @@ def deleteApplication(_id):
 """
 Applicant-side Filter Routes
 """
-@app.route("/filterGrants", methods=["POST"])
+@app.route("/getFilteredGrants", methods=["POST"])
 #@tokenCheck.token_required
-def filterGrants():
+def getFilteredGrants():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
     
@@ -618,7 +618,12 @@ def filterGrants():
             elif key == "Num Grants Available":
                 query.append({"MaxWinners": {"$gte" :value}})
 
-        grants = grantCollection.find({"$and": query})
-        for grant in grants: print(grant)
-    
-    return {"grants": grants}, 200
+    grants = list(grantCollection.find({"$and": query}))
+    for grant in grants:
+        grant["_id"] = str(grant["_id"])
+
+    return grants, 200
+
+#@app.route("/getFilteredGrants", methods=["POST"])
+#@tokenCheck.token_required
+#def filterAppliedGrants():
