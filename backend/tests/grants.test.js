@@ -97,6 +97,16 @@ const validGrantFilterData = [
   },
 ];
 
+const validApplicationFilterData = [
+  {
+    Title_keyword: 'generous',
+    'Date Submitted': '2024-03-14',
+    Deadline: '2024-04-05',
+    Status: 0,
+    'Max Payable Amount': 1500,
+  },
+];
+
 const getValidGrantFormData = () => {
   const jsonData = {
     grantorEmail: 'grantor@website.com',
@@ -506,13 +516,63 @@ describe('/getFilteredGrants tests', () => {
   });
 
   test('/getFilteredGrants valid data', async () => {
-    console.log(`${SERVER_URL}/filterGrants`);
+    console.log(`${SERVER_URL}/getFilteredGrants`);
     const res = await fetch(`${SERVER_URL}/getFilteredGrants`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(validGrantFilterData),
+    });
+    const resBody = await res.json();
+    console.log(resBody);
+
+    expect(res.status).toBe(200);
+  });  
+});
+
+describe('/getFilteredGranteeApplications tests', () => {
+  // Create a grant and application, storing their IDs to be deleted at end
+  beforeAll(async () => {
+    const grantData = getValidGrantFormData();
+    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: grantData,
+    });
+    const createGrantResBody = await createGrantRes.json();
+    grantID = createGrantResBody._id;
+
+    expect(createGrantRes.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+
+    const applicationData = getValidApplicationData(grantID);
+    const createApplicationRes = await fetch(
+      `${SERVER_URL}/createApplication`,
+      {
+        method: 'POST',
+        body: applicationData,
+      }
+    );
+    const createApplicationResBody = await createApplicationRes.json();
+    applicationID = createApplicationResBody._id;
+
+    expect(createApplicationRes.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  });
+
+  test('/getFilteredGranteeApplications valid data', async () => {
+    console.log(`${SERVER_URL}/getFilteredGranteeApplications`);
+    const res = await fetch(`${SERVER_URL}/getFilteredGranteeApplications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Email: validUsers[0].Email,
+        Filters: validApplicationFilterData,
+      }),
     });
     const resBody = await res.json();
     console.log(resBody);

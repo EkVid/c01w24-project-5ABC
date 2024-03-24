@@ -24,7 +24,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-client = MongoClient()
+client = MongoClient(os.getenv('DB_URI'))
 db = client['DB']
 fs = GridFS(db, "GridFS")
 
@@ -624,6 +624,51 @@ def getFilteredGrants():
 
     return grants, 200
 
-#@app.route("/getFilteredGrants", methods=["POST"])
+@app.route("/getFilteredGranteeApplications", methods=["POST"])
 #@tokenCheck.token_required
-#def filterAppliedGrants():
+def getFilteredGranteeApplications():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+    json = request.json
+
+    email = json.pop("Email", None)
+    if not email:
+        return {"message": "Invalid email"}, 400
+
+    user = userCollection.find_one({"Email": email})
+    if not user:
+        return {"message": "Grantee with the given email does not exist"}, 400
+
+    filters = json["Filters"]
+    query = [{"email": email}]
+    for filter in filters:
+        for key, value in filter.items():
+            if key == "Date Submitted":
+                query.append({"dateSubmitted": value})
+            elif key == "Status":
+                query.append({"status": value})
+    # First filter applications based off filters available directly in application  
+    # object without having to search corresponding grant
+    quickFilteredApps = list(grantAppCollection.find({"$and": query}))
+
+    finalApps = []
+    for app in quickFilteredApps:
+        query = [{"_id": ObjectId(app["grantID"])}]
+        for filter in filters:
+            for key, value in filter.items():
+                if key == "Title_keyword":
+                    pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
+                    query.append({"Title": {"$regex": pattern}})
+                elif key == "Deadline":
+                    query.append({"Deadline": value})
+                elif key == "Max Payable Amount":
+                    query.append({"AmountPerApp": {"$lte": value}})
+        
+        grant = grantCollection.find_one({"$and": query})
+        if grant:
+            finalApps.append(app)
+
+    for app in finalApps:
+        app["_id"] = str(app["_id"])
+    
+    return finalApps, 200
