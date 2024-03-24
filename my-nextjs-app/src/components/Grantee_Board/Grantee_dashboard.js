@@ -11,16 +11,21 @@ import axios from "axios";
 const Grantee_dashboard = () => {
   const [data, setData] = useState("");
   const [appliedGrants, setAppliedGrants] = useState("");
+  // TODO: USE applicationsWithQuestions TO POPULATE grantee_dashboard cards
+  const applicationsWithQuestions = localStorage.getItem('applicationsWithQuestions');
+  console.log(applicationsWithQuestions)
+
+
   const handleSearchGrantApplications = () => {
     axios
       .post("http://localhost:5000/search_grants", {
-        grantorEmail: "aversi07@gmail.com"
+        // by default you dont send params
       })
       .then((response) => {
         setData(response.data);
+        console.log("search grants")
         console.log(response.data)
-        localStorage.setItem('applications', JSON.stringify(response.data.applications))
-        localStorage.setItem('grants', JSON.stringify(response.data.grants))
+        localStorage.setItem('grants', JSON.stringify(response.data))
         router.push('/search_grants');
       })
       .catch((error) => {
@@ -38,13 +43,14 @@ const Grantee_dashboard = () => {
   const handleViewApplications = () => {
     axios
       .post("http://localhost:5000/applied_grants", {
-        grantorEmail: "aversi07@gmail.com"
+        email: "applicant@website.com",
+        Filters: {
+        }
       })
       .then((response) => {
         setData(response.data);
         console.log(response.data)
-        localStorage.setItem('applications', JSON.stringify(response.data.applications))
-        localStorage.setItem('grants', JSON.stringify(response.data.grants))
+        localStorage.setItem('applicationsWithQuestions', JSON.stringify(response.data))
         router.push('/applied_grants');
       })
       .catch((error) => {
@@ -58,6 +64,8 @@ const Grantee_dashboard = () => {
         }
       });
   };
+  //window.addEventListener('load', handleRecentApplications);
+
   const name = "Rawad";
   // Mock data for claims
   const recentGrants = [

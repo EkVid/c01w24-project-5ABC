@@ -1,10 +1,38 @@
 "use client";
 import React, { useState } from "react";
+import axios from "axios";
 
 
 const Applied_Grants = () => {
-  const allGrantsFromDB = localStorage.getItem('grants');
-  const allApplications = localStorage.getItem('applications');
+  const applicationsWithQuestions = localStorage.getItem('applicationsWithQuestions');
+  console.log(applicationsWithQuestions)
+    // TODO: USE applicationsWithQuestions TO POPULATE applied_grants cards
+    
+
+  const handleFilteredApplications = () => {
+    axios
+      .post("http://localhost:5000/getFilteredGranteeApplications", {
+        email: "applicant@website.com",
+        Filters: {
+        }
+      })
+      .then((response) => {
+        setData(response.data);
+        console.log(response.data)
+       
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.data);
+        } else if (error.request) {
+          console.log("No response received:", error.request);
+        } else {
+          console.log("Error:", error.message);
+        }
+      });
+  };
+
   const allGrants = [
     {
       answerData: [
@@ -19,7 +47,7 @@ const Applied_Grants = () => {
         },
       ],
       dateSubmitted: "2024-03-14",
-      email: "avers07@gmail.com",
+      email: "grantor@website.com",
       grantID: "65f749445c287cfeb9f3c573",
       profileData: {
         age: 21,
@@ -43,7 +71,7 @@ const Applied_Grants = () => {
         },
       ],
       dateSubmitted: "2024-03-14",
-      email: "avers07@gmail.com",
+      email: "grantor@website.com",
       grantID: "65f749445c287cfeb9f3c572",
       profileData: {
         age: 21,
@@ -63,8 +91,6 @@ const Applied_Grants = () => {
   const indexOfLastGrant = currentPage * grantsPerPage;
   const indexOfFirstGrant = indexOfLastGrant - grantsPerPage;
   const currentGrants = allGrants.slice(indexOfFirstGrant, indexOfLastGrant);
-  console.log(allGrants);
-  console.log(allApplications);
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
     setExpandedGrantId(null); // Collapse any expanded card when paginating
@@ -205,7 +231,10 @@ const Applied_Grants = () => {
                     />
                   </div>
                   <div className="flex justify-center">
-                    <button className="bg-green-600 text-white w-full px-5 py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base">
+                    <button className="bg-green-600 text-white w-full px-5 py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
+                    onClick={
+                      handleFilteredApplications
+                    }>
                       Filter
                     </button>
                   </div>

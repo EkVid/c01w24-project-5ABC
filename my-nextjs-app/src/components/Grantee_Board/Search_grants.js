@@ -6,6 +6,8 @@ import axios from "axios";
 const Search_grants = () => {
   const allGrantsFromDB = localStorage.getItem('grants');
   console.log(allGrantsFromDB)
+  // TODO: USE allGrantsFromDB TO POPULATE search_grants cards
+
   // this is how allgrantsfromDB come in
 //    [{"_id":"65f7822fd9506bb59950983f",
 //   "amountPerApp":1499.99,
