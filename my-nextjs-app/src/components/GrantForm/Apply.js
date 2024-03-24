@@ -149,15 +149,21 @@ const Apply = ({title, fetchedQuestData}) => {
     if (allErrMsg.filter(e => e != null).length === 0) {
       setErrMsg(null);
       if (!confirm("Are you sure you want to submit?")) return;
-      const body = {answers: answerData}
+      const body = {
+        grantID: "TODO:POOT_ID_HERE", 
+        Email: "TODO:POOT_EMAIL_HERE",
+        profileData: null,
+        answers: answerData
+      }
       try {
         await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN + process.env.NEXT_PUBLIC_APPEND}/createApplication`, body);
-        alert(`Application for ${title} has been submitted! Returning to dashboard.`);
+        alert(`Your application for '${title}' has been submitted! You will now be redirected to the dashboard.`);
         router.back();
       }
       catch (e) {
-        if (e.response?.data?.message) setErrMsg(e.response.data.message);
-        else setErrMsg("Something went wrong, try again later");
+        const msg = e.response?.data?.message ? e.response.data.message.trim('.') : "Something went wrong";
+        setErrMsg(msg);
+        alert(`Error: ${msg}. Please try submitting again later.`);
       }
     }
   }
