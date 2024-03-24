@@ -24,7 +24,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-client = MongoClient(os.getenv('DB_URI'))
+client = MongoClient()
 db = client['DB']
 fs = GridFS(db, "GridFS")
 
@@ -469,7 +469,7 @@ def getGranteeApplications():
     grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
 
     if len(applicationDatas) != len(grants):
-        return {"message": "Question data retrieval error"}, 403
+        return {"message": "Question data retrieval error"}, 403 
 
     # Assign grantIDs to link each application to its grant
     for grant in grants:
@@ -586,39 +586,42 @@ def getFilteredGrants():
     
     filters = request.json
     query = []
-    for filter in filters:
-        for key, value in filter.items():
-            if key == "Title_keyword":
-                pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
-                query.append({"Title": {"$regex": pattern}})
-            elif key == "Gender":
-                query.append({"profileReqs.gender": value})
-            elif key == "Race":
-                query.append({"profileReqs.race": value})
-            elif key == "Nationality":
-                query.append({"profileReqs.nationality": value})
-            elif key == "Date Posted Before":
-                query.append({"PostedDate": {"$lt": value}})
-            elif key == "Date Posted After":
-                query.append({"PostedDate": {"$gt": value}})
-            elif key == "Deadline":
-                query.append({"Deadline": value})
-            elif key == "Status":
-                query.append({"Active": value})
-            elif key == "Min Age":
-                query.append({"profileReqs.minAge": {"$gte": value}})
-            elif key == "Max Age":
-                query.append({"profileReqs.maxAge": {"$lte": value}})
-            elif key == "Min Payable Amount":
-                query.append({"AmountPerApp": {"$gte": value}})
-            elif key == "Max Payable Amount":
-               query.append({"AmountPerApp": {"$lte": value}})
-            elif key == "Vet Status":
-               query.append({"profileReqs.veteran": value})
-            elif key == "Num Grants Available":
-                query.append({"MaxWinners": {"$gte" :value}})
+    for key, value in filters.items():
+        if key == "Title_keyword":
+            pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
+            query.append({"Title": {"$regex": pattern}})
+        elif key == "Gender":
+            query.append({"profileReqs.gender": value})
+        elif key == "Race":
+            query.append({"profileReqs.race": value})
+        elif key == "Nationality":
+            query.append({"profileReqs.nationality": value})
+        elif key == "Date Posted Before":
+            query.append({"PostedDate": {"$lt": value}})
+        elif key == "Date Posted After":
+            query.append({"PostedDate": {"$gt": value}})
+        elif key == "Deadline":
+            query.append({"Deadline": {"$lte": value}})
+        elif key == "Status":
+            query.append({"Active": value})
+        elif key == "Min Age":
+            query.append({"profileReqs.minAge": {"$gte": value}})
+        elif key == "Max Age":
+            query.append({"profileReqs.maxAge": {"$lte": value}})
+        elif key == "Min Payable Amount":
+            query.append({"AmountPerApp": {"$gte": value}})
+        elif key == "Max Payable Amount":
+            query.append({"AmountPerApp": {"$lte": value}})
+        elif key == "Vet Status":
+            query.append({"profileReqs.veteran": value})
+        elif key == "Num Grants Available":
+            query.append({"MaxWinners": {"$gte" :value}})
 
-    grants = list(grantCollection.find({"$and": query}))
+    if len(query) == 0:
+        grants = list(grantCollection.find())
+    else:
+        grants = list(grantCollection.find({"$and": query}))
+
     for grant in grants:
         grant["_id"] = str(grant["_id"])
 
@@ -641,12 +644,11 @@ def getFilteredGranteeApplications():
 
     filters = json["Filters"]
     query = [{"email": email}]
-    for filter in filters:
-        for key, value in filter.items():
-            if key == "Date Submitted":
-                query.append({"dateSubmitted": value})
-            elif key == "Status":
-                query.append({"status": value})
+    for key, value in filters.items():
+        if key == "Date Submitted":
+            query.append({"dateSubmitted": value})
+        elif key == "Status":
+            query.append({"status": value})
     # First filter applications based off filters available directly in application  
     # object without having to search corresponding grant
     quickFilteredApps = list(grantAppCollection.find({"$and": query}))
@@ -654,21 +656,21 @@ def getFilteredGranteeApplications():
     finalApps = []
     for app in quickFilteredApps:
         query = [{"_id": ObjectId(app["grantID"])}]
-        for filter in filters:
-            for key, value in filter.items():
-                if key == "Title_keyword":
-                    pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
-                    query.append({"Title": {"$regex": pattern}})
-                elif key == "Deadline":
-                    query.append({"Deadline": value})
-                elif key == "Max Payable Amount":
-                    query.append({"AmountPerApp": {"$lte": value}})
+        for key, value in filters.items():
+            if key == "Title_keyword":
+                pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
+                query.append({"Title": {"$regex": pattern}})
+            elif key == "Deadline":
+                query.append({"Deadline": value})
+            elif key == "Max Payable Amount":
+                query.append({"AmountPerApp": {"$lte": value}})
         
         grant = grantCollection.find_one({"$and": query})
         if grant:
-            finalApps.append(app)
+            app["_id"] = str(app["_id"])
+            finalApps.append({
+                    "ApplicationData": app,
+                    "QuestionData": grant["QuestionData"]
+            })
 
-    for app in finalApps:
-        app["_id"] = str(app["_id"])
-    
     return finalApps, 200

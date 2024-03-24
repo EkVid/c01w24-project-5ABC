@@ -78,34 +78,30 @@ const validProfileData = [
   },
 ];
 
-const validGrantFilterData = [
-  {
-    Title_keyword: 'generous',
-    Gender: 'Non-binary',
-    Race: 'Asian',
-    Nationality: 'Canadian',
-    'Date Posted Before': '2024-04-05',
-    'Date Posted After': '2024-03-21',
-    Deadline: '2024-04-05',
-    Status: true,
-    'Min Age': 18,
-    'Max Age': 25,
-    'Min Payable Amount': 1499,
-    'Max Payable Amount': 1500,
-    'Vet Status': VeteranStatus.nonVeteran,
-    'Num Grants Available': 9
-  },
-];
+const validGrantFilterData = {
+  Title_keyword: 'generous',
+  Gender: 'Non-binary',
+  Race: 'Asian',
+  Nationality: 'Canadian',
+  'Date Posted Before': '2024-04-05',
+  'Date Posted After': '2024-03-21',
+  Deadline: '2024-04-06',
+  Status: true,
+  'Min Age': 18,
+  'Max Age': 25,
+  'Min Payable Amount': 1499,
+  'Max Payable Amount': 1500,
+  'Vet Status': VeteranStatus.nonVeteran,
+  'Num Grants Available': 9,
+};
 
-const validApplicationFilterData = [
-  {
+const validApplicationFilterData = {
     Title_keyword: 'generous',
     'Date Submitted': '2024-03-14',
     Deadline: '2024-04-05',
     Status: 0,
     'Max Payable Amount': 1500,
-  },
-];
+};
 
 const getValidGrantFormData = () => {
   const jsonData = {
@@ -583,7 +579,7 @@ describe('/getFilteredGranteeApplications tests', () => {
 
 
 // Delete all inserted data; this implicitly tests the delete routes
-afterAll(async () => {
+ afterAll(async () => {
   console.log('Deleting all data inserted during tests');
   console.log(insertedData);
 
