@@ -29,7 +29,7 @@ const Sidebar = () => {
                         alt="exit"
                         className="md:hidden block w-12 h-auto dark:d-white-filter group-hover:scale-105"
                     /> */}
-                    <Link href="/dashboard" className="w-full">
+                    <Link aria-label="dashboard home" href="/dashboard" className="w-full">
                         <h1 className="text-center text-3xl dark:d-text my-6">Logo</h1>
                     </Link>
                 </div>
@@ -44,10 +44,10 @@ const Sidebar = () => {
 
                     <ul className="custom-dark-grey text-lg dark:d-text w-full ps-16 pe-2 ">
                         <li className={`${pathname.includes('my-grants') ? "custom-green-background text-white" : "bg-transparent"} w-full p-2 rounded-lg`}>
-                            <Link href='/dashboard/my-grants'>My Grants</Link>
+                            <Link aria-label="my grants" href='/dashboard/my-grants'>My Grants</Link>
                         </li>
                         <li className={`${pathname.includes('create-new-grant') ? "custom-green-background text-white" : "bg-transparent"} w-full p-2 lg:pe-0 pe-2 rounded-lg`}>
-                            <Link href='/dashboard/create-new-grant'>Create New Grant</Link>
+                            <Link aria-label="create new grant" href='/dashboard/create-new-grant'>Create New Grant</Link>
                         </li>
                     </ul>
                 </details>

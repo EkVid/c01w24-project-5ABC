@@ -21,19 +21,19 @@ export default function ViewText({ question }){
 
     return (
         <div className='p-2 md:mx-10 mx-4 my-4 border border-black dark:border-white rounded'>
-            <h1 className='dark:text-white'>{question.question}  {question.isRequired ? '*' : ''}</h1>
+            <h1 tabIndex="0" aria-label={`Question: ${question.question}`} className='dark:text-white'>{question.question}  {question.isRequired ? '*' : ''}</h1>
             {isMultipleLines ?
                 <textarea
-                placeholder="User will enter answer here"
-                className={`min-h-6 max-h-96 flex custom-text dark:d-text text-sm border-2 bg-transparent m-1 custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
-                disabled={true}
+                  placeholder="User will enter answer here"
+                  className={`min-h-6 max-h-96 flex custom-text dark:d-text text-sm border-2 bg-transparent m-1 custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
+                  disabled={true}
                 />
                 :
                 <input
-                    type="text"
-                    placeholder="User will enter answer here"
-                    className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 border-b-2 bg-transparent m-1 custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
-                    disabled={true}
+                  type="text"
+                  placeholder="User will enter answer here"
+                  className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 border-b-2 bg-transparent m-1 custom-interactive-input ${isReduceMotion ? "" : "transition-colors"}`}
+                  disabled={true}
                 />
             }
             {rangeStr !== "" ?
