@@ -37,7 +37,7 @@ export default function ViewText({ question }){
                 />
             }
             {rangeStr !== "" ?
-                <p className="italic text-sm custom-text-shade dark:d-text-shade">{rangeStr}</p>
+                <p tabIndex="0" className="italic text-sm custom-text-shade dark:d-text-shade">{rangeStr}</p>
                 :
                 <></>
             }

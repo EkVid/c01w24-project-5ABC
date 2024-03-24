@@ -25,6 +25,7 @@ export default function ViewMC({ question }){
                         id={a.id}
                         style={radioStyle}
                         className="pointer-events-none custom-accent dark:d-custom-accent"
+                        disabled={true}
                         tabIndex="-1"
                     />
 

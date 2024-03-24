@@ -26,6 +26,8 @@ export default function ViewCheckbox({ question }){
                         id={a.id}
                         style={checkboxStyle}
                         className="pointer-events-none custom-accent dark:d-custom-accent"
+                        disabled={true}
+                        tabIndex="-1"
                     />
             
                     <label htmlFor={a.id} className="ml-3 text-sm custom-dark-grey dark:d-text pointer-events-none"> 

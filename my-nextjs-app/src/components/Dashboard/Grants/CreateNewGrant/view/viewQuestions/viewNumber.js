@@ -31,12 +31,12 @@ export default function ViewNumber({ question }){
                 disabled={true}
             />
             {rangeStr !== ""?
-                <p className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">{rangeStr}</p>
+                <p tabIndex="0" className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">{rangeStr}</p>
                 :
                 <></>
             }
             {isIntegerOnly ?
-                <p className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">Integer answers only</p>
+                <p tabIndex="0" className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">Integer answers only</p>
                 :
                 <></>
             }
