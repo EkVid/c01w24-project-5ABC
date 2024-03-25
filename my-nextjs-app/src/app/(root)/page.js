@@ -2,7 +2,13 @@ import AddFormButton from "@/components/GrantForm/AddFormButton";
 import Hero from "@/components/Hero";
 import Quotes from "@/components/Quotes/Quotes";
 // import AuthNavBar from "@/components/navbar/AuthNavBar";
-import UnauthNavBar from "@/components/navbar/UnauthNavBar";
+import dynamic from "next/dynamic";
+
+const UnauthNavBar = dynamic(
+  () => import("@/components/navbar/UnauthNavBar"),
+  { ssr: false }
+);
+
 export default function Home() {
   return (
     <main>

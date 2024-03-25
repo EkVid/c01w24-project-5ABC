@@ -48,7 +48,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   }
 
   return(
-    <div className="h-fit custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm transition-colors">
+    <div className={`h-fit custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm ${isReducedMotion ? "" : "transition-colors"}`}>
       {/* Dropdown */}
       <details aria-label="accessibility settings dropdown" className="group">
         {/* Dropdown Closed Content */}

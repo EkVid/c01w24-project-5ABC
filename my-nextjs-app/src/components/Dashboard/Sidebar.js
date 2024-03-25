@@ -1,11 +1,14 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 import menuIcon from "@/../public/lineThreeHor.svg"
 import xMark from "@/../public/x.svg"
 import Image from "next/image"
+import { useContext } from "react";
 
 const Sidebar = () => {
     const pathname = usePathname()
+    const isReducedMotion = useContext(ReducedMotionContext)
 
     function handleSidebarPopout(){
         const dashboard = document.getElementById('grantor-sidebar')
@@ -13,7 +16,7 @@ const Sidebar = () => {
     }
 
     return(
-        <div className="flex-grow flex flex-col xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/12 w-1/6 dark:d-custom-dark-grey-background transition-all">
+        <div className={`flex-grow flex flex-col xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/12 w-1/6 dark:d-custom-dark-grey-background ${isReducedMotion ? "" : "transition-all"}`}>
             <nav className="h-full block md:hidden w-full flex justify-center items-start mt-2 group cursor-pointer" onClick={handleSidebarPopout}>
                 <Image
                     src={menuIcon}
@@ -37,7 +40,7 @@ const Sidebar = () => {
                 <details className="group" open>
                     <summary className="list-none flex items-center w-full cursor-pointer">
                         <h1 className="custom-dark-grey dark:d-text text-3xl ms-8 me-auto">Grants</h1>
-                        <div className="custom-dark-grey dark:d-text cs-text-5xl mx-5 group-open:rotate-90 transition-transform">
+                        <div className={`custom-dark-grey dark:d-text cs-text-5xl mx-5 group-open:rotate-90 ${isReducedMotion ? "" : "transition-transform"}`}>
                             &#8250;
                         </div>
                     </summary>

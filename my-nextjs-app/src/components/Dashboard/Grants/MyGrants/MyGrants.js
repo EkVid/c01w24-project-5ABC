@@ -22,7 +22,7 @@ const MyGrants = ({ grants }) => {
             return( 
                 <details aria-label={`${grant.Title} dropdown`} className="group px-4 py-4 my-4 rounded-md border border-black dark:border-white" key={grant._id}>
                     <summary className="flex flex-col sm:flex-row hover:cursor-pointer group-open:mb-5 justify-between items-center">
-                        <h2 className="dark:d-text text-xl text-centerfont-bold">{grant.Title}</h2>
+                        <h2 tabIndex="0" className="dark:d-text text-xl text-centerfont-bold">{grant.Title}</h2>
                         {/* Set proper color classes after merch with applicant dashboard */}
                         <div tabIndex="0" aria-label={`Grant status: ${grantStatus}`} className={`rounded-full text-center text-white px-4 py-2 mt-2 sm:mt-0 ${grantStatus === 'Awarded' ? 'custom-green-background' : (grantStatus === 'Open' ? 'bg-[#d1aa64]' : 'bg-[#d76b65]')}`}>
                             {grantStatus}
@@ -86,9 +86,7 @@ const MyGrants = ({ grants }) => {
                                 View More Info
                             </Link>
                         </div>
-                        
                     </div>
-
                 </details>
             )
         })

@@ -1,6 +1,3 @@
-import DashboardInnerContainer from "@/components/Dashboard/InnerContainer"
-import Link from "next/link"
-
 export default function ApplicationList({ applications }){
     let applicationElements
 
