@@ -420,6 +420,11 @@ def createApplication():
         answers = request.json["answers"]
         if answers == None or len(answers) != len(grant["QuestionData"]):
             return {"message": "Invalid grant application answer data"}, 400
+        
+        # checking for files that need to be stored
+        for answer in answers:
+            if "fileLink" in answer:
+                answer["fileLink"] = uploadFile(base64.b64decode(answer["fileLink"]), answer["fileName"])
 
         application = request.json
         application["dateSubmitted"] = datetime.datetime.utcnow()
