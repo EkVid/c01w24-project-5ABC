@@ -85,68 +85,51 @@ const Grantee_dashboard = () => {
         ],
         dateSubmitted: "2024-03-14",
         email: "applicant@website.com",
-        grantID: "6600a85f973f58eb1683c522",
+        grantID: "6600e2c08d8b0bba26e30a6c",
         profileData: {
           age: 21,
           gender: "Man",
           nationality: "Canadian",
           race: "White",
-          veteran: 1,
+          veteran: 0,
         },
-        status: 0,
+        status: 1,
       },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
+      GrantData: {
+        Active: true,
+        AmountPerApp: 1499.99,
+        AppliedIDs: [],
+        Deadline: "2024-04-05",
+        Description: "Do apply to this grant",
+        MaxWinners: 10,
+        NumWinners: 0,
+        PostedDate: "2024-04-01",
+        QuestionData: [
           {
+            isRequired: true,
             options: {
               answerType: "short",
               isMultipleLines: false,
               maxCharsNum: 16,
               minCharsNum: 1,
             },
-            text: "Bob",
+            question: "What is your name?",
+            type: "textbox",
           },
         ],
-        dateSubmitted: "2024-04-01",
-        email: "applicant@website.com",
-        grantID: "6600a85f973f58eb1683c524",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
+        Title: "A Generous Grant",
+        WinnerIDs: [],
+        grantID: "6600e2c08d8b0bba26e30a6c",
+        grantorEmail: "grantor@website.com",
+        profileReqs: {
+          gender: ["Man", "Woman", "Non-binary"],
+          maxAge: 24,
+          minAge: 18,
+          nationality: ["Canadian", "American"],
+          race: ["Asian", "African American", "White"],
+          veteran: 0,
         },
-        status: 0,
       },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
     },
     {
       ApplicationData: {
@@ -163,7 +146,7 @@ const Grantee_dashboard = () => {
         ],
         dateSubmitted: "2024-03-14",
         email: "applicant@website.com",
-        grantID: "6600a85f973f58eb1683c526",
+        grantID: "6600e2c08d8b0bba26e3a6c",
         profileData: {
           age: 21,
           gender: "Man",
@@ -171,21 +154,43 @@ const Grantee_dashboard = () => {
           race: "White",
           veteran: 1,
         },
-        status: 0,
+        status: 2,
       },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
+      GrantData: {
+        Active: true,
+        AmountPerApp: 1499.99,
+        AppliedIDs: [],
+        Deadline: "2024-04-05",
+        Description: "Do apply to this grant",
+        MaxWinners: 10,
+        NumWinners: 0,
+        PostedDate: "2024-04-01",
+        QuestionData: [
+          {
+            isRequired: true,
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            question: "What is your name?",
+            type: "textbox",
           },
-          question: "What is your name?",
-          type: "textbox",
+        ],
+        Title: "A Generous Grant",
+        WinnerIDs: [],
+        grantID: "6600e2c08d8b0bba26e30a6c",
+        grantorEmail: "grantor@website.com",
+        profileReqs: {
+          gender: ["Man", "Woman", "Non-binary"],
+          maxAge: 24,
+          minAge: 18,
+          nationality: ["Canadian", "American"],
+          race: ["Asian", "African American", "White"],
+          veteran: 1,
         },
-      ],
+      },
     },
     {
       ApplicationData: {
@@ -202,46 +207,7 @@ const Grantee_dashboard = () => {
         ],
         dateSubmitted: "2024-03-14",
         email: "applicant@website.com",
-        grantID: "6600a85f973f58eb1683c528",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 3,
-      },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600a85f973f58eb1683c52a",
+        grantID: "6600e2c08d8b0bba260a6c",
         profileData: {
           age: 21,
           gender: "Man",
@@ -251,295 +217,43 @@ const Grantee_dashboard = () => {
         },
         status: 0,
       },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
+      GrantData: {
+        Active: true,
+        AmountPerApp: 1499.99,
+        AppliedIDs: [],
+        Deadline: "2024-04-05",
+        Description: "Do apply to this grant",
+        MaxWinners: 10,
+        NumWinners: 0,
+        PostedDate: "2024-04-01",
+        QuestionData: [
           {
+            isRequired: true,
             options: {
               answerType: "short",
               isMultipleLines: false,
               maxCharsNum: 16,
               minCharsNum: 1,
             },
-            text: "Bob",
+            question: "What is your name?",
+            type: "textbox",
           },
         ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600a85f973f58eb1683c52c",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
+        Title: "A Generous Grant",
+        WinnerIDs: [],
+        grantID: "6600e2c08d8b0bba26e30a6c",
+        grantorEmail: "grantor@website.com",
+        profileReqs: {
+          gender: ["Man", "Woman", "Non-binary"],
+          maxAge: 24,
+          minAge: 18,
+          nationality: ["Canadian", "American"],
+          race: ["Asian", "African American", "White"],
           veteran: 1,
         },
-        status: 0,
       },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600ad2d8d6dfb38c7992c64",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 0,
-      },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-04-01",
-        email: "applicant@website.com",
-        grantID: "6600ad2d8d6dfb38c7992c66",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 0,
-      },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600ad2e8d6dfb38c7992c68",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 0,
-      },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600ad2e8d6dfb38c7992c6a",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 3,
-      },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600ad2e8d6dfb38c7992c6c",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 0,
-      },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600ad2e8d6dfb38c7992c6e",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 0,
-      },
-      QuestionData: [
-        {
-          isRequired: true,
-          options: {
-            answerType: "short",
-            isMultipleLines: false,
-            maxCharsNum: 16,
-            minCharsNum: 1,
-          },
-          question: "What is your name?",
-          type: "textbox",
-        },
-      ],
     },
   ];
-
   const recentGrants = allGrants.slice(0, 3);
 
   const [expandedGrantId, setExpandedGrantId] = useState(null);
@@ -551,7 +265,7 @@ const Grantee_dashboard = () => {
         return "bg-green-600"; // Green for approved
       case "Rejected":
         return "bg-red-600"; // Red for rejected
-      case "Pending":
+      case "In Review":
         return "bg-yellow-600"; // Yellow for pending
       default:
         return "bg-gray-400"; // Gray for any other status or if no status is provided
@@ -564,6 +278,21 @@ const Grantee_dashboard = () => {
       setExpandedGrantId(null);
     } else {
       setExpandedGrantId(id);
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 0:
+        return "Draft";
+      case 1:
+        return "In Review";
+      case 2:
+        return "Rejected";
+      case 3:
+        return "Approved";
+      default:
+        return "Unknown";
     }
   };
 
@@ -612,6 +341,9 @@ const Grantee_dashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black mt-3">
                   {recentGrants.map((claim) => {
                     // Check if the card should be expanded or if no card is expanded
+                    const statusText = getStatusText(
+                      claim.ApplicationData.status
+                    );
                     const shouldDisplay =
                       expandedGrantId === null ||
                       expandedGrantId === claim.ApplicationData.grantID;
@@ -632,13 +364,13 @@ const Grantee_dashboard = () => {
                         >
                           <div
                             className={`${getStatusColor(
-                              claim.status
+                              statusText
                             )} h-2 w-full rounded-t-lg`}
                           ></div>
 
                           <div className="bg-white p-2 rounded-lg shadow shadow-xl">
                             <div className="flex justify-between items-center mb-4">
-                              <p className="text-md">Status: {claim.status}</p>
+                              <p className="text-md">Status: {statusText}</p>
                               <button
                                 onClick={() =>
                                   toggleCardExpansion(
@@ -667,72 +399,72 @@ const Grantee_dashboard = () => {
                                     <h2 className="text-black font-semibold mb-2">
                                       Grant's Information
                                     </h2>
-                                    <h2 className="text-black mb-2">
-                                      Learn more (a link)
-                                    </h2>
                                   </div>
                                   <div className="bg-slate-100 border-2 rounded p-6">
                                     <div className="flex justify-between mb-2">
-                                      <span className="font-bold">
-                                        Category:
-                                      </span>
-                                      {claim.category}
-                                    </div>
-                                    <div className="flex justify-between mb-2">
-                                      <span className="font-bold">
-                                        Provider:
-                                      </span>
-                                      Rawad
+                                      <span className="font-bold">Title:</span>
+                                      {claim.GrantData.Title}
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Provider Email:
                                       </span>
-                                      5ABC@gmail.com
+                                      {claim.GrantData.grantorEmail}
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                       <span className="font-bold">
                                         Amount Payable:
                                       </span>
-                                      {claim.amountPayable}
+                                      {claim.GrantData.AmountPerApp}
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span className="font-bold">Age:</span>
+                                      {
+                                        claim.GrantData.profileReqs.minAge
+                                      } - {claim.GrantData.profileReqs.maxAge}
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Required Race:
                                       </span>
-                                      None
+                                      {claim.GrantData.profileReqs.race.join(
+                                        ", "
+                                      )}
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Required Gender:
                                       </span>
-                                      None
+                                      {claim.GrantData.profileReqs.gender.join(
+                                        ", "
+                                      )}
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Veteran Only:
                                       </span>
-                                      No
+                                      {claim.GrantData.profileReqs.veteran === 0
+                                        ? "No"
+                                        : "Yes"}
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Number of Grants Available:
                                       </span>
-                                      3
+                                      {claim.GrantData.MaxWinners}
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span className="font-bold">
                                         Date Posted:
                                       </span>
-                                      2022-12-20
+                                      {claim.GrantData.PostedDate}
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                       <span className="font-bold">
                                         Grant Status:
                                       </span>
-                                      Active
+                                      {claim.GrantData.Active ? "Yes" : "No"}
                                     </div>
-                                    {/* add more  */}
                                   </div>
                                 </div>
                                 <h2 className="text-black font-semibold mb-2">
@@ -740,129 +472,98 @@ const Grantee_dashboard = () => {
                                 </h2>
                                 <div className="bg-slate-100 border-2  rounded p-6">
                                   <div className="flex justify-between mb-4 text-md">
-                                    This is a really great grant! This is a
-                                    really great grant! This is a really great
-                                    grant! This is a really great grant! This is
-                                    a really great grant! This is a really great
-                                    grant! This is a really great grant! This is
-                                    a really great grant! This is a really great
-                                    grant! This is a really great grant!
+                                    {claim.GrantData.Description}
                                   </div>
                                 </div>
                                 <h2 className="text-black font-semibold mb-2 mt-5">
                                   Applicant's Information
                                 </h2>
                                 <div className="bg-slate-100 border-2  rounded p-6">
-                                  <div className="flex justify-between mb-4 text-md">
-                                    <span className="font-bold">
-                                      Applicant Name:
-                                    </span>
-                                    {claim.applicantName}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
+                                  <div className="flex justify-between mb-4">
                                     <span className="font-bold">
                                       Applicant Email:
                                     </span>
-                                    applicant@gmail.com
+                                    {claim.ApplicationData.email}
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Age:</span>
-                                    18
+                                    {claim.ApplicationData.profileData.age}
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">
                                       Nationality:
                                     </span>
-                                    Canadian
+                                    {
+                                      claim.ApplicationData.profileData
+                                        .nationality
+                                    }
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Race:</span>
-                                    White
+                                    {claim.ApplicationData.profileData.race}
                                   </div>
-                                  <div className="flex justify-between items-center mb-2">
+                                  <div className="flex justify-between items-center mb-4">
                                     <span className="font-bold">
                                       Veteran Status:
                                     </span>
-                                    Not a veteran
+                                    {claim.ApplicationData.profileData
+                                      .veteran === 0
+                                      ? "No"
+                                      : "Yes"}
                                   </div>
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="font-bold">
                                       Date Submitted:
                                     </span>
-                                    {claim.dateSubmitted}
+                                    {claim.ApplicationData.dateSubmitted}
                                   </div>
-                                  {/* add more */}
                                 </div>
                                 <h2 className="text-black font-semibold mb-2 mt-5">
                                   Applicant's Response
                                 </h2>
-                                <div className="bg-slate-100 border-2  rounded p-6">
-                                  <div className="mb-2">
-                                    <span class="font-bold">
-                                      Question 1:{" "}
-                                      <span className="text-red-400">
-                                        Why do you need this grant?
-                                      </span>
-                                    </span>
-                                  </div>
-                                  <div className="mb-8 mt-2">
-                                    <span class="font-bold">
-                                      Answer:{" "}
-                                      <span className="text-red-400">
-                                        I am broke af
-                                      </span>
-                                    </span>
-                                  </div>
-                                  <div className="mb-2">
-                                    <span class="font-bold">
-                                      Question 2:{" "}
-                                      <span className="text-red-400">
-                                        Why do you need this grant?
-                                      </span>
-                                    </span>
-                                  </div>
-                                  <div className="mb-8 mt-2">
-                                    <span class="font-bold">
-                                      Answer:{" "}
-                                      <span className="text-red-400">
-                                        I am broke af
-                                      </span>
-                                    </span>
-                                  </div>
-                                  <div className="mb-2">
-                                    <span class="font-bold">
-                                      Question 3:{" "}
-                                      <span className="text-red-400">
-                                        Why do you need this grant?
-                                      </span>
-                                    </span>
-                                  </div>
-                                  <div className="mb-8 mt-2">
-                                    <span class="font-bold">
-                                      Answer:{" "}
-                                      <span className="text-red-400">
-                                        I am broke af
-                                      </span>
-                                    </span>
-                                  </div>
-                                  {/* add more */}
+
+                                <div className="bg-slate-100 border-2 rounded p-6">
+                                  {claim.GrantData.QuestionData.map(
+                                    (question, index) => (
+                                      <div key={index}>
+                                        <div className="mb-2">
+                                          <span className="font-bold">
+                                            Question {index + 1}:{" "}
+                                            <span className="text-red-400">
+                                              {question.question}
+                                            </span>
+                                          </span>
+                                        </div>
+                                        <div className="mb-8 mt-2">
+                                          <span className="font-bold">
+                                            Answer:{" "}
+                                            <span className="text-red-400">
+                                              {claim.ApplicationData
+                                                .answerData[0].text ||
+                                                "No answer provided"}
+                                            </span>
+                                          </span>
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
                                 </div>
                               </div>
                             ) : (
                               <div>
                                 {/* Small view content */}
                                 <p className="mb-2 text-md">
-                                  {claim.applicantName}
+                                  {claim.ApplicationData.email}
                                 </p>
-                                <p className="mb-2">{claim.category}</p>
+                                <p className="mb-2">{claim.GrantData.Title}</p>
                                 <div className="flex justify-between items-center">
                                   <div>
                                     <p>Date Submitted:</p>
-                                    <p>{claim.dateSubmitted}</p>
+                                    <p>{claim.ApplicationData.dateSubmitted}</p>
                                   </div>
                                   <div>
                                     <p>Amount Payable:</p>
-                                    <p>{claim.amountPayable}</p>
+                                    <p>{claim.GrantData.AmountPerApp}</p>
                                   </div>
                                 </div>
                               </div>
