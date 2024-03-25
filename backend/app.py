@@ -405,35 +405,34 @@ def updateGrantStatus():
 @app.route("/createApplication", methods=["POST"])
 # @tokenCheck.token_required
 def createApplication():
-    applicationData = getJSONData(request)
-    if applicationData is None:
+    contentType = request.headers.get('Content-Type')
+    if contentType == 'application/json':
+        grantID = request.json["grantID"]
+
+        if not ObjectId.is_valid(grantID):
+            return {"message": "Invalid grant ID"}, 400
+        
+        objID = ObjectId(grantID)
+        grant = grantCollection.find_one({"_id": objID}, {"_id": False})
+        if not grant:
+            return {"message": "Grant with the given ID not found"}, 404
+        
+        answers = request.json["answers"]
+        if answers == None or len(answers) != len(grant["QuestionData"]):
+            return {"message": "Invalid grant application answer data"}, 400
+
+        application = request.json
+        application["dateSubmitted"] = datetime.datetime.utcnow()
+        application["status"] = 1
+        application["profileData"] = None
+
+        id = grantAppCollection.insert_one(application).inserted_id
+        return {
+            "message": "Grant application successfully created",
+            "_id": str(id)
+        }, 200
+    else:
         return {"message": "Unsupported Content Type"}, 400
-
-    grantID = applicationData.get("grantID", "")
-    if not ObjectId.is_valid(grantID):
-        return {"message": "Invalid grant ID"}, 400
-    objID = ObjectId(grantID)
-    grant = grantCollection.find_one({"_id": objID}, {"_id": False})
-    if not grant:
-        return {"message": "Grant with the given ID not found"}, 404
-    # TODO: find a better way to check if answerData is present
-    if "answerData" not in applicationData or len(applicationData["answerData"]) != len(grant["QuestionData"]):
-        return {"message": "Invalid grant application answer data"}, 400
-    # Populate json request with answer constraints from grant to validate
-    for i in range(len(grant["QuestionData"])):
-        # TODO: need to ensure that applicationData["answerData"][i] is a dict
-        applicationData["answerData"][i]["options"] = grant["QuestionData"][i]["options"]
-
-    try:
-        Application.model_validate_json(JSON.dumps(applicationData))
-    except ValidationError as e:
-        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
-
-    id = grantAppCollection.insert_one(applicationData).inserted_id
-    return {
-        "message": "Grant application successfully created",
-        "_id": str(id)
-    }, 200
 
 
 # Used in tests; do not remove
