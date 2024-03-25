@@ -6,15 +6,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 
-
-
 const Grantee_dashboard = () => {
   const [data, setData] = useState("");
   const [appliedGrants, setAppliedGrants] = useState("");
   // TODO: USE applicationsWithQuestions TO POPULATE grantee_dashboard cards
-  const applicationsWithQuestions = localStorage.getItem('applicationsWithQuestions');
-  console.log(applicationsWithQuestions)
-
+  const applicationsWithQuestions = localStorage.getItem(
+    "applicationsWithQuestions"
+  );
+  console.log(applicationsWithQuestions);
 
   const handleSearchGrantApplications = () => {
     axios
@@ -23,10 +22,10 @@ const Grantee_dashboard = () => {
       })
       .then((response) => {
         setData(response.data);
-        console.log("search grants")
-        console.log(response.data)
-        localStorage.setItem('grants', JSON.stringify(response.data))
-        router.push('/search_grants');
+        console.log("search grants");
+        console.log(response.data);
+        localStorage.setItem("grants", JSON.stringify(response.data));
+        router.push("/search_grants");
       })
       .catch((error) => {
         if (error.response) {
@@ -44,14 +43,16 @@ const Grantee_dashboard = () => {
     axios
       .post("http://localhost:5000/applied_grants", {
         email: "applicant@website.com",
-        Filters: {
-        }
+        Filters: {},
       })
       .then((response) => {
         setData(response.data);
-        console.log(response.data)
-        localStorage.setItem('applicationsWithQuestions', JSON.stringify(response.data))
-        router.push('/applied_grants');
+        console.log(response.data);
+        localStorage.setItem(
+          "applicationsWithQuestions",
+          JSON.stringify(response.data)
+        );
+        router.push("/applied_grants");
       })
       .catch((error) => {
         if (error.response) {
@@ -68,35 +69,478 @@ const Grantee_dashboard = () => {
 
   const name = "Rawad";
   // Mock data for claims
-  const recentGrants = [
+  const allGrants = [
     {
-      id: 1,
-      title: "Medical Expense Claim",
-      status: "Pending",
-      applicantName: "John Doe",
-      category: "Medical",
-      dateSubmitted: "2024-03-07",
-      amountPayable: "1200",
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600a85f973f58eb1683c522",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
     },
     {
-      id: 2,
-      title: "Travel Reimbursement",
-      status: "Approved",
-      applicantName: "Jane Smith",
-      category: "Travel",
-      dateSubmitted: "2024-02-28",
-      amountPayable: "300",
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-04-01",
+        email: "applicant@website.com",
+        grantID: "6600a85f973f58eb1683c524",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
     },
     {
-      id: 3,
-      title: "Work From Home Setup",
-      status: "Rejected",
-      applicantName: "Alice Johnson",
-      category: "Equipment",
-      dateSubmitted: "2024-01-15",
-      amountPayable: "500",
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600a85f973f58eb1683c526",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600a85f973f58eb1683c528",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 3,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600a85f973f58eb1683c52a",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600a85f973f58eb1683c52c",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600ad2d8d6dfb38c7992c64",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-04-01",
+        email: "applicant@website.com",
+        grantID: "6600ad2d8d6dfb38c7992c66",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600ad2e8d6dfb38c7992c68",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600ad2e8d6dfb38c7992c6a",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 3,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600ad2e8d6dfb38c7992c6c",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+    },
+    {
+      ApplicationData: {
+        answerData: [
+          {
+            options: {
+              answerType: "short",
+              isMultipleLines: false,
+              maxCharsNum: 16,
+              minCharsNum: 1,
+            },
+            text: "Bob",
+          },
+        ],
+        dateSubmitted: "2024-03-14",
+        email: "applicant@website.com",
+        grantID: "6600ad2e8d6dfb38c7992c6e",
+        profileData: {
+          age: 21,
+          gender: "Man",
+          nationality: "Canadian",
+          race: "White",
+          veteran: 1,
+        },
+        status: 0,
+      },
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
     },
   ];
+
+  const recentGrants = allGrants.slice(0, 3);
 
   const [expandedGrantId, setExpandedGrantId] = useState(null);
 
@@ -150,17 +594,13 @@ const Grantee_dashboard = () => {
 
                 <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
                   <button
-                    onClick={
-                      handleViewApplications
-                    }
+                    onClick={handleViewApplications}
                     className="text-green-700 hover:text-green-900 transition-colors px-4 py-2 sm:px-5 sm:py-2 rounded-full text-sm sm:text-base"
                   >
                     View My Applications
                   </button>
                   <button
-                    onClick={
-                      handleSearchGrantApplications
-                    }
+                    onClick={handleSearchGrantApplications}
                     className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
                   >
                     Submit an Application
@@ -173,19 +613,19 @@ const Grantee_dashboard = () => {
                   {recentGrants.map((claim) => {
                     // Check if the card should be expanded or if no card is expanded
                     const shouldDisplay =
-                      expandedGrantId === null || expandedGrantId === claim.id;
-
+                      expandedGrantId === null ||
+                      expandedGrantId === claim.ApplicationData.grantID;
                     // Only render the card if it should be displayed based on the above condition
                     if (shouldDisplay) {
                       return (
                         <div
-                          key={claim.id}
+                          key={claim.ApplicationData.grantID}
                           className={` p-1 transition-all duration-500 ease-in-out ${
-                            expandedGrantId === claim.id
+                            expandedGrantId === claim.ApplicationData.grantID
                               ? "scale-100 opacity-100"
                               : "scale-95 opacity-75"
                           } ${
-                            expandedGrantId === claim.id
+                            expandedGrantId === claim.ApplicationData.grantID
                               ? "col-span-3 lg:col-span-3"
                               : "md:col-span-2 lg:col-span-1"
                           }`}
@@ -202,21 +642,24 @@ const Grantee_dashboard = () => {
                               <button
                                 onClick={() =>
                                   toggleCardExpansion(
-                                    expandedGrantId === claim.id
+                                    expandedGrantId ===
+                                      claim.ApplicationData.grantID
                                       ? null
-                                      : claim.id
+                                      : claim.ApplicationData.grantID
                                   )
                                 }
                                 className="text-green-700 text-md hover:text-green-900 transition duration-150 ease-in-out"
                               >
-                                {expandedGrantId === claim.id
+                                {expandedGrantId ===
+                                claim.ApplicationData.grantID
                                   ? "Close"
                                   : "View Details"}
                               </button>
                             </div>
 
                             <div className="border-t border-gray-300 mb-5"></div>
-                            {expandedGrantId === claim.id ? (
+                            {expandedGrantId ===
+                            claim.ApplicationData.grantID ? (
                               <div>
                                 {/* Expanded view content */}
                                 <div className="mb-5">
@@ -481,9 +924,7 @@ const Grantee_dashboard = () => {
                   </p>
                   <div className="flex justify-center">
                     <button
-                      onClick={
-                        handleSearchGrantApplications
-                      }
+                      onClick={handleSearchGrantApplications}
                       className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
                     >
                       Find Grants

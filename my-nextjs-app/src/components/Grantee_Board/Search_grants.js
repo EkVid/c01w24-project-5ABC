@@ -4,137 +4,527 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const Search_grants = () => {
-  const allGrantsFromDB = localStorage.getItem('grants');
-  console.log(allGrantsFromDB)
+  const allGrantsFromDB = localStorage.getItem("grants");
+  console.log(allGrantsFromDB);
   // TODO: USE allGrantsFromDB TO POPULATE search_grants cards
 
   // this is how allgrantsfromDB come in
-//    [{"_id":"65f7822fd9506bb59950983f",
-//   "amountPerApp":1499.99,
-//   "appliedIDs":[],
-//   "deadline":"2024-04-05",
-//   "description":"Do apply to this grant",
-//   "grantorEmail":"aversi07@gmail.com",
-//   "isActive":"true","maxWinners":10,
-//   "numWinners":0,
-//   "profileReqs":{"gender":["Man","Woman","Non-binary"],
-//   "maxAge":24,"minAge":18,
-//   "nationality":"Canadian",
-//   "race":["Asian","African American","White"],
-//   "veteran":1},
-//   "questionData":[
-//     {"isRequired":true,
-//     "options":
-//     {"answerType":"short",
-//     "isMultipleLines":false,
-//     "maxCharsNum":16,
-//     "minCharsNum":1
-//   },
-//   "question":"What is your name?",
-//   "type":"textbox"}
-// ],
-// "title":"A Generous Grant",
-// "winnerIDs":[]}]
+  //    [{"_id":"65f7822fd9506bb59950983f",
+  //   "amountPerApp":1499.99,
+  //   "appliedIDs":[],
+  //   "deadline":"2024-04-05",
+  //   "description":"Do apply to this grant",
+  //   "grantorEmail":"aversi07@gmail.com",
+  //   "isActive":"true","maxWinners":10,
+  //   "numWinners":0,
+  //   "profileReqs":{"gender":["Man","Woman","Non-binary"],
+  //   "maxAge":24,"minAge":18,
+  //   "nationality":"Canadian",
+  //   "race":["Asian","African American","White"],
+  //   "veteran":1},
+  //   "questionData":[
+  //     {"isRequired":true,
+  //     "options":
+  //     {"answerType":"short",
+  //     "isMultipleLines":false,
+  //     "maxCharsNum":16,
+  //     "minCharsNum":1
+  //   },
+  //   "question":"What is your name?",
+  //   "type":"textbox"}
+  // ],
+  // "title":"A Generous Grant",
+  // "winnerIDs":[]}]
   const allGrants = [
     {
-      id: 1,
-      serviceDate: "2023-01-01",
-      receivedOn: "2023-01-02",
-      claimType: "Type A",
-      memberName: "Canada",
-      amountPaid: "$1000",
-      category: "Category 1",
-      grantor: "Provider A",
+      Active: false,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600a85f973f58eb1683c521",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 2,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Canada",
-      amountPaid: "$1500",
-      grantor: "Provider B",
-      category: "Category 2",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600a85f973f58eb1683c522",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 3,
-      serviceDate: "2023-03-01",
-      receivedOn: "2023-03-03",
-      claimType: "Type C",
-      memberName: "International",
-      amountPaid: "$2000",
-      grantor: "Provider C",
-      category: "Category 3",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600a85f973f58eb1683c524",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 4,
-      serviceDate: "2023-01-01",
-      receivedOn: "2023-01-02",
-      claimType: "Type A",
-      memberName: "Canada",
-      amountPaid: "$1000",
-      grantor: "Provider A",
-      category: "Category 1",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600a85f973f58eb1683c526",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 5,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Canada",
-      amountPaid: "$1500",
-      grantor: "Provider B",
-      category: "Category 2",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: ["6600a85f973f58eb1683c529"],
+      _id: "6600a85f973f58eb1683c528",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 6,
-      serviceDate: "2023-01-01",
-      receivedOn: "2023-01-02",
-      claimType: "Type A",
-      memberName: "Canada",
-      amountPaid: "$1000",
-      category: "Category 1",
-      grantor: "Provider A",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600a85f973f58eb1683c52a",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 7,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "Canada",
-      amountPaid: "$1500",
-      grantor: "Provider B",
-      category: "Category 2",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600a85f973f58eb1683c52c",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 8,
-      serviceDate: "2023-03-01",
-      receivedOn: "2023-03-03",
-      claimType: "Type C",
-      memberName: "Canada",
-      amountPaid: "$2000",
-      grantor: "Provider C",
-      category: "Category 3",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600ad2d8d6dfb38c7992c63",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 9,
-      serviceDate: "2023-01-01",
-      receivedOn: "2023-01-02",
-      claimType: "Type A",
-      memberName: "US",
-      amountPaid: "$1000",
-      grantor: "Provider A",
-      category: "Category 1",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600ad2d8d6dfb38c7992c64",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
     {
-      id: 10,
-      serviceDate: "2023-02-01",
-      receivedOn: "2023-02-05",
-      claimType: "Type B",
-      memberName: "China",
-      amountPaid: "$1500",
-      grantor: "Provider B",
-      category: "Category 2",
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600ad2d8d6dfb38c7992c66",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
+    },
+    {
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600ad2e8d6dfb38c7992c68",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
+    },
+    {
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: ["6600ad2e8d6dfb38c7992c6b"],
+      _id: "6600ad2e8d6dfb38c7992c6a",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
+    },
+    {
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600ad2e8d6dfb38c7992c6c",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
+    },
+    {
+      Active: true,
+      AmountPerApp: 1499.99,
+      AppliedIDs: [],
+      Deadline: "2024-04-05",
+      Description: "Do apply to this grant",
+      MaxWinners: 10,
+      NumWinners: 0,
+      PostedDate: "2024-04-01",
+      QuestionData: [
+        {
+          isRequired: true,
+          options: {
+            answerType: "short",
+            isMultipleLines: false,
+            maxCharsNum: 16,
+            minCharsNum: 1,
+          },
+          question: "What is your name?",
+          type: "textbox",
+        },
+      ],
+      Title: "A Generous Grant",
+      WinnerIDs: [],
+      _id: "6600ad2e8d6dfb38c7992c6e",
+      grantorEmail: "grantor@website.com",
+      profileReqs: {
+        gender: ["Man", "Woman", "Non-binary"],
+        maxAge: 24,
+        minAge: 18,
+        nationality: ["Canadian", "American"],
+        race: ["Asian", "African American", "White"],
+        veteran: 1,
+      },
     },
   ];
 
@@ -475,19 +865,19 @@ const Search_grants = () => {
                 {currentGrants.map((claim) => {
                   // Check if the card should be expanded or if no card is expanded
                   const shouldDisplay =
-                    expandedGrantId === null || expandedGrantId === claim.id;
+                    expandedGrantId === null || expandedGrantId === claim._id;
 
                   // Only render the card if it should be displayed based on the above condition
                   if (shouldDisplay) {
                     return (
                       <div
-                        key={claim.id}
+                        key={claim._id}
                         className={` p-1 transition-all duration-500 ease-in-out ${
-                          expandedGrantId === claim.id
+                          expandedGrantId === claim._id
                             ? "scale-100 opacity-100"
                             : "scale-95 opacity-75"
                         } ${
-                          expandedGrantId === claim.id
+                          expandedGrantId === claim._id
                             ? "col-span-3 lg:col-span-3"
                             : "md:col-span-2 lg:col-span-1"
                         }`}
@@ -500,28 +890,28 @@ const Search_grants = () => {
                           <div className="flex justify-between items-center mb-4">
                             <p className="text-md">
                               <p className=" text-black">
-                                <span className="font-semibold">
-                                  Provider:{" "}
-                                </span>{" "}
-                                {claim.grantor}
+                                <span className="font-semibold">Email: </span>{" "}
+                                {claim.grantorEmail}
                               </p>
                             </p>
                             <button
                               onClick={() =>
                                 toggleCardExpansion(
-                                  expandedGrantId === claim.id ? null : claim.id
+                                  expandedGrantId === claim._id
+                                    ? null
+                                    : claim._id
                                 )
                               }
                               className="text-green-700 text-md hover:text-green-900 transition duration-150 ease-in-out"
                             >
-                              {expandedGrantId === claim.id
+                              {expandedGrantId === claim._id
                                 ? "Close"
                                 : "View Details"}
                             </button>
                           </div>
 
                           <div className="border-t border-gray-300 mb-5"></div>
-                          {expandedGrantId === claim.id ? (
+                          {expandedGrantId === claim._id ? (
                             <div>
                               {/* Expanded view content */}
                               <div className="mb-5">
@@ -533,73 +923,69 @@ const Search_grants = () => {
                                 <div className="bg-slate-100 border-2 rounded p-6">
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">Title:</span>
-                                    {claim.category}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">Provider:</span>
-                                    {claim.grantor}
+                                    {claim.Title}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
                                       Provider Email:
                                     </span>
-                                    5ABC@gmail.com
+                                    {claim.grantorEmail}
                                   </div>
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="font-bold">
                                       Amount Payable:
                                     </span>
-                                    {claim.amountPaid}
+                                    {claim.AmountPerApp}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
                                       Required Nationality:
                                     </span>
-                                    {claim.memberName}
+                                    {claim.profileReqs.nationality.join(", ")}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
                                       Required Age:
                                     </span>
-                                    10-30
+                                    {claim.profileReqs.minAge} -{" "}
+                                    {claim.profileReqs.maxAge}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
                                       Required Race:
                                     </span>
-                                    None
+                                    {claim.profileReqs.race.join(", ")}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
                                       Required Gender:
                                     </span>
-                                    None
+                                    {claim.profileReqs.gender.join(", ")}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
                                       Veteran Only:
                                     </span>
-                                    No
+                                    {claim.profileReqs.veteran}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
                                       Number of Grants Available:
                                     </span>
-                                    3
+                                    {claim.MaxWinners}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
                                       Date Posted:
                                     </span>
-                                    2022-12-20
+                                    {claim.PostedDate}
                                   </div>
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="font-bold">
                                       Grant Status:
                                     </span>
-                                    Active
+                                    {claim.Active ? "Active" : "Inactive"}
                                   </div>
-                                  {/* add more  */}
                                 </div>
                               </div>
                               <h2 className="text-black font-semibold mb-2">
@@ -607,21 +993,14 @@ const Search_grants = () => {
                               </h2>
                               <div className="bg-slate-100 border-2  rounded p-6">
                                 <div className="flex justify-between mb-4 text-md">
-                                  This is a really great grant! This is a really
-                                  great grant! This is a really great grant!
-                                  This is a really great grant! This is a really
-                                  great grant! This is a really great grant!
-                                  This is a really great grant! This is a really
-                                  great grant! This is a really great grant!
-                                  This is a really great grant!
+                                  {claim.Description}
                                 </div>
                               </div>
                               <h2 className="text-red-500 font-semibold mb-2 mt-5">
                                 Deadline to Apply
                               </h2>
                               <div className="bg-slate-100 border-2  rounded p-6">
-                                <div className="mb-2">2023-10-10</div>
-                                {/* add more */}
+                                <div className="mb-2">{claim.Deadline}</div>
                               </div>
                               <div className="flex justify-center items-center">
                                 <button className="text-black px-6 py-2 bg-sky-100 hover:bg-sky-200 rounded-full font-semibold mb-2 mt-5">
@@ -632,16 +1011,19 @@ const Search_grants = () => {
                           ) : (
                             <div>
                               {/* Small view content */}
-                              <p className="mb-2 text-md">{claim.memberName}</p>
-                              <p className="mb-2">{claim.category}</p>
+                              <p className="mb-2 text-md">{claim.Title}</p>
+                              <p className="mb-2">
+                                {claim.profileReqs.minAge} -{" "}
+                                {claim.profileReqs.maxAge}
+                              </p>
                               <div className="flex justify-between items-center">
                                 <div>
                                   <p>Date Posted:</p>
-                                  <p>{claim.receivedOn}</p>
+                                  <p>{claim.PostedDate}</p>
                                 </div>
                                 <div>
                                   <p>Amount Payable:</p>
-                                  <p>{claim.amountPaid}</p>
+                                  <p>{claim.AmountPerApp}</p>
                                 </div>
                               </div>
                             </div>
