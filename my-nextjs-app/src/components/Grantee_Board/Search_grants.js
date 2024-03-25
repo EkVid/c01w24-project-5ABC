@@ -68,7 +68,7 @@ const Search_grants = () => {
         minAge: 18,
         nationality: ["Canadian", "American"],
         race: ["Asian", "African American", "White"],
-        veteran: 1,
+        veteran: 0,
       },
     },
     {
@@ -966,7 +966,9 @@ const Search_grants = () => {
                                     <span className="font-bold">
                                       Veteran Only:
                                     </span>
-                                    {claim.profileReqs.veteran}
+                                    {claim.profileReqs.veteran === 0
+                                      ? "No"
+                                      : "Yes"}
                                   </div>
                                   <div className="flex justify-between mb-2">
                                     <span className="font-bold">
