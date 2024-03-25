@@ -476,17 +476,18 @@ def getGranteeApplications():
         grant["grantID"] = str(grant["_id"])
         del grant["_id"]
 
-    applicationsWithQuestions = []
+    applicationsWithGrants = []
     # Tradeoff for having only two DB calls
     for applicationData in applicationDatas:
         for grant in grants:
             if applicationData["grantID"] == grant["grantID"]:
-                applicationsWithQuestions.append({
+                applicationsWithGrants.append({
                     "ApplicationData": applicationData,
-                    "QuestionData": grant["QuestionData"]
+                    "GrantData": grant
                 })
-
-    return {"applicationsWithQuestions": applicationsWithQuestions}, 200
+            
+    print(applicationsWithGrants)
+    return {"applicationsWithGrants": applicationsWithGrants}, 200
 
 
 """Returns all applications for the grant with the given ID. Note that this route uses JSON as opposed to form data.
@@ -623,7 +624,8 @@ def getFilteredGrants():
         grants = list(grantCollection.find({"$and": query}))
 
     for grant in grants:
-        grant["_id"] = str(grant["_id"])
+        grant["grantID"] = str(grant["_id"])
+        del grant["_id"]
 
     return grants, 200
 

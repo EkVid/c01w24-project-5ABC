@@ -375,7 +375,7 @@ describe('/getGranteeApplications tests', () => {
     insertedData.applicationIDs.push(applicationID);
   });
 
-  test('/getGranteeApplications - valid data', async () => {
+  test('/getGranteeApplications valid data', async () => {
     const res = await fetch(`${SERVER_URL}/getGranteeApplications`, {
       method: 'POST',
       headers: {
@@ -388,14 +388,15 @@ describe('/getGranteeApplications tests', () => {
     const resBody = await res.json();
     expect(res.status).toBe(200);
 
-    const applicationWithQuestions = resBody.applicationsWithQuestions;
-    expect(applicationWithQuestions.length).toBeGreaterThan(0);
+    const applicationsWithGrants = resBody.applicationsWithGrants;
+    console.log(applicationsWithGrants);
+    expect(applicationsWithGrants.length).toBeGreaterThan(0);
 
-    for (const applicationWithGrant of applicationWithQuestions) {
+    for (const applicationWithGrant of applicationsWithGrants) {
       const applicationData = applicationWithGrant.ApplicationData;
-      const questionData = applicationWithGrant.QuestionData;
+      const grantData = applicationWithGrant.GrantData;
 
-      expect(questionData).toBeTruthy();
+      expect(grantData).toBeTruthy();
       expect(applicationData).toBeTruthy();
       expect(applicationData.email).toBe(validUsers[0].Email);
     }
