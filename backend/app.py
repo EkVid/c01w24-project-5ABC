@@ -573,11 +573,15 @@ def deleteApplication(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
 
-    res = grantAppCollection.delete_one({"_id": objID})
-    if res.deleted_count != 1:
+    app = grantAppCollection.find_one_and_delete({"_id": objID})
+    if app == None:
         return {"message": "Grant application with the given ID not found"}, 404
+    
+    for answer in app["answers"]:
+        if "fileLink" in answer:
+            deleteFile(answer["fileLink"])
 
-    return {"message": "Grant form successfully deleted"}, 200
+    return {"message": "Application successfully deleted"}, 200
 
 
 """
