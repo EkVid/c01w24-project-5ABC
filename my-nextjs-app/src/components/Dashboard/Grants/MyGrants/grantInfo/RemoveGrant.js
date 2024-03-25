@@ -26,7 +26,7 @@ export default function RemoveGrant({ grant, grantID }){
 
     return(
         <div className="flex flex-col mb-10">
-            <h2 className="text-3xl">Remove {grant.Title}</h2>
+            <h2 tabIndex="0" className="dark:d-text text-3xl">Remove {grant.Title}</h2>
             <button 
                 className="rounded w-fit text-center px-4 py-2 hover:scale-105 text-white mt-6 bg-[#d76b65]" 
                 onClick={deleteGrant}
