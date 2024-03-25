@@ -11,13 +11,16 @@ import { initTheme, changeTheme, getTheme } from "./utils/theme.js";
 import FontSizeContext from "./utils/FontSizeContext";
 import ReducedMotionContext from "./utils/ReducedMotionContext";
 import ThemeContext from "./utils/ThemeContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { initcbMode, changecbMode } from "./utils/cbMode";
 
-const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion}) => {
+const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion, onChangeCBMode}) => {
   initTheme()
+  const prevcbMode = initcbMode()
   const [ lightTheme, setLightTheme ] = useState(getTheme() === 'light')
   const [ fontSize, setFontSize ] = useState(100)  // Default font size is 100
   const [ isReducedMotion, setIsReducedMotion ] = useState(false)
-  // TODO: add handler for setting isReducedMotion when option is changed
+  const [ cbMode, setcbMode ] = useState(prevcbMode)
 
   const handleScaleFontDown = () => {
     scaleFont("down");
@@ -45,6 +48,12 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   const handleOnClickMotion = () => {
     setIsReducedMotion(!isReducedMotion);
     if (onChangeMotion) onChangeMotion(!isReducedMotion);
+  }
+
+  const handleColourBlindness = (e) => {
+    changecbMode(e.target.value)
+    setcbMode(e.target.value)
+    if (onChangeCBMode) onChangeCBMode(cbMode)
   }
 
   return(
@@ -107,7 +116,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
             </div>
           </div>
 
-          {/* Language */}
+          {/* Language
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:d-text">Language</h3>
             <div className="flex justify-center items-center mt-4 mx-1 rounded-lg custom-dark-grey-background h-8">
@@ -117,6 +126,19 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
                 alt="down chevron"
                 className="ms-auto transition-all duration-300"
               />
+            </div>
+          </div> */}
+
+          {/* Color Blindness Modes */}
+          <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
+            <h3 className="text-center cs-text-xl dark:d-text">Color Blindness</h3>
+            <div className="flex justify-center items-center mt-4 mx-1 rounded-lg custom-dark-grey-background h-8">
+              <select name='colour-blindness' defaultValue={cbMode} onChange={handleColourBlindness}>
+                  <option value="">None</option>
+                  <option value="protanopia">Protanopia</option>
+                  <option value="deuteranopia">Deuteranopia</option>
+                  <option value="tritanopia">Tritanopia</option>
+              </select>
             </div>
           </div>
 
@@ -138,7 +160,9 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
       <FontSizeContext.Provider value={fontSize}>
         <ThemeContext.Provider value={lightTheme}>
           <ReducedMotionContext.Provider value={isReducedMotion}>
-            {children}
+            <ColourBlindnessContext.Provider value={cbMode}>
+              {children}
+            </ColourBlindnessContext.Provider>
           </ReducedMotionContext.Provider>
         </ThemeContext.Provider>
       </FontSizeContext.Provider>
