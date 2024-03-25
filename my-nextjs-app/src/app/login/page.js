@@ -1,12 +1,11 @@
 import Login from "@/components/signup-login/Login";
-import BaseLayout from "@/app/layout";
 import dynamic from "next/dynamic";
 
 const LoginPage = () => {
   return (
-    <BaseLayout showFooter={false}>
+    <div>
       <Login />
-    </BaseLayout>
+    </div>
   );
 };
 
