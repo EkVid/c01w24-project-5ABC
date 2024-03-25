@@ -15,8 +15,9 @@ import datetime
 import json as JSON
 import random
 import base64
+import re
 
-from dataModels import (Application, Grant, APPLICATION_APPROVED)
+from dataModels import (Application, Grant, ApplicationStatus)
 from helpers import (getJSONData, getFileData, isListOfDict)
 
 load_dotenv()
@@ -318,7 +319,8 @@ def createGrant():
     
     # checking for files that need to be stored
     for question in grantDict["QuestionData"]:
-        if question["fileData"] != None:
+        fileData = question.get("fileData", None)
+        if fileData != None:
             question["fileData"]["fileLink"] = uploadFile(base64.b64decode(files[question["fileIdx"]]), question["fileData"]["fileName"])
 
     id = grantCollection.insert_one(grantDict).inserted_id
@@ -375,7 +377,8 @@ def deleteGrant(_id):
         return {"message": "Grant form with the given ID not found"}, 404
     
     for question in grant["QuestionData"]:
-        if question["fileData"] != None:
+        fileData = question.get("fileData", None)
+        if fileData != None:
             deleteFile(question["fileData"]["fileLink"])
 
     return {"message": "Grant form successfully deleted"}, 200
@@ -466,7 +469,7 @@ def getGranteeApplications():
     grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
 
     if len(applicationDatas) != len(grants):
-        return {"message": "Question data retrieval error"}, 403
+        return {"message": "Question data retrieval error"}, 403 
 
     # Assign grantIDs to link each application to its grant
     for grant in grants:
@@ -553,7 +556,7 @@ def updateGrantWinners():
     applicationObjID = ObjectId(applicationID)
     grantObjID = ObjectId(grantID)
     grantCollection.update_one({"_id": grantObjID}, {"$push": {"WinnerIDs": applicationID}})
-    grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": APPLICATION_APPROVED}})
+    grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": ApplicationStatus.APPROVED}})
 
     return {"message": "Application winner successfully added"}, 200
 
@@ -570,3 +573,104 @@ def deleteApplication(_id):
         return {"message": "Grant application with the given ID not found"}, 404
 
     return {"message": "Grant form successfully deleted"}, 200
+
+
+"""
+Applicant-side Filter Routes
+"""
+@app.route("/getFilteredGrants", methods=["POST"])
+#@tokenCheck.token_required
+def getFilteredGrants():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+    
+    filters = request.json
+    query = []
+    for key, value in filters.items():
+        if key == "Title_keyword":
+            pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
+            query.append({"Title": {"$regex": pattern}})
+        elif key == "Gender":
+            query.append({"profileReqs.gender": value})
+        elif key == "Race":
+            query.append({"profileReqs.race": value})
+        elif key == "Nationality":
+            query.append({"profileReqs.nationality": value})
+        elif key == "Date Posted Before":
+            query.append({"PostedDate": {"$lt": value}})
+        elif key == "Date Posted After":
+            query.append({"PostedDate": {"$gt": value}})
+        elif key == "Deadline":
+            query.append({"Deadline": {"$lte": value}})
+        elif key == "Status":
+            query.append({"Active": value})
+        elif key == "Min Age":
+            query.append({"profileReqs.minAge": {"$gte": value}})
+        elif key == "Max Age":
+            query.append({"profileReqs.maxAge": {"$lte": value}})
+        elif key == "Min Payable Amount":
+            query.append({"AmountPerApp": {"$gte": value}})
+        elif key == "Max Payable Amount":
+            query.append({"AmountPerApp": {"$lte": value}})
+        elif key == "Vet Status":
+            query.append({"profileReqs.veteran": value})
+        elif key == "Num Grants Available":
+            query.append({"MaxWinners": {"$gte" :value}})
+
+    if len(query) == 0:
+        grants = list(grantCollection.find())
+    else:
+        grants = list(grantCollection.find({"$and": query}))
+
+    for grant in grants:
+        grant["_id"] = str(grant["_id"])
+
+    return grants, 200
+
+@app.route("/getFilteredGranteeApplications", methods=["POST"])
+#@tokenCheck.token_required
+def getFilteredGranteeApplications():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+    json = request.json
+
+    email = json.pop("Email", None)
+    if not email:
+        return {"message": "Invalid email"}, 400
+
+    user = userCollection.find_one({"Email": email})
+    if not user:
+        return {"message": "Grantee with the given email does not exist"}, 400
+
+    filters = json["Filters"]
+    query = [{"email": email}]
+    for key, value in filters.items():
+        if key == "Date Submitted":
+            query.append({"dateSubmitted": value})
+        elif key == "Status":
+            query.append({"status": value})
+    # First filter applications based off filters available directly in application  
+    # object without having to search corresponding grant
+    quickFilteredApps = list(grantAppCollection.find({"$and": query}))
+
+    finalApps = []
+    for app in quickFilteredApps:
+        query = [{"_id": ObjectId(app["grantID"])}]
+        for key, value in filters.items():
+            if key == "Title_keyword":
+                pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
+                query.append({"Title": {"$regex": pattern}})
+            elif key == "Deadline":
+                query.append({"Deadline": value})
+            elif key == "Max Payable Amount":
+                query.append({"AmountPerApp": {"$lte": value}})
+        
+        grant = grantCollection.find_one({"$and": query})
+        if grant:
+            app["_id"] = str(app["_id"])
+            finalApps.append({
+                    "ApplicationData": app,
+                    "QuestionData": grant["QuestionData"]
+            })
+
+    return finalApps, 200

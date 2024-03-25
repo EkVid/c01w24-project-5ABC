@@ -78,6 +78,31 @@ const validProfileData = [
   },
 ];
 
+const validGrantFilterData = {
+  Title_keyword: 'generous',
+  Gender: 'Non-binary',
+  Race: 'Asian',
+  Nationality: 'Canadian',
+  'Date Posted Before': '2024-04-05',
+  'Date Posted After': '2024-03-21',
+  Deadline: '2024-04-06',
+  Status: true,
+  'Min Age': 18,
+  'Max Age': 25,
+  'Min Payable Amount': 1499,
+  'Max Payable Amount': 1500,
+  'Vet Status': VeteranStatus.nonVeteran,
+  'Num Grants Available': 9,
+};
+
+const validApplicationFilterData = {
+    Title_keyword: 'generous',
+    'Date Submitted': '2024-03-14',
+    Deadline: '2024-04-05',
+    Status: 0,
+    'Max Payable Amount': 1500,
+};
+
 const getValidGrantFormData = () => {
   const jsonData = {
     grantorEmail: 'grantor@website.com',
@@ -87,7 +112,7 @@ const getValidGrantFormData = () => {
     MaxWinners: 10,
     Deadline: '2024-04-05',
     PostedDate: '2024-04-01',
-    Active: 'true',
+    Active: true,
     AmountPerApp: 1499.99,
     profileReqs: validProfileReqs[0],
     WinnerIDs: [],
@@ -142,6 +167,7 @@ const insertedData = {
   grantIDs: [],
   applicationIDs: [],
 };
+
 
 beforeAll(async () => {
   for (const user of validUsers) {
@@ -454,8 +480,106 @@ describe('/updateGrantWinners tests', () => {
   });
 });
 
+describe('/getFilteredGrants tests', () => {
+  // Create a grant and application, storing their IDs to be deleted at end
+  beforeAll(async () => {
+    const grantData = getValidGrantFormData();
+    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: grantData,
+    });
+    const createGrantResBody = await createGrantRes.json();
+    grantID = createGrantResBody._id;
+
+    expect(createGrantRes.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+
+    const applicationData = getValidApplicationData(grantID);
+    const createApplicationRes = await fetch(
+      `${SERVER_URL}/createApplication`,
+      {
+        method: 'POST',
+        body: applicationData,
+      }
+    );
+    const createApplicationResBody = await createApplicationRes.json();
+    applicationID = createApplicationResBody._id;
+
+    expect(createApplicationRes.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  });
+
+  test('/getFilteredGrants valid data', async () => {
+    console.log(`${SERVER_URL}/getFilteredGrants`);
+    const res = await fetch(`${SERVER_URL}/getFilteredGrants`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(validGrantFilterData),
+    });
+    const resBody = await res.json();
+    console.log(resBody);
+
+    expect(res.status).toBe(200);
+  });  
+});
+
+describe('/getFilteredGranteeApplications tests', () => {
+  // Create a grant and application, storing their IDs to be deleted at end
+  beforeAll(async () => {
+    const grantData = getValidGrantFormData();
+    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: grantData,
+    });
+    const createGrantResBody = await createGrantRes.json();
+    grantID = createGrantResBody._id;
+
+    expect(createGrantRes.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+
+    const applicationData = getValidApplicationData(grantID);
+    const createApplicationRes = await fetch(
+      `${SERVER_URL}/createApplication`,
+      {
+        method: 'POST',
+        body: applicationData,
+      }
+    );
+    const createApplicationResBody = await createApplicationRes.json();
+    applicationID = createApplicationResBody._id;
+
+    expect(createApplicationRes.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  });
+
+  test('/getFilteredGranteeApplications valid data', async () => {
+    console.log(`${SERVER_URL}/getFilteredGranteeApplications`);
+    const res = await fetch(`${SERVER_URL}/getFilteredGranteeApplications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Email: validUsers[0].Email,
+        Filters: validApplicationFilterData,
+      }),
+    });
+    const resBody = await res.json();
+    console.log(resBody);
+    
+    expect(res.status).toBe(200);
+  });  
+});
+
+
 // Delete all inserted data; this implicitly tests the delete routes
-afterAll(async () => {
+ afterAll(async () => {
   console.log('Deleting all data inserted during tests');
   console.log(insertedData);
 
