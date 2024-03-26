@@ -13,3 +13,6 @@ node_modules
 backend/data/
 app.py
 __pycache__
+certs
+html
+vhost
