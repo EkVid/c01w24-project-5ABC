@@ -1,10 +1,15 @@
 'use client'
 import ViewApplication from "./viewForm"
 import axios from "axios"
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { getcbMode } from "@/components/utils/cbMode";
+import { useContext } from "react";
 import { useRouter } from 'next/navigation'
 
 export default function ViewGrant({ grant, setViewGrant }){
     const router = useRouter()
+    const cbMode = useContext(ColourBlindnessContext)
+    const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
     
     function stringifyArray(arr){
         let string = ''
@@ -150,7 +155,7 @@ export default function ViewGrant({ grant, setViewGrant }){
                     Back
                 </button>
                 <button
-                    className="px-6 my-2 md:my-0 text-white text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent border-2 border-neutral-300 dark:d-text dark:border-neutral-700"
+                    className={`px-6 my-2 md:my-0 text-white text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent border-2 border-neutral-300 dark:d-text dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
                     onClick={PostGrant}
                 >
                     Post Grant

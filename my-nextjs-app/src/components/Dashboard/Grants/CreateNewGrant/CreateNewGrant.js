@@ -1,7 +1,9 @@
 'use client'
 import DashboardInnerContainer from "../../InnerContainer"
 import ViewGrant from "./view/ViewGrant"
-import { useState, useEffect } from "react"
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { getcbMode } from "@/components/utils/cbMode";
+import { useState, useEffect, useContext } from "react"
 import Link from "next/link"
 import { v4 as uuidv4 } from 'uuid';
 import xMark from "@/../public/x.svg"
@@ -39,6 +41,9 @@ const CreateNewGrant = () => {
     const [ gender , setGender ] = useState('')
     const [ nationality, setNationality ] = useState('')
     const [ viewGrant, setViewGrant ] = useState(false)
+
+    const cbMode = useContext(ColourBlindnessContext)
+    const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
 
     // Only show undo if there was a previous deletion
     const undoShow = localStorage.getItem('clearedGrant') !== null
@@ -329,7 +334,7 @@ const CreateNewGrant = () => {
                                     >
                                         {grant.Title ? grant.Title : 'Default'} Form
                                     </p>
-                                    <Link aria-label="edit grant application form" href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">
+                                    <Link aria-label="edit grant application form" href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} className={`px-8 my-2 md:my-0 text-center py-4 rounded-md text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}>
                                         Edit
                                     </Link>
                                 </div> 
@@ -496,7 +501,7 @@ const CreateNewGrant = () => {
                                 </button>
                                 <button
                                     type="button"
-                                    className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md hover:scale-105 bg-white hover:bg-red-600 border-2 border-neutral-300 disabled:text-neutral-400 disabled:bg-transparent dark:d-text dark:disabled:bg-transparent dark:disabled:text-neutral-400 dark:d-custom-dark-grey-background dark:hover:bg-red-600 dark:border-neutral-700"
+                                    className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md hover:text-white hover:scale-105 bg-white hover:bg-red-600 border-2 border-neutral-300 disabled:text-neutral-400 disabled:bg-transparent dark:d-text dark:disabled:bg-transparent dark:disabled:text-neutral-400 dark:d-custom-dark-grey-background dark:hover:bg-red-600 dark:border-neutral-700"
                                     onClick={clearForm}
                                     disabled={(!grant.Title && !grant.Description && grant.MaxWinners === 0 && !grant.AmountPerApp && !grant.QuestionData && grant.Deadline === '0000-00-00')}
                                     aria-label="clear form"
@@ -506,7 +511,7 @@ const CreateNewGrant = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 my-2 md:my-0 text-white text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:border-neutral-700"
+                                    className={`px-6 my-2 md:my-0 text-white text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
                                     disabled={!(grant.Title && grant.Description && grant.MaxWinners > 0 && grant.AmountPerApp > 0 && grant.QuestionData && grant.Deadline !== '0000-00-00')}
                                     aria-label="continue to review grant"
                                     onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}
