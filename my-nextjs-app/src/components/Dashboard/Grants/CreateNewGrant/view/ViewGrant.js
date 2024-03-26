@@ -75,7 +75,6 @@ export default function ViewGrant({ grant, setViewGrant }){
 
         try{
             const response = await axios.post('http://localhost:5000/createGrant', form, {headers: headers})
-            console.log(response)
             // Remove grant objects from local storage
             localStorage.removeItem('grant')
             localStorage.removeItem('clearedGrant')
