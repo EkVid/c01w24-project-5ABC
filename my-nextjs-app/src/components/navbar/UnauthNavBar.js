@@ -3,10 +3,10 @@ import styles from "@/styles/Navbar/unauthNavBar.module.css";
 
 const NewBar = () => {
   return (
-    <nav className={styles.nav}>
-      <div className={styles.logo}>
+    <nav className={`${styles.nav} dark:d-custom-dark-grey-background dark:border-y-2 dark:border-neutral-600 transition-colors`}>
+      <div className={`${styles.logo}`}>
         <Link href="/">
-          <p>Logo</p>
+          <p className="dark:d-text">Logo</p>
         </Link>
       </div>
       <div className={styles.actions}>

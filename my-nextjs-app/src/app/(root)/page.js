@@ -5,7 +5,6 @@ import Quotes from "@/components/Quotes/Quotes";
 import UnauthNavBar from "@/components/navbar/UnauthNavBar";
 
 export default function Home() {
-
   return (
     <main>
       <UnauthNavBar />

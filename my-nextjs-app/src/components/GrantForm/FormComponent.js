@@ -7,7 +7,7 @@ import Image from "next/image";
 import UndoIcon from "@/../public/undo.svg";
 import EditIcon from "@/../public/edit.svg";
 import SaveIcon from "@/../public/save.svg";
-import EyeIcon from "@/../public/password-eye.svg"
+import EyeIcon from "@/../public/password_eye.svg"
 import { DndContext, DragOverlay, rectIntersection, useDroppable} from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -15,9 +15,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from "next/navigation";
 
 const FormComponent = ({title}) => {
+  // Carter: initializing the question data from grant form
+  const grant = JSON.parse(localStorage.getItem('grant'))
+  const initQuestions = grant ? grant.form : null
+
   const fontSize = useContext(FontSizeContext);
   const isReduceMotion = useContext(ReducedMotionContext);
-  const [questionData, setQuestionData] = useState(null);
+  const [questionData, setQuestionData] = useState(initQuestions);
+  // const [questionData, setQuestionData] = useState(null);
   const [activeQuestion, setActiveQuestion] = useState(null);
   const [newDraggedObj, setNewDraggedObj] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
@@ -54,6 +59,11 @@ const FormComponent = ({title}) => {
 
   const handleOnSave = () => {
     // TODO: Do save and make request
+
+    // Carter: setting the question data into grant form
+    const newGrant = {...grant, form:{...grant.form, questionData:questionData}}
+    localStorage.setItem('grant', JSON.stringify(newGrant))
+
     console.log("Congratulations. You clicked the save button. Way to go. This button doesn't work btw.");
   }
 
@@ -180,9 +190,8 @@ const FormComponent = ({title}) => {
       {/* Header for title and save, exit, view buttons */}
       <div className={`flex items-center sticky top-0 z-30 justify-between h-fit overflow-auto px-1 custom-questioncard-background`}>
         <button 
-          aria-label="Quit"
-          onClick={() => router.push("/")}
-          className="flex shrink-0 min-w-fit items-center rounded custom-interactive-btn m-1 px-2 py-1 self-stretch"
+          onClick={() => router.back()}
+          className="flex min-w-fit rounded custom-interactive-btn px-2 py-1"
         >
           <Image
             src={UndoIcon}

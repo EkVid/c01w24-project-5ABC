@@ -32,10 +32,14 @@ const NO_QUESTION_MSG = "Add a question\nto preview or\nsave form";
 const FIX_ERR_MSG = "Fix all issues\nto save or\npreview form";
 
 export default function EditPage({params}) {
+   // Carter: initializing the question data from grant form
+   const grant = JSON.parse(localStorage.getItem('grant'))
+   const initQuestions = grant ? grant.QuestionData : null
+
   const [fontSize, setFontSize] = useState(100);
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
-  const [questionData, setQuestionData] = useState(null);
+  const [questionData, setQuestionData] = useState(initQuestions);
   const [activeQuestion, setActiveQuestion] = useState(null);
   const [newDraggedObj, setNewDraggedObj] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
@@ -76,7 +80,7 @@ export default function EditPage({params}) {
       // TODO: Use better looking prompt to prompt grantor if they want to leave
       if(!confirm("Are you sure you want to leave? You will lose your questions")) return;
     }
-    router.push("/");
+    router.back();
   }
 
   const handleOnSave = () => {
@@ -84,7 +88,11 @@ export default function EditPage({params}) {
     setQuestionData(prev => prev.map((q, i) => ({...q, errMsg: errMsgArr[i]})));
     if (errMsgArr.filter(e => e != null).length === 0) {
       // TODO: make request and save form
-      console.log("Congratulations. You clicked the save button. Way to go. This button doesn't work btw.");
+  
+    // Carter: setting the question data into grant form
+    const newGrant = {...grant, QuestionData:questionData}
+    localStorage.setItem('grant', JSON.stringify(newGrant))
+    console.log("Congratulations. You clicked the save button. Way to go. This button doesn't work btw.");
     }
   }
 

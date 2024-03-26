@@ -3,7 +3,7 @@ import styles from "@/styles/Navbar/authNavBar.css";
 
 const Navbar = () => {
   return (
-    <nav class="auth-navbar shadow-md ms-auto">
+    <nav class="auth-navbar shadow-md ms-auto dark:d-custom-dark-grey-background">
       <ul>
         <li>
           <Link href="/">

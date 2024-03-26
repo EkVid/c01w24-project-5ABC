@@ -69,7 +69,7 @@ console.log(applicantAnswer)
       {isEditMode ? 
         <OptionsDiv>
           <CheckboxOption 
-            label={`Include "${NONE_OF_THE_ABOVE}:`} 
+            label={`Include "${process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}":`} 
             currentValue={isNoneAnOption} 
             onClick={() => onChangeOptions({...options, isNoneAnOption: !isNoneAnOption})}
           />

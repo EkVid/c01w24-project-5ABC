@@ -8,13 +8,13 @@
   --background-end-rgb: 255, 255, 255; 
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 255, 255, 255; 
     --background-end-rgb: 255, 255, 255; 
-  }
-}
+  } */
+/* } */
 
 @layer base {
   ::selection {
@@ -65,7 +65,7 @@ body {
 }
 
 .custom-green-background{
-  background-color: #79f37d;
+  background-color: #4CAF4F;
 }
 
 .custom-green-dark {
@@ -77,7 +77,7 @@ body {
 }
 
 .custom-dark-grey-background{
-  background-color: #E0E0E0;
+  background-color: #fbfbfb;
 }
 
 .custom-dark-grey{
@@ -271,4 +271,8 @@ body {
 /* Class for file links */
 .custom-link{
   @apply custom-blue dark:d-custom-blue hover:underline hover:cursor-pointer hover:custom-hover-green active:custom-active-purple dark:hover:d-custom-hover-green dark:active:d-custom-active-purple
+}/* Box shadow for inner dashboard elements */
+
+.custom-inner-shadow{
+  box-shadow: inset 2px 4px 6px -1px rgb(0 0 0 / 0.1), inset 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
