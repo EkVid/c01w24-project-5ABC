@@ -270,25 +270,21 @@ def testDelete():
 
 
 # For Frontend Use
-@app.route("/getFile", methods=['POST'])
+@app.route("/getFile/<_id>", methods=['GET'])
 # @CheckToken.token_required
-def getFile():
-    contentType = request.headers.get("Content-Type")
+def getFile(_id):
+    if not ObjectId.is_valid(_id):
+        return {"message": "Invalid ID"}, 400
 
-    if(contentType == "application/json"):
-        fileID = request.json['File_id']
+    try:
+        file = fs.get(ObjectId(_id))
+        return send_file(file, download_name=file.filename, as_attachment=True)
 
-        try:
-            file = fs.get(ObjectId(fileID))
-            return send_file(file, download_name=file.filename, as_attachment=True)
-
-        except Exception as e:
-            return {
-                "Error": "File not found",
-                "Message": str(e)
-            }, 404
-    else:
-        return {"message": "Unsupported Content Type"}, 400
+    except Exception as e:
+        return {
+            "Error": "File not found",
+            "Message": str(e)
+        }, 404
 
 
 # Grant Form Routes
@@ -308,7 +304,7 @@ def deleteUser():
 def createGrant():
     grantDict = getJSONData(request)
     files = getFileData(request)
-
+    print(files[0])
     if grantDict is None:
         return {"message": "Unsupported Content Type"}, 400
     try:
