@@ -10,10 +10,10 @@ const Grantee_dashboard = () => {
   const [data, setData] = useState("");
   const [appliedGrants, setAppliedGrants] = useState("");
   // TODO: USE applicationsWithQuestions TO POPULATE grantee_dashboard cards
-  const applicationsWithQuestions = localStorage.getItem(
+  const beforeAllGrants = JSON.parse(localStorage.getItem(
     "applicationsWithQuestions"
-  );
-  console.log(applicationsWithQuestions);
+  ));
+  const allGrants = beforeAllGrants.applicationsWithGrants;
 
   const handleSearchGrantApplications = () => {
     axios
@@ -65,195 +65,10 @@ const Grantee_dashboard = () => {
         }
       });
   };
-  //window.addEventListener('load', handleRecentApplications);
 
   const name = "Rawad";
   // Mock data for claims
-  const allGrants = [
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600e2c08d8b0bba26e30a6c",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 0,
-        },
-        status: 1,
-      },
-      GrantData: {
-        Active: true,
-        AmountPerApp: 1499.99,
-        AppliedIDs: [],
-        Deadline: "2024-04-05",
-        Description: "Do apply to this grant",
-        MaxWinners: 10,
-        NumWinners: 0,
-        PostedDate: "2024-04-01",
-        QuestionData: [
-          {
-            isRequired: true,
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            question: "What is your name?",
-            type: "textbox",
-          },
-        ],
-        Title: "A Generous Grant",
-        WinnerIDs: [],
-        grantID: "6600e2c08d8b0bba26e30a6c",
-        grantorEmail: "grantor@website.com",
-        profileReqs: {
-          gender: ["Man", "Woman", "Non-binary"],
-          maxAge: 24,
-          minAge: 18,
-          nationality: ["Canadian", "American"],
-          race: ["Asian", "African American", "White"],
-          veteran: 0,
-        },
-      },
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600e2c08d8b0bba26e3a6c",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 2,
-      },
-      GrantData: {
-        Active: true,
-        AmountPerApp: 1499.99,
-        AppliedIDs: [],
-        Deadline: "2024-04-05",
-        Description: "Do apply to this grant",
-        MaxWinners: 10,
-        NumWinners: 0,
-        PostedDate: "2024-04-01",
-        QuestionData: [
-          {
-            isRequired: true,
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            question: "What is your name?",
-            type: "textbox",
-          },
-        ],
-        Title: "A Generous Grant",
-        WinnerIDs: [],
-        grantID: "6600e2c08d8b0bba26e30a6c",
-        grantorEmail: "grantor@website.com",
-        profileReqs: {
-          gender: ["Man", "Woman", "Non-binary"],
-          maxAge: 24,
-          minAge: 18,
-          nationality: ["Canadian", "American"],
-          race: ["Asian", "African American", "White"],
-          veteran: 1,
-        },
-      },
-    },
-    {
-      ApplicationData: {
-        answerData: [
-          {
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            text: "Bob",
-          },
-        ],
-        dateSubmitted: "2024-03-14",
-        email: "applicant@website.com",
-        grantID: "6600e2c08d8b0bba260a6c",
-        profileData: {
-          age: 21,
-          gender: "Man",
-          nationality: "Canadian",
-          race: "White",
-          veteran: 1,
-        },
-        status: 0,
-      },
-      GrantData: {
-        Active: true,
-        AmountPerApp: 1499.99,
-        AppliedIDs: [],
-        Deadline: "2024-04-05",
-        Description: "Do apply to this grant",
-        MaxWinners: 10,
-        NumWinners: 0,
-        PostedDate: "2024-04-01",
-        QuestionData: [
-          {
-            isRequired: true,
-            options: {
-              answerType: "short",
-              isMultipleLines: false,
-              maxCharsNum: 16,
-              minCharsNum: 1,
-            },
-            question: "What is your name?",
-            type: "textbox",
-          },
-        ],
-        Title: "A Generous Grant",
-        WinnerIDs: [],
-        grantID: "6600e2c08d8b0bba26e30a6c",
-        grantorEmail: "grantor@website.com",
-        profileReqs: {
-          gender: ["Man", "Woman", "Non-binary"],
-          maxAge: 24,
-          minAge: 18,
-          nationality: ["Canadian", "American"],
-          race: ["Asian", "African American", "White"],
-          veteran: 1,
-        },
-      },
-    },
-  ];
+  
   const recentGrants = allGrants.slice(0, 3);
 
   const [expandedGrantId, setExpandedGrantId] = useState(null);
