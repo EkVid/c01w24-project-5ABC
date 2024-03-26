@@ -1,14 +1,18 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
 import menuIcon from "@/../public/lineThreeHor.svg"
+import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { getcbMode } from "@/components/utils/cbMode";
+import { useContext } from "react";
 import xMark from "@/../public/x.svg"
 import Image from "next/image"
-import { useContext } from "react";
 
 const Sidebar = () => {
     const pathname = usePathname()
     const isReducedMotion = useContext(ReducedMotionContext)
+    const cbMode = useContext(ColourBlindnessContext)
+    const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
 
     function handleSidebarPopout(){
         const dashboard = document.getElementById('grantor-sidebar')
@@ -46,10 +50,10 @@ const Sidebar = () => {
                     </summary>
 
                     <ul className="custom-dark-grey text-lg dark:d-text w-full ps-16 pe-2 ">
-                        <li className={`${pathname.includes('my-grants') ? "custom-green-background text-white" : "bg-transparent"} w-full p-2 rounded-lg`}>
+                        <li className={`${pathname.includes('my-grants') ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : "custom-green-background text-white"): "bg-transparent hover:underline"} w-full p-2 rounded-lg`}>
                             <Link aria-label="my grants" href='/dashboard/my-grants'>My Grants</Link>
                         </li>
-                        <li className={`${pathname.includes('create-new-grant') ? "custom-green-background text-white" : "bg-transparent"} w-full p-2 lg:pe-0 pe-2 rounded-lg`}>
+                        <li className={`${pathname.includes('create-new-grant') ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : "custom-green-background text-white") : "bg-transparent hover:underline"} w-full p-2 lg:pe-0 pe-2 rounded-lg`}>
                             <Link aria-label="create new grant" href='/dashboard/create-new-grant'>Create New Grant</Link>
                         </li>
                     </ul>

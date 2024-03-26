@@ -2,12 +2,19 @@
 import ApplicationList from "../applications/ApplicationList"
 import RemoveGrant from "./RemoveGrant"
 import DashboardInnerContainer from "@/components/Dashboard/InnerContainer"
+import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { getcbMode } from "@/components/utils/cbMode";
+import { useContext } from "react";
 import { getGrantStatus, openGrant, closeGrant } from "../utils"
 import { useRouter } from "next/navigation"
 
 export default function GrantInfo({ grant, grantID, applications }){
     const router = useRouter()
     const grantStatus = getGrantStatus(grant)
+    const isReduceMotion = useContext(ReducedMotionContext);
+    const cbMode = useContext(ColourBlindnessContext)
+    const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
     const userData = JSON.parse(sessionStorage.getItem('userData'))
 
     if(!userData){
@@ -22,7 +29,7 @@ export default function GrantInfo({ grant, grantID, applications }){
                         {grant.Title}
                     </h2>
                     {/* Set proper color classes after merch with applicant dashboard */}
-                    <div tabIndex="0" aria-label={`Grant status: ${grantStatus}`}   className={`rounded-full text-center text-white px-4 py-2 mt-2 sm:mt-0 ${grantStatus === 'Awarded' ? 'custom-green-background' : (grantStatus === 'Open' ? 'bg-[#d1aa64]' : 'bg-[#d76b65]')}`}>
+                    <div tabIndex="0" aria-label={`Grant status: ${grantStatus}`}   className={`rounded-full text-center text-white px-4 py-2 mt-2 sm:mt-0 ${grantStatus === 'Awarded' ? (protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background") : (grantStatus === 'Open' ? (protanopia ? "custom-yellow-background-pt" : deuteranopia ? "custom-yellow-background-dt" : tritanopia ? "custom-yellow-background-tr" : "bg-[#d1aa64]") : 'bg-[#d76b65]')}`}>
                         {grantStatus}
                     </div>
                 </div>
@@ -72,7 +79,7 @@ export default function GrantInfo({ grant, grantID, applications }){
                                     router.refresh()
                                     console.log(grant)
                                 }}
-                                className="rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 custom-green-background"
+                                className={`rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
                                 aria-label="Change grant status to open"
                             >
                                 Open Grant

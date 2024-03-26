@@ -5,10 +5,14 @@ import { useRouter } from 'next/navigation'
 import { useContext } from "react";
 import { getGrantStatus, openGrant, closeGrant } from "./utils";
 import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { getcbMode } from "@/components/utils/cbMode";
 
 const MyGrants = ({ grants }) => {
     const router = useRouter()
     const isReduceMotion = useContext(ReducedMotionContext);
+    const cbMode = useContext(ColourBlindnessContext)
+    const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
     const userData = JSON.parse(sessionStorage.getItem('userData'))
 
     if(!userData){
@@ -24,7 +28,7 @@ const MyGrants = ({ grants }) => {
                     <summary className="flex flex-col sm:flex-row hover:cursor-pointer group-open:mb-5 justify-between items-center">
                         <h2 tabIndex="0" className="dark:d-text text-xl text-centerfont-bold">{grant.Title}</h2>
                         {/* Set proper color classes after merch with applicant dashboard */}
-                        <div tabIndex="0" aria-label={`Grant status: ${grantStatus}`} className={`rounded-full text-center text-white px-4 py-2 mt-2 sm:mt-0 ${grantStatus === 'Awarded' ? 'custom-green-background' : (grantStatus === 'Open' ? 'bg-[#d1aa64]' : 'bg-[#d76b65]')}`}>
+                        <div tabIndex="0" aria-label={`Grant status: ${grantStatus}`} className={`rounded-full text-center text-white px-4 py-2 mt-2 sm:mt-0 ${grantStatus === 'Awarded' ? (protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background") : (grantStatus === 'Open' ? (protanopia ? "custom-yellow-background-pt" : deuteranopia ? "custom-yellow-background-dt" : tritanopia ? "custom-yellow-background-tr" : "bg-[#d1aa64]") : 'bg-[#d76b65]')}`}>
                             {grantStatus}
                         </div>
                     </summary>
@@ -73,7 +77,7 @@ const MyGrants = ({ grants }) => {
                                             openGrant(grant._id, userData)
                                             router.refresh()
                                         }}
-                                        className="rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 custom-green-background"
+                                        className={`rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
                                         aria-label="Change grant status to open"
                                     >
                                         Open Grant
