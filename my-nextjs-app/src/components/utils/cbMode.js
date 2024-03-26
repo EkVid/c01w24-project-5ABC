@@ -9,14 +9,13 @@ const changecbMode = (theme) => {
     localStorage.setItem('cbMode', theme)
 }
 
-const getcbMode = () => {
+const getcbMode = (currcbMode) => {
     //This returns a list of booleans for easier dynamic styling using ternary operators
-    const currcbMode = localStorage.getItem('cbMode')
     const protanopia = "protanopia" === currcbMode
     const deuteranopia = "deuteranopia" === currcbMode
     const tritanopia = "tritanopia" === currcbMode
 
-    return { protanopia, deuteranopia, tritanopia}
+    return { protanopia, deuteranopia, tritanopia }
 }
 
 export { initcbMode, changecbMode, getcbMode }

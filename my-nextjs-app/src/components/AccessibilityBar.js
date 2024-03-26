@@ -21,8 +21,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   const [ fontSize, setFontSize ] = useState(100)  // Default font size is 100
   const [ isReducedMotion, setIsReducedMotion ] = useState(false)
   const [ cbMode, setcbMode ] = useState(prevcbMode)
-
-  const { protanopia, deuteranopia, tritanopia } = getcbMode()
+  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
 
   const handleScaleFontDown = () => {
     scaleFont("down");
@@ -55,7 +54,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   const handleColourBlindness = (e) => {
     changecbMode(e.target.value)
     setcbMode(e.target.value)
-    if (onChangeCBMode) onChangeCBMode(cbMode)
+    if (onChangeCBMode) onChangeCBMode(e.target.value)
   }
 
   return(

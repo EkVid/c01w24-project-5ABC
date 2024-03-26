@@ -69,21 +69,33 @@ body {
   .custom-green{
     color: #4CAF4F;
   }
+
+  .custom-green-pt{
+    color: #1341d8;
+  }
+
+  .custom-green-dt{
+    color: #1341d8;
+  }
+
+  .custom-green-tr{
+    color: #1341d8;
+  }
   
   .custom-green-background{
     background-color: #4CAF4F;
   }
   
   .custom-green-background-pt{
-    background-color: #2713d8;
+    background-color: #1341d8;
   }
   
   .custom-green-background-dt{
-    background-color: #2713d8;
+    background-color: #1341d8;
   }
   
   .custom-green-background-tr{
-    background-color: #2713d8;
+    background-color: #1341d8;
   }
   
   .custom-green-dark {

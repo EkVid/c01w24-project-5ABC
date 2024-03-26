@@ -9,20 +9,21 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const AccessibilityBar = dynamic(
-    () => import("@/components/AccessibilityBar"),
-    { ssr: false }
-  );
+  () => import("@/components/AccessibilityBar"),
+  { ssr: false }
+);
 
 export default function NewRootLayout({children}) {
   const [fontSize, setFontSize] = useState(100);
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
-  const [cbMode, setcbMode] = useState()
+  const [cbMode, setcbMode] = useState("")
 
   useEffect(() => {
     setTheme(getTheme())
     setcbMode(localStorage.getItem('cbMode'))
   }, []);
+
 
   return (
     <div className="flex flex-col min-h-screen">

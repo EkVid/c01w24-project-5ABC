@@ -145,6 +145,7 @@ export default function ViewGrant({ grant, setViewGrant }){
                 <button
                     className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md hover:scale-105 bg-white border-2 border-neutral-300 disabled:text-neutral-400 disabled:bg-transparent dark:d-text dark:disabled:bg-transparent dark:disabled:text-neutral-400 dark:d-custom-dark-grey-background dark:border-neutral-700"
                     onClick={() => setViewGrant(false)}
+                    aria-label="Go back to edit form"
                 >
                     Back
                 </button>
