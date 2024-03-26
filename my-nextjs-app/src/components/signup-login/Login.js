@@ -67,7 +67,7 @@ const Login = () => {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen"
+      className="flex items-center justify-center flex-grow max-h-screen"
       style={{
         backgroundImage:
           "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')",
@@ -143,7 +143,7 @@ const Login = () => {
                 Forgot password?
               </h2>
             </Link>{" "}
-            <div className="bg-green-500 rounded max-w-xs w-full rounded-full ">
+            <div className="bg-green-500 max-w-xs w-full rounded-full ">
               <button
                 type="submit"
                 className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
@@ -163,7 +163,7 @@ const Login = () => {
           <p className="lg:text-2xl md:text-xl text-l text-center text-white">
             Sign up and discover a great amount of new opportunities!
           </p>
-          <div className="bg-white rounded max-w-xs w-full rounded-full">
+          <div className="bg-white max-w-xs w-full rounded-full">
             <Link href="/signup">
               <button className="inline-block text-black text-md w-full font-semibold h-12 px-6 bg-white hover:bg-gray-100 rounded-full transition duration-150 ease-in-out">
                 Sign Up

@@ -232,7 +232,7 @@ const Apply = ({title, grantID, fetchedQuestData}) => {
               </div>
             </div>
             {isRequiredVis ?
-              <p className="mx-3 px-3 mt-6">
+              <p className={`mx-3 px-3 mt-6 custom-text dark:d-text ${isReducedMotion ? "" : "transition-colors"}`}>
                 <font className="custom-red dark:d-custom-red mr-1 text-xl">*</font>Indicates required question
               </p>
               :
