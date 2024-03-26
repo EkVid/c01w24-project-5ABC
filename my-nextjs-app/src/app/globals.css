@@ -121,7 +121,15 @@ body {
   .custom-red{
     color: #a50f0f;
   }
+
+  .custom-red-background{
+    background-color: #e61a1a;
+  }
   
+  .custom-red-border-cb{
+    border-color: #e61a1a;
+  }
+
   .custom-red-border{
     border-color: #a50f0f;
   }
@@ -201,6 +209,10 @@ body {
 
   .d-white-filter{
     filter: invert(1);
+  }
+
+  .d-custom-green-color-blind{
+    color: #1389d8;
   }
 
 }

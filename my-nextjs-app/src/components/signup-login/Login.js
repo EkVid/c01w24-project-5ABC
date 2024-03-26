@@ -6,6 +6,7 @@ import Four_Circle from "../../../public/logo.svg";
 import cbFourCircle from "../../../public/cblogo.svg"
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
+import ThemeContext from "../utils/ThemeContext";
 import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 import { getcbMode } from "@/components/utils/cbMode";
@@ -15,7 +16,6 @@ import hide_password from "../../../public/password_eye_cross.svg";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import VerificationFailMessage from "./VerificationFailMessage";
-import ThemeContext from "../utils/ThemeContext";
 
 const Login = () => {
   const [data, setData] = useState("");
@@ -93,8 +93,8 @@ const Login = () => {
             <Image
               src={protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
               alt="Logo"
-              width={200 * fontSizeMultiplier}
-              height={200 * fontSizeMultiplier}
+              width={80 * fontSizeMultiplier}
+              height={80 * fontSizeMultiplier}
               className="rounded-3xl"
             />
             <h2 className="text-center lg:text-6xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black dark:d-text">
