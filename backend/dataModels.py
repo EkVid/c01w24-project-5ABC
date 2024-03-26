@@ -1,12 +1,23 @@
 from pydantic import BaseModel, validator, PositiveInt
 from annotated_types import Len
 from typing import Literal, Optional, Annotated, Union
+from datetime import date
+from enum import IntEnum
 
-APPLICATION_DRAFT = 0
-APPLICATION_IN_REVIEW = 1
-APPLICATION_REJECTED = 2
-APPLICATION_APPROVED = 3
+
+"""
+Constants
+"""
+class ApplicationStatus(IntEnum):
+    DRAFT = 0
+    IN_REVIEW = 1
+    REJECTED = 2
+    APPROVED = 3
+
 # TODO: put constants here for veteran status once decided
+class VeteranStatus(IntEnum):
+    VETERAN = 0
+    NON_VETERAN = 1  # in what case would we want to exclude a veteran from applying?
 
 """
 User Profile Models
@@ -129,7 +140,7 @@ class CheckboxAnswer(BaseModel):
 
 class DateAnswer(BaseModel):
     options: DateOptions
-    date: str
+    date: date
 
 class FileAnswer(BaseModel):
     options: FileOptions
@@ -145,8 +156,8 @@ class GrantBase(BaseModel):
     Description: str
     NumWinners: int
     MaxWinners: int
-    Deadline: str # maybe change to str for simplicity
-    PostedDate: str
+    Deadline: date # maybe change to str for simplicity
+    PostedDate: date
     Active: bool
     AmountPerApp: float
     profileReqs: UserProfileReqs # test later
@@ -163,9 +174,8 @@ Application Model
 class Application(BaseModel):
     grantID: str
     email: str
-    dateSubmitted: str  # maybe str
+    dateSubmitted: date
     status: int
-    # profileData: UserProfile | None = UserProfile()  # test later; remove optional after done
     profileData: UserProfile
     answerData: list[Union[
         TextboxAnswer,

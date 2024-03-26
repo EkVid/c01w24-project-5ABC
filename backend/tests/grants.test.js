@@ -20,6 +20,11 @@ const validUsers = [
     Password: 'applicantpass',
     Usertype: 'Grantee',
   },
+  {
+    Email: 'other@website.com',
+    Password: 'otherpass',
+    Usertype: 'Grantee',
+  },
 ];
 
 const validQuestionData = [
@@ -57,8 +62,8 @@ const validProfileReqs = [
     maxAge: 24,
     race: ['Asian', 'African American', 'White'],
     gender: ['Man', 'Woman', 'Non-binary'],
-    // nationality: ['Canadian', 'American'],
-    nationality: 'Canadian',
+    nationality: ['Canadian', 'American'],
+    // nationality: 'Canadian',
     veteran: VeteranStatus.nonVeteran,
   },
 ];
@@ -73,20 +78,46 @@ const validProfileData = [
   },
 ];
 
+const validGrantFilterData = {
+  Title_keyword: 'generous',
+  Gender: 'Non-binary',
+  Race: 'Asian',
+  Nationality: 'Canadian',
+  'Date Posted Before': '2024-04-05',
+  'Date Posted After': '2024-03-21',
+  Deadline: '2024-04-06',
+  Status: true,
+  'Min Age': 18,
+  'Max Age': 25,
+  'Min Payable Amount': 1499,
+  'Max Payable Amount': 1500,
+  'Vet Status': VeteranStatus.nonVeteran,
+  'Num Grants Available': 9,
+};
+
+const validApplicationFilterData = {
+    Title_keyword: 'generous',
+    'Date Submitted': '2024-03-14',
+    Deadline: '2024-04-05',
+    Status: 0,
+    'Max Payable Amount': 1500,
+};
+
 const getValidGrantFormData = () => {
   const jsonData = {
     grantorEmail: 'grantor@website.com',
-    title: 'A Generous Grant',
-    description: 'Do apply to this grant',
-    numWinners: 0,
-    maxWinners: 10,
-    deadline: '2024-04-05',
-    isActive: 'true',
-    amountPerApp: 1499.99,
+    Title: 'A Generous Grant',
+    Description: 'Do apply to this grant',
+    NumWinners: 0,
+    MaxWinners: 10,
+    Deadline: '2024-04-05',
+    PostedDate: '2024-04-01',
+    Active: true,
+    AmountPerApp: 1499.99,
     profileReqs: validProfileReqs[0],
-    winnerIDs: [],
-    appliedIDs: [],
-    questionData: validQuestionData[0],
+    WinnerIDs: [],
+    AppliedIDs: [],
+    QuestionData: validQuestionData[0],
   };
   const grantFormData = new FormData();
   grantFormData.append('jsonData', JSON.stringify(jsonData));
@@ -94,10 +125,10 @@ const getValidGrantFormData = () => {
   return grantFormData;
 };
 
-const getValidApplicationData = (grantID) => {
+const getValidApplicationData = (grantID, email = validUsers[0].Email) => {
   const applicationData = {
     grantID: grantID,
-    email: validUsers[0].Email,
+    email: email,
     dateSubmitted: '2024-03-14',
     status: 0,
     profileData: validProfileData[0],
@@ -137,30 +168,33 @@ const insertedData = {
   applicationIDs: [],
 };
 
-beforeAll(async () => {
-  const registerRes = await fetch(`${SERVER_URL}/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(validUsers[0]),
-  });
-  expect([200, 409]).toContain(registerRes.status); // 409 means the user exists already
-  if (registerRes.status === 200) {
-    insertedData.userEmails.push(validUsers[0].Email);
-  }
 
-  const loginRes = await fetch(`${SERVER_URL}/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      Email: validUsers[0].Email,
-      Password: validUsers[0].Password,
-    }),
-  });
-  expect(loginRes.status).toBe(200); // Check that the password matches for when the user already exists
+beforeAll(async () => {
+  for (const user of validUsers) {
+    const signupRes = await fetch(`${SERVER_URL}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+    expect([200, 409]).toContain(signupRes.status); // 409 means the user exists already
+    if (signupRes.status === 200) {
+      insertedData.userEmails.push(user.Email);
+    }
+
+    const loginRes = await fetch(`${SERVER_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Email: user.Email,
+        Password: user.Password,
+      }),
+    });
+    expect(loginRes.status).toBe(200); // Check that the password matches for when the user already exists
+  }
 });
 
 // Do not explicitly set the Content-Type header to multipart/form-data (see the warning at
@@ -193,7 +227,7 @@ describe('/createGrant tests', () => {
     });
     const resBody = await res.json();
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(403);
     expect(fieldValidityStatus('grantorEmail', resBody.message)).toBe(
       'missing'
     );
@@ -202,7 +236,7 @@ describe('/createGrant tests', () => {
   test('/createGrant - missing array of questions', async () => {
     const grantData = getValidGrantFormData();
 
-    deleteNestedJSONField(grantData, 'questionData');
+    deleteNestedJSONField(grantData, 'QuestionData');
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
@@ -210,8 +244,8 @@ describe('/createGrant tests', () => {
     });
     const resBody = await res.json();
 
-    expect(res.status).toBe(400);
-    expect(fieldValidityStatus('questionData', resBody.message)).toBe(
+    expect(res.status).toBe(403);
+    expect(fieldValidityStatus('QuestionData', resBody.message)).toBe(
       'missing'
     );
   });
@@ -309,6 +343,66 @@ describe('/updateApplication tests', () => {
   });
 });
 
+describe('/getGranteeApplications tests', () => {
+  let grantID;
+  let applicationID;
+
+  beforeAll(async () => {
+    // Applicant with two grants
+    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: getValidGrantFormData(),
+    });
+    const createGrantResBody = await createGrantRes.json();
+    grantID = createGrantResBody._id;
+
+    expect(createGrantRes.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+
+    const createApplicationRes = await fetch(
+      `${SERVER_URL}/createApplication`,
+      {
+        method: 'POST',
+        body: getValidApplicationData(grantID),
+      }
+    );
+    const createApplicationResBody = await createApplicationRes.json();
+    applicationID = createApplicationResBody._id;
+
+    expect(createApplicationRes.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  });
+
+  test('/getGranteeApplications valid data', async () => {
+    const res = await fetch(`${SERVER_URL}/getGranteeApplications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: validUsers[0].Email,
+      }),
+    });
+    const resBody = await res.json();
+    expect(res.status).toBe(200);
+
+    const applicationsWithGrants = resBody.applicationsWithGrants;
+    console.log(applicationsWithGrants);
+    expect(applicationsWithGrants.length).toBeGreaterThan(0);
+
+    for (const applicationWithGrant of applicationsWithGrants) {
+      const applicationData = applicationWithGrant.ApplicationData;
+      const grantData = applicationWithGrant.GrantData;
+
+      expect(grantData).toBeTruthy();
+      expect(applicationData).toBeTruthy();
+      expect(applicationData.email).toBe(validUsers[0].Email);
+    }
+  });
+});
+
 describe('/updateGrantWinners tests', () => {
   let grantID;
   let applicationID;
@@ -323,7 +417,7 @@ describe('/updateGrantWinners tests', () => {
     });
     const createGrantResBody = await createGrantRes.json();
     grantID = createGrantResBody._id;
-    oldWinners = getNestedJSONField(grantData, 'winnerIDs');
+    oldWinners = getNestedJSONField(grantData, 'WinnerIDs');
 
     expect(createGrantRes.status).toBe(200);
     expect(grantID).toBeTruthy();
@@ -365,7 +459,7 @@ describe('/updateGrantWinners tests', () => {
     });
     expect(grantRes.status).toBe(200);
     const grantResBody = await grantRes.json();
-    const newWinners = grantResBody.winnerIDs;
+    const newWinners = grantResBody.WinnerIDs;
 
     expect(newWinners.length).toBe(oldWinners.length + 1);
     for (const winnerID of oldWinners) {
@@ -387,8 +481,106 @@ describe('/updateGrantWinners tests', () => {
   });
 });
 
+describe('/getFilteredGrants tests', () => {
+  // Create a grant and application, storing their IDs to be deleted at end
+  beforeAll(async () => {
+    const grantData = getValidGrantFormData();
+    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: grantData,
+    });
+    const createGrantResBody = await createGrantRes.json();
+    grantID = createGrantResBody._id;
+
+    expect(createGrantRes.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+
+    const applicationData = getValidApplicationData(grantID);
+    const createApplicationRes = await fetch(
+      `${SERVER_URL}/createApplication`,
+      {
+        method: 'POST',
+        body: applicationData,
+      }
+    );
+    const createApplicationResBody = await createApplicationRes.json();
+    applicationID = createApplicationResBody._id;
+
+    expect(createApplicationRes.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  });
+
+  test('/getFilteredGrants valid data', async () => {
+    console.log(`${SERVER_URL}/getFilteredGrants`);
+    const res = await fetch(`${SERVER_URL}/getFilteredGrants`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(validGrantFilterData),
+    });
+    const resBody = await res.json();
+    console.log(resBody);
+
+    expect(res.status).toBe(200);
+  });  
+});
+
+describe('/getFilteredGranteeApplications tests', () => {
+  // Create a grant and application, storing their IDs to be deleted at end
+  beforeAll(async () => {
+    const grantData = getValidGrantFormData();
+    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
+      method: 'POST',
+      body: grantData,
+    });
+    const createGrantResBody = await createGrantRes.json();
+    grantID = createGrantResBody._id;
+
+    expect(createGrantRes.status).toBe(200);
+    expect(grantID).toBeTruthy();
+    insertedData.grantIDs.push(grantID);
+
+    const applicationData = getValidApplicationData(grantID);
+    const createApplicationRes = await fetch(
+      `${SERVER_URL}/createApplication`,
+      {
+        method: 'POST',
+        body: applicationData,
+      }
+    );
+    const createApplicationResBody = await createApplicationRes.json();
+    applicationID = createApplicationResBody._id;
+
+    expect(createApplicationRes.status).toBe(200);
+    expect(applicationID).toBeTruthy();
+    insertedData.applicationIDs.push(applicationID);
+  });
+
+  test('/getFilteredGranteeApplications valid data', async () => {
+    console.log(`${SERVER_URL}/getFilteredGranteeApplications`);
+    const res = await fetch(`${SERVER_URL}/getFilteredGranteeApplications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Email: validUsers[0].Email,
+        Filters: validApplicationFilterData,
+      }),
+    });
+    const resBody = await res.json();
+    console.log(resBody);
+    
+    expect(res.status).toBe(200);
+  });  
+});
+
+
 // Delete all inserted data; this implicitly tests the delete routes
-afterAll(async () => {
+ afterAll(async () => {
   console.log('Deleting all data inserted during tests');
   console.log(insertedData);
 

@@ -14,9 +14,11 @@ import bcrypt
 import datetime
 import json as JSON
 import random
+import base64
+import re
 
-from dataModels import (Application, Grant, APPLICATION_APPROVED)
-from helpers import (getJSONData, isListOfDict)
+from dataModels import (Application, Grant, ApplicationStatus)
+from helpers import (getJSONData, getFileData, isListOfDict)
 
 load_dotenv()
 app = Flask(__name__)
@@ -225,10 +227,10 @@ def logout():
         return {"message": "Sucessfully logged the user out"}
     else:
         return {"message": "Unsupported Content Type"}, 400
-    
+
 
 # File management routes
-    
+
 def uploadFile(file, fileName):
     fs.put(file, filename=fileName)
     fileID = fs.get_last_version(filename=fileName)._id
@@ -242,7 +244,7 @@ def deleteFile(fileID):
         return False
 
 
-# testing only, should not be used in production; upload should be handled by create/updateGrantForm
+# testing only, should not be used in production; upload should be handled by create GrantForm
 @app.route("/testUpload", methods=['POST'])
 def testUpload():
     contentType = request.headers.get("Content-Type")
@@ -251,8 +253,9 @@ def testUpload():
         return uploadFile(file, file.filename), 200
     else:
         return '', 400
-    
-# testing only, should not be used in production; delete should be handled by delete/updateGrantForm
+
+
+# testing only, should not be used in production; delete should be handled by delete GrantForm
 @app.route("/testDelete", methods=['POST'])
 def testDelete():
     contentType = request.headers.get("Content-Type")
@@ -264,8 +267,9 @@ def testDelete():
             return '', 400
     else:
         return '', 400
-    
-    
+
+
+# For Frontend Use
 @app.route("/getFile", methods=['POST'])
 # @CheckToken.token_required
 def getFile():
@@ -277,7 +281,7 @@ def getFile():
         try:
             file = fs.get(ObjectId(fileID))
             return send_file(file, download_name=file.filename, as_attachment=True)
-        
+
         except Exception as e:
             return {
                 "Error": "File not found",
@@ -303,14 +307,21 @@ def deleteUser():
 #@tokenCheck.token_required
 def createGrant():
     grantDict = getJSONData(request)
+    files = getFileData(request)
+
     if grantDict is None:
         return {"message": "Unsupported Content Type"}, 400
-
     try:
         Grant.model_validate(grantDict)
     except ValidationError as e:
         # Do not change e.errors(), the tests require an error list in this specific format
         return {"message": e.errors()}, 403
+    
+    # checking for files that need to be stored
+    for question in grantDict["QuestionData"]:
+        fileData = question.get("fileData", None)
+        if fileData != None:
+            question["fileData"]["fileLink"] = uploadFile(base64.b64decode(files[question["fileIdx"]]), question["fileData"]["fileName"])
 
     id = grantCollection.insert_one(grantDict).inserted_id
     # Do not change "_id": str(id), the tests require this to keep track of inserted data
@@ -320,7 +331,7 @@ def createGrant():
     }, 200
 
 
-# Used in tests; do not remove
+# Used in frontend as well, not just tests
 @app.route("/getGrant/<_id>", methods=["GET"])
 #@tokenCheck.token_required
 def getGrant(_id):
@@ -354,32 +365,6 @@ def getGrantorGrants():
     return {"grants": grants}, 200
 
 
-@app.route("/updateGrant/<_id>", methods=["PUT"])
-#@tokenCheck.token_required
-def updateGrant(_id):
-    if not ObjectId.is_valid(_id):
-        return {"message": "Invalid ID"}, 400
-    objID = ObjectId(_id)
-
-    grantDict = getJSONData(request)
-    if grantDict is None:
-        return {"message": "Unsupported Content Type"}, 400
-
-    # TODO: remove if redundant; _id might already be immutable for each document in MongoDB
-    newData = {key: val for (key, val) in grantDict.items() if key != "_id"}    # Maybe use dict.pop instead
-
-    try:
-        Grant.model_validate_json(JSON.dumps(newData))
-    except ValidationError as e:
-        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
-
-    res = grantCollection.update_one({"_id": objID}, {"$set": newData})
-    if res.matched_count != 1:
-        return {"message": "Grant with the given ID not found"}, 404
-
-    return {"message": "Grant successfully updated"}, 200
-
-
 @app.route("/deleteGrant/<_id>", methods=["DELETE"])
 #@tokenCheck.token_required
 def deleteGrant(_id):
@@ -387,21 +372,27 @@ def deleteGrant(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
 
-    res = grantCollection.delete_one({"_id": objID})
-    if res.deleted_count != 1:
+    grant = grantCollection.find_one_and_delete({"_id": objID})
+    if grant == None:
         return {"message": "Grant form with the given ID not found"}, 404
+    
+    for question in grant["QuestionData"]:
+        fileData = question.get("fileData", None)
+        if fileData != None:
+            deleteFile(question["fileData"]["fileLink"])
 
     return {"message": "Grant form successfully deleted"}, 200
+
 
 @app.route("/updateGrantStatus", methods=["POST"])
 # @tokenCheck.token_required
 def updateGrantStatus():
     contentType = request.headers.get('Content-Type')
     if contentType == 'application/json':
-        grantID = request.json["grantID"]
+        grantID = request.json["grantID"]   # TODO: use dict.get
         active = request.json["active"]
         id = ObjectId(grantID)
-    
+
         res = grantCollection.update_one({"_id": id}, {"$set": { "Active": active}})
         if res.matched_count != 1:
             return {"message": "Grant with the given ID not found"}, 404
@@ -411,39 +402,42 @@ def updateGrantStatus():
         return {"message": "Unsupported Content Type"}, 400
 
 
-
 @app.route("/createApplication", methods=["POST"])
 # @tokenCheck.token_required
 def createApplication():
-    applicationData = getJSONData(request)
-    if applicationData is None:
+    contentType = request.headers.get('Content-Type')
+    if contentType == 'application/json':
+        grantID = request.json["grantID"]
+
+        if not ObjectId.is_valid(grantID):
+            return {"message": "Invalid grant ID"}, 400
+        
+        objID = ObjectId(grantID)
+        grant = grantCollection.find_one({"_id": objID}, {"_id": False})
+        if not grant:
+            return {"message": "Grant with the given ID not found"}, 404
+        
+        answers = request.json["answers"]
+        if answers == None or len(answers) != len(grant["QuestionData"]):
+            return {"message": "Invalid grant application answer data"}, 400
+        
+        # checking for files that need to be stored
+        for answer in answers:
+            if "fileLink" in answer:
+                answer["fileLink"] = uploadFile(base64.b64decode(answer["fileLink"]), answer["fileName"])
+
+        application = request.json
+        application["dateSubmitted"] = datetime.datetime.utcnow()
+        application["status"] = 1
+        application["profileData"] = None
+
+        id = grantAppCollection.insert_one(application).inserted_id
+        return {
+            "message": "Grant application successfully created",
+            "_id": str(id)
+        }, 200
+    else:
         return {"message": "Unsupported Content Type"}, 400
-
-    grantID = applicationData.get("grantID", "")
-    if not ObjectId.is_valid(grantID):
-        return {"message": "Invalid grant ID"}, 400
-    objID = ObjectId(grantID)
-    grant = grantCollection.find_one({"_id": objID}, {"_id": False})
-    if not grant:
-        return {"message": "Grant with the given ID not found"}, 404
-    # TODO: find a better way to check if answerData is present
-    if "answerData" not in applicationData or len(applicationData["answerData"]) != len(grant["questionData"]):
-        return {"message": "Invalid grant application answer data"}, 400
-    # Populate json request with answer constraints from grant to validate
-    for i in range(len(grant["questionData"])):
-        # TODO: need to ensure that applicationData["answerData"][i] is a dict
-        applicationData["answerData"][i]["options"] = grant["questionData"][i]["options"]
-
-    try:
-        Application.model_validate_json(JSON.dumps(applicationData))
-    except ValidationError as e:
-        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
-
-    id = grantAppCollection.insert_one(applicationData).inserted_id
-    return {
-        "message": "Grant application successfully created",
-        "_id": str(id)
-    }, 200
 
 
 # Used in tests; do not remove
@@ -474,8 +468,30 @@ def getGranteeApplications():
     if not email:
         return {"message": "Invalid email"}, 400
 
-    applications = list(grantAppCollection.find({"email": email}, {"_id": False}))
-    return {"applications": applications}, 200
+    applicationDatas = list(grantAppCollection.find({"email": email}, {"_id": False}))
+    grantIDs = [ObjectId(application["grantID"]) for application in applicationDatas]
+    grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
+
+    if len(applicationDatas) != len(grants):
+        return {"message": "Question data retrieval error"}, 403 
+
+    # Assign grantIDs to link each application to its grant
+    for grant in grants:
+        grant["grantID"] = str(grant["_id"])
+        del grant["_id"]
+
+    applicationsWithGrants = []
+    # Tradeoff for having only two DB calls
+    for applicationData in applicationDatas:
+        for grant in grants:
+            if applicationData["grantID"] == grant["grantID"]:
+                applicationsWithGrants.append({
+                    "ApplicationData": applicationData,
+                    "GrantData": grant
+                })
+            
+    print(applicationsWithGrants)
+    return {"applicationsWithGrants": applicationsWithGrants}, 200
 
 
 """Returns all applications for the grant with the given ID. Note that this route uses JSON as opposed to form data.
@@ -544,8 +560,8 @@ def updateGrantWinners():
 
     applicationObjID = ObjectId(applicationID)
     grantObjID = ObjectId(grantID)
-    grantCollection.update_one({"_id": grantObjID}, {"$push": {"winnerIDs": applicationID}})
-    grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": APPLICATION_APPROVED}})
+    grantCollection.update_one({"_id": grantObjID}, {"$push": {"WinnerIDs": applicationID}})
+    grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": ApplicationStatus.APPROVED}})
 
     return {"message": "Application winner successfully added"}, 200
 
@@ -557,8 +573,114 @@ def deleteApplication(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
 
-    res = grantAppCollection.delete_one({"_id": objID})
-    if res.deleted_count != 1:
+    app = grantAppCollection.find_one_and_delete({"_id": objID})
+    if app == None:
         return {"message": "Grant application with the given ID not found"}, 404
+    
+    for answer in app["answers"]:
+        if "fileLink" in answer:
+            deleteFile(answer["fileLink"])
 
-    return {"message": "Grant form successfully deleted"}, 200
+    return {"message": "Application successfully deleted"}, 200
+
+
+"""
+Applicant-side Filter Routes
+"""
+@app.route("/getFilteredGrants", methods=["POST"])
+#@tokenCheck.token_required
+def getFilteredGrants():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+    
+    filters = request.json
+    query = []
+    for key, value in filters.items():
+        if key == "Title_keyword":
+            pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
+            query.append({"Title": {"$regex": pattern}})
+        elif key == "Gender":
+            query.append({"profileReqs.gender": value})
+        elif key == "Race":
+            query.append({"profileReqs.race": value})
+        elif key == "Nationality":
+            query.append({"profileReqs.nationality": value})
+        elif key == "Date Posted Before":
+            query.append({"PostedDate": {"$lt": value}})
+        elif key == "Date Posted After":
+            query.append({"PostedDate": {"$gt": value}})
+        elif key == "Deadline":
+            query.append({"Deadline": {"$lte": value}})
+        elif key == "Status":
+            query.append({"Active": value})
+        elif key == "Min Age":
+            query.append({"profileReqs.minAge": {"$gte": value}})
+        elif key == "Max Age":
+            query.append({"profileReqs.maxAge": {"$lte": value}})
+        elif key == "Min Payable Amount":
+            query.append({"AmountPerApp": {"$gte": value}})
+        elif key == "Max Payable Amount":
+            query.append({"AmountPerApp": {"$lte": value}})
+        elif key == "Vet Status":
+            query.append({"profileReqs.veteran": value})
+        elif key == "Num Grants Available":
+            query.append({"MaxWinners": {"$gte" :value}})
+
+    if len(query) == 0:
+        grants = list(grantCollection.find())
+    else:
+        grants = list(grantCollection.find({"$and": query}))
+
+    for grant in grants:
+        grant["grantID"] = str(grant["_id"])
+        del grant["_id"]
+
+    return grants, 200
+
+@app.route("/getFilteredGranteeApplications", methods=["POST"])
+#@tokenCheck.token_required
+def getFilteredGranteeApplications():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+    json = request.json
+
+    email = json.pop("Email", None)
+    if not email:
+        return {"message": "Invalid email"}, 400
+
+    user = userCollection.find_one({"Email": email})
+    if not user:
+        return {"message": "Grantee with the given email does not exist"}, 400
+
+    filters = json["Filters"]
+    query = [{"email": email}]
+    for key, value in filters.items():
+        if key == "Date Submitted":
+            query.append({"dateSubmitted": value})
+        elif key == "Status":
+            query.append({"status": value})
+    # First filter applications based off filters available directly in application  
+    # object without having to search corresponding grant
+    quickFilteredApps = list(grantAppCollection.find({"$and": query}))
+
+    finalApps = []
+    for app in quickFilteredApps:
+        query = [{"_id": ObjectId(app["grantID"])}]
+        for key, value in filters.items():
+            if key == "Title_keyword":
+                pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
+                query.append({"Title": {"$regex": pattern}})
+            elif key == "Deadline":
+                query.append({"Deadline": value})
+            elif key == "Max Payable Amount":
+                query.append({"AmountPerApp": {"$lte": value}})
+        
+        grant = grantCollection.find_one({"$and": query})
+        if grant:
+            app["_id"] = str(app["_id"])
+            finalApps.append({
+                    "ApplicationData": app,
+                    "QuestionData": grant["QuestionData"]
+            })
+
+    return finalApps, 200

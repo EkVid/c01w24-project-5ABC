@@ -10,6 +10,14 @@ def getJSONData(request):
     return JSON.loads(request.form.get("jsonData", "null"))
 
 
+def getFileData(request):
+    contentType = request.headers.get("Content-Type", None)
+    if contentType is None or request.headers.get("Content-Type").split(";")[0] != "multipart/form-data":
+        return None
+
+    return list(request.form.get("files", "null"))
+
+
 """Returns True if `listCandidate` is of type list[dict] and False otherwise.
 """
 def isListOfDict(listCandidate):
