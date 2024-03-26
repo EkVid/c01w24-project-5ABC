@@ -6,8 +6,10 @@ import FontSizeContext from "../utils/FontSizeContext";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
+import { NONE_OF_THE_ABOVE } from "../utils/constants";
+import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onChangeOptions, onDeleteAnswer}) => {
+const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onChangeOptions, onDeleteAnswer, applicantAnswer}) => {
   const [currentAnswersIdx, setCurrentAnswersIdx] = useState([]);
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
@@ -26,14 +28,14 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
 
   const handleOnSelectAnswer = (answer, idx) => {
     if (isEditMode) return;
-    if (isNoneAnOption && answer === process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE) {
+    if (isNoneAnOption && answer === NONE_OF_THE_ABOVE) {
       if (currentAnswersIdx.length === 1 && currentAnswersIdx[0] === answersObj.length) {
         setCurrentAnswersIdx([]);
         onSelectAnswer(null);
       }
       else {
         setCurrentAnswersIdx([answersObj.length]);
-        onSelectAnswer({answers: [process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE]});
+        onSelectAnswer({answers: [NONE_OF_THE_ABOVE]});
       }
     }
     else {
@@ -51,10 +53,18 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
       }
     }
   }
-
+  
   useEffect(() => setCurrentAnswersIdx([]), [isEditMode]);
 
-  return (
+  return applicantAnswer?.answers ?
+    <>
+      {applicantAnswer.answers.map((a, i) => 
+        <ResponseMsg key={a} msg={a} isMarginBottomAdded={i < applicantAnswer.answers.length - 1}/>
+      )}
+    </>
+    : applicantAnswer == "" ?
+    <ResponseMsg isNoResponse={true}/>
+    :
     <>
       {isEditMode ? 
         <OptionsDiv>
@@ -69,7 +79,6 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
       }
       {answersObj?.map((a, idx) =>
         <div 
-          aria-label={`Answer: ${a.answer}`}
           key={idx} 
           onClick={() => handleOnSelectAnswer(a.answer, idx)}
           className={`flex items-center min-w-fit px-2 py-1 m-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
@@ -141,30 +150,28 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
       {!isEditMode && options?.isNoneAnOption ? 
         <>
           <div className="border-2 rounded-3xl max-w-52 my-1.5 border-opacity-30 dark:border-opacity-30 border-black dark:border-white"/>
-          <button 
-            aria-label={`Answer: ${process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}`}
-            onClick={() => handleOnSelectAnswer(process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE)}
+          <div 
+            onClick={() => handleOnSelectAnswer(NONE_OF_THE_ABOVE)}
             className={`flex items-center p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
           >
             <input
               type="checkbox"
-              id={process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}
+              id={NONE_OF_THE_ABOVE}
               name={formName}
               style={checkboxStyle}
-              onChange={() => handleOnSelectAnswer(process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE)}
+              onChange={() => handleOnSelectAnswer(NONE_OF_THE_ABOVE)}
               checked={currentAnswersIdx.includes(answersObj.length)}
               className="pointer-events-none custom-accent dark:d-custom-accent"
             />
-            <label htmlFor={process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE} className="ml-3 text-sm custom-dark-grey dark:d-text pointer-events-none selection:bg-"> 
-              {process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}
+            <label htmlFor={NONE_OF_THE_ABOVE} className="ml-3 text-sm custom-dark-grey dark:d-text pointer-events-none selection:bg-"> 
+              {NONE_OF_THE_ABOVE}
             </label>
-          </button>
+          </div>
         </>
         :
         <></>
       }
     </>
-  )
 }
 
 export default QCheckbox;

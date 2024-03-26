@@ -2,8 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
+import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) => {
+const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, applicantAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState({startDate: ""});
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -30,7 +31,21 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
 
   useEffect(() => setCurrentAnswer({startDate: ""}), [isEditMode]);
 
-  return (
+  return applicantAnswer?.startDate ?
+    <>
+      <ResponseMsg 
+        msg={`${applicantAnswer.endDate ? "Start: " : ""} ${applicantAnswer.startDate}`}
+        isMarginBottomAdded={applicantAnswer.endDate ? true : false}
+      />
+      {applicantAnswer.endDate ? 
+        <ResponseMsg msg={`End: ${applicantAnswer.endDate}`}/>
+        : 
+        <></>
+      }
+    </>
+    : applicantAnswer == "" ?
+    <ResponseMsg isNoResponse={true}/>
+    :
     <>
       {isEditMode ? 
         <OptionsDiv>
@@ -92,7 +107,6 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) =>
         <></>
       }
     </>
-  )
 }
 
 export default QDate;

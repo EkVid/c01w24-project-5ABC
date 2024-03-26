@@ -12,7 +12,7 @@ import FontSizeContext from "./utils/FontSizeContext";
 import ReducedMotionContext from "./utils/ReducedMotionContext";
 import ThemeContext from "./utils/ThemeContext";
 
-const AccessibilityBar = ({ children }) => {
+const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion}) => {
   initTheme();
   const [lightTheme, setLightTheme] = useState(getTheme() === "light");
   const [fontSize, setFontSize] = useState(100); // Default font size is 100
@@ -20,19 +20,32 @@ const AccessibilityBar = ({ children }) => {
   // TODO: add handler for setting isReducedMotion when option is changed
 
   const handleScaleFontDown = () => {
-    scaleFont("down");
+    scaleFont('down');
     setFontSize(getFont());
-  };
+    if (onChangeFont) onChangeFont(getFont());
+  }
 
   const handleScaleFontUp = () => {
-    scaleFont("up");
+    scaleFont('up')
     setFontSize(getFont());
-  };
+    if (onChangeFont) onChangeFont(getFont());
+  }
 
   const handleResetFont = () => {
     resetFont();
-    setFontSize(100);
-  };
+    setFontSize(getFont());
+    if (onChangeFont) onChangeFont(getFont());
+  }
+
+  const handleOnChangeTheme = (e) => {
+    changeTheme(e.target.checked, setLightTheme);
+    if (onChangeTheme) onChangeTheme(getTheme());
+  }
+
+  const handleOnClickMotion = () => {
+    setIsReducedMotion(!isReducedMotion);
+    if (onChangeMotion) onChangeMotion(!isReducedMotion);
+  }
 
   return(
     <div className="h-fit custom-dark-grey-background dark:bg-[#263238] drop-shadow-sm transition-colors">

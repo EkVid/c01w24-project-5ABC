@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
+import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QPhoneNum = ({isErr, isEditMode, onSelectAnswer}) => {
+const QPhoneNum = ({isErr, isEditMode, onSelectAnswer, applicantAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -13,7 +14,11 @@ const QPhoneNum = ({isErr, isEditMode, onSelectAnswer}) => {
 
   useEffect(() => setCurrentAnswer(""), [isEditMode]);
 
-  return (
+  return applicantAnswer?.phoneNum ?
+    <ResponseMsg msg={applicantAnswer.phoneNum}/>
+    : applicantAnswer == "" ?
+    <ResponseMsg isNoResponse={true}/>
+    :
     <input
       type="tel"
       placeholder={"example: 555-555-5555, ext. 555"}
@@ -22,7 +27,7 @@ const QPhoneNum = ({isErr, isEditMode, onSelectAnswer}) => {
       value={currentAnswer}
       disabled={isEditMode}
     />
-  )
+  
 }
 
 export default QPhoneNum;

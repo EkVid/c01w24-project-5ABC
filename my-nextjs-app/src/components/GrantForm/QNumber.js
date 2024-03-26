@@ -3,8 +3,9 @@ import ReducedMotionContext from "../utils/ReducedMotionContext";
 import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
 import NumOption from "./SmallComponents/NumOption";
+import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) => {
+const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, applicantAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -31,7 +32,11 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
 
   useEffect(() => setCurrentAnswer(""), [isEditMode]);
 
-  return (
+  return applicantAnswer?.value ?
+    <ResponseMsg msg={applicantAnswer.value}/>
+    : applicantAnswer == "" ?
+    <ResponseMsg isNoResponse={true}/>
+    :
     <>
       {isEditMode ? 
         <OptionsDiv>
@@ -72,7 +77,6 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
         <></>
       }
     </>
-  )
 }
 
 export default QNumber;

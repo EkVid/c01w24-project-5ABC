@@ -140,7 +140,7 @@ const ResetPassword = () => {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen"
+      className="flex items-center justify-center flex-grow max-h-screen"
       style={{
         backgroundImage:
           "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')",
@@ -274,7 +274,7 @@ const ResetPassword = () => {
                 Verification Code is incorrect, please enter again
               </p>
             )}
-            <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
+            <div className="bg-green-500 max-w-xs w-full rounded-full">
               <button
                 type="submit"
                 className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"

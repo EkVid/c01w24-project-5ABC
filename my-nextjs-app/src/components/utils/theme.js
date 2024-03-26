@@ -1,5 +1,4 @@
 const initTheme = () => {
-  console.log("hi");
   if (
     localStorage.theme === "dark" ||
     (!("theme" in localStorage) &&
