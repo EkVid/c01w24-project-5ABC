@@ -53,7 +53,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
       }
     }
   }
-console.log(applicantAnswer)
+  
   useEffect(() => setCurrentAnswersIdx([]), [isEditMode]);
 
   return applicantAnswer?.answers ?
