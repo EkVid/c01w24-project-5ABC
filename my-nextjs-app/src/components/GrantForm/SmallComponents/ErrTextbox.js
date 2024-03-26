@@ -4,19 +4,25 @@ import AlertIconLightMode from "@/../public/alert-light.svg"
 import AlertIconDarkMode from "@/../public/alert-dark.svg"
 import { useContext } from "react";
 import FontSizeContext from "../../utils/FontSizeContext";
-import ThemeContext from "@/components/utils/ThemeContext";
 
 const ErrTextbox = ({msg}) => {
   const fontSize = useContext(FontSizeContext);
-  const isLightTheme = useContext(ThemeContext);
 
   return msg ? (
     <>
       <Image
-        src={isLightTheme ? AlertIconLightMode : AlertIconDarkMode}
+        src={AlertIconLightMode}
         alt="Alert"
         width={"auto"}
         height={25 * (fontSize / 100)}
+        className="dark:hidden"
+      />
+      <Image
+        src={AlertIconDarkMode}
+        alt="Alert"
+        width={"auto"}
+        height={25 * (fontSize / 100)}
+        className="hidden dark:block"
       />
       <p className="ml-3 text-sm custom-red dark:d-custom-red whitespace-pre-wrap">
         {msg}
