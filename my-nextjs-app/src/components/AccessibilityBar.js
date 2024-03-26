@@ -121,7 +121,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:d-text">Color Blindness</h3>
             <div className="flex justify-center items-center mt-4 mx-1 rounded-lg custom-dark-grey-background h-8">
-              <select name='colour-blindness' defaultValue={cbMode} onChange={handleColourBlindness}>
+              <select name='colour-blindness' defaultValue={cbMode} onChange={handleColourBlindness} className="border-2 border-slate-300 rounded p-2">
                   <option value="">None</option>
                   <option value="protanopia">Protanopia</option>
                   <option value="deuteranopia">Deuteranopia</option>
