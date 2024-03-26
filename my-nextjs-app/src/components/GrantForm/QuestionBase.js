@@ -29,7 +29,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { TYPE_MULTI, TYPE_CHECKBOX, TYPE_TEXT, TYPE_NUMBER, TYPE_EMAIL, TYPE_PHONE, TYPE_DATE, TYPE_FILE } from "../utils/constants";
 import { uploadFile } from "../utils/uploadFile";
 
-const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete}) => {
+const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, onChangePosition, onSelectAnswer, onChangeQuestionData, onDelete, applicantAnswer}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
   const formRef = useRef();
@@ -192,15 +192,11 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           <></>
         }
         <div className={`flex items-center md:mb-5`}>
-          {questionNum ? 
-            <h2 className={`font-bold text-xl custom-text dark:d-text ${isEditMode ? "" : "self-start"} ${isReduceMotion ? "" : "transition-colors"}`}>
-              Q{questionNum}.
-            </h2> 
-            : 
-            <></>
-          }
           {isEditMode ?
             <>
+              <h2 className={`font-bold text-xl custom-text dark:d-text ${isEditMode ? "" : "self-start"} ${isReduceMotion ? "" : "transition-colors"}`}>
+                Q{questionNum}.
+              </h2> 
               <input 
                 aria-label={`Textbox to type a question for question ${questionNum}`}
                 type="text"
@@ -224,8 +220,8 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
               </button>
             </>
             :
-            <h2 className={`text-xl custom-text dark:d-text ml-2 ${isReduceMotion ? "" : "transition-colors"}`}>
-              {question.trim() === "" ? "(empty question)" : question}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
+            <h2 className={`text-xl custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}`}>
+              {question.trim() === "" ? `Q${questionNum}. (empty question)` : `Q${questionNum}. ${question}`}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
             </h2>
           }
         </div>
@@ -312,7 +308,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
             href={fileData.fileLink} 
             target="_blank" 
             rel="noreferrer noopener" 
-            className={`mb-5 text-sm break-words custom-link`}
+            className={`mb-5 text-sm break-words custom-link mx-2`}
             >
               {fileData.fileName}
           </a>
@@ -332,6 +328,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 onAddAnswer={handleOnAddAnswer}
                 onChangeAnswers={handleOnChangeAnswers}
                 onDeleteAnswer={handleOnDeleteAnswer}
+                applicantAnswer={applicantAnswer}
               />
               : type === TYPE_CHECKBOX ?
               <QCheckbox
@@ -344,6 +341,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 onChangeAnswers={handleOnChangeAnswers}
                 onChangeOptions={handleOnChangeOptions}
                 onDeleteAnswer={handleOnDeleteAnswer}
+                applicantAnswer={applicantAnswer}
               />
               : type === TYPE_NUMBER ?
               <QNumber
@@ -352,6 +350,7 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
+                applicantAnswer={applicantAnswer}
               />
               : type === TYPE_TEXT ?
               <QText
@@ -360,18 +359,21 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
+                applicantAnswer={applicantAnswer}
               />
               : type === TYPE_EMAIL ?
               <QEmail
                 isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
+                applicantAnswer={applicantAnswer}
               />
               : type === TYPE_PHONE ?
               <QPhoneNum
                 isErr={!isEditMode && errMsg}
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
+                applicantAnswer={applicantAnswer}
               />
               : type === TYPE_DATE ?
               <QDate
@@ -380,11 +382,13 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
                 onChangeOptions={handleOnChangeOptions}
+                applicantAnswer={applicantAnswer}
               />
               : type === TYPE_FILE ?
               <QFile
                 isEditMode={isEditMode}
                 onSelectAnswer={answer => onSelectAnswer(id, answer)}
+                applicantAnswer={applicantAnswer}
               />
               :
               <></>

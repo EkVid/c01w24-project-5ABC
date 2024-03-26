@@ -3,7 +3,7 @@
 .vscode
 Sandbox
 *.pyc
-.env
+/.env
 Files
 pybind11
 build

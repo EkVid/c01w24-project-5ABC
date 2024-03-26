@@ -25,7 +25,7 @@ const PHONE_REGEX = /^(\+\d( )?)?(\(|-)?\d{3}(\)|-| )?\d{3}(-| )?\d{4}(,? ?(ext\
 
 const ERR_INVALID_ANSWERS = "Fix all errors\nto submit form";
 
-const Apply = ({title, fetchedQuestData}) => {
+const Apply = ({title, grantID, fetchedQuestData}) => {
   const [fontSize, setFontSize] = useState(100);
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -149,14 +149,18 @@ const Apply = ({title, fetchedQuestData}) => {
     if (allErrMsg.filter(e => e != null).length === 0) {
       setErrMsg(null);
       if (!confirm("Are you sure you want to submit?")) return;
+      const userData = JSON.parse(sessionStorage?.getItem('userData'));
       const body = {
-        grantID: "TODO:POOT_ID_HERE", 
-        Email: "TODO:POOT_EMAIL_HERE",
-        profileData: null,
+        grantID: grantID, 
+        email: userData?.email ?? null,
         answers: answerData
       }
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${userData?.token}`
+      }
       try {
-        await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN + process.env.NEXT_PUBLIC_APPEND}/createApplication`, body);
+        await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN + process.env.NEXT_PUBLIC_APPEND}/createApplication`, body, {headers: headers});
         alert(`Your application for '${title}' has been submitted! You will now be redirected to the dashboard.`);
         router.back();
       }

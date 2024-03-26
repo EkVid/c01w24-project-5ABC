@@ -1,12 +1,13 @@
 import Login from "@/components/Login";
-import BaseLayout from "@/app/layout";
 import dynamic from "next/dynamic";
+import AccessibilityBar from "@/components/AccessibilityBar";
 
 const LoginPage = () => {
   return (
-    <BaseLayout showFooter={false}>
+    <>
+      <AccessibilityBar />
       <Login />
-    </BaseLayout>
+    </>
   );
 };
 

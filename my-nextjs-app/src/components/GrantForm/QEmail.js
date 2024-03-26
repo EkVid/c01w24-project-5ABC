@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
+import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QEmail = ({isErr, isEditMode, onSelectAnswer}) => {
+const QEmail = ({isErr, isEditMode, onSelectAnswer, applicantAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -13,7 +14,11 @@ const QEmail = ({isErr, isEditMode, onSelectAnswer}) => {
 
   useEffect(() => setCurrentAnswer(""), [isEditMode]);
 
-  return (
+  return applicantAnswer?.email ?
+    <ResponseMsg msg={applicantAnswer.email}/>
+    : applicantAnswer == "" ?
+    <ResponseMsg isNoResponse={true}/>
+    :
     <input
       type="email"
       placeholder={"example: example@domain.com"}
@@ -22,7 +27,6 @@ const QEmail = ({isErr, isEditMode, onSelectAnswer}) => {
       value={currentAnswer}
       disabled={isEditMode}
     />
-  )
 }
 
 export default QEmail;
