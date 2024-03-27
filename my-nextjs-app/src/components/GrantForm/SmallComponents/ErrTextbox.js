@@ -16,6 +16,7 @@ const ErrTextbox = ({msg}) => {
         width={"auto"}
         height={25 * (fontSize / 100)}
         className="dark:hidden"
+        aria-hidden="true"
       />
       <Image
         src={AlertIconDarkMode}
@@ -23,6 +24,7 @@ const ErrTextbox = ({msg}) => {
         width={"auto"}
         height={25 * (fontSize / 100)}
         className="hidden dark:block"
+        aria-hidden="true"
       />
       <p className="ml-3 text-sm custom-red dark:d-custom-red whitespace-pre-wrap">
         {msg}

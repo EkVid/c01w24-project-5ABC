@@ -9,7 +9,7 @@ import CheckboxOption from "./SmallComponents/CheckboxOption";
 import { NONE_OF_THE_ABOVE } from "../utils/constants";
 import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onChangeOptions, onDeleteAnswer, applicantAnswer}) => {
+const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onChangeOptions, onDeleteAnswer, applicantAnswer, questionNum}) => {
   const [currentAnswersIdx, setCurrentAnswersIdx] = useState([]);
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
@@ -69,7 +69,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
       {isEditMode ? 
         <OptionsDiv>
           <CheckboxOption 
-            label={`Include "${process.env.NEXT_PUBLIC_NONE_OF_THE_ABOVE}":`} 
+            label={`Include "${NONE_OF_THE_ABOVE}" for Q${questionNum}:`} 
             currentValue={isNoneAnOption} 
             onClick={() => onChangeOptions({...options, isNoneAnOption: !isNoneAnOption})}
           />
@@ -84,7 +84,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
           className={`flex items-center min-w-fit px-2 py-1 m-1 ${isEditMode ? "" : "rounded-md custom-interactive-btn"} ${isReduceMotion ? "" : "transition-colors"}`}
         >
           <input
-            aria-label={`Checkbox for answer ${a.answer}`}
+            aria-label={`Checkbox answer ${idx + 1}: ${a.answer}`}
             type="checkbox"
             id={a.id}
             name={formName}
@@ -98,7 +98,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
             <>
               {/* Edit answer */}
               <input
-                aria-label={`Textbox to edit answer ${idx + 1}`}
+                aria-label={`Textbox to edit answer ${idx + 1}: ${a.answer}`}
                 type="text"
                 onChange={e => onChangeAnswers(a.id, e.target.value)}
                 value={a.answer}
@@ -107,7 +107,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
               />
               {/* Hide delete answer button if there is only one answer */}
               <button 
-                aria-label={`Button to delete answer ${idx + 1}`}
+                aria-label={`Button to delete answer ${idx + 1}: ${a.answer}`}
                 onClick={() => onDeleteAnswer(a.id)}
                 className={`ml-2 p-0.5 rounded-md custom-interactive-btn m-1 flex ${answersObj.length > 1 ? "visible" : "invisible"} ${isReduceMotion ? "" : "transition-colors"}`}
               >
@@ -131,7 +131,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
       {/* Show add button if in edit mode */}
       {isEditMode ? 
         <button 
-          aria-label="Button to add an additional answer"
+          aria-label={`Button to add an additional answer. Currently there are ${answersObj.length} answers.`}
           className={`flex w-fit rounded-md p-1 mt-4 custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"} ${!isEditMode ? "hidden" : ""}`} 
           onClick={handleOnAddAnswer}
         >
@@ -142,7 +142,7 @@ const QCheckbox = ({answersObj, options, isEditMode, errAnsIdxArr, onSelectAnswe
             height={'auto'}
             className="mr-2 dark:d-white-filter"
           />
-          <div className='custom-dark-grey dark:d-custom-dark-grey'>Add Answer</div>
+          <p className='custom-dark-grey dark:d-custom-dark-grey'>Add Answer</p>
         </button>
         :
         <></>

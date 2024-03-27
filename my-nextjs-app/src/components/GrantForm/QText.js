@@ -5,7 +5,7 @@ import CheckboxOption from "./SmallComponents/CheckboxOption";
 import NumOption from "./SmallComponents/NumOption";
 import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, applicantAnswer}) => {
+const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, applicantAnswer, questionNum}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -44,17 +44,17 @@ const QText = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, app
       {isEditMode ? 
         <OptionsDiv>
           <CheckboxOption 
-            label={"Exteneded responses:"}
+            label={`Enable exteneded responses for Q${questionNum}:`}
             currentValue={isMultipleLines} 
             onClick={() => onChangeOptions({...options, isMultipleLines: !isMultipleLines})}
           />
           <NumOption
-            label={"Minimum character count:"}
+            label={`Minimum character count for Q${questionNum}:`}
             currentValue={minCharsNum}
             onChangeValue={newMin => onChangeOptions({...options, minCharsNum: newMin}, newMin && newMin > 0)}
           />
           <NumOption
-            label={"Maximum character count:"}
+            label={`Maximum character count for Q${questionNum}:`}
             currentValue={maxCharsNum}
             onChangeValue={newMax => onChangeOptions({...options, maxCharsNum: newMax})}
           />
