@@ -4,7 +4,7 @@ import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
 import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, applicantAnswer}) => {
+const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, applicantAnswer, questionNum}) => {
   const [currentAnswer, setCurrentAnswer] = useState({startDate: ""});
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -50,13 +50,13 @@ const QDate = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, app
       {isEditMode ? 
         <OptionsDiv>
           <CheckboxOption 
-            label={"Enable date range answers:"}
+            label={`Enable date range answers for Q${questionNum}:`}
             currentValue={isDateRange} 
             onClick={() => onChangeOptions({isDateRange: !isDateRange, isBothRequired: false})}
           />
           {isDateRange ?
             <CheckboxOption 
-              label={"Require both start and end:"}
+              label={`Require both start and end for Q${questionNum}:`}
               currentValue={isBothRequired} 
               onClick={() => onChangeOptions({...options, isBothRequired: !isBothRequired}, true)}
             />

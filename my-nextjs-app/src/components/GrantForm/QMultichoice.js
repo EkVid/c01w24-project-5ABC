@@ -48,6 +48,7 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
           className={`flex items-center min-w-fit p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
         >
           <input
+            aria-label={`Multiple-choice answer ${idx + 1}: ${a.answer}`}
             type="radio"
             id={a.id}
             name={formName}

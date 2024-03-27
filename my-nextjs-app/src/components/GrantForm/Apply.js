@@ -145,7 +145,10 @@ const Apply = ({title, grantID, fetchedQuestData}) => {
         }
       }
     }
-    setQuestionData(prev => prev.map((q, i) => ({...q, errMsg: allErrMsg[i]})));
+    setQuestionData(prev => {
+      const allErrMsgWithNum = allErrMsg.map((e, i) => e ? `Q${i + 1} Error: ${e}` : null);
+      return prev.map((q, i) => ({...q, errMsg: allErrMsgWithNum[i]}))
+    });
     if (allErrMsg.filter(e => e != null).length === 0) {
       setErrMsg(null);
       if (!confirm("Are you sure you want to submit?")) return;
@@ -200,12 +203,13 @@ const Apply = ({title, grantID, fetchedQuestData}) => {
                 >
                   <Image
                     src={UndoIcon}
-                    alt="Arrow to go back a page"
+                    alt="Arrow to go back"
                     width={22 * fontSize / 100}
                     height={"auto"}
                     className="dark:d-white-filter rotate-[30deg]"
+                    aria-hidden="true"
                   />
-                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex">Quit</p>
+                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex" aria-hidden="true">Quit</p>
                 </button>
                 <h1 className="flex-grow self-center text-center mx-4 text-2xl custom-text dark:d-text overflow-auto max-h-20">{title}</h1>
                 <button 
@@ -219,16 +223,13 @@ const Apply = ({title, grantID, fetchedQuestData}) => {
                     width={22 * fontSize / 100}
                     height={"auto"}
                     className="dark:d-white-filter"
+                    aria-hidden="true"
                   />
-                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex">Submit</p>
+                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex" aria-hidden="true">Submit</p>
                 </button>
-                {errMsg ?
-                  <div className="flex items-center mx-2">
-                    <ErrTextbox msg={errMsg}/>
-                  </div>
-                  :
-                  <></>
-                }
+                <div className={`flex items-center ${errMsg ? "mx-2" : ""}`} role="alert">
+                  {errMsg ? <ErrTextbox msg={errMsg}/> : <></>}
+                </div>
               </div>
             </div>
             {isRequiredVis ?
@@ -248,6 +249,7 @@ const Apply = ({title, grantID, fetchedQuestData}) => {
                     isEditMode={false}
                     isLastQuestion={i === questionData.length - 1}
                     onSelectAnswer={handleOnSelectAnswer}
+                    totalNumOfQuestions={questionData?.length ?? 0}
                   />
                 )}
                 {!questionData || questionData.length === 0 ?
@@ -270,6 +272,7 @@ const Apply = ({title, grantID, fetchedQuestData}) => {
                         width={22 * fontSize / 100}
                         height={"auto"}
                         className="dark:d-white-filter"
+                        aria-hidden="true"
                       />
                       <div className="ml-2.5 text-xl custom-text dark:d-text">Submit</div>
                     </button>

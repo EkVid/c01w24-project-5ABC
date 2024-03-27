@@ -167,7 +167,7 @@ export default function EditPage({params}) {
         }
       }
     }
-    return errMsgArr;
+    return errMsgArr.map((e, i) => e ? `Q${i + 1} Error: ${e}` : null);
   }
 
   const handleOnClickAddQuestion = (type) => {
@@ -201,7 +201,7 @@ export default function EditPage({params}) {
 
   const handleOnDragStart = ({active}) => {
     setIsToolboxDisabled(true);
-    setNewDraggedObj(active.data?.current);
+    setNewDraggedObj(active);
 
     setActiveQuestion(() => {
       if (questionData == null) return null;
@@ -280,6 +280,8 @@ export default function EditPage({params}) {
 
   const questionIds = useMemo(() => questionData ? questionData.map(q => q.id) : [], [questionData]);
 
+  // --------------- React DnD Props ----------------
+
   const restrictToVerticalAxisAndWindowEdges = ({transform, draggingNodeRect, windowRect}) => {
     const value = {...transform};
     if (!draggingNodeRect || !windowRect) return transform;
@@ -288,6 +290,57 @@ export default function EditPage({params}) {
     else if (draggingNodeRect.right + transform.x >= windowRect.left + windowRect.width) value.x = windowRect.left + windowRect.width - draggingNodeRect.right;
 
     return value;
+  }
+
+  const announcements = {
+    onDragStart({active}) {
+      const activeObj = active.data?.current;
+      const questionTitle = activeObj?.title;
+      const questionNum = activeObj?.questionNum;
+      return questionNum ? 
+        `Picked up question ${questionNum}: ${questionTitle}. This question is in position ${questionNum} out of ${questionData.length}.` 
+        : 
+        `Picked up question new question of type ${questionTitle}. Use the right arrow key to move the question into the form.`;
+    },
+    onDragOver({active, over}) {
+      const activeObj = active.data?.current;
+      const questionTitle = activeObj?.title;
+      const overNum = over?.data?.current?.questionNum ? over.data?.current?.questionNum + 1 : 0;
+      const totalNumOfQuestions = questionData ? questionData.length + 1 : 0;
+      if (over && activeObj?.cont === "questionPanel") {
+        return `Question ${questionTitle} is moved over position ${overNum} of ${totalNumOfQuestions}`;
+      }
+      else if (totalNumOfQuestions === 0 && isAddingNew) {
+        return `New question of type ${questionTitle} is over form and will be first question when dropped.`
+      }
+      else if (over && over.id !== tempObj.id && isAddingNew) {
+        return `New question of type ${questionTitle} is moved over position ${overNum} of ${totalNumOfQuestions - 1}`
+      }
+    },
+    onDragEnd({active, over}) {
+      const activeObj = active.data?.current;
+      const questionTitle = activeObj?.title;
+      const overNum = over?.data?.current?.questionNum ? over.data?.current?.questionNum + 1 : 0;
+      const totalNumOfQuestions = questionData ? questionData.length + 1 : 0;
+      if (over && activeObj?.cont === "questionPanel") {
+        return `Question ${questionTitle} is dropped into position ${overNum} of ${totalNumOfQuestions}`;
+      }
+      else if (totalNumOfQuestions === 0 && isAddingNew) {
+        return `New question of type ${questionTitle} is added to form as first question.`
+      }
+      else if (over && over.id !== tempObj.id && isAddingNew) {
+        return `New question of type ${questionTitle} is added into position ${overNum} of ${totalNumOfQuestions}`
+      }
+    },
+    onDragCancel({active}) {
+      const activeObj = active.data?.current;
+      const questionTitle = activeObj?.title;
+      const questionNum = activeObj?.questionNum;
+      return questionNum ? 
+        `Dragging was cancelled. Question ${questionNum}: ${questionTitle} was returned to its original position of ${questionNum} out of ${questionData?.length ?? 0}.`
+        :
+        `Dragging was cancelled. New question of type ${questionTitle} was not added. Form currently has ${questionData?.length ?? 0}`;
+    },
   }
  
   return (
@@ -303,6 +356,8 @@ export default function EditPage({params}) {
               onDragEnd={handleOnDragEnd}
               onDragCancel={clearStates}
               modifiers={[restrictToVerticalAxisAndWindowEdges]}
+              accessibility={announcements}
+              screenReaderInstructions={"To pick up a question, press space or enter while the drag handle is selected. If a new question drag handle is selected, use the right arrow key to move the question into the form and use the up and down arrows to position the new question. If a pre-existing question has been selected, use the up and down arrow keys to change the position of the question. Press space or enter again to drop the item in its new position, or press escape to cancel."}
             >
               <title>{`${title} Editor`}</title>
               {/* Header for title and save, exit, view buttons */}
@@ -324,8 +379,9 @@ export default function EditPage({params}) {
                       width={22 * fontSize / 100}
                       height={"auto"}
                       className="dark:d-white-filter rotate-[30deg]"
+                      aria-hidden="true"
                     />
-                    <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Quit</div>
+                    <p className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Quit</p>
                   </button>
                   <h1 className="flex-grow text-center mx-3 text-2xl custom-text dark:d-text overflow-auto max-h-20">{title}</h1>
                   <div className="min-w-fit flex items-center">
@@ -341,8 +397,9 @@ export default function EditPage({params}) {
                           width={22 * fontSize / 100}
                           height={"auto"}
                           className="dark:d-white-filter"
+                          aria-hidden="true"
                         />
-                        <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Save</div>
+                        <p className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">Save</p>
                       </button>
                       <button 
                         aria-label={isEditMode ? "Preview form" : "Edit form"}
@@ -355,19 +412,20 @@ export default function EditPage({params}) {
                           width={22 * fontSize / 100}
                           height={"auto"}
                           className="dark:d-white-filter"
+                          aria-hidden="true"
                         />
-                        <div className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">{isEditMode ? "View" : "Edit"}</div>
+                        <p className="ml-3 text-xl custom-text dark:d-text hidden lg:flex">{isEditMode ? "View" : "Edit"}</p>
                       </button>
                     </div>
-                    <div className={`items-center ${cornerMsg ? "flex" : "hidden"}`}>
-                      <ErrTextbox msg={cornerMsg}/>
+                    <div className={`items-center ${cornerMsg ? "flex" : "hidden"}`} role="alert" aria-live="assertive">
+                      {cornerMsg ? <ErrTextbox msg={cornerMsg}/> : <></>}
                     </div>
                   </div>
                 </div>
               </div>
               <div className={`${fontSize > LARGE_FONT_SIZE ? "flex-col" : "flex flex-col lg:flex-row"} flex-auto bg-transparent`}>
                 <div className={`${fontSize > LARGE_FONT_SIZE || !isEditMode ? "" : "lg:flex sticky top-32"} hidden h-fit max-h-[85vh] px-3 py-5 pb-0 m-3 rounded-xl border-4 border-transparent overflow-auto flex-col lg:max-w-xs xl:max-w-sm custom-questioncard-background ${isToolboxDisabled ? "opacity-30" : ""} ${isReducedMotion ? "" : "transition"}`}>
-                  <Toolbox onClickAdd={handleOnClickAddQuestion}/>
+                  <Toolbox onClickAdd={handleOnClickAddQuestion} currentNumOfQuestions={questionData?.length ?? 0}/>
                 </div>
                 <SortableContext
                   items={questionIds}
@@ -388,23 +446,24 @@ export default function EditPage({params}) {
                         onDelete={handleOnDeleteQuestion}
                         onSelectAnswer={() => {return}}
                         onChangePosition={posChange => handleOnChangePosition(q.id, posChange)}
+                        totalNumOfQuestions={questionData?.length ?? 0}
                       />
                     )}
                     {isEditMode ?
                       !questionData || questionData.length === 0 ?
-                        <div className={`flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap ${isReducedMotion ? "" : "transition"}`}>
+                        <p className={`flex m-20 self-center text-3xl font-bold custom-text dark:d-text text-center opacity-50 whitespace-pre-wrap ${isReducedMotion ? "" : "transition"}`}>
                           {!questionData ? 
                             "Use the toolbox to start creating your application form!\n\n\nClick the + icons to start adding questions!" 
                             : 
                             "You trynna give people an empty application to fill out?\n\n\nAdd your questions here now."
                           }
-                        </div>
+                        </p>
                         :
-                        <div className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">End of form</div>
+                        <p className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">End of form</p>
                       : !questionData || questionData.length === 0 ?
-                        <div className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">
+                        <p className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">
                           There are no questions to preview
-                        </div>
+                        </p>
                         :
                         <></>
                     }
@@ -428,10 +487,10 @@ export default function EditPage({params}) {
                     : newDraggedObj ?
                     <div className="custom-questioncard-background rounded-lg transition-none">
                       <ToolboxCard 
-                        title={newDraggedObj.title}
-                        type={newDraggedObj.type}
-                        desc={newDraggedObj.desc}
-                        icon={newDraggedObj.icon}
+                        title={newDraggedObj.data?.current.title}
+                        type={newDraggedObj.data?.current.type}
+                        desc={newDraggedObj.data?.current.desc}
+                        icon={newDraggedObj.data?.current.icon}
                       />
                     </div>
                     :
@@ -448,7 +507,7 @@ export default function EditPage({params}) {
                   </button>
                   {isBottomToolboxOpen ? 
                     <div className={`flex items-center mt-2 p-2 border-t border-t-black dark:border-t-white custom-questioncard-background overflow-auto ${isReducedMotion ? "" : "transition"}`}>
-                      <Toolbox isSmallVersion={true} onClickAdd={handleOnClickAddQuestion}/>
+                      <Toolbox isSmallVersion={true} onClickAdd={handleOnClickAddQuestion} currentNumOfQuestions={questionData?.length ?? 0}/>
                     </div>
                     :
                     <></>
