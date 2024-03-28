@@ -606,34 +606,36 @@ def getFilteredGrants():
     filters = request.json
     query = []
     for key, value in filters.items():
-        if key == "Title_keyword":
+        if key == "titleKeyword":
             pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
             query.append({"Title": {"$regex": pattern}})
-        elif key == "Gender":
+        elif key == "gender":
             query.append({"profileReqs.gender": value})
-        elif key == "Race":
+        elif key == "race":
             query.append({"profileReqs.race": value})
-        elif key == "Nationality":
+        elif key == "nationality":
             query.append({"profileReqs.nationality": value})
-        elif key == "Date Posted Before":
+        elif key == "datePostedBefore":
             query.append({"PostedDate": {"$lt": value}})
-        elif key == "Date Posted After":
+        elif key == "datePostedAfter":
             query.append({"PostedDate": {"$gt": value}})
-        elif key == "Deadline":
+        elif key == "deadline":
             query.append({"Deadline": {"$lte": value}})
-        elif key == "Status":
+        elif key == "status":
             query.append({"Active": value})
-        elif key == "Min Age":
+        elif key == "email":
+            query.append({"grantorEmail": value})
+        elif key == "minAge":
             query.append({"profileReqs.minAge": {"$gte": value}})
-        elif key == "Max Age":
+        elif key == "maxAge":
             query.append({"profileReqs.maxAge": {"$lte": value}})
-        elif key == "Min Payable Amount":
+        elif key == "minAmount":
             query.append({"AmountPerApp": {"$gte": value}})
-        elif key == "Max Payable Amount":
+        elif key == "maxAmount":
             query.append({"AmountPerApp": {"$lte": value}})
-        elif key == "Vet Status":
+        elif key == "veteran":
             query.append({"profileReqs.veteran": value})
-        elif key == "Num Grants Available":
+        elif key == "maxWinners":
             query.append({"MaxWinners": {"$gte" :value}})
 
     if len(query) == 0:
