@@ -302,7 +302,6 @@ def deleteUser():
 def createGrant():
     grantDict = getJSONData(request)
     files = getFileData(request)
-    print(files[0])
     if grantDict is None:
         return {"message": "Unsupported Content Type"}, 400
     try:
@@ -310,7 +309,7 @@ def createGrant():
     except ValidationError as e:
         # Do not change e.errors(), the tests require an error list in this specific format
         return {"message": e.errors()}, 403
-    
+
     # checking for files that need to be stored
     for question in grantDict["QuestionData"]:
         fileData = question.get("fileData", None)
@@ -368,7 +367,7 @@ def getGrantorGrants():
     grants = list(grantCollection.find({"grantorEmail": email}))
     if not grants:
         return {"message": "No grants found"}, 404
-    
+
     for grant in grants:
         grant["_id"] = str(grant["_id"])
     return {"grants": grants}, 200
@@ -384,7 +383,7 @@ def deleteGrant(_id):
     grant = grantCollection.find_one_and_delete({"_id": objID})
     if grant == None:
         return {"message": "Grant form with the given ID not found"}, 404
-    
+
     for question in grant["QuestionData"]:
         fileData = question.get("fileData", None)
         if fileData != None:
@@ -420,16 +419,17 @@ def createApplication():
 
         if not ObjectId.is_valid(grantID):
             return {"message": "Invalid grant ID"}, 400
-        
+
         objID = ObjectId(grantID)
         grant = grantCollection.find_one({"_id": objID}, {"_id": False})
         if not grant:
             return {"message": "Grant with the given ID not found"}, 404
-        
-        answers = request.json["answers"]
-        if answers == None or len(answers) != len(grant["QuestionData"]):
+
+        answers = request.json.get("answers", None)
+        # answers = request.json["answers"]
+        if answers is None or len(answers) != len(grant["QuestionData"]):
             return {"message": "Invalid grant application answer data"}, 400
-        
+
         # checking for files that need to be stored
         for answer in answers:
             if "fileLink" in answer:
@@ -481,7 +481,7 @@ def getGranteeApplications():
     grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
 
     if len(applicationDatas) != len(grants):
-        return {"message": "Question data retrieval error"}, 403 
+        return {"message": "Question data retrieval error"}, 403
 
     # Assign grantIDs to link each application to its grant
     for grant in grants:
@@ -497,8 +497,7 @@ def getGranteeApplications():
                     "ApplicationData": applicationData,
                     "GrantData": grant
                 })
-            
-    print(applicationsWithGrants)
+
     return {"applicationsWithGrants": applicationsWithGrants}, 200
 
 
@@ -553,7 +552,7 @@ def deleteApplication(_id):
     app = grantAppCollection.find_one_and_delete({"_id": objID})
     if app == None:
         return {"message": "Grant application with the given ID not found"}, 404
-    
+
     for answer in app["answers"]:
         if "fileLink" in answer:
             deleteFile(answer["fileLink"])
@@ -569,7 +568,7 @@ Applicant-side Filter Routes
 def getFilteredGrants():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
-    
+
     filters = request.json
     query = []
     for key, value in filters.items():
@@ -639,7 +638,7 @@ def getFilteredGranteeApplications():
             query.append({"dateSubmitted": value})
         elif key == "status":
             query.append({"status": value})
-    # First filter applications based off filters available directly in application  
+    # First filter applications based off filters available directly in application
     # object without having to search corresponding grant
     quickFilteredApps = list(grantAppCollection.find({"$and": query}))
 
@@ -654,7 +653,7 @@ def getFilteredGranteeApplications():
                 query.append({"Deadline": value})
             elif key == "maxAmount":
                 query.append({"AmountPerApp": {"$lte": value}})
-        
+
         grant = grantCollection.find_one({"$and": query})
         if grant:
             grant["grantID"] = str(grant["_id"])
