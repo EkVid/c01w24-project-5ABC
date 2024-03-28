@@ -1,18 +1,14 @@
 "use client";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import Four_Circle from "../../../public/logo.svg";
-import cbFourCircle from "../../../public/cblogo.svg"
+import Four_Circle from "../../public/logo.svg";
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
-import ThemeContext from "../utils/ThemeContext";
-import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
-import ReducedMotionContext from "../utils/ReducedMotionContext";
-import { getcbMode } from "@/components/utils/cbMode";
+import { useContext } from "react";
 import { useRouter } from "next/navigation";
-import show_password from "../../../public/password_eye.svg";
-import hide_password from "../../../public/password_eye_cross.svg";
+import show_password from "../../public/password_eye.svg";
+import hide_password from "../../public/password_eye_cross.svg";
 import axios from "axios";
 import VerificationFailMessage from "./VerificationFailMessage";
 
@@ -53,14 +49,8 @@ const SignUp = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [matchError, setMatchError] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); //  State for showing the success message
-  const [display, setDisplay] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
 
-  const cbMode = useContext(ColourBlindnessContext)
-  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
-  const isReducedMotion = useContext(ReducedMotionContext)
-  const theme = useContext(ThemeContext)
 
   const validatePassword = (password) => {
     const regex =
@@ -89,30 +79,20 @@ const SignUp = () => {
     setPasswordError(!validatePassword(newPassword));
     setMatchError(newPassword !== confirmPassword);
 
-    axios
-      .post("http://localhost:5000/signup", {
+    if (validatePassword(newPassword) && newPassword === confirmPassword) {
+      setShowSuccessMessage(true); // Show the verification success message
+    }
+    try {
+      const response = axios.post("http://localhost:5000/signup", {
         Email: emailValue,
         Password: newPassword,
         Usertype: selection,
-      })
-      .then((response) => {
-        setData(response.data.message);
-        if (validatePassword(newPassword) && newPassword === confirmPassword) {
-          setShowSuccessMessage(true); // Show the verification success message
-        }
-      })
-      .catch((error) => {
-        setDisplay(true);
-        setErrorMsg(error.response.data.message);
-        if (error.response) {
-          console.log(error.response.status);
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log("No response received:", error.request);
-        } else {
-          console.log("Error:", error.message);
-        }
       });
+      setData(response.data.message);
+      console.log(data);
+    } catch (error) {
+      console.log(data);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -125,84 +105,92 @@ const SignUp = () => {
 
   return (
     <div
-      className={`flex items-center justify-center py-4 flex-grow ${theme === 'light' ? "" : "d-custom-navy-background border-t border-white"}`}
+      className="flex items-center justify-center min-h-screen"
       style={{
-          backgroundImage:`${theme === 'light' ? "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')" : ""}`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+        backgroundImage:
+          "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
-      {display && <VerificationFailMessage text={errorMsg} />}
-      <div className="flex flex-col md:flex-row bg-white dark:d-custom-dark-grey-background shadow-lg overflow-hidden rounded-lg">
+      {/* <VerificationFailMessage
+        text={
+          "Account already exists in the system, you can login directly without signing up"
+        }
+      />
+      TODO: add logic to render this properly for route 409 */}
+
+      {/* <VerificationFailMessage
+        text={"An unexpected error occured, please try again"}
+      />
+      TODO: add logic to render this properly for route 400 */}
+
+      <div className="flex flex-col md:flex-row bg-white shadow-lg overflow-hidden rounded-lg">
         <div className="flex flex-col w-full md:w-4/6 p-12 space-y-6 ">
           <div className="flex flex-col items-center lg:items-start space-y-4">
             <Image
-              src={protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
+              src={Four_Circle}
               alt="Logo"
               width={80 * fontSizeMultiplier}
               height={80 * fontSizeMultiplier}
               className="rounded-3xl"
             />
-            <div>{showSuccessMessage && <VerificationSuccessMessage />}</div>
-            <h2 className="text-center lg:text-5xl md:text-5xl text-3xl mb-6 mt-6 font-semibold text-black dark:d-text">
+            <h2 className="text-center lg:text-5xl md:text-5xl text-3xl mb-6 mt-6 font-semibold text-black">
               Welcome to the future of funding
             </h2>
           </div>
-          <p className="text-center text-lg mt-4 text-black dark:d-text">
+          <p className="text-center text-lg mt-4 text-black">
             Already have an account?{" "}
-            <Link href="/login" className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline`}>
+            <Link href="/login" className="text-green-600 hover:text-green-700">
               Sign in
             </Link>
           </p>
           <div className="flex mb-6 justify-center ">
             <div
               className={`cursor-pointer px-4 py-3 text-lg flex items-center ${
-                selection === "grantee" ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : "bg-green-200 text-black") : "bg-green-100 text-black"
+                selection === "grantee" ? "bg-green-200" : "bg-green-100"
               } rounded mr-2`}
               onClick={() => setSelection("grantee")}
             >
               <span
                 className={`inline-block h-6 w-6 mr-2 rounded-full border-2 ${
                   selection === "grantee"
-                    ? (protanopia ? "custom-red-border-cb" : deuteranopia ? "custom-red-border-cb" : tritanopia ? "custom-red-border-cb" : "border-blue-500")
+                    ? "border-blue-500"
                     : "border-gray-400"
                 } flex justify-center items-center`}
               >
                 <span
                   className={`inline-block h-4 w-4 rounded-full ${
-                    selection === "grantee" ? (protanopia ? "custom-red-background" : deuteranopia ? "custom-red-background" : tritanopia ? "custom-red-background" : "bg-blue-500") : "bg-white"
+                    selection === "grantee" ? "bg-blue-500" : "bg-white"
                   }`}
                 ></span>
               </span>
-              <p>Grantee</p>
+              <p className="text-black">Grantee</p>
             </div>
             <div
               className={`cursor-pointer px-4 py-3 text-lg flex items-center ${
-                selection === "grantor" ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : "bg-green-200 text-black") : "bg-green-100 text-black"
+                selection === "grantor" ? "bg-green-200" : "bg-green-100"
               } rounded`}
               onClick={() => setSelection("grantor")}
             >
               <span
                 className={`inline-block h-6 w-6 mr-2 rounded-full border-2 ${
                   selection === "grantor"
-                    ? (protanopia ? "custom-red-border-cb" : deuteranopia ? "custom-red-border-cb" : tritanopia ? "custom-red-border-cb" : "border-blue-500")
+                    ? "border-blue-500"
                     : "border-gray-400"
                 } flex justify-center items-center`}
               >
                 <span
                   className={`inline-block h-4 w-4 rounded-full ${
-                    selection === "grantor" ? (protanopia ? "custom-red-background" : deuteranopia ? "custom-red-background" : tritanopia ? "custom-red-background" : "bg-blue-500") : "bg-white"
+                    selection === "grantor" ? "bg-blue-500" : "bg-white"
                   }`}
                 ></span>
               </span>
-              <p>Grantor</p>
+              <p className="text-black">Grantor</p>
             </div>
           </div>
 
-          <form
-            className="flex flex-col space-y-4 items-center"
-            onSubmit={handleSubmit}
-          >
+          <form className="flex flex-col space-y-4 items-center">
             <input
               type="email"
               value={emailValue}
@@ -211,13 +199,9 @@ const SignUp = () => {
               className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
               required
             />
-            <p
-              className={`text-red-500 text-sm mt-5 ${
-                passwordError ? "block" : "hidden"
-              }`}
-            >
+            <p className="text-red-500 text-xs hidden">
               Password needs to be minimum 7 characters long, including at least
-              1 alphabet, 1 number, and 1 special symbol{" "}
+              1 alphabet, 1 number, and 1 special symbol
             </p>
             <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
               <input
@@ -254,7 +238,7 @@ const SignUp = () => {
               </div>
             </div>
             <p
-              className={`text-red-500 text-sm mt-5 ${
+              className={`text-red-500 text-xs mt-5 ${
                 matchError ? "block" : "hidden"
               }`}
             >
@@ -297,25 +281,25 @@ const SignUp = () => {
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
-                className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
+                className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
               >
                 Sign Up
               </button>
             </div>
           </form>
         </div>
-        <div className={`w-full md:w-2/6 p-12 ${protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-pt text-white" : tritanopia ? "custom-green-background-pt text-white" : "bg-green-100"} space-y-4 flex flex-col justify-center items-center`}>
+        <div className="w-full md:w-2/6 p-12 bg-green-100 space-y-4 flex flex-col justify-center items-center">
           <img
             src="https://accoladetechnology.com/wp-content/uploads/2019/04/Icon-Financial-Services.png"
             alt="Service Icon"
             className="mx-auto"
             style={{ maxWidth: "40%", height: "auto" }}
           />
-          <h2 className="text-xl text-center">
+          <h2 className="text-xl text-center text-black">
             The service of {selection === "grantee" ? "Grantee" : "Grantor"}{" "}
             includes:
           </h2>
-          <div className="text-md text-left ml-6">
+          <div className="text-md text-left ml-6 text-black">
             {selection === "grantee" ? (
               <>
                 <p>

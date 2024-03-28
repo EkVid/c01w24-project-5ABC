@@ -28,10 +28,14 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
     setFontSize(getFont());
     if (onChangeFont) onChangeFont(getFont());
   }
+    if (onChangeFont) onChangeFont(getFont());
+  }
 
   const handleScaleFontUp = () => {
     scaleFont("up");
     setFontSize(getFont());
+    if (onChangeFont) onChangeFont(getFont());
+  }
     if (onChangeFont) onChangeFont(getFont());
   }
 
@@ -65,11 +69,15 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
         <summary className="list-none flex flex-nowrap justify-end items-center cursor-pointer">
           <h1 className="custom-dark-grey dark:d-text cs-text-lg text-center">Accessibility Settings</h1>
           <div className="custom-dark-grey dark:d-text cs-text-2xl mx-5 group-open:rotate-90 transition-transform">
+          <h1 className="custom-dark-grey dark:d-text cs-text-lg text-center">Accessibility Settings</h1>
+          <div className="custom-dark-grey dark:d-text cs-text-2xl mx-5 group-open:rotate-90 transition-transform">
             &#8250;
           </div>
         </summary>
 
         {/* Dropdown Open Content */}
+        <div className="flex justify-start custom-dark-grey p-4 space-x-5 transition-all overflow-x-auto">
+
         <div className="flex justify-start custom-dark-grey p-4 space-x-5 transition-all overflow-x-auto">
 
           {/* Font Size */}
@@ -88,6 +96,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
               </button>
 
               <p className="text-4xl dark:d-text">A</p>
+              <p className="text-4xl dark:d-text">A</p>
 
               <button 
                 className="cs-text-5xl font-light hover:cursor-pointer dark:d-text" 
@@ -101,6 +110,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
 
           {/* Theme */}
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
+            <h3 className="text-center cs-text-xl dark:d-text">Theme</h3>
             <h3 className="text-center cs-text-xl dark:d-text">Theme</h3>
             <div className="flex flex-col lg:flex-row lg:space-x-2 items-center lg:justify-center mt-4">
               <label id='theme-label' tabIndex='0' htmlFor="theme" aria-label="toggle light mode" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0]" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
@@ -134,12 +144,16 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:d-text">Reduced Motion</h3>
             <div className="flex space-x-2 items-center mt-4">
-              <p className="cs-text-lg dark:d-text">Off</p>
-              <label id='motion-label' htmlFor="motion" tabIndex='0' aria-label="toggle reduced motion" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0]" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
-                <input id='motion' name='motion' value="reduced" tabIndex='-1' type="checkbox" aria-labelledby="motion-label" className="sr-only peer" onChange={handleOnClickMotion} checked={isReducedMotion}/>
-                <div className={`bg-[#E0E0E0] ${protanopia ? "peer-checked:custom-green-background-pt" : deuteranopia ? "peer-checked:custom-green-background-dt" : tritanopia ? "peer-checked:custom-green-background-tr" : "peer-checked:custom-green-background"} relative w-20 h-10 rounded-full ${isReducedMotion ? "" : "transition-colors"} duration-400 z-0`}></div>
+              <p className="cs-text-lg dark:text-white">Off</p>
+              <label
+                htmlFor="motion"
+                className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0] "
+              >
+                <input id="motion" type="checkbox" className="sr-only peer" />
+                <div className="bg-[#E0E0E0] peer-checked:bg-[#4CAF4F] relative w-20 h-10 rounded-full transition-colors duration-400 z-0"></div>
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1"></span>
               </label>
+              <p className="cs-text-lg dark:d-text">On</p>
               <p className="cs-text-lg dark:d-text">On</p>
             </div>
           </div>

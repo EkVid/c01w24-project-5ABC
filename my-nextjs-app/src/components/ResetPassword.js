@@ -2,12 +2,10 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import FontSizeContext from "@/components/utils/FontSizeContext";
-import show_password from "../../../public/password_eye.svg";
-import hide_password from "../../../public/password_eye_cross.svg";
+import show_password from "../../public/password_eye.svg";
+import hide_password from "../../public/password_eye_cross.svg";
 import Image from "next/image";
 import VerificationFailMessage from "./VerificationFailMessage";
-import { tempCode } from './ForgotPassword';
-import axios from "axios";
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
@@ -43,17 +41,8 @@ const ResetPassword = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showWarning, setShowWarning] = useState(false); // store whether to show the warning or not based on the code
-  const [code, setCode] = useState(""); // Store the entered code
-  const [display, setDisplay] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
-
-  const onValueChange = (value) => {
-    console.log('Received value:', value);
-  };
 
   const validatePassword = (password) => {
     const regex =
@@ -77,55 +66,12 @@ const ResetPassword = () => {
     setMatchError(false);
   };
 
-  const handleCodeFocus = () => {
-    setCode("");
-    setShowWarning(false);
-  };
-
-  const handleCodeChange = (e) => {
-    const inputCode = e.target.value;
-    setCode(inputCode);
-    setShowWarning(false);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setPasswordError(!validatePassword(newPassword));
     setMatchError(newPassword !== confirmPassword);
-    var response = localStorage.getItem('resetCode');
-    var emailValue = localStorage.getItem('email');
-    var resetCode = JSON.parse(response);
-    
-    setShowWarning(code !== resetCode);
 
-    if (
-      validatePassword(newPassword) &&
-      newPassword === confirmPassword &&
-      code == resetCode
-    ) {
-      axios
-        .post("http://localhost:5000/reset_password", {
-          Email: emailValue,
-          ResetCode: resetCode,
-          NewPassword: newPassword
-
-        })
-        .then((response) => {
-          setData(response.data.message);
-          console.log(response.data.message);
-        })
-        .catch((error) => {
-          setDisplay(true);
-          // setErrorMsg(error.response.data.message);
-          if (error.response) {
-            console.log(error.response.status);
-            console.log(error.response.data);
-          } else if (error.request) {
-            console.log("No response received:", error.request);
-          } else {
-            console.log("Error:", error.message);
-          }
-        });
+    if (validatePassword(newPassword) && newPassword === confirmPassword) {
       setShowSuccessMessage(true);
     }
   };
@@ -148,33 +94,32 @@ const ResetPassword = () => {
         backgroundPosition: "center",
       }}
     >
-      {display && <VerificationFailMessage text={errorMsg} />}
+      {/* <VerificationFailMessage text={"Verification Code has expired"} />
+      TODO: render this for route 401 when code expire */}
+
+      {/* <VerificationFailMessage
+        text={"An unexpected error occured, please try again"}
+      />
+      TODO: render this for route 400  */}
+
       <div
         className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
-        style={{ maxWidth: "1000px", width: "100%" }}
+        style={{ maxWidth: "1200px", width: "100%" }}
       >
         <div className="flex flex-col w-full p-16 space-y-8">
           <div className="space-y-6">
-            <div>{showSuccessMessage && <VerificationSuccessMessage />}</div>
             <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black">
-              Reset your password
+              Reset your password{" "}
             </h2>
           </div>
-          <form
-            className="flex flex-col space-y-6 items-center w-full"
-            onSubmit={handleSubmit}
-          >
-            {/* New Password Input */}
+          <form className="flex flex-col space-y-6 items-center w-full">
             <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs font-semibold text-green-600">
               <p>New Password</p>
-              <p
-                className={`text-red-500 text-xs mt-5 Participant 5: 5 ${
-                  passwordError ? "block" : "hidden"
-                }`}
-              >
+              <p className="text-red-500 text-xs mt-5 hidden">
                 Password needs to be minimum 7 characters long, including at
                 least 1 alphabet, 1 number, and 1 special symbol
               </p>
+              {/* make the text appear if the passwords doesn't satisfy the criteria above */}
             </div>
             <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
               <input
@@ -213,13 +158,10 @@ const ResetPassword = () => {
             {/* Confirm New Password Input */}
             <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs text-green-600 font-semibold">
               <p>Confirm New Password</p>
-              <p
-                className={`text-red-500 text-xs mt-5 ${
-                  matchError ? "block" : "hidden"
-                }`}
-              >
+              <p className="text-red-500 text-xs mt-5 hidden">
                 Passwords don't match
               </p>
+              {/* make the text appear if two passwords don't match */}
             </div>
             <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
               <input
@@ -255,25 +197,6 @@ const ResetPassword = () => {
                 )}
               </div>
             </div>
-            <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs text-green-600 font-semibold">
-              <p>Verification Code</p>
-            </div>
-            <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
-              <input
-                type="text"
-                placeholder="Enter your verification code"
-                className="p-4 text-lg rounded-full border w-full text-black pr-10"
-                value={code}
-                onChange={handleCodeChange}
-                onFocus={handleCodeFocus}
-                required
-              />
-            </div>
-            {showWarning && (
-              <p className="text-red-500 text-xs text-center mt-5">
-                Verification Code is incorrect, please enter again
-              </p>
-            )}
             <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
               <button
                 type="submit"
@@ -281,6 +204,7 @@ const ResetPassword = () => {
               >
                 Save Password
               </button>
+              {/* redirect the user back to login (/login) once done */}
             </div>
           </form>
         </div>
