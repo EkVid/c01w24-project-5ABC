@@ -44,3 +44,19 @@ export async function closeGrant(grantID, userData){
         console.error(err)
     }
 }
+
+export function getApplciationStatus(application){
+    let status
+    switch(application.status){
+        case 1:
+            status = 'Pending'
+            break
+        case 2:
+            status = 'Rejected'
+            break
+        case 3:
+            status = 'Accepted'
+            break
+    }
+    return status
+}

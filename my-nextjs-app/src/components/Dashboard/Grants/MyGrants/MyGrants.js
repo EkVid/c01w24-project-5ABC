@@ -20,7 +20,6 @@ const MyGrants = ({ grants }) => {
     }
 
     function getGrantElements(grants){
-        console.log(grants)
         const grantElements = grants.map(grant => {
             const grantStatus = getGrantStatus(grant)
             

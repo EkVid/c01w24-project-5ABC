@@ -16,7 +16,7 @@ export default function RemoveGrant({ grant, grantID }){
         }
 
         try{
-            await axios.delete(`http://localhost:5000/deleteGrant/${grantID}`)
+            await axios.delete(`http://localhost:5000/deleteGrant/${grantID}`, {headers:headers})
             router.push('/dashboard/my-grants')
         }   
         catch(err){
