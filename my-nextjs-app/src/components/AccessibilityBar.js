@@ -21,7 +21,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   const [ fontSize, setFontSize ] = useState(100)  // Default font size is 100
   const [ isReducedMotion, setIsReducedMotion ] = useState(false)
   const [ cbMode, setcbMode ] = useState(prevcbMode)
-  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const { protanopia, deuteranopia, tritanopia, monochrome } = getcbMode(cbMode)
 
   const handleScaleFontDown = () => {
     scaleFont('down');
@@ -105,7 +105,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
             <div className="flex flex-col lg:flex-row lg:space-x-2 items-center lg:justify-center mt-4">
               <label id='theme-label' tabIndex='0' htmlFor="theme" aria-label="toggle light mode" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0]" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
                 <input id='theme' name='theme' value='light' type="checkbox" aria-labelledby="theme-label" className="sr-only peer" onChange={handleOnChangeTheme} checked={lightTheme}/>
-                <div className={`dark:bg-[#E0E0E0] ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} relative w-20 h-10 rounded-full ${isReducedMotion ? "" : "transition-colors"} duration-400 z-0`}></div>
+                <div className={`dark:bg-[#E0E0E0] ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : monochrome ? "custom-green-background-mo" : "custom-green-background"} relative w-20 h-10 rounded-full ${isReducedMotion ? "" : "transition-colors"} duration-400 z-0`}></div>
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1 flex items-center justify-center">
                   <Image
                     src={lightTheme ? sun : moon}
@@ -126,6 +126,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
                   <option value="protanopia">Protanopia</option>
                   <option value="deuteranopia">Deuteranopia</option>
                   <option value="tritanopia">Tritanopia</option>
+                  <option value="monochrome">Monochrome</option>
               </select>
             </div>
           </div>
@@ -137,7 +138,7 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
               <p className="cs-text-lg dark:d-text">Off</p>
               <label id='motion-label' htmlFor="motion" tabIndex='0' aria-label="toggle reduced motion" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0]" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
                 <input id='motion' name='motion' value="reduced" tabIndex='-1' type="checkbox" aria-labelledby="motion-label" className="sr-only peer" onChange={handleOnClickMotion} checked={isReducedMotion}/>
-                <div className={`bg-[#E0E0E0] ${protanopia ? "peer-checked:custom-green-background-pt" : deuteranopia ? "peer-checked:custom-green-background-dt" : tritanopia ? "peer-checked:custom-green-background-tr" : "peer-checked:custom-green-background"} relative w-20 h-10 rounded-full ${isReducedMotion ? "" : "transition-colors"} duration-400 z-0`}></div>
+                <div className={`bg-[#E0E0E0] ${protanopia ? "peer-checked:custom-green-background-pt" : deuteranopia ? "peer-checked:custom-green-background-dt" : tritanopia ? "peer-checked:custom-green-background-tr" : monochrome ? "peer-checked:custom-green-background-mo": "peer-checked:custom-green-background"} relative w-20 h-10 rounded-full ${isReducedMotion ? "" : "transition-colors"} duration-400 z-0`}></div>
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1"></span>
               </label>
               <p className="cs-text-lg dark:d-text">On</p>

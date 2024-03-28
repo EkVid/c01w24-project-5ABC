@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import Four_Circle from "../../../public/logo.svg";
 import cbFourCircle from "../../../public/cblogo.svg"
+import monochromeFour_Circle from "../../../public/monochromelogo.svg"
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ThemeContext from "../utils/ThemeContext";
@@ -20,7 +21,7 @@ const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
   const router = useRouter();
   const cbMode = useContext(ColourBlindnessContext)
-  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const { protanopia, deuteranopia, tritanopia, monochrome } = getcbMode(cbMode)
 
   useEffect(() => {
     if (countdown === 0) {
@@ -37,7 +38,7 @@ const VerificationSuccessMessage = () => {
   }, [countdown, router]);
 
   return (
-    <div className={`fixed top-0 left-0 w-full p-4 text-white text-center shadow-md ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}>
+    <div className={`fixed top-0 left-0 w-full p-4 text-white text-center shadow-md ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : monochrome ? "custom-green-background-mo" : "custom-green-background"}`}>
       Register successful! Redirecting you to Login page in {countdown}{" "}
       seconds...
     </div>
@@ -59,7 +60,7 @@ const SignUp = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const cbMode = useContext(ColourBlindnessContext)
-  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const { protanopia, deuteranopia, tritanopia, monochrome } = getcbMode(cbMode)
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReducedMotion = useContext(ReducedMotionContext)
   const theme = useContext(ThemeContext)
@@ -139,7 +140,7 @@ const SignUp = () => {
         <div className="flex flex-col w-full md:w-4/6 p-12 space-y-6 ">
           <div className="flex flex-col items-center lg:items-start space-y-4">
             <Image
-              src={protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
+              src={monochrome ? monochromeFour_Circle : protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
               alt="Logo"
               width={80 * fontSizeMultiplier}
               height={80 * fontSizeMultiplier}
@@ -152,27 +153,27 @@ const SignUp = () => {
           </div>
           <p className="text-center text-lg mt-4 text-black dark:d-text">
             Already have an account?{" "}
-            <Link href="/login" className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline`}>
+            <Link href="/login" className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : monochrome ? "custom-green-background-mo dark:d-text-white" : "custom-green"} hover:underline`}>
               Sign in
             </Link>
           </p>
           <div className="flex mb-6 justify-center ">
             <div
               className={`cursor-pointer px-4 py-3 text-lg flex items-center ${
-                selection === "grantee" ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : "bg-green-200 text-black") : "bg-green-100 text-black"
+                selection === "grantee" ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : monochrome ? "custom-green-background-mo text-white" : "bg-green-200 text-black") : "bg-green-100 text-black"
               } rounded mr-2`}
               onClick={() => setSelection("grantee")}
             >
               <span
                 className={`inline-block h-6 w-6 mr-2 rounded-full border-2 ${
                   selection === "grantee"
-                    ? (protanopia ? "custom-red-border-cb" : deuteranopia ? "custom-red-border-cb" : tritanopia ? "custom-red-border-cb" : "border-blue-500")
+                    ? (protanopia ? "custom-red-border-cb" : deuteranopia ? "custom-red-border-cb" : tritanopia ? "custom-red-border-cb" : monochrome ? "custom-red-border-cb" : "border-blue-500")
                     : "border-gray-400"
                 } flex justify-center items-center`}
               >
                 <span
                   className={`inline-block h-4 w-4 rounded-full ${
-                    selection === "grantee" ? (protanopia ? "custom-red-background" : deuteranopia ? "custom-red-background" : tritanopia ? "custom-red-background" : "bg-blue-500") : "bg-white"
+                    selection === "grantee" ? (protanopia ? "custom-red-background" : deuteranopia ? "custom-red-background" : tritanopia ? "custom-red-background" : monochrome ? "custom-red-background" : "bg-blue-500") : "bg-white"
                   }`}
                 ></span>
               </span>
@@ -180,20 +181,20 @@ const SignUp = () => {
             </div>
             <div
               className={`cursor-pointer px-4 py-3 text-lg flex items-center ${
-                selection === "grantor" ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : "bg-green-200 text-black") : "bg-green-100 text-black"
+                selection === "grantor" ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : monochrome ? "custom-green-background-mo text-white" : "bg-green-200 text-black") : "bg-green-100 text-black"
               } rounded`}
               onClick={() => setSelection("grantor")}
             >
               <span
                 className={`inline-block h-6 w-6 mr-2 rounded-full border-2 ${
                   selection === "grantor"
-                    ? (protanopia ? "custom-red-border-cb" : deuteranopia ? "custom-red-border-cb" : tritanopia ? "custom-red-border-cb" : "border-blue-500")
+                    ? (protanopia ? "custom-red-border-cb" : deuteranopia ? "custom-red-border-cb" : tritanopia ? "custom-red-border-cb" : monochrome ? "custom-red-border-cb" : "border-blue-500")
                     : "border-gray-400"
                 } flex justify-center items-center`}
               >
                 <span
                   className={`inline-block h-4 w-4 rounded-full ${
-                    selection === "grantor" ? (protanopia ? "custom-red-background" : deuteranopia ? "custom-red-background" : tritanopia ? "custom-red-background" : "bg-blue-500") : "bg-white"
+                    selection === "grantor" ? (protanopia ? "custom-red-background" : deuteranopia ? "custom-red-background" : tritanopia ? "custom-red-background" : monochrome ? "custom-red-background" : "bg-blue-500") : "bg-white"
                   }`}
                 ></span>
               </span>
@@ -299,14 +300,14 @@ const SignUp = () => {
             <div className="bg-green-500 max-w-xs w-full rounded-full">
               <button
                 type="submit"
-                className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
+                className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : monochrome ? "custom-green-background-mo" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
               >
                 Sign Up
               </button>
             </div>
           </form>
         </div>
-        <div className={`w-full md:w-2/6 p-12 ${protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-pt text-white" : tritanopia ? "custom-green-background-pt text-white" : "bg-green-100"} space-y-4 flex flex-col justify-center items-center`}>
+        <div className={`w-full md:w-2/6 p-12 ${protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-pt text-white" : tritanopia ? "custom-green-background-pt text-white" : monochrome ? "custom-green-background-mo text-white" : "bg-green-100"} space-y-4 flex flex-col justify-center items-center`}>
           <img
             src="https://accoladetechnology.com/wp-content/uploads/2019/04/Icon-Financial-Services.png"
             alt="Service Icon"

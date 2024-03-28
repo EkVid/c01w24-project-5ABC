@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import Four_Circle from "../../../public/logo.svg";
 import cbFourCircle from "../../../public/cblogo.svg"
+import monochromeFour_Circle from "../../../public/monochromelogo.svg"
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ThemeContext from "../utils/ThemeContext";
@@ -27,7 +28,7 @@ const Login = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const cbMode = useContext(ColourBlindnessContext)
-  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const { protanopia, deuteranopia, tritanopia, monochrome } = getcbMode(cbMode)
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReducedMotion = useContext(ReducedMotionContext)
   const theme = useContext(ThemeContext)
@@ -91,7 +92,7 @@ const Login = () => {
         <div className="flex flex-col w-full md:w-1/2 lg:w-3/5 xl:w-3/5 p-16 space-y-8">
           <div className="space-y-6 flex flex-col items-center md:items-start">
             <Image
-              src={protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
+              src={monochrome ? monochromeFour_Circle : protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
               alt="Logo"
               width={80 * fontSizeMultiplier}
               height={80 * fontSizeMultiplier}
@@ -153,7 +154,7 @@ const Login = () => {
             <div className="bg-green-500 max-w-xs w-full rounded-full ">
               <button
                 type="submit"
-                className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
+                className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : monochrome ? "custom-green-background-mo" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
               >
                 Sign In
               </button>
@@ -161,7 +162,7 @@ const Login = () => {
           </form>
         </div>
         <div
-          className={`w-full md:w-1/2 lg:w-2/5 xl:w-2/5 p-16 space-y-8 flex flex-col justify-center items-center ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
+          className={`w-full md:w-1/2 lg:w-2/5 xl:w-2/5 p-16 space-y-8 flex flex-col justify-center items-center ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : monochrome ? "custom-green-background-mo" : "custom-green-background"} ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
         >
           <h2 className="lg:text-5xl md:text-4xl text-2xl text-center text-white font-semibold">
             New here?

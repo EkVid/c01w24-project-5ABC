@@ -12,7 +12,7 @@ import { useContext } from "react";
 const Quotes = () => {
   const theme = useContext(ThemeContext)
   const cbMode = useContext(ColourBlindnessContext)
-  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const { protanopia, deuteranopia, tritanopia, monochrome } = getcbMode(cbMode)
 
   return (
     <div className="flex flex-col items-center mx-10 mt-20 mb-10">
@@ -27,7 +27,7 @@ const Quotes = () => {
       </div>
       <div className="flex flex-col items-center lg:grid lg:grid-cols-3">
         <div className="flex flex-col items-center mt-10 lg:min-h-full">
-          <CheckWord word={"Accessible"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia}/>
+          <CheckWord word={"Accessible"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia} monochrome={monochrome}/>
           <QuoteCard
             img={AccessiblityIcon}
             title={"Accessibility"}
@@ -37,7 +37,7 @@ const Quotes = () => {
           />
         </div>
         <div className="flex flex-col items-center mt-10 lg:min-h-full">
-          <CheckWord word={"Equitable"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia}/>
+          <CheckWord word={"Equitable"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia} monochrome={monochrome}/>
           <QuoteCard
             img={DevelopmentIcon}
             title={"Development"}
@@ -47,7 +47,7 @@ const Quotes = () => {
           />
         </div>
         <div className="flex flex-col items-center mt-10 lg:min-h-full">
-          <CheckWord word={"Inclusive"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia}/>
+          <CheckWord word={"Inclusive"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia} monochrome={monochrome}/>
           <QuoteCard
             img={AccomodationIcon}
             title={"Accomodation"}
