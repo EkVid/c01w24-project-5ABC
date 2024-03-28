@@ -1,5 +1,5 @@
 from bson import ObjectId
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -93,7 +93,7 @@ def login():
                 try:
                     token = jwt.encode({
                             'email': email,
-                            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=3600)
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=36000)
                         },
                         app.config['SECRET_KEY'],
                         algorithm="HS256"
@@ -271,7 +271,7 @@ def testDelete():
 
 # For Frontend Use
 @app.route("/getFile/<_id>", methods=['GET'])
-# @CheckToken.token_required
+@tokenCheck.token_required
 def getFile(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -291,7 +291,6 @@ def getFile(_id):
 
 # Used in the tests only
 @app.route("/deleteUser", methods=["DELETE"])
-# @tokenCheck.token_required
 def deleteUser():
     email = request.json.get("Email", "")
     userCollection.delete_one({"Email": email})
@@ -300,7 +299,7 @@ def deleteUser():
 
 
 @app.route("/createGrant", methods=["POST"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def createGrant():
     grantDict = getJSONData(request)
     files = getFileData(request)
@@ -329,7 +328,7 @@ def createGrant():
 
 # Used in frontend as well, not just tests
 @app.route("/getGrant/<_id>", methods=["GET"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def getGrant(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -342,11 +341,23 @@ def getGrant(_id):
     return grant, 200
 
 
+@app.route("/getAllGrants", methods=["GET"])
+@tokenCheck.token_required
+def getAllGrants():
+    grants = list(grantCollection.find({}))
+    if not grants:
+        return {"message": "No grants found"}, 404
+
+    for grant in grants:
+        grant["_id"] = str(grant["_id"])
+    return {"grants": grants}, 200
+
+
 """Returns all grants created by the grantor with the email passed in the request. Note that this route uses JSON as
 opposed to form data.
 """
 @app.route("/getGrantorGrants", methods=["POST"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def getGrantorGrants():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -356,13 +367,16 @@ def getGrantorGrants():
         return {"message": "Invalid grantor email"}, 400
 
     grants = list(grantCollection.find({"grantorEmail": email}))
+    if not grants:
+        return {"message": "No grants found"}, 404
+    
     for grant in grants:
         grant["_id"] = str(grant["_id"])
     return {"grants": grants}, 200
 
 
 @app.route("/deleteGrant/<_id>", methods=["DELETE"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def deleteGrant(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -381,7 +395,7 @@ def deleteGrant(_id):
 
 
 @app.route("/updateGrantStatus", methods=["POST"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def updateGrantStatus():
     contentType = request.headers.get('Content-Type')
     if contentType == 'application/json':
@@ -399,7 +413,7 @@ def updateGrantStatus():
 
 
 @app.route("/createApplication", methods=["POST"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def createApplication():
     contentType = request.headers.get('Content-Type')
     if contentType == 'application/json':
@@ -438,7 +452,7 @@ def createApplication():
 
 # Used in tests; do not remove
 @app.route("/getApplication/<_id>", methods=["GET"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def getApplication(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -455,7 +469,7 @@ def getApplication(_id):
 JSON as opposed to form data.
 """
 @app.route("/getGranteeApplications", methods=["POST"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def getGranteeApplications():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -495,14 +509,14 @@ def getGranteeApplications():
 :param str _id: The grant ID.
 """
 @app.route("/getAllGrantApplications/<_id>", methods=["GET"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def getAllGrantApplications(_id):
     applications = list(grantAppCollection.find({"grantID": _id}, {"_id": False}))
     return {"applications": applications}, 200
 
 
 @app.route("/updateApplication/<_id>", methods=["PUT"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def updateApplication(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -538,7 +552,7 @@ def updateApplication(_id):
 
 
 @app.route("/updateGrantWinners", methods=["PUT"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def updateGrantWinners():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -563,7 +577,7 @@ def updateGrantWinners():
 
 
 @app.route("/deleteApplication/<_id>", methods=["DELETE"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def deleteApplication(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -584,7 +598,7 @@ def deleteApplication(_id):
 Applicant-side Filter Routes
 """
 @app.route("/getFilteredGrants", methods=["POST"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def getFilteredGrants():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -633,8 +647,9 @@ def getFilteredGrants():
 
     return grants, 200
 
+
 @app.route("/getFilteredGranteeApplications", methods=["POST"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def getFilteredGranteeApplications():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -651,9 +666,9 @@ def getFilteredGranteeApplications():
     filters = json["Filters"]
     query = [{"email": email}]
     for key, value in filters.items():
-        if key == "Date Submitted":
+        if key == "dateSubmitted":
             query.append({"dateSubmitted": value})
-        elif key == "Status":
+        elif key == "status":
             query.append({"status": value})
     # First filter applications based off filters available directly in application  
     # object without having to search corresponding grant
@@ -663,20 +678,22 @@ def getFilteredGranteeApplications():
     for app in quickFilteredApps:
         query = [{"_id": ObjectId(app["grantID"])}]
         for key, value in filters.items():
-            if key == "Title_keyword":
+            if key == "titleKeyword":
                 pattern = re.compile(".*" + value + ".*", re.IGNORECASE)
                 query.append({"Title": {"$regex": pattern}})
-            elif key == "Deadline":
+            elif key == "deadline":
                 query.append({"Deadline": value})
-            elif key == "Max Payable Amount":
+            elif key == "maxAmount":
                 query.append({"AmountPerApp": {"$lte": value}})
         
         grant = grantCollection.find_one({"$and": query})
         if grant:
+            grant["grantID"] = str(grant["_id"])
+            del grant["_id"]
             app["_id"] = str(app["_id"])
             finalApps.append({
                     "ApplicationData": app,
-                    "QuestionData": grant["QuestionData"]
+                    "GrantData": grant
             })
 
     return finalApps, 200
