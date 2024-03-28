@@ -2,7 +2,7 @@ import Image from "next/image";
 import CheckIcon from "@/../public/check.svg"
 import whiteCheck from "@/../public/whiteCheck.svg"
 
-const CheckWord = ({word, theme, protanopia, deuteranopia, tritanopia}) => {
+const CheckWord = ({word, theme, protanopia, deuteranopia, tritanopia, monochrome}) => {
   return (
     <div className="flex justify-center mt-2">
       <Image
@@ -12,7 +12,7 @@ const CheckWord = ({word, theme, protanopia, deuteranopia, tritanopia}) => {
         width={30}
         className="transition-all duration-300 mr-4 pointer"
       />
-      <h2 className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} self-center text-3xl font-bold`}>
+      <h2 className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : monochrome ? "custom-green-mo dark:d-text" : "custom-green"} self-center text-3xl font-bold`}>
         {word}
       </h2>
     </div>

@@ -43,6 +43,7 @@ body {
   pt = protanopia
   dt = deuteranopia
   tr = tritanopia 
+  mo = monochrome
 */
 
 @layer utilities{
@@ -81,6 +82,10 @@ body {
   .custom-green-tr{
     color: #1341d8;
   }
+
+  .custom-green-mo{
+    color: #5c5d62;
+  }
   
   .custom-green-background{
     background-color: #4CAF4F;
@@ -96,6 +101,10 @@ body {
   
   .custom-green-background-tr{
     background-color: #1341d8;
+  }
+
+  .custom-green-background-mo{
+    background-color: #5c5d62;
   }
   
   .custom-green-dark {

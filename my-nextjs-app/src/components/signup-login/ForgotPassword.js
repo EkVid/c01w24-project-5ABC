@@ -15,7 +15,7 @@ const VerificationSuccessMessage = () => {
   const router = useRouter();
 
   const cbMode = useContext(ColourBlindnessContext)
-  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const { protanopia, deuteranopia, tritanopia, monochrome } = getcbMode(cbMode)
 
   useEffect(() => {
     if (countdown === 0) {
@@ -32,7 +32,7 @@ const VerificationSuccessMessage = () => {
   }, [countdown, router]);
 
   return (
-    <div className={`fixed top-0 left-0 w-full p-4 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} text-white text-center shadow-md`}>
+    <div className={`fixed top-0 left-0 w-full p-4 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : monochrome ? "custom-green-background-mo" : "custom-green-background"} text-white text-center shadow-md`}>
       Verification successful! Redirecting to reset password page in {countdown}{" "}
       seconds...
     </div>
@@ -55,7 +55,7 @@ const ForgotPassword = () => {
   const router = useRouter(); // used for redirection
 
   const cbMode = useContext(ColourBlindnessContext)
-  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const { protanopia, deuteranopia, tritanopia, monochrome } = getcbMode(cbMode)
   const isReducedMotion = useContext(ReducedMotionContext)
   const theme = useContext(ThemeContext)
 
@@ -164,7 +164,7 @@ const ForgotPassword = () => {
                 <div className={`rounded max-w-xs w-full rounded-full`}>
                   <button
                     type="submit"
-                    className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
+                    className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : monochrome ? "custom-green-background-mo" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
                   >
                     Reset Password
                   </button>
@@ -202,7 +202,7 @@ const ForgotPassword = () => {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handleVerify}
-                  className={`text-white text-md font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
+                  className={`text-white text-md font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : monochrome ? "custom-green-background-mo" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
                   aria-label="Verify Button"
                 >
                   Verify
@@ -215,7 +215,7 @@ const ForgotPassword = () => {
             <p>
               <Link
                 href="/login"
-                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline mr-5`}
+                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : monochrome ? "custom-green-mo dark:d-custom-green-color-blind" : "custom-green"} hover:underline mr-5`}
               >
                 Login
               </Link>
@@ -224,7 +224,7 @@ const ForgotPassword = () => {
             <p>
               <Link
                 href="/signup"
-                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline ml-5`}
+                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : monochrome ? "custom-green-mo dark:d-custom-green-color-blind" : "custom-green"} hover:underline ml-5`}
               >
                 Register
               </Link>
@@ -242,9 +242,4 @@ const ForgotPassword = () => {
   );
 };
 export default ForgotPassword;
-// export { handleForgotSubmit };
-export const tempCode = '786110';
-// export default { ForgotPassword, resetCode }
-// we cant export this because resetCode doesnt get populated as soon as page is rendered
-// need to wait for post req to complete then send it like that
 

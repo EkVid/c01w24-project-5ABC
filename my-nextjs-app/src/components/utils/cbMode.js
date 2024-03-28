@@ -14,8 +14,9 @@ const getcbMode = (currcbMode) => {
     const protanopia = "protanopia" === currcbMode
     const deuteranopia = "deuteranopia" === currcbMode
     const tritanopia = "tritanopia" === currcbMode
+    const monochrome = "monochrome" === currcbMode
 
-    return { protanopia, deuteranopia, tritanopia }
+    return { protanopia, deuteranopia, tritanopia, monochrome }
 }
 
 export { initcbMode, changecbMode, getcbMode }
