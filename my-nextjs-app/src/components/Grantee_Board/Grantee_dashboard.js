@@ -11,30 +11,6 @@ const Grantee_dashboard = ({ applications }) => {
   const [data, setData] = useState("");
   const [appliedGrants, setAppliedGrants] = useState("");
 
-  const handleSearchGrantApplications = () => {
-    axios
-      .post("http://localhost:5000/search_grants", {
-        // by default you dont send params
-      })
-      .then((response) => {
-        setData(response.data);
-        console.log("search grants");
-        console.log(response.data);
-        localStorage.setItem("grants", JSON.stringify(response.data));
-        router.push("/search_grants");
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.status);
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log("No response received:", error.request);
-        } else {
-          console.log("Error:", error.message);
-        }
-      });
-  };
-
   // const name = "Rawad";
   // // Mock data for claims
   // const allGrants = [
@@ -455,27 +431,25 @@ const Grantee_dashboard = ({ applications }) => {
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Age:</span>
-                                    {claim.ApplicationData.profileData.age}
+                                    {claim.ApplicationData.profileData?.age}
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">
                                       Nationality:
                                     </span>
                                     {
-                                      claim.ApplicationData.profileData
-                                        .nationality
+                                      claim.ApplicationData.profileData?.nationality
                                     }
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Race:</span>
-                                    {claim.ApplicationData.profileData.race}
+                                    {claim.ApplicationData.profileData?.race}
                                   </div>
                                   <div className="flex justify-between items-center mb-4">
                                     <span className="font-bold">
                                       Veteran Status:
                                     </span>
-                                    {claim.ApplicationData.profileData
-                                      .veteran === 0
+                                    {claim.ApplicationData.profileData?.veteran === 0
                                       ? "No"
                                       : "Yes"}
                                   </div>
@@ -507,7 +481,7 @@ const Grantee_dashboard = ({ applications }) => {
                                             Answer:{" "}
                                             <span className="text-red-400">
                                               {claim.ApplicationData
-                                                .answerData[0].text ||
+                                                .answers[0].text ||
                                                 "No answer provided"}
                                             </span>
                                           </span>
@@ -592,12 +566,12 @@ const Grantee_dashboard = ({ applications }) => {
                     needs.
                   </p>
                   <div className="flex justify-center">
-                    <button
-                      onClick={handleSearchGrantApplications}
+                    <Link
+                      href="/search_grants"
                       className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
                     >
                       Find Grants
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

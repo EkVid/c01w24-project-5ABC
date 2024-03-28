@@ -163,7 +163,7 @@ const Apply = ({title, grantID, fetchedQuestData}) => {
         'Authorization': `Bearer ${userData?.token}`
       }
       try {
-        await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN + process.env.NEXT_PUBLIC_APPEND}/createApplication`, body, {headers: headers});
+        await axios.post(`http://localhost:5000/createApplication`, body, {headers: headers});
         alert(`Your application for '${title}' has been submitted! You will now be redirected to the dashboard.`);
         router.back();
       }
