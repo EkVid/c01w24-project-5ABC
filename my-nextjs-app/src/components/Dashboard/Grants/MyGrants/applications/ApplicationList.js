@@ -1,6 +1,3 @@
-import DashboardInnerContainer from "@/components/Dashboard/InnerContainer"
-import Link from "next/link"
-
 export default function ApplicationList({ applications }){
     let applicationElements
 
@@ -31,7 +28,7 @@ export default function ApplicationList({ applications }){
 
     return(
         <section>
-            <h1 className="dark:d-text text-3xl mb-10 ">Applications</h1>
+            <h1 tabIndex="0" className="dark:d-text text-3xl mb-10 ">Applications</h1>
             {applicationElements}
         </section>
     )

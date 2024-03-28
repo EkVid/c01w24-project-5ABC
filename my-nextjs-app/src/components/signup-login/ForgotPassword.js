@@ -1,14 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
+import ThemeContext from "../utils/ThemeContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import ReducedMotionContext from "../utils/ReducedMotionContext";
+import { getcbMode } from "@/components/utils/cbMode";
 import axios from "axios";
 import VerificationFailMessage from "./VerificationFailMessage";
 
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
   const router = useRouter();
+
+  const cbMode = useContext(ColourBlindnessContext)
+  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
 
   useEffect(() => {
     if (countdown === 0) {
@@ -25,7 +32,7 @@ const VerificationSuccessMessage = () => {
   }, [countdown, router]);
 
   return (
-    <div className="fixed top-0 left-0 w-full p-4 bg-green-500 text-white text-center shadow-md">
+    <div className={`fixed top-0 left-0 w-full p-4 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} text-white text-center shadow-md`}>
       Verification successful! Redirecting to reset password page in {countdown}{" "}
       seconds...
     </div>
@@ -45,8 +52,12 @@ const ForgotPassword = () => {
   const [resetCode, setResetCode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-
   const router = useRouter(); // used for redirection
+
+  const cbMode = useContext(ColourBlindnessContext)
+  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const isReducedMotion = useContext(ReducedMotionContext)
+  const theme = useContext(ThemeContext)
 
   const handleForgotSubmit = (e) => {
     e.preventDefault();
@@ -112,30 +123,29 @@ const ForgotPassword = () => {
 
   return (
     <div
-      className="flex items-center justify-center flex-grow max-h-screen"
-      style={{
-        backgroundImage:
-          "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')",
+    className={`flex items-center justify-center py-4 flex-grow ${theme === 'light' ? "" : "d-custom-navy-background border-t border-white"}`}
+    style={{
+        backgroundImage:`${theme === 'light' ? "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')" : ""}`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}
+    }}
     >
       {display && <VerificationFailMessage text={errorMsg} />}
       
       <div
-        className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
+        className="flex flex-col md:flex-row bg-white dark:d-custom-dark-grey-background shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1200px", width: "100%" }}
       >
         <div className="flex flex-col w-full p-16 space-y-8">
           <div className="space-y-6">
             <div>{showSuccessMessage && <VerificationSuccessMessage />}</div>
-            <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-4 mt-8 font-semibold text-black">
+            <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-4 mt-8 font-semibold text-black dark:d-text">
               Reset your password
             </h2>
           </div>
           {!resetClicked ? (
             <>
-              <h3 className="text-center text-sm mb-8 mt-8 font-semibold text-black">
+              <h3 className="text-center text-sm mb-8 mt-8 font-semibold text-black dark:d-text">
                 Enter your email address below and we'll send you a link to
                 reset your password.
               </h3>
@@ -151,10 +161,10 @@ const ForgotPassword = () => {
                   className="p-4 text-lg rounded-full border lg:max-w-lg md:max-w-md max-w-xs w-full text-black"
                   required
                 />
-                <div className="bg-green-500 max-w-xs w-full rounded-full">
+                <div className={`rounded max-w-xs w-full rounded-full`}>
                   <button
                     type="submit"
-                    className="custom-text text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out dark:d-text"
+                    className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
                   >
                     Reset Password
                   </button>
@@ -163,7 +173,7 @@ const ForgotPassword = () => {
             </>
           ) : (
             <div>
-              <div className="text-center lg:text-lg md:text-lg text-sm mb-8 mt-8 text-black">
+              <div className="text-center lg:text-lg md:text-lg text-sm mb-8 mt-8 text-black dark:d-text">
                 <p>
                   Check your inbox for a verification code.
                   <br />
@@ -192,7 +202,7 @@ const ForgotPassword = () => {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handleVerify}
-                  className="text-white text-md font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
+                  className={`text-white text-md font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
                   aria-label="Verify Button"
                 >
                   Verify
@@ -205,22 +215,22 @@ const ForgotPassword = () => {
             <p>
               <Link
                 href="/login"
-                className="text-green-500 hover:underline mr-5 "
+                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline mr-5`}
               >
                 Login
               </Link>
             </p>
-            <p className="text-black">or</p>
+            <p className="text-black dark:d-text">or</p>
             <p>
               <Link
                 href="/signup"
-                className="text-green-500 hover:underline ml-5"
+                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline ml-5`}
               >
                 Register
               </Link>
             </p>
           </div>
-          <div className="text-center lg:text-md text-sm text-black">
+          <div className="text-center lg:text-md text-sm text-black dark:d-text">
             <p>
               Still can't login? If you need additional assistance, <br />
               e-mail 5ABC@gmail.com

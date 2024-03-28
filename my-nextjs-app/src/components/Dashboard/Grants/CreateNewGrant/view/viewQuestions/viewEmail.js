@@ -6,7 +6,7 @@ export default function ViewEmail({ question }){
   
     return (
         <div className='p-2 md:mx-10 mx-4 my-4 border border-black dark:border-white rounded'>
-            <h1 className='dark:text-white'>{question.question}  {question.isRequired ? '*' : ''}</h1>
+            <h1 tabIndex="0" aria-label={`Question: ${question.question}`} className='dark:text-white'>{question.question}  {question.isRequired ? '*' : ''}</h1>
             <input
                 type="email"
                 placeholder={"example: example@domain.com"}

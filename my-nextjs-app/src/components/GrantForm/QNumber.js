@@ -59,6 +59,7 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, a
         :
         <></>
       }
+      {/* <label htmlFor="numAnswer" className="mb-2 custom-text dark:d-text">Answer:</label> */}
       <input
         type="text"
         id="numAnswer"

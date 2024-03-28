@@ -1,13 +1,13 @@
 'use client'
 import DashboardInnerContainer from "../../InnerContainer"
 import ViewGrant from "./view/ViewGrant"
-import { useState, useEffect } from "react"
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { getcbMode } from "@/components/utils/cbMode";
+import { useState, useEffect, useContext } from "react"
 import Link from "next/link"
 import { v4 as uuidv4 } from 'uuid';
 import xMark from "@/../public/x.svg"
 import Image from "next/image";
-
-// TODO: Vefiry max age is filled out when min age isnt
 
 const CreateNewGrant = () => {
     // Initialize grant to default or last in-progress one
@@ -42,10 +42,11 @@ const CreateNewGrant = () => {
     const [ nationality, setNationality ] = useState('')
     const [ viewGrant, setViewGrant ] = useState(false)
 
+    const cbMode = useContext(ColourBlindnessContext)
+    const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+
     // Only show undo if there was a previous deletion
     const undoShow = localStorage.getItem('clearedGrant') !== null
-
-    useEffect(() => {console.log(grant)}, [grant])
 
     // --------------- Form handlers ---------------
     function setTitle(e){
@@ -113,19 +114,19 @@ const CreateNewGrant = () => {
     }
 
     function verifyMaxAge(e){
-        if(e.target.value < 0){
-            setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:0}}))
-            return
-        }
         const minAge = grant.profileReqs.minAge
         if(e.target.value < minAge){
             setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:minAge}}))
+            return
+        }
+        if(e.target.value < 0){
+            setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, maxAge:0}}))
         }
     }
 
     function addRace(e){
         // If the user presses enter
-        if(e.keyCode === 13){
+        if(e.keyCode === 13 && race){
             const raceArr = grant.profileReqs.race
             raceArr.push(race)
             setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, race:raceArr}}))
@@ -144,7 +145,7 @@ const CreateNewGrant = () => {
 
     const raceElements = grant.profileReqs.race.map(race => {
         return (
-            <div className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()}>
+            <div tabIndex='0' aria-label={`${race} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeRace(race) : null}>
                 {race}
                 <Image 
                     src={xMark}
@@ -158,7 +159,7 @@ const CreateNewGrant = () => {
 
     function addGender(e){
         // If the user presses enter
-        if(e.keyCode === 13){
+        if(e.keyCode === 13 && gender){
             const genderArr = grant.profileReqs.gender
             genderArr.push(gender)
             setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, gender:genderArr}}))
@@ -177,7 +178,7 @@ const CreateNewGrant = () => {
 
     const genderElements = grant.profileReqs.gender.map(gender => {
         return (
-            <div className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()}>
+            <div tabIndex='0' aria-label={`${gender} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeGender(gender) : null}>
                 {gender}
                 <Image 
                     src={xMark}
@@ -191,7 +192,7 @@ const CreateNewGrant = () => {
 
     function addNationality(e){
         // If the user presses enter
-        if(e.key === 'Enter'){
+        if(e.key === 'Enter' && nationality){
             const nationalityArr = grant.profileReqs.nationality
             nationalityArr.push(nationality)
             setGrant(prevGrant => ({...prevGrant, profileReqs:{...prevGrant.profileReqs, nationality: nationalityArr}}))
@@ -210,7 +211,7 @@ const CreateNewGrant = () => {
 
     const nationalityElements = grant.profileReqs.nationality.map(nationality => {
         return (
-            <div className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()}>
+            <div tabIndex='0' aria-label={`${nationality} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeNationality(nationality) : null}>
                 {nationality}
                 <Image 
                     src={xMark}
@@ -268,7 +269,7 @@ const CreateNewGrant = () => {
 
                     <div className="w-full shadow-2xl rounded-xl p-8 dark:shadow-none dark:border-2 dark:border-neutral-600">
                         <form onSubmit={handleSubmit} onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}>
-                            <label>
+                            <label id="grant-title" aria-label="Your grant title">
                                 <input 
                                     className="w-full mb-10 text-3xl dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
                                     type="text" 
@@ -276,10 +277,11 @@ const CreateNewGrant = () => {
                                     onChange={setTitle}
                                     placeholder="My Grant Title*"
                                     required
+                                    aria-labelledby="grant-title"
                                 />
                             </label>
 
-                            <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                            <label id="grant-desc" aria-label="grant-description" className="flex md:flex-row flex-col items-top ms-4 mb-10">
                                 <p className="pt-2 dark:d-text">Desctipion*&nbsp;:</p>
                                 <textarea 
                                     className="md:mx-4 mx-0 p-2 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
@@ -287,11 +289,12 @@ const CreateNewGrant = () => {
                                     onChange={setDescription}
                                     placeholder="The description of my grant..."
                                     required
+                                    aria-labelledby="grant-desc"
                                 >
                                 </textarea>
                             </label>
 
-                            <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                            <label id="grant-nw" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="number of winners">
                                 <p className="pt-2 dark:d-text">Number of Grant Winners*&nbsp;:</p>
                                 <input 
                                     type="number"
@@ -300,10 +303,11 @@ const CreateNewGrant = () => {
                                     onChange={setMaxWinners}
                                     onBlur={checkMaxWinners}
                                     required
+                                    aria-labelledby="grant-nw"
                                 />
                             </label>
 
-                            <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                            <label id="grant-aw" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="amount per winner (CAD)">
                                 <p className="pt-2 dark:d-text">Amount Per Winner (CAD $)*&nbsp;:</p>
                                 <input 
                                     type="number"
@@ -318,6 +322,7 @@ const CreateNewGrant = () => {
                                     }}
                                     placeholder="0.00"
                                     required
+                                    aria-labelledby="grant-aw"
                                 />
                             </label>
 
@@ -329,13 +334,13 @@ const CreateNewGrant = () => {
                                     >
                                         {grant.Title ? grant.Title : 'Default'} Form
                                     </p>
-                                    <Link href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} className="px-8 my-2 md:my-0 text-center py-4 rounded-md custom-green-background text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700">
+                                    <Link aria-label="edit grant application form" href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} className={`px-8 my-2 md:my-0 text-center py-4 rounded-md text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}>
                                         Edit
                                     </Link>
                                 </div> 
                             </div>
 
-                            <label className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                            <label id="grant-deadline" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="grant deadline">
                                 <p className="pt-2 dark:d-text">Application Deadline*&nbsp;:</p>
                                 <input 
                                     type="date"
@@ -344,15 +349,16 @@ const CreateNewGrant = () => {
                                     onChange={setDeadline}
                                     onBlur={checkDeadlineValidity}
                                     required
+                                    aria-labelledby="grant-deadline"
                                 />
                             </label>
 
                             <div className="flex flex-col items-top ms-4 mb-20">
-                                <p className="w-full pt-2 dark:d-text">Grantee Profile - Tell us about your ideal applicant: </p>
+                                <p className="w-full pt-2 dark:d-text" tabIndex='0'>Grantee Profile - Tell us about your ideal applicant: </p>
                                 <div 
                                     className="self-center flex flex-col md:mx-4 mx-0 p-2 my-4 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
                                 >
-                                    <p className="mb-8">Blank sections indicate no specification</p>
+                                    <p className="mb-8" tabIndex='0'>Blank sections indicate no specification</p>
                                     <label className="flex flex-col my-2">
                                         Age range:
                                         <div className="my-4">
@@ -364,6 +370,7 @@ const CreateNewGrant = () => {
                                                 step='1'
                                                 onBlur={verifyMinAge}
                                                 placeholder="0"
+                                                aria-label="minimum age"
                                             />
                                             -
                                             <input 
@@ -373,6 +380,7 @@ const CreateNewGrant = () => {
                                                 onChange={setMaxAge}
                                                 onBlur={verifyMaxAge}
                                                 placeholder="0"
+                                                aria-label="maximum age"
                                             />
                                         </div>
                                         
@@ -386,7 +394,8 @@ const CreateNewGrant = () => {
                                                 className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
                                                 value={race} 
                                                 onChange={(e) => setRace(e.target.value)}
-                                                onKeyDown={addRace}
+                                                onKeyUp={addRace}
+                                                aria-label="desired races"
                                             />
 
                                             <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
@@ -403,7 +412,8 @@ const CreateNewGrant = () => {
                                                 className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
                                                 value={gender} 
                                                 onChange={(e) => setGender(e.target.value)}
-                                                onKeyDown={addGender}
+                                                onKeyUp={addGender}
+                                                aria-label="desired genders"
                                             />
 
                                             <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
@@ -420,7 +430,8 @@ const CreateNewGrant = () => {
                                                 className="w-3/5 min-w-40 mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
                                                 value={nationality} 
                                                 onChange={(e) => setNationality(e.target.value)}
-                                                onKeyDown={addNationality}
+                                                onKeyUp={addNationality}
+                                                aria-label="desired nationalities"
                                             />
 
                                             <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
@@ -429,10 +440,10 @@ const CreateNewGrant = () => {
                                         </div>
                                     </label>
 
-                                    <label className="flex flex-col my-2">
+                                    <label tabIndex="0" className="flex flex-col my-2">
                                         Are they a veteran:
                                         <div className="flex flex-col lg:flex-row gap-x-10">
-                                            <label>
+                                            <label id="grant-nv" tabIndex="0" aria-label="not a veteran" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
                                                 <input 
                                                     type="radio"
                                                     name="veteran"
@@ -440,10 +451,12 @@ const CreateNewGrant = () => {
                                                     className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
                                                     onChange={setVeteran}
                                                     defaultChecked={grant.profileReqs.veteran === 0}
+                                                    aria-labelledby="grant-nv"
+                                                    tabIndex="-1"
                                                 />
                                                 No
                                             </label>
-                                            <label>
+                                            <label id="grant-yv" tabIndex="0" aria-label="yes a veteran" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
                                                 <input 
                                                     type="radio"
                                                     name="veteran"
@@ -451,10 +464,12 @@ const CreateNewGrant = () => {
                                                     className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
                                                     onChange={setVeteran}
                                                     defaultChecked={grant.profileReqs.veteran === 1}
+                                                    aria-labelledby="grant-yv"
+                                                    tabIndex="-1"
                                                 />
                                                 Yes
                                             </label>
-                                            <label>
+                                            <label id="grant-nav" tabIndex="0" aria-label="not applicable" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
                                                 <input 
                                                     type="radio"
                                                     name="veteran"
@@ -462,6 +477,8 @@ const CreateNewGrant = () => {
                                                     className="mx-4 p-2 my-4 bg-white rounded-md border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white"
                                                     onChange={setVeteran}
                                                     defaultChecked={grant.profileReqs.veteran === 2}
+                                                    aria-labelledby="grant-nav"
+                                                    tabIndex="-1"
                                                 />
                                                 N/A
                                             </label>
@@ -477,23 +494,29 @@ const CreateNewGrant = () => {
                                     id='undo-btn'
                                     className={`${undoShow ? '' : 'hidden'} hover:underline dark:d-text`} 
                                     onClick={handleUndo}
+                                    aria-label="restore cleared form"
+                                    onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}
                                 >
                                     Restore
                                 </button>
                                 <button
                                     type="button"
-                                    className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md hover:scale-105 bg-white hover:bg-red-600 border-2 border-neutral-300 disabled:text-neutral-400 disabled:bg-transparent dark:d-text dark:disabled:bg-transparent dark:disabled:text-neutral-400 dark:d-custom-dark-grey-background dark:hover:bg-red-600 dark:border-neutral-700"
+                                    className="px-6 my-2 md:my-0 text-center py-4 sm:me-2 rounded-md hover:text-white hover:scale-105 bg-white hover:bg-red-600 border-2 border-neutral-300 disabled:text-neutral-400 disabled:bg-transparent dark:d-text dark:disabled:bg-transparent dark:disabled:text-neutral-400 dark:d-custom-dark-grey-background dark:hover:bg-red-600 dark:border-neutral-700"
                                     onClick={clearForm}
                                     disabled={(!grant.Title && !grant.Description && grant.MaxWinners === 0 && !grant.AmountPerApp && !grant.QuestionData && grant.Deadline === '0000-00-00')}
+                                    aria-label="clear form"
+                                    onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}
                                 >
                                     Clear
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 my-2 md:my-0 text-white text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 custom-green-background disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:border-neutral-700"
+                                    className={`px-6 my-2 md:my-0 text-white text-center py-4 rounded-md hover:scale-105 disabled:hover:scale-100 disabled:text-neutral-400 dark:disabled:bg-transparent dark:disabled:text-neutral-400 disabled:bg-transparent dark:d-text border-2 border-neutral-300 dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
                                     disabled={!(grant.Title && grant.Description && grant.MaxWinners > 0 && grant.AmountPerApp > 0 && grant.QuestionData && grant.Deadline !== '0000-00-00')}
+                                    aria-label="continue to review grant"
+                                    onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}
                                 >
-                                    Confirm
+                                    Review
                                 </button>
                             </div>
                         </form>

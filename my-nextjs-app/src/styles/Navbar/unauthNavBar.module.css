@@ -24,13 +24,6 @@
     text-decoration: underline;
   }
   
-  .button {
-    padding: 8px 16px;
-    border-radius: 4px;
-    background-color: #4CAF4F;
-    margin-right: 25px;
-  }
-  
   .actions {
     display: flex;
     align-items: center;

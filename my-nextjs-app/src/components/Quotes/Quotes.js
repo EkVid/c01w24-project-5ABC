@@ -1,10 +1,19 @@
+'use client'
 import CheckWord from "./CheckWord";
 import QuoteCard from "./QuoteCard";
 import AccessiblityIcon from "@/../public/accessibility.svg";
 import DevelopmentIcon from "@/../public/development.svg";
 import AccomodationIcon from "@/../public/accomodation.svg";
+import ThemeContext from "../utils/ThemeContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { getcbMode } from "@/components/utils/cbMode";
+import { useContext } from "react";
 
 const Quotes = () => {
+  const theme = useContext(ThemeContext)
+  const cbMode = useContext(ColourBlindnessContext)
+  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+
   return (
     <div className="flex flex-col items-center mx-10 mt-20 mb-10">
       <div className="flex flex-col mb-5">
@@ -18,7 +27,7 @@ const Quotes = () => {
       </div>
       <div className="flex flex-col items-center lg:grid lg:grid-cols-3">
         <div className="flex flex-col items-center mt-10 lg:min-h-full">
-          <CheckWord word={"Accessible"} />
+          <CheckWord word={"Accessible"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia}/>
           <QuoteCard
             img={AccessiblityIcon}
             title={"Accessibility"}
@@ -28,7 +37,7 @@ const Quotes = () => {
           />
         </div>
         <div className="flex flex-col items-center mt-10 lg:min-h-full">
-          <CheckWord word={"Equitable"} />
+          <CheckWord word={"Equitable"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia}/>
           <QuoteCard
             img={DevelopmentIcon}
             title={"Development"}
@@ -38,7 +47,7 @@ const Quotes = () => {
           />
         </div>
         <div className="flex flex-col items-center mt-10 lg:min-h-full">
-          <CheckWord word={"Inclusive"} />
+          <CheckWord word={"Inclusive"} theme={theme} protanopia={protanopia} deuteranopia={deuteranopia} tritanopia={tritanopia}/>
           <QuoteCard
             img={AccomodationIcon}
             title={"Accomodation"}

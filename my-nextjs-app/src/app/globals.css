@@ -39,72 +39,122 @@ body {
 }
 
 /* ------------------Colours------------------*/
+/* 
+  pt = protanopia
+  dt = deuteranopia
+  tr = tritanopia 
+*/
 
-.custom-highlight{
-  background-color: #79f37d;
+@layer utilities{
+  .custom-highlight{
+    background-color: #79f37d;
+  }
+  
+  .custom-accent{
+    accent-color: #407541;
+  }
+  
+  .custom-text{
+    color:#000000
+  }
+  
+  .custom-text-shade{
+    color:#535353
+  }
+  
+  .custom-blue{
+    color: #3242ce;
+  }
+  
+  .custom-green{
+    color: #4CAF4F;
+  }
+
+  .custom-green-pt{
+    color: #1341d8;
+  }
+
+  .custom-green-dt{
+    color: #1341d8;
+  }
+
+  .custom-green-tr{
+    color: #1341d8;
+  }
+  
+  .custom-green-background{
+    background-color: #4CAF4F;
+  }
+  
+  .custom-green-background-pt{
+    background-color: #1341d8;
+  }
+  
+  .custom-green-background-dt{
+    background-color: #1341d8;
+  }
+  
+  .custom-green-background-tr{
+    background-color: #1341d8;
+  }
+  
+  .custom-green-dark {
+    color: #407541;
+  }
+  
+  .custom-grey{
+    color : #717171;
+  }
+  
+  .custom-dark-grey-background{
+    background-color: #fbfbfb;
+  }
+  
+  .custom-dark-grey{
+    color: #4D4D4D;
+  }
+  
+  .custom-offwhite-background{
+    background-color: #F5F7FA;
+  }
+  
+  .custom-red{
+    color: #a50f0f;
+  }
+
+  .custom-red-background{
+    background-color: #e61a1a;
+  }
+  
+  .custom-red-border-cb{
+    border-color: #e61a1a;
+  }
+
+  .custom-red-border{
+    border-color: #a50f0f;
+  }
+  
+  .custom-questioncard-bg-color{
+    background-color: #ffffff;
+  }
+  
+  .custom-disabled-input{
+    color: #bdbdbd;
+    border-color: #bdbdbd;
+  }
+
+  .custom-yellow-background-pt{
+    background-color: #4CAF4F;
+  }
+
+  .custom-yellow-background-dt{
+    background-color: #4CAF4F;
+  }
+
+  .custom-yellow-background-tr{
+    background-color: #4CAF4F;
+  }
 }
-
-.custom-accent{
-  accent-color: #407541;
-}
-
-.custom-text{
-  color:#000000
-}
-
-.custom-text-shade{
-  color:#535353
-}
-
-.custom-blue{
-  color: #3242ce;
-}
-
-.custom-green{
-  color: #4CAF4F;
-}
-
-.custom-green-background{
-  background-color: #4CAF4F;
-}
-
-.custom-green-dark {
-  color: #407541;
-}
-
-.custom-grey{
-  color : #717171;
-}
-
-.custom-dark-grey-background{
-  background-color: #fbfbfb;
-}
-
-.custom-dark-grey{
-  color: #4D4D4D;
-}
-
-.custom-offwhite-background{
-  background-color: #F5F7FA;
-}
-
-.custom-red{
-  color: #a50f0f;
-}
-
-.custom-red-border{
-  border-color: #a50f0f;
-}
-
-.custom-questioncard-bg-color{
-  background-color: #ffffff;
-}
-
-.custom-disabled-input{
-  color: #bdbdbd;
-  border-color: #bdbdbd;
-}
-
 
 /* ------------------Dark Mode Colours------------------*/
 @layer utilities {
@@ -135,10 +185,6 @@ body {
   
   .d-custom-dark-grey-background{
     background-color: #1f1f1f;
-  }
-
-  .d-custom-dark-grey-border{
-    border-color: #1f1f1f;;
   }
   
   .d-custom-offwhite-background{
@@ -171,6 +217,10 @@ body {
 
   .d-white-filter{
     filter: invert(1);
+  }
+
+  .d-custom-green-color-blind{
+    color: #1389d8;
   }
 
 }

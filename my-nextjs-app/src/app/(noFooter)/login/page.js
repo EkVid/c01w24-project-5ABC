@@ -1,13 +1,48 @@
+'use client'
 import Login from "@/components/signup-login/Login";
+import FontSizeContext from "@/components/utils/FontSizeContext";
+import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
+import ThemeContext from "@/components/utils/ThemeContext";
+import { getTheme } from "@/components/utils/theme";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
 import dynamic from "next/dynamic";
-import AccessibilityBar from "@/components/AccessibilityBar";
+import { useState, useEffect } from "react";
+
+const AccessibilityBar = dynamic(
+  () => import("@/components/AccessibilityBar"),
+  { ssr: false }
+);
 
 const LoginPage = () => {
+  const [fontSize, setFontSize] = useState(100);
+  const [theme, setTheme] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const [cbMode, setcbMode] = useState("")
+
+  useEffect(() => {
+    setTheme(getTheme())
+    setcbMode(localStorage.getItem('cbMode'))
+  }, []);
+
   return (
-    <>
-      <AccessibilityBar />
-      <Login />
-    </>
+    <div className="min-h-screen flex flex-col">
+      <AccessibilityBar
+        onChangeFont={setFontSize}
+        onChangeTheme={setTheme}
+        onChangeMotion={setIsReducedMotion}
+        onChangeCBMode={setcbMode}
+      />
+      <FontSizeContext.Provider value={fontSize}>
+          <ThemeContext.Provider value={theme}>
+              <ReducedMotionContext.Provider value={isReducedMotion}>
+                <ColourBlindnessContext.Provider value={cbMode}>
+                  <Login />
+                </ColourBlindnessContext.Provider>
+              </ReducedMotionContext.Provider>
+          </ThemeContext.Provider>
+      </FontSizeContext.Provider>
+      
+    </div>
   );
 };
 

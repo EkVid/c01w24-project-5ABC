@@ -1,11 +1,18 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import menuIcon from "@/../public/lineThreeHor.svg"
+import ReducedMotionContext from "@/components/utils/ReducedMotionContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import { getcbMode } from "@/components/utils/cbMode";
+import { useContext } from "react";
 import xMark from "@/../public/x.svg"
 import Image from "next/image"
 
 const Sidebar = () => {
     const pathname = usePathname()
+    const isReducedMotion = useContext(ReducedMotionContext)
+    const cbMode = useContext(ColourBlindnessContext)
+    const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
 
     function handleSidebarPopout(){
         const dashboard = document.getElementById('grantor-sidebar')
@@ -13,7 +20,7 @@ const Sidebar = () => {
     }
 
     return(
-        <div className="flex-grow flex flex-col xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/12 w-1/6 dark:d-custom-dark-grey-background transition-all">
+        <div className={`flex-grow flex flex-col xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/12 w-1/6 dark:d-custom-dark-grey-background ${isReducedMotion ? "" : "transition-all"}`}>
             <nav className="h-full block md:hidden w-full flex justify-center items-start mt-2 group cursor-pointer" onClick={handleSidebarPopout}>
                 <Image
                     src={menuIcon}
@@ -29,7 +36,7 @@ const Sidebar = () => {
                         alt="exit"
                         className="md:hidden block w-12 h-auto dark:d-white-filter group-hover:scale-105"
                     /> */}
-                    <Link href="/dashboard" className="w-full">
+                    <Link aria-label="dashboard home" href="/dashboard" className="w-full">
                         <h1 className="text-center text-3xl dark:d-text my-6">Logo</h1>
                     </Link>
                 </div>
@@ -37,17 +44,17 @@ const Sidebar = () => {
                 <details className="group" open>
                     <summary className="list-none flex items-center w-full cursor-pointer">
                         <h1 className="custom-dark-grey dark:d-text text-3xl ms-8 me-auto">Grants</h1>
-                        <div className="custom-dark-grey dark:d-text cs-text-5xl mx-5 group-open:rotate-90 transition-transform">
+                        <div className={`custom-dark-grey dark:d-text cs-text-5xl mx-5 group-open:rotate-90 ${isReducedMotion ? "" : "transition-transform"}`}>
                             &#8250;
                         </div>
                     </summary>
 
                     <ul className="custom-dark-grey text-lg dark:d-text w-full ps-16 pe-2 ">
-                        <li className={`${pathname.includes('my-grants') ? "custom-green-background text-white" : "bg-transparent"} w-full p-2 rounded-lg`}>
-                            <Link href='/dashboard/my-grants'>My Grants</Link>
+                        <li className={`${pathname.includes('my-grants') ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : "custom-green-background text-white"): "bg-transparent hover:underline"} w-full p-2 rounded-lg`}>
+                            <Link aria-label="my grants" href='/dashboard/my-grants'>My Grants</Link>
                         </li>
-                        <li className={`${pathname.includes('create-new-grant') ? "custom-green-background text-white" : "bg-transparent"} w-full p-2 lg:pe-0 pe-2 rounded-lg`}>
-                            <Link href='/dashboard/create-new-grant'>Create New Grant</Link>
+                        <li className={`${pathname.includes('create-new-grant') ? (protanopia ? "custom-green-background-pt text-white" : deuteranopia ? "custom-green-background-dt text-white" : tritanopia ? "custom-green-background-tr text-white" : "custom-green-background text-white") : "bg-transparent hover:underline"} w-full p-2 lg:pe-0 pe-2 rounded-lg`}>
+                            <Link aria-label="create new grant" href='/dashboard/create-new-grant'>Create New Grant</Link>
                         </li>
                     </ul>
                 </details>

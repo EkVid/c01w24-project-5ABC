@@ -21,7 +21,7 @@ export default function ViewNumber({ question }){
 
     return (
         <div className='p-2 md:mx-10 mx-4 my-4 border border-black dark:border-white rounded'>
-            <h1 className='dark:text-white'>{question.question}  {question.isRequired ? '*' : ''}</h1>
+            <h1 tabIndex="0" aria-label={`Question: ${question.question}`} className='dark:text-white'>{question.question}  {question.isRequired ? '*' : ''}</h1>
             <input
                 type="number"
                 min={minNum}
@@ -31,12 +31,12 @@ export default function ViewNumber({ question }){
                 disabled={true}
             />
             {rangeStr !== ""?
-                <p className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">{rangeStr}</p>
+                <p tabIndex="0" className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">{rangeStr}</p>
                 :
                 <></>
             }
             {isIntegerOnly ?
-                <p className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">Integer answers only</p>
+                <p tabIndex="0" className="italic text-sm mt-1 custom-text-shade dark:d-text-shade">Integer answers only</p>
                 :
                 <></>
             }

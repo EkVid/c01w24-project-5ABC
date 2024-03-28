@@ -78,7 +78,7 @@ export default function EditPage({params}) {
   const handleOnQuit = () => {
     if (questionData && questionData.length > 0) {
       // TODO: Use better looking prompt to prompt grantor if they want to leave
-      if(!confirm("Are you sure you want to leave? You will lose your questions")) return;
+      if(!confirm("Are you sure you want to leave? You will lose any unsaved questions")) return;
     }
     router.back();
   }

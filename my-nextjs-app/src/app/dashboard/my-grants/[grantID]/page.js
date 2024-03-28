@@ -8,7 +8,8 @@ const MyGrants = async () => {
     const router = useRouter()
 
     const grantID = params.grantID
-    const userData = sessionStorage.getItem('userData')
+    console.log(grantID)
+    const userData = JSON.parse(sessionStorage.getItem('userData'))
     let grant = null
     let applications = null
 
@@ -16,17 +17,17 @@ const MyGrants = async () => {
         router.push('/login')
     }
 
-    const headers = {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${userData.token}`
+    const authHeaders = {
+      'Authorization': `Bearer ${userData.token}`
     }
 
     try{
-      const grantRes = await axios.get(`http://localhost:5000/getGrant/${grantID}`)
+      const grantRes = await axios.get(`http://localhost:5000/getGrant/${grantID}`, {headers: authHeaders})
       grant = grantRes.data
 
       try{
-        const appRes = await axios.get(`http://localhost:5000/getAllGrantApplications/${grantID}`, {headers: headers})
+        const appRes = await axios.get(`http://localhost:5000/getAllGrantApplications/${grantID}`, {headers: authHeaders})
+        console.log('applications', appRes)
         applications = appRes.data.applications
       }
       catch(err){
