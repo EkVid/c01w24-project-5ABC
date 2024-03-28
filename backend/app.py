@@ -206,10 +206,9 @@ def generateResetCode():
         return {"message": "Unsupported Content Type"}, 400
 
 
-@app.route("/logout", methods=['GET'])
+@app.route("/logout", methods=['POST'])
 @tokenCheck.token_required
 def logout():
-
     contentType = request.headers.get("Content-Type")
 
     if(contentType == "application/json"):
@@ -437,8 +436,7 @@ def createApplication():
                 answer["fileLink"] = uploadFile(base64.b64decode(answer["fileLink"]), answer["fileName"])
 
         application = request.json
-        application["dateSubmitted"] = datetime.datetime.utcnow()
-        application["status"] = 1
+        application["dateSubmitted"] = datetime.date.today().strftime("%Y-%m-%d")
         application["profileData"] = None
 
         id = grantAppCollection.insert_one(application).inserted_id
@@ -509,46 +507,15 @@ def getGranteeApplications():
 :param str _id: The grant ID.
 """
 @app.route("/getAllGrantApplications/<_id>", methods=["GET"])
-@tokenCheck.token_required
+# @tokenCheck.token_required
 def getAllGrantApplications(_id):
-    applications = list(grantAppCollection.find({"grantID": _id}, {"_id": False}))
+    applications = list(grantAppCollection.find({"grantID": _id}))
+
+    for application in applications:
+        application["_id"] = str(application["_id"])
+
     return {"applications": applications}, 200
 
-
-@app.route("/updateApplication/<_id>", methods=["PUT"])
-@tokenCheck.token_required
-def updateApplication(_id):
-    if not ObjectId.is_valid(_id):
-        return {"message": "Invalid ID"}, 400
-    objID = ObjectId(_id)
-
-    applicationData = getJSONData(request)
-    if applicationData is None:
-        return {"message": "Unsupported Content Type"}, 400
-    # TODO: see if there's a better way to do this than using isNotListOfDict
-    elif "answerData" not in applicationData or not isListOfDict(applicationData["answerData"]):
-        return {"message": "No answer data"}, 400
-
-    oldApplication = grantAppCollection.find_one({"_id": objID}, {"_id": False})
-    if oldApplication is None:
-        return {"message": "Grant application with the given ID not found"}, 404
-    # Incorrect number of answers
-    elif len(oldApplication.get("answerData", [])) != len(applicationData.get("answerData", [])):
-        return {"message": "Invalid answer data"}, 400
-
-    # Copy the options from the old application
-    oldAnswerData = oldApplication.get("answerData", [])
-    for i in range(len(oldAnswerData)):
-        options = oldAnswerData[i].get("options", {})
-        applicationData["answerData"][i]["options"] = options
-
-    try:
-        Application.model_validate_json(JSON.dumps(applicationData))
-    except ValidationError as e:
-        return {"message": e.errors()}, 400     # e.errors() is required for the tests, do not change this
-
-    grantAppCollection.update_one({"_id": objID}, {"$set": applicationData})
-    return {"message": "Grant application successfully updated"}, 200
 
 
 @app.route("/updateGrantWinners", methods=["PUT"])
