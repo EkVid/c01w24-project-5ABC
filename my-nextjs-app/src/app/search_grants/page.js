@@ -1,3 +1,4 @@
+'use client'
 import Search_grants from "@/components/Grantee_Board/Search_grants";
 import BaseLayout from "@/app/(root)/layout";
 import dynamic from "next/dynamic";
@@ -13,18 +14,17 @@ export async function getData(){
     if(response.status !== 200){
       throw new Error('Failed to fetch applications')
     }
-    console.log(response)
 
-    return response.data
+    return response.data.grants
 }
 
 
-const Search_grants_page = () => {
-  const grants = getData()
+const Search_grants_page = async () => {
+  const grants = await getData()
 
   return (
     <BaseLayout>
-      <Search_grants />
+      <Search_grants grants={grants}/>
     </BaseLayout>
   );
 };

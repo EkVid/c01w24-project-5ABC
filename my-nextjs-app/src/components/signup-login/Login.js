@@ -56,7 +56,7 @@ const Login = () => {
           router.push('/dashboard')
         }
         else if(response.data.UserInfo.Usertype === 'grantee'){
-          router.push('/grantee-dashboard')
+          router.push('/grantee_dashboard')
         }
       })
       .catch((error) => {

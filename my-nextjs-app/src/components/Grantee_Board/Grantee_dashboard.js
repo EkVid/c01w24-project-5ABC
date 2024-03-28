@@ -296,12 +296,12 @@ const Grantee_dashboard = ({ applications }) => {
                   >
                     View My Applications
                   </Link>
-                  <button
-                    onClick={handleSearchGrantApplications}
+                  <Link
+                    href="/search_grants"
                     className="bg-green-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full hover:bg-green-800 transition-colors text-sm sm:text-base"
                   >
                     Submit an Application
-                  </button>
+                  </Link>
                 </div>
               </div>
 

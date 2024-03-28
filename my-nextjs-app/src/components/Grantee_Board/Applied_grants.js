@@ -24,7 +24,7 @@ const Applied_Grants = ({ applications }) => {
       newFilters["deadline"] = filters.deadline
     }
     if(filters.status){
-      newFilters["status"] = filters.status
+      newFilters["status"] = parseInt(filters.status)
     }
     if(filters.maxAmount){
       newFilters["maxAmount"] = filters.maxAmount
@@ -253,7 +253,7 @@ const Applied_Grants = ({ applications }) => {
   // ];
   const defaultFilters = {
     dateSubmitted: "",
-    status: "all",
+    status: 0,
     titleKeyword: "",
     deadline: "",
     maxAmount: 0,
@@ -322,7 +322,7 @@ const Applied_Grants = ({ applications }) => {
   }
 
   function onChangeStatus(e){
-    setFilters(prevFilters => ({...prevFilters, status:e.target.value}))
+    setFilters(prevFilters => ({...prevFilters, status:e.target.valueAsNumber}))
   }
 
   function onChangeMaxAmount(e){
@@ -413,11 +413,10 @@ const Applied_Grants = ({ applications }) => {
                       value={filters.status}
                       onChange={onChangeStatus}
                     >
-                      <option value="all">All</option>
-                      <option value="approved">Approved</option>
-                      <option value="rejected">Rejected</option>
-                      <option value="submitted">Submitted</option>
-                      <option value="pending">Pending</option>
+                      <option value={0}>All</option>
+                      <option value={3}>Approved</option>
+                      <option value={2}>Rejected</option>
+                      <option value={1}>Pending</option>
                     </select>
                   </div>
                   <div className="mb-6">
