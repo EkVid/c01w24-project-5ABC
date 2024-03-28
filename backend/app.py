@@ -507,7 +507,7 @@ def getGranteeApplications():
 :param str _id: The grant ID.
 """
 @app.route("/getAllGrantApplications/<_id>", methods=["GET"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def getAllGrantApplications(_id):
     applications = list(grantAppCollection.find({"grantID": _id}))
 
