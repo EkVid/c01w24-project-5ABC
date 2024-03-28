@@ -24,7 +24,6 @@ const Hero = () => {
             <span className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"}`}>changing lives</span>.
           </h1>
           <p className="custom-text text-sm md:text-sm lg:text-sm custom-grey dark:text-[#dddddd]">
-          <p className="custom-text text-sm md:text-sm lg:text-sm custom-grey dark:text-[#dddddd]">
             Simplify your life with MA everywhere, our online and mobile
             self-service platform that lets you instantly connect to your grants
             information.

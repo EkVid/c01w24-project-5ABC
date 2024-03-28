@@ -253,7 +253,6 @@ const QuestionBase = ({questionData, questionNum, isEditMode, isLastQuestion, on
           <div className="px-4 mb-4 overflow-auto">
             <CheckboxOption 
               label={"Required question:"} 
-              label={"Required question:"} 
               currentValue={isRequired} 
               onClick={() => onChangeQuestionData({...questionData, isRequired: !isRequired})}
             />

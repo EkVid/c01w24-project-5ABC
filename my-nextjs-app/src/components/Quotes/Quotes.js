@@ -13,7 +13,6 @@ const Quotes = () => {
   const theme = useContext(ThemeContext)
   const cbMode = useContext(ColourBlindnessContext)
   const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
-  console.log(cbMode)
 
   return (
     <div className="flex flex-col items-center mx-10 mt-20 mb-10">
