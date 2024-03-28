@@ -3,7 +3,7 @@
 .vscode
 Sandbox
 *.pyc
-.env
+/.env
 Files
 pybind11
 build
@@ -11,3 +11,8 @@ out
 *.dll
 node_modules
 backend/data/
+app.py
+__pycache__
+certs
+html
+vhost

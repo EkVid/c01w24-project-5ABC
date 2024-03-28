@@ -4,8 +4,9 @@ import Image from "next/image";
 import PlusIcon from "@/../public/plus.svg";
 import FontSizeContext from "../utils/FontSizeContext";
 import { uploadFile } from "../utils/uploadFile";
+import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QFile = ({isEditMode, onSelectAnswer}) => {
+const QFile = ({isEditMode, onSelectAnswer, applicantAnswer}) => {
   const [currentAnswer, setCurrentAnswer] = useState(null);
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
@@ -16,9 +17,9 @@ const QFile = ({isEditMode, onSelectAnswer}) => {
     if (isEditMode) return;
     setCurrentAnswer({fileLink: "", fileName: "Uploading..."});
     try {
-      const {base64str, url, fileName} = await uploadFile(file);
-      setCurrentAnswer({fileLink: url, fileName: fileName});
-      onSelectAnswer(base64str);
+      const {base64str, url, fileName, fileType} = await uploadFile(file);
+      setCurrentAnswer({fileLink: url, fileName: `${fileName} (${fileType})`});
+      onSelectAnswer({fileLink: base64str, fileName: `${fileName} (${fileType})`});
     }
     catch (errMsg) {
       setCurrentAnswer({fileLink: "", fileName: errMsg});
@@ -30,21 +31,26 @@ const QFile = ({isEditMode, onSelectAnswer}) => {
     if (currentAnswer?.fileLink) URL.revokeObjectURL(currentAnswer.fileLink);
     setCurrentAnswer(null);
     onSelectAnswer(null);
-    console.log(formRef.current)
-    formRef.current?.reset();
+    if (formRef.current) formRef.current.reset();
   }
 
   useEffect(() => handleOnClearFile(), [isEditMode]);
 
-  return isEditMode ? 
-    <>
-      <p className={`text-sm custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}`}>Your file:</p>
-      <input
-        type="file"
-        className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 rounded-md bg-transparent my-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${isReduceMotion ? "" : "transition-colors"}`}
-        disabled={true}
-      />
-    </>
+  return applicantAnswer?.fileName && applicantAnswer?.fileLink ?
+    <p className={`text-sm custom-text dark:d-text whitespace-pre-wrap ${isReduceMotion ? "" : "transition-colors"}`}>
+      {"Applicant's file:\n"}
+      <a 
+        aria-label={`Download ${applicantAnswer.fileName}`}
+        href={`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN + process.env.NEXT_PUBLIC_APPEND}/getFile/${applicantAnswer.fileLink}`} 
+        target="_blank" 
+        rel="noreferrer noopener" 
+        className={`text-sm break-words custom-link`}
+      >
+        {applicantAnswer.fileName}
+      </a>
+    </p>
+    : applicantAnswer == "" ?
+    <ResponseMsg isNoResponse={true}/>
     :
     <>
       <p className={`text-sm custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}`}>Your file:</p>
@@ -83,13 +89,13 @@ const QFile = ({isEditMode, onSelectAnswer}) => {
           :
           <input
             type="file"
-            className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 rounded-md bg-transparent m-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${isReduceMotion ? "" : "transition-colors"}`}
+            className={`text-sm max-w-full custom-text dark:d-text md:max-w-96 rounded-md bg-transparent my-1 ${isEditMode ? "custom-disabled-input dark:d-custom-disabled-input" : "custom-interactive-input"} ${isReduceMotion ? "" : "transition-colors"}`}
             onInput={e => handleOnUpload(e.target.files[0])}
+            disabled={isEditMode}
           />
         }
       </form>
     </>
-    
 }
 
 export default QFile;

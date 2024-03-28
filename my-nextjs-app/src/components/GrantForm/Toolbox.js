@@ -66,7 +66,7 @@ const toolboxData = [
   }
 ]
 
-const Toolbox = ({isSmallVersion, onClickAdd}) => {
+const Toolbox = ({isSmallVersion, onClickAdd, currentNumOfQuestions}) => {
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -96,7 +96,7 @@ const Toolbox = ({isSmallVersion, onClickAdd}) => {
         isSmallVersion ?
           <div key={title} className="flex flex-col ml-2 justify-between items-center">
             <button
-              aria-label={`Add '${type}' type question to bottom`}
+              aria-label={`Add '${type}' type question as question ${currentNumOfQuestions + 1} at bottom of the form.`}
               onClick={() => onClickAdd(type)}
               className={`p-1 px-6 shrink-0 rounded-lg custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
             >
@@ -106,6 +106,7 @@ const Toolbox = ({isSmallVersion, onClickAdd}) => {
                 width={20 * fontSizeMultiplier}
                 height={"auto"}
                 className="dark:d-white-filter pointer-events-none"
+                aria-hidden="true"
               />
             </button>
             <SmallToolboxCard 
@@ -123,7 +124,7 @@ const Toolbox = ({isSmallVersion, onClickAdd}) => {
               icon={icon}
             />
             <button
-              aria-label={`Add '${type}' type question to bottom`}
+              aria-label={`Add '${type}' type question as question ${currentNumOfQuestions + 1} at bottom of the form.`}
               onClick={() => onClickAdd(type)}
               className={`ml-2 p-2 shrink-0 rounded-lg custom-interactive-btn m-1 ${isReduceMotion ? "" : "transition-colors"}`}
             >
@@ -133,6 +134,7 @@ const Toolbox = ({isSmallVersion, onClickAdd}) => {
                 width={25 * fontSizeMultiplier}
                 height={"auto"}
                 className="dark:d-white-filter pointer-events-none"
+                aria-hidden="true"
               />
             </button>
           </div>

@@ -150,7 +150,7 @@ const Login = () => {
                 Forgot password?
               </h2>
             </Link>{" "}
-            <div className="bg-green-500 rounded max-w-xs w-full rounded-full ">
+            <div className="bg-green-500 max-w-xs w-full rounded-full ">
               <button
                 type="submit"
                 className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}
@@ -169,7 +169,7 @@ const Login = () => {
           <p className="lg:text-2xl md:text-xl text-l text-center text-white">
             Sign up and discover a great amount of new opportunities!
           </p>
-          <div className="bg-white rounded max-w-xs w-full rounded-full">
+          <div className="bg-white max-w-xs w-full rounded-full">
             <Link href="/signup">
               <button className={`inline-block text-black text-md w-full font-semibold h-12 px-6 bg-white hover:scale-105 rounded-full ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}>
                 Sign Up

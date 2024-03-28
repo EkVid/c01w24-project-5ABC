@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <main>
       <UnauthNavBar />
-      <AddFormButton />
+      <AddFormButton title={"Title Goes Here"}/>
       <Hero />
       <Quotes />
     </main>

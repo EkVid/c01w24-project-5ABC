@@ -12,124 +12,31 @@ import SubmitIcon from "@/../public/submit.svg";
 import QuestionBase from "@/components/GrantForm/QuestionBase";
 import ErrTextbox from "@/components/GrantForm/SmallComponents/ErrTextbox";
 import { useRouter } from "next/navigation";
-import { TYPE_CHECKBOX, TYPE_EMAIL, TYPE_MULTI, TYPE_TEXT, TYPE_PHONE, TYPE_NUMBER, TYPE_DATE, TYPE_FILE } from "@/components/utils/constants";
+import { TYPE_EMAIL, TYPE_TEXT, TYPE_PHONE, TYPE_NUMBER, TYPE_DATE } from "@/components/utils/constants";
+import axios from "axios";
 
 const AccessibilityBar = dynamic(
   () => import("@/components/AccessibilityBar"),
   { ssr: false }
 );
 
-const testbody = [
-  {
-    question: "What's your name?",
-    type: TYPE_TEXT,
-    isRequired: true,
-    options:
-    {
-      isMultipleLines: false,
-      minCharsNum: 2,
-      maxCharsNum: 20,
-    },
-    file: null,
-  },
-  {
-    question: "What's your email?",
-    type: TYPE_EMAIL,
-    isRequired: true,
-  },
-  {
-    question: "What's your phone number?",
-    type: TYPE_PHONE,
-    isRequired: false,
-  },
-  {
-    question: "Enter your age:",
-    type: TYPE_NUMBER,
-    isRequired: true,
-    options:
-    {
-      isIntegerOnly: true,
-      minNum: 0,
-    }
-  },
-  {
-    question: "What is your GPA on a 4.0 scale?",
-    type: TYPE_NUMBER,
-    isRequired: false,
-    options:
-    {
-      isIntegerOnly: false,
-      minNum: 0,
-      maxNum: 4,
-    }
-  },
-  {
-    question: "Do you have a driver's license?",
-    type: TYPE_MULTI,
-    answers: ["Yes", "No"],
-    isRequired: true,
-  },
-  {
-    question: "Select all that apply",
-    type: TYPE_CHECKBOX,
-    answers: ["Tall", "Smol", "Wide", "Thinn"],
-    isRequired: false,
-    options:
-    {
-      isNoneAnOption: true
-    }
-  },
-  {
-    question: "When did you graduate high school?",
-    type: TYPE_DATE,
-    isRequired: false,
-    options:
-    {
-      isDateRange: false
-    }
-  },
-  {
-    question: "Start and end date of last job",
-    type: TYPE_DATE,
-    isRequired: true,
-    options:
-    {
-      isDateRange: true,
-      isBothRequired: true,
-    }
-  },
-  {
-    question: "Download and complete attached file",
-    type: TYPE_FILE,
-    isRequired: true,
-    fileData: 
-    {
-      fileLink: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F3fc4ed44-3fbc-419a-97a1-a29742511391.selcdn.net%2Fcoub_storage%2Fcoub%2Fsimple%2Fcw_image%2F4d4a7c5479f%2Fca1bf7ae0f002963751d0%2Fmed_1673105234_6tqgye_1409562215_1381603942_00014.jpg&f=1&nofb=1&ipt=47580c26f539884377b16df3bbc3137ed1f6f3f264716a80d415e4eb8fb271d5&ipo=images",
-      fileName: "shagged_by_rare_parrot.jpg",
-    }
-  },
-]
-
 const EMAIL_REGEX = /^[^!#\$%&~\.]+(\.[^!#\$%&~\.]+)*@([^!#\$%&~\.]{1,63}\.)+[^!#\$%&~\.]{2,}$/;
 const PHONE_REGEX = /^(\+\d( )?)?(\(|-)?\d{3}(\)|-| )?\d{3}(-| )?\d{4}(,? ?(ext\.?|extension|x){1}\d+)?$/i;
 
-export default function ApplicationPage({params}) {
+const ERR_INVALID_ANSWERS = "Fix all errors\nto submit form";
+
+const Apply = ({title, grantID, fetchedQuestData}) => {
   const [fontSize, setFontSize] = useState(100);
   const [theme, setTheme] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [isRequiredVis, setIsRequiredVis] = useState(false);
-  const [isErrVis, setIsErrVis] = useState(false);
+  const [errMsg, setErrMsg] = useState(null);
   const [questionData, setQuestionData] = useState(null);
   const [answerData, setAnswerData] = useState(null);
-  const [title, setTitle] = useState("");
-
   const router = useRouter();
 
   // Load question data into form
   useEffect(() => {
-    // TODO: Get question data array into fetchedQuestData, also get and set title
-    //const fetchedQuestData = fetch(`localhost:4000/idkUrl/${params.appId}`);
-    const fetchedQuestData = testbody;
     const questData = fetchedQuestData.map(q => {
       let newQuestObj = {...q, id: uuidv4(), errMsg: null};
       if (q.answers) {
@@ -138,7 +45,6 @@ export default function ApplicationPage({params}) {
       }
       return newQuestObj;
     });
-    setTitle("Poot Title Here");
     setQuestionData(questData);
     setAnswerData(questData.map(q => null));
     setTheme(getTheme());
@@ -146,8 +52,8 @@ export default function ApplicationPage({params}) {
   }, []);
 
   useEffect(() => {
-    if (!questionData) setIsErrVis(false);
-    else setIsErrVis(questionData.filter(q => q.errMsg).length > 0);
+    if (!questionData) setErrMsg(null);
+    else setErrMsg(questionData.filter(q => q.errMsg).length > 0 ? ERR_INVALID_ANSWERS : null);
   }, [questionData]);
 
   const handleOnQuit = () => {
@@ -161,7 +67,7 @@ export default function ApplicationPage({params}) {
 
   // Checks answers and validates them and shows error message for issues
   // If no problems, shows preview page
-  const handleOnReview = () => {
+  const handleOnSubmit = async () => {
     const allErrMsg = questionData.map(q => null);
     for (let i = 0; i < questionData.length; i++) {
       const question = questionData[i];
@@ -201,7 +107,7 @@ export default function ApplicationPage({params}) {
           allErrMsg[i] = `Number too low (current: ${value}, min: ${minNum})`;
           continue;
         }
-        if (maxNum && value && value > minNum) {
+        if (maxNum && value && value > maxNum) {
           allErrMsg[i] = `Number too high (current: ${value}, max: ${maxNum})`;
           continue;
         }
@@ -239,10 +145,33 @@ export default function ApplicationPage({params}) {
         }
       }
     }
-    setQuestionData(prev => prev.map((q, i) => ({...q, errMsg: allErrMsg[i]})));
+    setQuestionData(prev => {
+      const allErrMsgWithNum = allErrMsg.map((e, i) => e ? `Q${i + 1} Error: ${e}` : null);
+      return prev.map((q, i) => ({...q, errMsg: allErrMsgWithNum[i]}))
+    });
     if (allErrMsg.filter(e => e != null).length === 0) {
-      console.log("No problems, go to review")
-      // TODO: Go to review page
+      setErrMsg(null);
+      if (!confirm("Are you sure you want to submit?")) return;
+      const userData = JSON.parse(sessionStorage?.getItem('userData'));
+      const body = {
+        grantID: grantID, 
+        email: userData?.email ?? null,
+        answers: answerData
+      }
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${userData?.token}`
+      }
+      try {
+        await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN + process.env.NEXT_PUBLIC_APPEND}/createApplication`, body, {headers: headers});
+        alert(`Your application for '${title}' has been submitted! You will now be redirected to the dashboard.`);
+        router.back();
+      }
+      catch (e) {
+        const msg = e.response?.data?.message ? e.response.data.message.trim('.') : "Something went wrong";
+        setErrMsg(msg);
+        alert(`Error: ${msg}. Please try submitting again later.`);
+      }
     }
   }
 
@@ -274,18 +203,19 @@ export default function ApplicationPage({params}) {
                 >
                   <Image
                     src={UndoIcon}
-                    alt="Arrow to go back a page"
+                    alt="Arrow to go back"
                     width={22 * fontSize / 100}
                     height={"auto"}
                     className="dark:d-white-filter rotate-[30deg]"
+                    aria-hidden="true"
                   />
-                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex">Quit</p>
+                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex" aria-hidden="true">Quit</p>
                 </button>
                 <h1 className="flex-grow self-center text-center mx-4 text-2xl custom-text dark:d-text overflow-auto max-h-20">{title}</h1>
                 <button 
-                  aria-label="Review and submit answers"
-                  onClick={handleOnReview}
-                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 px-2 py-1 ${isErrVis ? "hidden" : ""} ${isReducedMotion ? "" : "transition"}`}
+                  aria-label="Submit answers"
+                  onClick={handleOnSubmit}
+                  className={`flex shrink-0 items-center w-fit rounded custom-interactive-btn m-1 px-2 py-1 ${errMsg === ERR_INVALID_ANSWERS ? "hidden" : ""} ${isReducedMotion ? "" : "transition"}`}
                 >
                   <Image
                     src={SubmitIcon}
@@ -293,20 +223,17 @@ export default function ApplicationPage({params}) {
                     width={22 * fontSize / 100}
                     height={"auto"}
                     className="dark:d-white-filter"
+                    aria-hidden="true"
                   />
-                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex">Review / Submit</p>
+                  <p className="ml-2.5 text-xl custom-text dark:d-text hidden lg:flex" aria-hidden="true">Submit</p>
                 </button>
-                {isErrVis ?
-                  <div className="flex items-center mx-2">
-                    <ErrTextbox msg={"Fix all errors\nto review and\nsubmit form"}/>
-                  </div>
-                  :
-                  <></>
-                }
+                <div className={`flex items-center ${errMsg ? "mx-2" : ""}`} role="alert">
+                  {errMsg ? <ErrTextbox msg={errMsg}/> : <></>}
+                </div>
               </div>
             </div>
             {isRequiredVis ?
-              <p className="mx-3 px-3 mt-6">
+              <p className={`mx-3 px-3 mt-6 custom-text dark:d-text ${isReducedMotion ? "" : "transition-colors"}`}>
                 <font className="custom-red dark:d-custom-red mr-1 text-xl">*</font>Indicates required question
               </p>
               :
@@ -322,37 +249,36 @@ export default function ApplicationPage({params}) {
                     isEditMode={false}
                     isLastQuestion={i === questionData.length - 1}
                     onSelectAnswer={handleOnSelectAnswer}
+                    totalNumOfQuestions={questionData?.length ?? 0}
                   />
                 )}
                 {!questionData || questionData.length === 0 ?
                   <h3 className="text-center my-20 text-3xl font-bold custom-text dark:d-text opacity-50">
-                    There are no questions to preview
+                    There are no questions to show
                   </h3>
                   :
                   <div className="flex flex-col items-center mt-5 mb-10">
                     <p className="text-center text-3xl font-bold custom-text dark:d-text opacity-50 whitespace-pre-wrap">
                       {'You have reached the end of the application!'}
                     </p>
-                    {isErrVis ?
-                      <div className="flex items-center p-4">
-                        <ErrTextbox msg={"Fix all errors to review and submit form"}/>
-                      </div>
-                      :
-                      <button 
-                        aria-label="Review and submit answers"
-                        onClick={handleOnReview}
-                        className={`flex rounded custom-interactive-btn m-1 mt-5 p-3 self-center custom-questioncard-background ${isReducedMotion ? "" : "transition-colors"}`}
-                      >
-                        <Image
-                          src={SubmitIcon}
-                          alt="Checkmark"
-                          width={22 * fontSize / 100}
-                          height={"auto"}
-                          className="dark:d-white-filter"
-                        />
-                        <div className="ml-2.5 text-xl custom-text dark:d-text">Review / Submit</div>
-                      </button>
-                    }
+                    <button 
+                      aria-label="Submit answers"
+                      onClick={handleOnSubmit}
+                      className={`flex rounded custom-interactive-btn m-1 mt-5 p-3 self-center custom-questioncard-background ${errMsg === ERR_INVALID_ANSWERS ? "hidden" : "flex"} ${isReducedMotion ? "" : "transition-colors"}`}
+                    >
+                      <Image
+                        src={SubmitIcon}
+                        alt="Checkmark"
+                        width={22 * fontSize / 100}
+                        height={"auto"}
+                        className="dark:d-white-filter"
+                        aria-hidden="true"
+                      />
+                      <div className="ml-2.5 text-xl custom-text dark:d-text">Submit</div>
+                    </button>
+                    <div className={`items-center p-4 ${errMsg ? "flex" : "hidden"}`}>
+                      <ErrTextbox msg={errMsg}/>
+                    </div>
                   </div>
                 }
               </div>
@@ -366,3 +292,4 @@ export default function ApplicationPage({params}) {
   )
 }
 
+export default Apply;

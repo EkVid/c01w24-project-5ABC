@@ -3,8 +3,9 @@ import ReducedMotionContext from "../utils/ReducedMotionContext";
 import OptionsDiv from "./SmallComponents/OptionsDiv";
 import CheckboxOption from "./SmallComponents/CheckboxOption";
 import NumOption from "./SmallComponents/NumOption";
+import ResponseMsg from "./SmallComponents/ResponseMsg";
 
-const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) => {
+const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions, applicantAnswer, questionNum}) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
   const isReduceMotion = useContext(ReducedMotionContext);
 
@@ -31,22 +32,26 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
 
   useEffect(() => setCurrentAnswer(""), [isEditMode]);
 
-  return (
+  return applicantAnswer?.value ?
+    <ResponseMsg msg={applicantAnswer.value}/>
+    : applicantAnswer == "" ?
+    <ResponseMsg isNoResponse={true}/>
+    :
     <>
       {isEditMode ? 
         <OptionsDiv>
           <CheckboxOption 
-            label={"Require integer answers:"}
+            label={`Require integer answers for Q${questionNum}:`}
             currentValue={isIntegerOnly} 
             onClick={() => onChangeOptions({...options, isIntegerOnly: !isIntegerOnly})}
           />
           <NumOption
-            label={"Minimum number:"}
+            label={`Minimum number for Q${questionNum}:`}
             currentValue={minNum}
             onChangeValue={newMin => onChangeOptions({...options, minNum: newMin})}
           />
           <NumOption
-            label={"Maximum number:"}
+            label={`Maximum number for Q${questionNum}:`}
             currentValue={maxNum}
             onChangeValue={newMax => onChangeOptions({...options, maxNum: newMax})}
           />
@@ -73,7 +78,6 @@ const QNumber = ({options, isErr, isEditMode, onSelectAnswer, onChangeOptions}) 
         <></>
       }
     </>
-  )
 }
 
 export default QNumber;

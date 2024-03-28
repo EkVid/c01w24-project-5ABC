@@ -296,7 +296,7 @@ const SignUp = () => {
                 )}
               </div>
             </div>
-            <div className="bg-green-500 rounded max-w-xs w-full rounded-full">
+            <div className="bg-green-500 max-w-xs w-full rounded-full">
               <button
                 type="submit"
                 className={`text-white text-md w-full font-semibold ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"} hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}`}

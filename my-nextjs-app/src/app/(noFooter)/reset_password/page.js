@@ -1,12 +1,13 @@
+import AccessibilityBar from "@/components/AccessibilityBar";
 import ResetPassword from "@/components/signup-login/ResetPassword";
-import BaseLayout from "@/app/layout";
 import dynamic from "next/dynamic";
 
 const ResetPasswordPage = () => {
   return (
-    <BaseLayout showFooter={false}>
+    <>
+      <AccessibilityBar />
       <ResetPassword />
-    </BaseLayout>
+    </>
   );
 };
 

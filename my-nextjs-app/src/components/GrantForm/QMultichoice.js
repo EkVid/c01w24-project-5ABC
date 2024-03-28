@@ -5,8 +5,9 @@ import Image from 'next/image';
 import PlusIcon from "@/../public/plus.svg";
 import ReducedMotionContext from '../utils/ReducedMotionContext';
 import FontSizeContext from '../utils/FontSizeContext';
+import ResponseMsg from './SmallComponents/ResponseMsg';
 
-const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer}) => {
+const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelectAnswer, onAddAnswer, onChangeAnswers, onDeleteAnswer, applicantAnswer}) => {
   const [currentAnswerIdx, setCurrentAnswerIdx] = useState(-1);
   const fontSizeMultiplier = useContext(FontSizeContext) / 100; 
   const isReduceMotion = useContext(ReducedMotionContext);
@@ -34,7 +35,11 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
 
   useEffect(() => setCurrentAnswerIdx(-1), [isEditMode]);
 
-  return (
+  return applicantAnswer?.answer ?
+    <ResponseMsg msg={applicantAnswer.answer}/>
+    : applicantAnswer == "" ?
+    <ResponseMsg isNoResponse={true}/>
+    :
     <>
       {answersObj?.map((a, idx) =>
         <div 
@@ -43,6 +48,7 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
           className={`flex items-center min-w-fit p-1 px-2 ${isEditMode ? "" : "rounded-md custom-interactive-btn m-1"} ${isReduceMotion ? "" : "transition-colors"}`}
         >
           <input
+            aria-label={`Multiple-choice answer ${idx + 1}: ${a.answer}`}
             type="radio"
             id={a.id}
             name={formName}
@@ -102,7 +108,6 @@ const QMultichoice = ({answersObj, isRequired, isEditMode, errAnsIdxArr, onSelec
         <label htmlFor={isEditMode ? "Add Answer" : "Clear Answer"} className='custom-dark-grey dark:d-custom-dark-grey cursor-pointer'>{isEditMode ? "Add Answer" : "Clear Answer"}</label>
       </button>
     </>
-  )
 }
 
 export default QMultichoice;

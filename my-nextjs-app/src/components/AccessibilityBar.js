@@ -24,13 +24,13 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
   const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
 
   const handleScaleFontDown = () => {
-    scaleFont("down");
+    scaleFont('down');
     setFontSize(getFont());
     if (onChangeFont) onChangeFont(getFont());
   }
 
   const handleScaleFontUp = () => {
-    scaleFont("up");
+    scaleFont('up')
     setFontSize(getFont());
     if (onChangeFont) onChangeFont(getFont());
   }
