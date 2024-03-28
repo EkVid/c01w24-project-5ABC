@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import ViewAnswers from "../GrantForm/ViewAnswers";
 
 const Applied_Grants = ({ applications }) => {
   const router = useRouter()
@@ -28,228 +29,39 @@ const Applied_Grants = ({ applications }) => {
     if(filters.maxAmount){
       newFilters["maxAmount"] = filters.maxAmount
     }
-    
+
     return newFilters
   }
 
-  const handleFilteredApplications = (e, filters) => {
+  const handleFilteredApplications = async (e, filters) => {
     e.preventDefault()
-
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${userData.token}`
     }
-
     const newFilters = filterFiltersForBackend(filters)
-
     console.log(newFilters)
-
-    axios
-      .post("http://localhost:5000/getFilteredGranteeApplications", {
+    const body = {
         Email: userData.email,
         Filters: newFilters,
-      },
-      {headers: headers})
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.status);
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log("No response received:", error.request);
-        } else {
-          console.log("Error:", error.message);
-        }
-      });
+    }
+
+    try{
+      const res = await axios.post("http://localhost:5000/getFilteredGranteeApplications", body, {headers: headers})
+      setAllApplications(res.data)
+    }
+    catch(error){
+      if (error.response) {
+        console.log(error.response.status);
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log("No response received:", error.request);
+      } else {
+        console.log("Error:", error.message);
+      }
+    }
   };
 
-  // const allGrants = [
-  //   {
-  //     ApplicationData: {
-  //       answerData: [
-  //         {
-  //           options: {
-  //             answerType: "short",
-  //             isMultipleLines: false,
-  //             maxCharsNum: 16,
-  //             minCharsNum: 1,
-  //           },
-  //           text: "Bob",
-  //         },
-  //       ],
-  //       dateSubmitted: "2024-03-14",
-  //       email: "applicant@website.com",
-  //       grantID: "6600e2c08d8b0bba26e30a6c",
-  //       profileData: {
-  //         age: 21,
-  //         gender: "Man",
-  //         nationality: "Canadian",
-  //         race: "White",
-  //         veteran: 0,
-  //       },
-  //       status: 1,
-  //     },
-  //     GrantData: {
-  //       Active: true,
-  //       AmountPerApp: 1499.99,
-  //       AppliedIDs: [],
-  //       Deadline: "2024-04-05",
-  //       Description: "Do apply to this grant",
-  //       MaxWinners: 10,
-  //       NumWinners: 0,
-  //       PostedDate: "2024-04-01",
-  //       QuestionData: [
-  //         {
-  //           isRequired: true,
-  //           options: {
-  //             answerType: "short",
-  //             isMultipleLines: false,
-  //             maxCharsNum: 16,
-  //             minCharsNum: 1,
-  //           },
-  //           question: "What is your name?",
-  //           type: "textbox",
-  //         },
-  //       ],
-  //       Title: "A Generous Grant",
-  //       WinnerIDs: [],
-  //       grantID: "6600e2c08d8b0bba26e30a6c",
-  //       grantorEmail: "grantor@website.com",
-  //       profileReqs: {
-  //         gender: ["Man", "Woman", "Non-binary"],
-  //         maxAge: 24,
-  //         minAge: 18,
-  //         nationality: ["Canadian", "American"],
-  //         race: ["Asian", "African American", "White"],
-  //         veteran: 0,
-  //       },
-  //     },
-  //   },
-  //   {
-  //     ApplicationData: {
-  //       answerData: [
-  //         {
-  //           options: {
-  //             answerType: "short",
-  //             isMultipleLines: false,
-  //             maxCharsNum: 16,
-  //             minCharsNum: 1,
-  //           },
-  //           text: "Bob",
-  //         },
-  //       ],
-  //       dateSubmitted: "2024-03-14",
-  //       email: "applicant@website.com",
-  //       grantID: "6600e2c08d8b0bba26e3a6c",
-  //       profileData: {
-  //         age: 21,
-  //         gender: "Man",
-  //         nationality: "Canadian",
-  //         race: "White",
-  //         veteran: 1,
-  //       },
-  //       status: 2,
-  //     },
-  //     GrantData: {
-  //       Active: true,
-  //       AmountPerApp: 1499.99,
-  //       AppliedIDs: [],
-  //       Deadline: "2024-04-05",
-  //       Description: "Do apply to this grant",
-  //       MaxWinners: 10,
-  //       NumWinners: 0,
-  //       PostedDate: "2024-04-01",
-  //       QuestionData: [
-  //         {
-  //           isRequired: true,
-  //           options: {
-  //             answerType: "short",
-  //             isMultipleLines: false,
-  //             maxCharsNum: 16,
-  //             minCharsNum: 1,
-  //           },
-  //           question: "What is your name?",
-  //           type: "textbox",
-  //         },
-  //       ],
-  //       Title: "A Generous Grant",
-  //       WinnerIDs: [],
-  //       grantID: "6600e2c08d8b0bba26e30a6c",
-  //       grantorEmail: "grantor@website.com",
-  //       profileReqs: {
-  //         gender: ["Man", "Woman", "Non-binary"],
-  //         maxAge: 24,
-  //         minAge: 18,
-  //         nationality: ["Canadian", "American"],
-  //         race: ["Asian", "African American", "White"],
-  //         veteran: 1,
-  //       },
-  //     },
-  //   },
-  //   {
-  //     ApplicationData: {
-  //       answerData: [
-  //         {
-  //           options: {
-  //             answerType: "short",
-  //             isMultipleLines: false,
-  //             maxCharsNum: 16,
-  //             minCharsNum: 1,
-  //           },
-  //           text: "Bob",
-  //         },
-  //       ],
-  //       dateSubmitted: "2024-03-14",
-  //       email: "applicant@website.com",
-  //       grantID: "6600e2c08d8b0bba260a6c",
-  //       profileData: {
-  //         age: 21,
-  //         gender: "Man",
-  //         nationality: "Canadian",
-  //         race: "White",
-  //         veteran: 1,
-  //       },
-  //       status: 0,
-  //     },
-  //     GrantData: {
-  //       Active: true,
-  //       AmountPerApp: 1499.99,
-  //       AppliedIDs: [],
-  //       Deadline: "2024-04-05",
-  //       Description: "Do apply to this grant",
-  //       MaxWinners: 10,
-  //       NumWinners: 0,
-  //       PostedDate: "2024-04-01",
-  //       QuestionData: [
-  //         {
-  //           isRequired: true,
-  //           options: {
-  //             answerType: "short",
-  //             isMultipleLines: false,
-  //             maxCharsNum: 16,
-  //             minCharsNum: 1,
-  //           },
-  //           question: "What is your name?",
-  //           type: "textbox",
-  //         },
-  //       ],
-  //       Title: "A Generous Grant",
-  //       WinnerIDs: [],
-  //       grantID: "6600e2c08d8b0bba26e30a6c",
-  //       grantorEmail: "grantor@website.com",
-  //       profileReqs: {
-  //         gender: ["Man", "Woman", "Non-binary"],
-  //         maxAge: 24,
-  //         minAge: 18,
-  //         nationality: ["Canadian", "American"],
-  //         race: ["Asian", "African American", "White"],
-  //         veteran: 1,
-  //       },
-  //     },
-  //   },
-  // ];
   const defaultFilters = {
     dateSubmitted: "",
     status: 0,
@@ -262,10 +74,11 @@ const Applied_Grants = ({ applications }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedGrantId, setExpandedGrantId] = useState(null);
   const [filters, setFilters] = useState(defaultFilters)
+  const [allApplications, setAllApplications] = useState(applications)
 
   const indexOfLastGrant = currentPage * grantsPerPage;
   const indexOfFirstGrant = indexOfLastGrant - grantsPerPage;
-  const currentGrants = applications.slice(indexOfFirstGrant, indexOfLastGrant);
+  const currentGrants = allApplications.slice(indexOfFirstGrant, indexOfLastGrant);
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
     setExpandedGrantId(null); // Collapse any expanded card when paginating
@@ -350,7 +163,12 @@ const Applied_Grants = ({ applications }) => {
               <div className="lg:w-1/4 md:w-1/4 w-full p-4">
                 <div className="flex justify-between items-center">
                   <h2 className="font-bold text-lg mb-4 text-black">Filters</h2>
-                  <button className=" mb-4 text-sm font-semibold bg-gray-500 text-white px-3 py-1 rounded hover:bg-green-700 transition ease-in-out duration-150">
+                  <button 
+                    onClick={() => {
+                      setAllApplications(applications)
+                      setFilters(defaultFilters)
+                    }}
+                    className=" mb-4 text-sm font-semibold bg-gray-500 text-white px-3 py-1 rounded hover:bg-green-700 transition ease-in-out duration-150">
                     Reset Filter
                   </button>
                 </div>
@@ -600,27 +418,25 @@ const Applied_Grants = ({ applications }) => {
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Age:</span>
-                                    {claim.ApplicationData.profileData.age}
+                                    {claim.ApplicationData.profileData?.age}
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">
                                       Nationality:
                                     </span>
                                     {
-                                      claim.ApplicationData.profileData
-                                        .nationality
+                                      claim.ApplicationData.profileData?.nationality
                                     }
                                   </div>
                                   <div className="flex justify-between mb-4 text-md">
                                     <span className="font-bold">Race:</span>
-                                    {claim.ApplicationData.profileData.race}
+                                    {claim.ApplicationData.profileData?.race}
                                   </div>
                                   <div className="flex justify-between items-center mb-4">
                                     <span className="font-bold">
                                       Veteran Status:
                                     </span>
-                                    {claim.ApplicationData.profileData
-                                      .veteran === 0
+                                    {claim.ApplicationData.profileData?.veteran === 0
                                       ? "No"
                                       : "Yes"}
                                   </div>
@@ -636,7 +452,7 @@ const Applied_Grants = ({ applications }) => {
                                 </h2>
 
                                 <div className="bg-slate-100 border-2 rounded p-6">
-                                  {claim.GrantData.QuestionData.map(
+                                  {/* {claim.GrantData.QuestionData.map(
                                     (question, index) => (
                                       <div key={index}>
                                         <div className="mb-2">
@@ -652,14 +468,15 @@ const Applied_Grants = ({ applications }) => {
                                             Answer:{" "}
                                             <span className="text-red-400">
                                               {claim.ApplicationData
-                                                .answerData[0].text ||
+                                                .answers[0].text ||
                                                 "No answer provided"}
                                             </span>
                                           </span>
                                         </div>
                                       </div>
                                     )
-                                  )}
+                                  )} */}
+                                  <ViewAnswers questionData={claim.GrantData.QuestionData} answerData={claim.ApplicationData.answers} />
                                 </div>
                               </div>
                             ) : (
@@ -698,7 +515,7 @@ const Applied_Grants = ({ applications }) => {
                       Previous
                     </button>
                   )}
-                  {indexOfLastGrant < applications.length && (
+                  {indexOfLastGrant < allApplications.length && (
                     <button
                       onClick={() => paginate(currentPage + 1)}
                       className="px-4 py-2 mx-1 text-sm font-semibold text-white bg-green-600 rounded-full w-1/4  hover:bg-green-800"
