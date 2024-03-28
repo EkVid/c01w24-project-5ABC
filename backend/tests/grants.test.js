@@ -364,7 +364,7 @@ describe('/getGranteeApplications tests', () => {
     insertedData.applicationIDs.push(applicationID);
   });
 
-  test('/getGranteeApplications valid data', async () => {
+  test('/getGranteeApplications - valid data', async () => {
     const res = await fetch(`${SERVER_URL}/getGranteeApplications`, {
       method: 'POST',
       headers: {
@@ -522,7 +522,7 @@ describe('/getFilteredGrants tests', () => {
     insertedData.applicationIDs.push(applicationID);
   });
 
-  test('/getFilteredGrants valid data', async () => {
+  test('/getFilteredGrants - valid data', async () => {
     const res = await fetch(`${SERVER_URL}/getFilteredGrants`, {
       method: 'POST',
       headers: {
@@ -531,8 +531,10 @@ describe('/getFilteredGrants tests', () => {
       },
       body: JSON.stringify(validGrantFilterData),
     });
+    const filteredGrants = await res.json();
 
     expect(res.status).toBe(200);
+    expect(filteredGrants.length).toBeGreaterThan(0);
   });
 });
 
@@ -574,7 +576,7 @@ describe('/getFilteredGranteeApplications tests', () => {
     insertedData.applicationIDs.push(applicationID);
   });
 
-  test('/getFilteredGranteeApplications valid data', async () => {
+  test('/getFilteredGranteeApplications - valid data', async () => {
     const res = await fetch(`${SERVER_URL}/getFilteredGranteeApplications`, {
       method: 'POST',
       headers: {
@@ -586,9 +588,10 @@ describe('/getFilteredGranteeApplications tests', () => {
         Filters: validApplicationFilterData,
       }),
     });
-    const resBody = await res.json();
+    const filteredApplications = await res.json();
 
     expect(res.status).toBe(200);
+    expect(filteredApplications.length).toBeGreaterThan(0);
   });
 });
 
