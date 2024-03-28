@@ -13,7 +13,6 @@ const Applied_Grants = ({ applications }) => {
 
   function filterFiltersForBackend(filters){
     let newFilters = {}
-
     if(filters.titleKeyword){
       newFilters["titleKeyword"] = filters.titleKeyword
     }
@@ -29,7 +28,7 @@ const Applied_Grants = ({ applications }) => {
     if(filters.maxAmount){
       newFilters["maxAmount"] = filters.maxAmount
     }
-
+    
     return newFilters
   }
 
