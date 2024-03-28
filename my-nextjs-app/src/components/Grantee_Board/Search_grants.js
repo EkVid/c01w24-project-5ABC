@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import axios from "axios";
 
 const Search_grants = () => {
@@ -11,6 +13,27 @@ const Search_grants = () => {
   const [expandedGrantId, setExpandedGrantId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  //POST Request Data
+  const [data, setData] = useState("");
+
+
+  //Filters Variables
+  const [keywords, setKeywords] = useState('');
+  const [gender, setGender] = useState('');
+  const [race, setRace] = useState('');
+  const [nationality, setNationality] = useState('');
+  const [postedBefore, setPostedBefore] = useState('');
+  const [postedAfter, setPostedAfter] = useState('');
+  const [availableUntil, setAvailableUntil] = useState('');
+  const [state, setStatus] = useState('');
+  const [description, setDescription] = useState('');
+  const [minAge, setMinAge] = useState('');
+  const [maxAge, setMaxAge] = useState('');
+  const [minPay, setMinPay] = useState('');
+  const [maxPay, setMaxPay] = useState('');
+  const [veteranStatus, setVeteranStatus] = useState('');
+  const [numGrantsAvail, setNumGrantsAvail] = useState('');
+
   const grantsPerPage = 9;
   const indexOfLastGrant = currentPage * grantsPerPage;
   const indexOfFirstGrant = indexOfLastGrant - grantsPerPage;
@@ -19,6 +42,70 @@ const Search_grants = () => {
   const toggleFormVisibility = () => {
     setIsFormVisible(!isFormVisible);
   };
+
+  const handleReset = () => {
+    axios
+      .post("http://localhost:5000/search_grants", {
+
+      })
+      .then((response) => {
+        setData(response.data);
+        localStorage.setItem("grants", JSON.stringify(response.data));
+        router.push("/search_grants");
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.data);
+        } else if (error.request) {
+          console.log("No response received:", error.request);
+        } else {
+          console.log("Error:", error.message);
+        }
+      });
+  }
+
+  const handleFilter = () => {
+    const arr = {"Title_keyword":keywords, 
+    "Gender": gender, 
+    "Race": race, 
+    "Nationality": nationality,
+    "Date Posted Before": postedBefore, 
+    "Date Posted After": postedAfter,
+    "Deadline": availableUntil,
+    "Status": state,
+    "Description": description,
+    "Min Age": minAge,
+    "Max Age": maxAge,
+    "Min Payable Amount": minPay,
+    "Max Payable Amount": maxPay,
+    "Vet Status": veteranStatus,
+    "Num Grants Available": numGrantsAvail}
+    console.log(arr)
+
+    axios
+      .post("http://localhost:5000/search_grants", 
+        arr
+      )
+      .then((response) => {
+        setData(response.data);
+        console.log("search grants");
+        console.log(response.data);
+        localStorage.setItem("grants", JSON.stringify(response.data));
+        router.push("/search_grants");
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.data);
+        } else if (error.request) {
+          console.log("No response received:", error.request);
+        } else {
+          console.log("Error:", error.message);
+        }
+      });
+  };
+
 
   const toggleCardExpansion = (id) => {
     if (expandedGrantId === id) {
@@ -33,6 +120,8 @@ const Search_grants = () => {
     setCurrentPage(pageNumber);
     setExpandedGrantId(null); // Collapse any expanded card when paginating
   };
+
+  const router = useRouter();
 
   return (
     <div
@@ -74,6 +163,8 @@ const Search_grants = () => {
                   type="text"
                   placeholder="Search for keywords in title   (e.g: study, medical)"
                   className="p-2 w-full text-black"
+                  onChange={(e) => setKeywords(e.target.value)}
+                  
                 />
               </div>
               <div className="flex justify-between">
@@ -126,7 +217,8 @@ const Search_grants = () => {
                             type="text"
                             id="race"
                             className="w-full p-2 border border-black rounded text-black"
-                            placeholder="All"
+                            placeholder="Gender"
+                            onChange={(e) => setGender(e.target.value)}
                           />
                         </div>
                         <div className="mb-4">
@@ -141,6 +233,8 @@ const Search_grants = () => {
                             id="race"
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="All"
+                            onChange={(e) => setRace(e.target.value)}
+                            
                           />
                         </div>
                         <div className="mb-4">
@@ -155,6 +249,8 @@ const Search_grants = () => {
                             id="race"
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="All"
+                            onChange={(e) => setNationality(e.target.value)}
+                            
                           />
                         </div>
                         <div className="mb-4">
@@ -167,6 +263,7 @@ const Search_grants = () => {
                           <input
                             type="date"
                             id="postBefore"
+                            onChange={(e) => setPostedBefore(e.target.value)}
                             className="w-full p-2 border border-black rounded text-black"
                           />
                         </div>
@@ -180,6 +277,7 @@ const Search_grants = () => {
                           <input
                             type="date"
                             id="postedAfter"
+                            onChange={(e) => setPostedAfter(e.target.value)}
                             className="w-full p-2 border border-black rounded text-black"
                           />
                         </div>
@@ -193,6 +291,7 @@ const Search_grants = () => {
                           <input
                             type="date"
                             id="deadline"
+                            onChange={(e) => setAvailableUntil(e.target.value)}
                             className="w-full p-2 border border-black rounded text-black"
                           />
                         </div>
@@ -206,6 +305,7 @@ const Search_grants = () => {
                           <select
                             id="status"
                             className="w-full p-2 border border-black rounded text-black"
+                            onChange={(e) => setStatus(e.target.value)}
                           >
                             <option value="All" selected>
                               All
@@ -224,13 +324,14 @@ const Search_grants = () => {
                             htmlFor="memberName"
                             className="block mb-2 border-black text-black"
                           >
-                            Grantor Name:
+                            Description:
                           </label>
                           <input
                             type="text"
-                            id="grantorName"
+                            onChange={(e) => setDescription(e.target.value)}
+                            id="description"
                             className="w-full p-2 border border-black rounded text-black"
-                            placeholder="Enter the name of the grantor"
+                            placeholder="Enter a word from the description"
                           />
                         </div>
                         <div className="mb-4">
@@ -243,6 +344,7 @@ const Search_grants = () => {
                           <input
                             type="number"
                             id="minAge"
+                            onChange={(e) => setMinAge(e.target.value)}
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter minimum age"
                           />
@@ -255,8 +357,9 @@ const Search_grants = () => {
                             Maximum Age
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             id="minAge"
+                            onChange={(e) => setMaxAge(e.target.value)}
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter maximum age"
                           />
@@ -269,8 +372,9 @@ const Search_grants = () => {
                             Minimum Payable Amount:
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             id="minAmount"
+                            onChange={(e) => setMinPay(e.target.value)}
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter minimum amount"
                           />
@@ -283,8 +387,9 @@ const Search_grants = () => {
                             Maximum Payable Amount:
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             id="maxAmount"
+                            onChange={(e) => setMaxPay(e.target.value)}
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter maximum amount"
                           />
@@ -299,6 +404,7 @@ const Search_grants = () => {
                           <select
                             id="status"
                             className="w-full p-2 border border-black rounded text-black"
+                            onChange={(e) => setVeteranStatus(e.target.value)}
                           >
                             <option value="All" selected>
                               All
@@ -317,6 +423,7 @@ const Search_grants = () => {
                           <input
                             type="text"
                             id="numGrants"
+                            onChange={(e) => setNumGrantsAvail(e.target.value)}
                             className="w-full p-2 border border-black rounded text-black"
                             placeholder="Enter the number of grants available"
                           />
@@ -326,10 +433,12 @@ const Search_grants = () => {
                   </div>
                 )}
                 <div class="w-full flex justify-center mt-4 md:mt-0 sm:justify-end">
-                  <button class="mr-2 px-6 py-2 text-white bg-green-700 hover:bg-green-900 rounded-full">
+                  <button class="mr-2 px-6 py-2 text-white bg-green-700 hover:bg-green-900 rounded-full"
+                  onClick={handleFilter}>
                     Filter
                   </button>
-                  <button class="px-4 py-2 text-white bg-gray-500 hover:bg-gray-700 rounded-full">
+                  <button class="px-4 py-2 text-white bg-gray-500 hover:bg-gray-700 rounded-full"
+                  onClick={handleReset}>
                     Reset
                   </button>
                 </div>
