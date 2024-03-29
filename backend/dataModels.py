@@ -42,30 +42,32 @@ class UserProfile(BaseModel):
 Question Option and Question Models
 """
 class TextboxOptions(BaseModel):
-    minCharsNum: PositiveInt
-    maxCharsNum: PositiveInt
+    minCharsNum: Optional[PositiveInt] = None
+    maxCharsNum: Optional[PositiveInt] = None
     isMultipleLines: Optional[bool] = None
 
 class NumberOptions(BaseModel):
-    isIntegerOnly: bool
-    minNum: Union[int, float]
-    maxNum: Union[int, float]
+    isIntegerOnly: Optional[bool] = None
+    minNum: Optional[Union[int, float]] = None
+    maxNum: Optional[Union[int, float]] = None
 
     @validator('minNum', 'maxNum', always=True)
     def validate_range(cls, value, values) -> Union[int, float]:
+        if value == None: return value
         if values['isIntegerOnly']:
             assert(type(value) == int)
         else:
             assert(type(value) == float)
 
         return value
+    
 
 class MultipleChoiceOptions(BaseModel):
-    answers: Annotated[list[str], Len(min_length=2, max_length=10)]
+    answers: Annotated[list, Len(min_length=2, max_length=10)]
 
 class CheckboxOptions(BaseModel):
-    answers: Annotated[list[str], Len(min_length=1, max_length=10)]
-    isNoneAnOption: bool
+    answers: Annotated[list, Len(min_length=1, max_length=10)]
+    isNoneAnOption: Optional[bool] = None
 
 class DateOptions(BaseModel):
     isDateRange: Optional[bool] = None
@@ -78,6 +80,10 @@ class Question(BaseModel):
     question: str
     type: Literal['textbox', 'number', 'multiple choice', 'checkbox', 'date', 'file', 'email', 'phone number']
     isRequired: bool
+    answersObj: Optional[list] = None
+    fileData: Optional[dict] = None
+    errEmptyAnsIdxArr: Optional[list] = None
+    errDupAnsIdxArr: Optional[list] = None
     options: Optional[Union[
         TextboxOptions,
         NumberOptions,
@@ -87,17 +93,16 @@ class Question(BaseModel):
         FileOptions
     ]] = None
 
-
 """
 Answer Models
 """
 class TextboxAnswer(BaseModel):
-    options: TextboxOptions
+    options: Optional[TextboxOptions] = None
     text: str
 
     @validator('text', always=True)
     def validate_textbox(cls, value, values):
-        if not 'options' in values: return value
+        if values.get('options', None) == None: return value
         # TODO: check that "options" is a valid key and minCharsNum/maxCharsNum are present
         # This would cause an error when attempting to update a non-existent application
         minChars = values['options'].minCharsNum
@@ -107,31 +112,31 @@ class TextboxAnswer(BaseModel):
         return value
 
 class NumberAnswer(BaseModel):
-    options: NumberOptions
+    options: Optional[NumberOptions] = None
     value: Union[int, float]
 
     @validator('value', always=True)
     def validate_number(cls, value, values):
-        if not 'options' in values: return value
+        if values.get('options', None) == None: return value
         minNum = values['options'].minNum
         maxNum = values['options'].maxNum
         validNum = ((type(value) == type(minNum)) and (minNum <= value <= maxNum))
         assert(validNum == True)
 
         return value
+    
 
 class MultipleChoiceAnswer(BaseModel):
-    options: MultipleChoiceOptions
-    answer: str
-    #selectedChoice: Annotated[list[str], Len(min_length=1, max_length=1)]
+    options: Optional[MultipleChoiceOptions] = None
+    answer: Annotated[list[str], Len(min_length=1, max_length=1)]
 
 class CheckboxAnswer(BaseModel):
-    options: CheckboxOptions
+    options: Optional[CheckboxOptions] = None
     answers: list[str]
     
     @validator('answers', always=True)
     def validate_checkbox(cls, value, values):
-        if not 'options' in values: return value
+        if values.get('options', None) == None: return value
         if len(value) == 0:
             validAnswer = values['options'].isNoneAnOption
         else:
@@ -151,20 +156,20 @@ class PhoneNumAnswer(BaseModel):
     phoneNum: str
 
 class DateAnswer(BaseModel):
-    options: DateOptions
-    startDate: Union[str, date]
+    options: Optional[DateOptions] = None
+    startDate: Union[str, date] = None
     endDate: Optional[str] = None
 
 class FileAnswer(BaseModel):
-    options: FileOptions
-    fileLink: Any
-    #fileName: Optional[str] = None
+    options: Optional[FileOptions] = None
+    fileLink: Optional[Any] = None
+    fileName: Optional[str] = None
 
 
 """
 Grant Model
 """
-class GrantBase(BaseModel):
+class Grant(BaseModel):
     grantorEmail: str
     Title: str
     Description: str
@@ -175,11 +180,9 @@ class GrantBase(BaseModel):
     Active: bool
     AmountPerApp: float
     profileReqs: UserProfileReqs # test later
-
-class Grant(GrantBase):
-   WinnerIDs: list[str]
-   AppliedIDs: list[str]
-   QuestionData: list[Question]
+    WinnerIDs: list[str]
+    AppliedIDs: list[str]
+    QuestionData: list[Question]
 
 
 """

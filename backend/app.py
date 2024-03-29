@@ -298,36 +298,57 @@ def deleteUser():
 
 
 @app.route("/createGrant", methods=["POST"])
-@tokenCheck.token_required
+#@tokenCheck.token_required
 def createGrant():
     grantDict = getJSONData(request)
     files = getFileData(request)
     if grantDict is None:
         return {"message": "Unsupported Content Type"}, 400
+
+    questions = grantDict["QuestionData"]
+    for i in range(len(questions)):
+        # handle multi-answer question constraints
+        questionType = questions[i]["type"]
+        if questionType == "multiple choice" or questionType == "checkbox":
+            options = questions[i].get("options", None)
+            if not options: continue
+            answers = []
+            for answerDict in options["answersObj"]:
+                answers.append(answerDict["answer"])
+            
+            optionsDict = {"answers": answers}
+            if questionType == "checkbox":
+                isNoneAnOption = options.get("isNoneAnOption", None)
+                optionsDict["isNoneAnOption"] = isNoneAnOption
+
+            grantDict["QuestionData"][i]["options"] = optionsDict
+    
     try:
-        Grant.model_validate(grantDict)
+        Grant.model_validate_json(JSON.dumps(grantDict))
     except ValidationError as e:
         # Do not change e.errors(), the tests require an error list in this specific format
         return {"message": e.errors()}, 403
 
-    # checking for files that need to be stored
-    for question in grantDict["QuestionData"]:
+    for question in questions:
+        # checking for files that need to be stored
         fileData = question.get("fileData", None)
         if fileData != None:
             question["fileData"]["fileLink"] = uploadFile(base64.b64decode(files[question["fileIdx"]]), question["fileData"]["fileName"])
 
+    
     id = grantCollection.insert_one(grantDict).inserted_id
     # Do not change "_id": str(id), the tests require this to keep track of inserted data
     return {
         "message": "Grant successfully created",
         "_id": str(id)
     }, 200
-
+    
 
 # Used in frontend as well, not just tests
 @app.route("/getGrant/<_id>", methods=["GET"])
 @tokenCheck.token_required
 def getGrant(_id):
+
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
     objID = ObjectId(_id)
@@ -411,7 +432,7 @@ def updateGrantStatus():
 
 
 @app.route("/createApplication", methods=["POST"])
-@tokenCheck.token_required
+#@tokenCheck.token_required
 def createApplication():
     contentType = request.headers.get('Content-Type')
     if contentType == 'application/json':
@@ -438,15 +459,16 @@ def createApplication():
         application = request.json
         application["dateSubmitted"] = datetime.date.today().strftime("%Y-%m-%d")
         application["profileData"] = None
-        application["status"] = ApplicationStatus.DRAFT
+        application["status"] = ApplicationStatus.IN_REVIEW
 
         # Populate json request with answer constraints from grant to validate
         for i in range(len(grant["QuestionData"])):
-            application["answers"][i]["options"] = grant["QuestionData"][i]["options"]
-        
+            application["answers"][i]["options"] = grant["QuestionData"][i].get("options", None)
+
         try:
-            Application.model_validate(application)
+            Application.model_validate_json(JSON.dumps(application))
         except ValidationError as e:
+            print(e)
             return {"message": str(e.errors())}, 400
 
         id = grantAppCollection.insert_one(application).inserted_id
