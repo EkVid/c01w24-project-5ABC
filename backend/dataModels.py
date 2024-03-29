@@ -1,9 +1,8 @@
 from pydantic import BaseModel, validator, PositiveInt
 from annotated_types import Len
-from typing import Literal, Optional, Annotated, Union
+from typing import Literal, Optional, Annotated, Union, Any
 from datetime import date
 from enum import IntEnum
-
 
 """
 Constants
@@ -17,19 +16,19 @@ class ApplicationStatus(IntEnum):
 # TODO: put constants here for veteran status once decided
 class VeteranStatus(IntEnum):
     VETERAN = 0
-    NON_VETERAN = 1  # in what case would we want to exclude a veteran from applying?
+    NON_VETERAN = 1 
 
 """
 User Profile Models
 """
 class UserProfileReqs(BaseModel):
     # Optional still means you have to pass in these fields but just with None or "", etc
-    minAge: Optional[int]
-    maxAge: Optional[int]
-    race: Optional[list[str]]
-    gender: Optional[list[str]]
-    nationality: Optional[list[str]]
-    veteran: Optional[int]
+    minAge: Optional[int] = None
+    maxAge: Optional[int] = None
+    race: Optional[list[str]] = None
+    gender: Optional[list[str]] = None
+    nationality: Optional[list[str]] = None
+    veteran: Optional[int] = None
 
 class UserProfile(BaseModel):
     age: int
@@ -98,21 +97,22 @@ class TextboxAnswer(BaseModel):
 
     @validator('text', always=True)
     def validate_textbox(cls, value, values):
+        if not 'options' in values: return value
         # TODO: check that "options" is a valid key and minCharsNum/maxCharsNum are present
         # This would cause an error when attempting to update a non-existent application
         minChars = values['options'].minCharsNum
         maxChars = values['options'].maxCharsNum
         inRange = minChars <= len(value) and len(value) <= maxChars
         assert(inRange == True)
-
         return value
 
 class NumberAnswer(BaseModel):
     options: NumberOptions
-    num: Union[int, float]
+    value: Union[int, float]
 
-    @validator('num', always=True)
+    @validator('value', always=True)
     def validate_number(cls, value, values):
+        if not 'options' in values: return value
         minNum = values['options'].minNum
         maxNum = values['options'].maxNum
         validNum = ((type(value) == type(minNum)) and (minNum <= value <= maxNum))
@@ -122,29 +122,43 @@ class NumberAnswer(BaseModel):
 
 class MultipleChoiceAnswer(BaseModel):
     options: MultipleChoiceOptions
-    selectedChoice: Annotated[list[str], Len(min_length=1, max_length=1)]
+    answer: str
+    #selectedChoice: Annotated[list[str], Len(min_length=1, max_length=1)]
 
 class CheckboxAnswer(BaseModel):
     options: CheckboxOptions
-    selectedBoxes: list[str]
-
-    @validator('selectedBoxes', always=True)
+    answers: list[str]
+    
+    @validator('answers', always=True)
     def validate_checkbox(cls, value, values):
+        if not 'options' in values: return value
         if len(value) == 0:
             validAnswer = values['options'].isNoneAnOption
         else:
             validAnswer = True
+            for el in value:
+                if el not in values['options'].answers:
+                    validAnswer = False
         assert(validAnswer == True)
 
         return value
+    
+    
+class EmailAnswer(BaseModel):
+    email: str
+
+class PhoneNumAnswer(BaseModel):
+    phoneNum: str
 
 class DateAnswer(BaseModel):
     options: DateOptions
-    date: date
+    startDate: Union[str, date]
+    endDate: Optional[str] = None
 
 class FileAnswer(BaseModel):
     options: FileOptions
-    type: str
+    fileLink: Any
+    #fileName: Optional[str] = None
 
 
 """
@@ -174,14 +188,16 @@ Application Model
 class Application(BaseModel):
     grantID: str
     email: str
-    dateSubmitted: date
+    dateSubmitted: Union[str, date]
     status: int
-    profileData: UserProfile
-    answerData: list[Union[
+    profileData: Optional[UserProfile] = None
+    answers: list[Union[
         TextboxAnswer,
         NumberAnswer,
         MultipleChoiceAnswer,
         CheckboxAnswer,
+        EmailAnswer,
+        PhoneNumAnswer,
         DateAnswer,
         FileAnswer
     ]]

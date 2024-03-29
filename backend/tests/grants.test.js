@@ -43,6 +43,49 @@ const validQuestionData = [
       },
     },
   ],
+  [
+    {
+      question: 'What is your name?',
+      type: 'textbox',
+      isRequired: true,
+      options: {
+        answerType: 'short',
+        minCharsNum: 1,
+        maxCharsNum: 25,
+        isMultipleLines: true,
+      },
+    },
+    {
+      question: "How old are you?",
+      type: "number",
+      isRequired: true,
+      options: {
+        isIntegerOnly: true,
+        minNum: 10,
+        maxNum: 15
+      },
+    },
+    {
+      question: "Select all that apply.",
+      type: "checkbox",
+      isRequired: false,
+      options: {
+        answers: ["opt1", "opt2", "opt3"],
+        isNoneAnOption: true,
+      },
+    },
+  ],
+];
+
+const validAnswerData = [
+  [
+    { text: "Bob" },
+  ],
+  [
+    { text: "Hi" },
+    { value: 12 },
+    { answers: ["opt2"] },
+  ],
 ];
 
 // Status values must match those in dataModels.py
@@ -134,11 +177,7 @@ const getValidApplicationData = (grantID, email = validUsers[0].Email) => {
     dateSubmitted: '2024-03-14',
     status: 0,
     profileData: validProfileData[0],
-    answers: [
-      {
-        text: 'Bob',
-      },
-    ],
+    answers: validAnswerData[0],
   };
   const formData = new FormData();
   formData.append('jsonData', JSON.stringify(applicationData));
@@ -317,6 +356,7 @@ describe('/createApplication tests', () => {
       body: getValidApplicationData(grantID).get('jsonData'),
     });
     const resBody = await res.json();
+    console.log(resBody);
     const applicationID = resBody._id;
 
     expect(res.status).toBe(200);

@@ -438,6 +438,16 @@ def createApplication():
         application = request.json
         application["dateSubmitted"] = datetime.date.today().strftime("%Y-%m-%d")
         application["profileData"] = None
+        application["status"] = ApplicationStatus.DRAFT
+
+        # Populate json request with answer constraints from grant to validate
+        for i in range(len(grant["QuestionData"])):
+            application["answers"][i]["options"] = grant["QuestionData"][i]["options"]
+        
+        try:
+            Application.model_validate(application)
+        except ValidationError as e:
+            return {"message": str(e.errors())}, 400
 
         id = grantAppCollection.insert_one(application).inserted_id
         return {
