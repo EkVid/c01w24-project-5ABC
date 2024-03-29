@@ -513,7 +513,6 @@ def getAllGrantApplications(_id):
     return {"applications": applications}, 200
 
 
-
 @app.route("/updateGrantWinners", methods=["PUT"])
 @tokenCheck.token_required
 def updateGrantWinners():
@@ -527,6 +526,11 @@ def updateGrantWinners():
         return {"message": "Invalid application ID"}, 400
     
     grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$push": {"WinnerIDs": str(applicationID)}})
+    grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$inc": {"NumWinners": 1}})
+    grant = grantCollection.find_one({"_id": ObjectId(application["grantID"])})
+    if grant["NumWinners"] >= grant["MaxWinners"]:
+        grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$set": {"Active": False}})
+
     grantAppCollection.update_one({"_id": applicationID}, {"$set": {"status": ApplicationStatus.APPROVED}})
 
     return {"message": "Application winner successfully added"}, 200
@@ -545,6 +549,7 @@ def updateGrantLosers():
         return {"message": "Invalid application ID"}, 400
     
     grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$pull": {"WinnerIDs": str(applicationID)}})
+    grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$inc": {"NumWinners": -1}})
     grantAppCollection.update_one({"_id": applicationID}, {"$set": {"status": ApplicationStatus.REJECTED}})
 
     return {"message": "Application loser successfully removed"}, 200
