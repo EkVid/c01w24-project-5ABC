@@ -373,7 +373,7 @@ def getGrantorGrants():
 
 
 @app.route("/deleteGrant/<_id>", methods=["DELETE"])
-@tokenCheck.token_required
+# @tokenCheck.token_required
 def deleteGrant(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -382,6 +382,8 @@ def deleteGrant(_id):
     grant = grantCollection.find_one_and_delete({"_id": objID})
     if grant == None:
         return {"message": "Grant form with the given ID not found"}, 404
+    
+    grantAppCollection.delete_many({"grantID":str(grant["_id"])})
 
     for question in grant["QuestionData"]:
         fileData = question.get("fileData", None)
