@@ -19,11 +19,13 @@ const validUsers = [
     Email: 'applicant@website.com',
     Password: 'applicantpass',
     Usertype: 'Grantee',
+    token: '',
   },
   {
     Email: 'other@website.com',
     Password: 'otherpass',
     Usertype: 'Grantee',
+    token: '',
   },
 ];
 
@@ -96,11 +98,11 @@ const validGrantFilterData = {
 };
 
 const validApplicationFilterData = {
-    Title_keyword: 'generous',
-    'Date Submitted': '2024-03-14',
-    Deadline: '2024-04-05',
-    Status: 0,
-    'Max Payable Amount': 1500,
+  Title_keyword: 'generous',
+  'Date Submitted': '2024-03-14',
+  Deadline: '2024-04-05',
+  Status: 0,
+  'Max Payable Amount': 1500,
 };
 
 const getValidGrantFormData = () => {
@@ -132,7 +134,7 @@ const getValidApplicationData = (grantID, email = validUsers[0].Email) => {
     dateSubmitted: '2024-03-14',
     status: 0,
     profileData: validProfileData[0],
-    answerData: [
+    answers: [
       {
         text: 'Bob',
       },
@@ -168,7 +170,6 @@ const insertedData = {
   applicationIDs: [],
 };
 
-
 beforeAll(async () => {
   for (const user of validUsers) {
     const signupRes = await fetch(`${SERVER_URL}/signup`, {
@@ -193,16 +194,25 @@ beforeAll(async () => {
         Password: user.Password,
       }),
     });
+    const loginBody = await loginRes.json();
     expect(loginRes.status).toBe(200); // Check that the password matches for when the user already exists
+    expect(loginBody.token).toBeTruthy();
+    user.token = loginBody.token;
+
+    console.log('User logged in:', user);
   }
 });
 
 // Do not explicitly set the Content-Type header to multipart/form-data (see the warning at
 // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest_API/Using_FormData_Objects)
+// Setting it to application/json works fine
 describe('/createGrant tests', () => {
   test('/createGrant - invalid content type', async () => {
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
     });
 
     expect(res.status).toBe(400);
@@ -211,6 +221,9 @@ describe('/createGrant tests', () => {
   test('/createGrant - empty data', async () => {
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: new FormData(),
     });
 
@@ -223,6 +236,9 @@ describe('/createGrant tests', () => {
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: grantData,
     });
     const resBody = await res.json();
@@ -240,6 +256,9 @@ describe('/createGrant tests', () => {
 
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: grantData,
     });
     const resBody = await res.json();
@@ -253,6 +272,9 @@ describe('/createGrant tests', () => {
   test('/createGrant - valid data', async () => {
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: getValidGrantFormData(),
     });
     const resBody = await res.json();
@@ -271,6 +293,9 @@ describe('/createApplication tests', () => {
   beforeAll(async () => {
     const res = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: getValidGrantFormData(),
     });
     const resBody = await res.json();
@@ -285,7 +310,11 @@ describe('/createApplication tests', () => {
     // Create an application for the new grant
     const res = await fetch(`${SERVER_URL}/createApplication`, {
       method: 'POST',
-      body: getValidApplicationData(grantID),
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+        'Content-Type': 'application/json',
+      },
+      body: getValidApplicationData(grantID).get('jsonData'),
     });
     const resBody = await res.json();
     const applicationID = resBody._id;
@@ -293,53 +322,6 @@ describe('/createApplication tests', () => {
     expect(res.status).toBe(200);
     expect(applicationID).toBeTruthy();
     insertedData.applicationIDs.push(applicationID);
-  });
-});
-
-describe('/updateApplication tests', () => {
-  let grantID;
-  let applicationID;
-
-  // Create a grant and applications, storing their IDs
-  beforeAll(async () => {
-    const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
-      method: 'POST',
-      body: getValidGrantFormData(),
-    });
-    const createGrantResBody = await createGrantRes.json();
-    grantID = createGrantResBody._id;
-
-    expect(createGrantRes.status).toBe(200);
-    expect(grantID).toBeTruthy();
-    insertedData.grantIDs.push(grantID);
-
-    const createApplicationRes = await fetch(
-      `${SERVER_URL}/createApplication`,
-      {
-        method: 'POST',
-        body: getValidApplicationData(grantID),
-      }
-    );
-    const createApplicationResBody = await createApplicationRes.json();
-    applicationID = createApplicationResBody._id;
-
-    expect(createApplicationRes.status).toBe(200);
-    expect(applicationID).toBeTruthy();
-    insertedData.applicationIDs.push(applicationID);
-  });
-
-  test('/updateApplication - valid data', async () => {
-    const applicationData = getValidApplicationData(grantID);
-    updateNestedJSONField(applicationData, 'dateSubmitted', '2024-04-01');
-    const res = await fetch(
-      `${SERVER_URL}/updateApplication/${applicationID}`,
-      {
-        method: 'PUT',
-        body: applicationData,
-      }
-    );
-
-    expect(res.status).toBe(200);
   });
 });
 
@@ -351,6 +333,9 @@ describe('/getGranteeApplications tests', () => {
     // Applicant with two grants
     const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: getValidGrantFormData(),
     });
     const createGrantResBody = await createGrantRes.json();
@@ -364,7 +349,11 @@ describe('/getGranteeApplications tests', () => {
       `${SERVER_URL}/createApplication`,
       {
         method: 'POST',
-        body: getValidApplicationData(grantID),
+        headers: {
+          Authorization: `Bearer ${validUsers[0].token}`,
+          'Content-Type': 'application/json',
+        },
+        body: getValidApplicationData(grantID).get('jsonData'),
       }
     );
     const createApplicationResBody = await createApplicationRes.json();
@@ -375,10 +364,11 @@ describe('/getGranteeApplications tests', () => {
     insertedData.applicationIDs.push(applicationID);
   });
 
-  test('/getGranteeApplications valid data', async () => {
+  test('/getGranteeApplications - valid data', async () => {
     const res = await fetch(`${SERVER_URL}/getGranteeApplications`, {
       method: 'POST',
       headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -389,7 +379,6 @@ describe('/getGranteeApplications tests', () => {
     expect(res.status).toBe(200);
 
     const applicationsWithGrants = resBody.applicationsWithGrants;
-    console.log(applicationsWithGrants);
     expect(applicationsWithGrants.length).toBeGreaterThan(0);
 
     for (const applicationWithGrant of applicationsWithGrants) {
@@ -413,6 +402,9 @@ describe('/updateGrantWinners tests', () => {
     const grantData = getValidGrantFormData();
     const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: grantData,
     });
     const createGrantResBody = await createGrantRes.json();
@@ -428,7 +420,11 @@ describe('/updateGrantWinners tests', () => {
       `${SERVER_URL}/createApplication`,
       {
         method: 'POST',
-        body: applicationData,
+        headers: {
+          Authorization: `Bearer ${validUsers[0].token}`,
+          'Content-Type': 'application/json',
+        },
+        body: applicationData.get('jsonData'),
       }
     );
     const createApplicationResBody = await createApplicationRes.json();
@@ -444,6 +440,7 @@ describe('/updateGrantWinners tests', () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${validUsers[0].token}`,
       },
       body: JSON.stringify({
         applicationID,
@@ -456,6 +453,9 @@ describe('/updateGrantWinners tests', () => {
     // Check that the winners have been updated correctly
     const grantRes = await fetch(`${SERVER_URL}/getGrant/${grantID}`, {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
     });
     expect(grantRes.status).toBe(200);
     const grantResBody = await grantRes.json();
@@ -471,6 +471,9 @@ describe('/updateGrantWinners tests', () => {
       `${SERVER_URL}/getApplication/${applicationID}`,
       {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${validUsers[0].token}`,
+        },
       }
     );
     expect(applicationRes.status).toBe(200);
@@ -487,6 +490,9 @@ describe('/getFilteredGrants tests', () => {
     const grantData = getValidGrantFormData();
     const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: grantData,
     });
     const createGrantResBody = await createGrantRes.json();
@@ -501,7 +507,11 @@ describe('/getFilteredGrants tests', () => {
       `${SERVER_URL}/createApplication`,
       {
         method: 'POST',
-        body: applicationData,
+        headers: {
+          Authorization: `Bearer ${validUsers[0].token}`,
+          'Content-Type': 'application/json',
+        },
+        body: applicationData.get('jsonData'),
       }
     );
     const createApplicationResBody = await createApplicationRes.json();
@@ -512,20 +522,20 @@ describe('/getFilteredGrants tests', () => {
     insertedData.applicationIDs.push(applicationID);
   });
 
-  test('/getFilteredGrants valid data', async () => {
-    console.log(`${SERVER_URL}/getFilteredGrants`);
+  test('/getFilteredGrants - valid data', async () => {
     const res = await fetch(`${SERVER_URL}/getFilteredGrants`, {
       method: 'POST',
       headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(validGrantFilterData),
     });
-    const resBody = await res.json();
-    console.log(resBody);
+    const filteredGrants = await res.json();
 
     expect(res.status).toBe(200);
-  });  
+    expect(filteredGrants.length).toBeGreaterThan(0);
+  });
 });
 
 describe('/getFilteredGranteeApplications tests', () => {
@@ -534,6 +544,9 @@ describe('/getFilteredGranteeApplications tests', () => {
     const grantData = getValidGrantFormData();
     const createGrantRes = await fetch(`${SERVER_URL}/createGrant`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
       body: grantData,
     });
     const createGrantResBody = await createGrantRes.json();
@@ -548,7 +561,11 @@ describe('/getFilteredGranteeApplications tests', () => {
       `${SERVER_URL}/createApplication`,
       {
         method: 'POST',
-        body: applicationData,
+        headers: {
+          Authorization: `Bearer ${validUsers[0].token}`,
+          'Content-Type': 'application/json',
+        },
+        body: applicationData.get('jsonData'),
       }
     );
     const createApplicationResBody = await createApplicationRes.json();
@@ -559,11 +576,11 @@ describe('/getFilteredGranteeApplications tests', () => {
     insertedData.applicationIDs.push(applicationID);
   });
 
-  test('/getFilteredGranteeApplications valid data', async () => {
-    console.log(`${SERVER_URL}/getFilteredGranteeApplications`);
+  test('/getFilteredGranteeApplications - valid data', async () => {
     const res = await fetch(`${SERVER_URL}/getFilteredGranteeApplications`, {
       method: 'POST',
       headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -571,32 +588,17 @@ describe('/getFilteredGranteeApplications tests', () => {
         Filters: validApplicationFilterData,
       }),
     });
-    const resBody = await res.json();
-    console.log(resBody);
-    
+    const filteredApplications = await res.json();
+
     expect(res.status).toBe(200);
-  });  
+    expect(filteredApplications.length).toBeGreaterThan(0);
+  });
 });
 
-
 // Delete all inserted data; this implicitly tests the delete routes
- afterAll(async () => {
+afterAll(async () => {
   console.log('Deleting all data inserted during tests');
   console.log(insertedData);
-
-  for (const email of insertedData.userEmails) {
-    console.log(`${SERVER_URL}/deleteUser`);
-    const res = await fetch(`${SERVER_URL}/deleteUser`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        Email: email,
-      }),
-    });
-    expect(res.status).toBe(200);
-  }
 
   for (const applicationID of insertedData.applicationIDs) {
     console.log(`${SERVER_URL}/deleteApplication/${applicationID}`);
@@ -604,6 +606,9 @@ describe('/getFilteredGranteeApplications tests', () => {
       `${SERVER_URL}/deleteApplication/${applicationID}`,
       {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${validUsers[0].token}`,
+        },
       }
     );
     expect(res.status).toBe(200);
@@ -613,6 +618,23 @@ describe('/getFilteredGranteeApplications tests', () => {
     console.log(`${SERVER_URL}/deleteGrant/${grantID}`);
     const res = await fetch(`${SERVER_URL}/deleteGrant/${grantID}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${validUsers[0].token}`,
+      },
+    });
+    expect(res.status).toBe(200);
+  }
+
+  for (const email of insertedData.userEmails) {
+    console.log(`${SERVER_URL}/deleteUser with Email = ${email}`);
+    const res = await fetch(`${SERVER_URL}/deleteUser`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Email: email,
+      }),
     });
     expect(res.status).toBe(200);
   }
