@@ -74,12 +74,8 @@ const Search_grants = ({ grants }) => {
 
     const newFilters = filterFiltersForBackend(filters)
 
-    console.log(newFilters)
-
     try{
       const res = await axios.post("http://localhost:5000/getFilteredGrants", newFilters, {headers: headers})
-
-      console.log('res', res)
       setAllGrants(res.data)
     }
     catch(error){

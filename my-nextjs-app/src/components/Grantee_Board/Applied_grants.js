@@ -23,13 +23,12 @@ const Applied_Grants = ({ applications }) => {
     if(filters.deadline){
       newFilters["deadline"] = filters.deadline
     }
-    if(filters.status){
+    if(filters.status !== '0'){
       newFilters["status"] = parseInt(filters.status)
     }
     if(filters.maxAmount){
       newFilters["maxAmount"] = filters.maxAmount
     }
-
     return newFilters
   }
 
@@ -134,7 +133,8 @@ const Applied_Grants = ({ applications }) => {
   }
 
   function onChangeStatus(e){
-    setFilters(prevFilters => ({...prevFilters, status:e.target.valueAsNumber}))
+    console.log(e.target.value)
+    setFilters(prevFilters => ({...prevFilters, status:e.target.value}))
   }
 
   function onChangeMaxAmount(e){
@@ -452,30 +452,6 @@ const Applied_Grants = ({ applications }) => {
                                 </h2>
 
                                 <div className="bg-slate-100 border-2 rounded p-6">
-                                  {/* {claim.GrantData.QuestionData.map(
-                                    (question, index) => (
-                                      <div key={index}>
-                                        <div className="mb-2">
-                                          <span className="font-bold">
-                                            Question {index + 1}:{" "}
-                                            <span className="text-red-400">
-                                              {question.question}
-                                            </span>
-                                          </span>
-                                        </div>
-                                        <div className="mb-8 mt-2">
-                                          <span className="font-bold">
-                                            Answer:{" "}
-                                            <span className="text-red-400">
-                                              {claim.ApplicationData
-                                                .answers[0].text ||
-                                                "No answer provided"}
-                                            </span>
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )
-                                  )} */}
                                   <ViewAnswers questionData={claim.GrantData.QuestionData} answerData={claim.ApplicationData.answers} />
                                 </div>
                               </div>

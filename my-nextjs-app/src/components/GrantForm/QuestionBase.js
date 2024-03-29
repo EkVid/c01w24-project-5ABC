@@ -226,7 +226,7 @@ const QuestionBase = ({questionData, questionNum, totalNumOfQuestions, isEditMod
               </button>
             </>
             :
-            <h2 className={`text-xl custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}`}>
+            <h2 tabIndex={0} className={`text-xl custom-text dark:d-text ${isReduceMotion ? "" : "transition-colors"}`}>
               {question.trim() === "" ? `Q${questionNum}. (empty question)` : `Q${questionNum}. ${question}`}{isRequired ? <font className="custom-red dark:d-custom-red mr-1"> *</font> : <></>}
             </h2>
           }
@@ -324,7 +324,7 @@ const QuestionBase = ({questionData, questionNum, totalNumOfQuestions, isEditMod
           <></>
         }
         <div className="flex justify-between">
-          <div className="flex flex-col flex-auto overflow-auto">
+          <div tabIndex={0} className="flex flex-col flex-auto overflow-auto">
             {/* Body of question */}
             {type === TYPE_MULTI ?
               <QMultichoice

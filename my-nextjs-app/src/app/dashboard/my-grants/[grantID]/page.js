@@ -1,10 +1,9 @@
 'use client'
 import GrantInfo from "@/components/Dashboard/Grants/MyGrants/grantInfo/GrantInfo";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-const MyGrants = async () => {
-    const params = useParams()
+const MyGrants = async ({params}) => {
     const router = useRouter()
 
     const grantID = params.grantID

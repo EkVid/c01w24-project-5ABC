@@ -52,7 +52,7 @@ export default function ViewGrant({ grant, setViewGrant }){
         console.log(finalGrant)
         console.log(fileArr)
         form.append('jsonData', JSON.stringify(finalGrant))
-        form.append('files', fileArr)
+        form.append('files', JSON.stringify(fileArr))
         return form
     }
 

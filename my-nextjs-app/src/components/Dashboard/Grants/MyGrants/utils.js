@@ -47,6 +47,10 @@ export async function closeGrant(grantID, userData){
 
 export function getApplciationStatus(application){
     let status
+    if(!application){
+        return null
+    }
+
     switch(application.status){
         case 1:
             status = 'Pending'
