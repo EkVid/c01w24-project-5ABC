@@ -437,6 +437,7 @@ def createApplication():
         application = request.json
         application["dateSubmitted"] = datetime.date.today().strftime("%Y-%m-%d")
         application["profileData"] = None
+        application["status"] = 1
 
         id = grantAppCollection.insert_one(application).inserted_id
         return {
@@ -478,9 +479,6 @@ def getGranteeApplications():
     applicationDatas = list(grantAppCollection.find({"email": email}, {"_id": False}))
     grantIDs = [ObjectId(application["grantID"]) for application in applicationDatas]
     grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
-
-    if len(applicationDatas) != len(grants):
-        return {"message": "Question data retrieval error"}, 403
 
     # Assign grantIDs to link each application to its grant
     for grant in grants:
