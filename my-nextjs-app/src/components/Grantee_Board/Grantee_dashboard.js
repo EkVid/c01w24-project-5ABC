@@ -9,6 +9,7 @@ import ThemeContext from "../utils/ThemeContext";
 import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
 import { getcbMode } from "@/components/utils/cbMode";
+import axios from "axios";
 
 const Grantee_dashboard = ({ applications }) => {
   const recentGrants = applications.slice(0, 3);
@@ -18,6 +19,11 @@ const Grantee_dashboard = ({ applications }) => {
   const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
   const isReducedMotion = useContext(ReducedMotionContext)
   const theme = useContext(ThemeContext)
+  const userData = JSON.parse(sessionStorage.getItem('userData'))
+
+  if(!userData){
+      router.push('/login')
+  }
 
   // Function to get the color based on the claim status
   const getStatusColor = (status) => {
@@ -59,6 +65,23 @@ const Grantee_dashboard = ({ applications }) => {
 
   const router = useRouter();
 
+  async function handleLogout(){
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${userData.token}`
+    }
+
+    try{
+        const res = await axios.post("http://localhost:5000/logout", {Email: userData.email}, {headers: headers})
+        sessionStorage.removeItem('userData')
+        router.push('/')
+    }
+    catch(err){
+        console.error(err)
+    }
+    return
+  }
+
   return (
     <div
       className={`flex items-center justify-center flex-grow pt-10 ${theme === 'light' ? "" : "d-custom-navy-background border-t border-white"}`}
@@ -73,9 +96,15 @@ const Grantee_dashboard = ({ applications }) => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white dark:d-custom-dark-grey-background p-6 rounded-lg shadow-xl">
             <div className="bg-white dark:d-custom-dark-grey-background p-6 rounded-lg">
-              <h1 className="dark:d-text lg:text-4xl md:text-3xl text-3xl text-center sm:text-left font-semibold mb-20 text-left">
-                Your journey starts here...
-              </h1>
+              <div className="flex flex-row justify-between items-center mb-20 ">
+                <h1 className="dark:d-text lg:text-4xl md:text-3xl text-3xl text-center sm:text-left font-semibold text-left">
+                  Your journey starts here...
+                </h1>
+                <button onClick={handleLogout} className="ms-4 p-2 rounded hover:underline border border-slate-300 dark:border-white dark:d-text">
+                  Logout
+              </button>
+              </div>
+              
               <div className="flex flex-col space-y-4 mb-4">
                 <div className="sm:self-end flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
                   <Link

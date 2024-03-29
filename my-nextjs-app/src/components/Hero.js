@@ -2,6 +2,7 @@
 
 import Four_Circle from "../../public/logo.svg";
 import cbFour_Circle from "../../public/cblogo.svg"
+import trFour_Circle from "../../public/trlogo.svg"
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
@@ -37,7 +38,7 @@ const Hero = () => {
       </div>
       <div className="flex justify-center">
         <Image
-          src={protanopia || deuteranopia || tritanopia ? cbFour_Circle : Four_Circle}
+          src={protanopia ? cbFour_Circle : deuteranopia ? cbFour_Circle : tritanopia ? trFour_Circle : Four_Circle}
           alt="Logo"
           width={300 * fontSizeMultiplier}
           height={"auto"}
