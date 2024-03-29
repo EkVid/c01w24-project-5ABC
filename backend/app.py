@@ -478,7 +478,7 @@ def getGranteeApplications():
     if not email:
         return {"message": "Invalid email"}, 400
 
-    applicationDatas = list(grantAppCollection.find({"email": email}, {"_id": False}))
+    applicationDatas = list(grantAppCollection.find({"email": email}))
     grantIDs = [ObjectId(application["grantID"]) for application in applicationDatas]
     grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
 
@@ -486,10 +486,13 @@ def getGranteeApplications():
     for grant in grants:
         grant["grantID"] = str(grant["_id"])
         del grant["_id"]
-
+      
     applicationsWithGrants = []
     # Tradeoff for having only two DB calls
     for applicationData in applicationDatas:
+        applicationData["applicationID"] = str(applicationData["_id"])
+        del applicationData["_id"]
+
         for grant in grants:
             if applicationData["grantID"] == grant["grantID"]:
                 applicationsWithGrants.append({

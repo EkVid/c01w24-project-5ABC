@@ -173,6 +173,7 @@ Application Model
 """
 class Application(BaseModel):
     grantID: str
+    applicationID: str
     email: str
     dateSubmitted: date
     status: int
