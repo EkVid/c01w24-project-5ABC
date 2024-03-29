@@ -4,8 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useState, useContext } from "react";
 import Link from "next/link";
-import ViewAnswers from "../GrantForm/ViewAnswers";
-import FontSizeContext from "@/components/utils/FontSizeContext";
+import ViewAnswers from "../GrantForm/ViewAnswers"
 import ThemeContext from "../utils/ThemeContext";
 import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
 import ReducedMotionContext from "../utils/ReducedMotionContext";
@@ -17,7 +16,6 @@ const Grantee_dashboard = ({ applications }) => {
 
   const cbMode = useContext(ColourBlindnessContext)
   const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
-  const fontSizeMultiplier = useContext(FontSizeContext) / 100;
   const isReducedMotion = useContext(ReducedMotionContext)
   const theme = useContext(ThemeContext)
 
@@ -142,7 +140,7 @@ const Grantee_dashboard = ({ applications }) => {
                                       : claim.ApplicationData.applicationID
                                   )
                                 }
-                                className={`text-md hover:underline ${isReducedMotion ? "" : "transition duration-150 ease-in-out"}  ${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"}`}
+                                className={`text-md hover:underline ${isReducedMotion ? "" : "transition duration-150 ease-in-out"} ${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"}`}
                                 aria-label={expandedApplicationId === claim.ApplicationData.applicationID ? "Close application details" : "View application details"}
                               >
                                 {expandedApplicationId ===
@@ -178,7 +176,7 @@ const Grantee_dashboard = ({ applications }) => {
                                       <span tabIndex={0} className="font-bold dark:d-text">
                                         Amount Payable:
                                       </span>
-                                      <p tabIndex={0}>{claim.GrantData.AmountPerApp}</p>
+                                      <p tabIndex={0}>$ {claim.GrantData.AmountPerApp}</p>
                                     </div>
                                     <div className="flex justify-between mb-2">
                                       <span tabIndex={0} className="font-bold dark:d-text">Age:</span>
@@ -327,7 +325,7 @@ const Grantee_dashboard = ({ applications }) => {
                                   </div>
                                   <div>
                                     <p tabIndex={0}>Amount Payable:</p>
-                                    <p tabIndex={0}>{claim.GrantData.AmountPerApp}</p>
+                                    <p tabIndex={0}>${claim.GrantData.AmountPerApp}</p>
                                   </div>
                                 </div>
                               </div>
