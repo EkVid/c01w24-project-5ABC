@@ -10,7 +10,7 @@ import re
 from dataModels import *
 from helpers import *
 from db import *
-from backend.routes.fileRoutes import *
+from routes.fileRoutes import *
 
 
 application = Blueprint('application' , __name__)
