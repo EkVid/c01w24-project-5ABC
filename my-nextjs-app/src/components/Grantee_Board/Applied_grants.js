@@ -185,7 +185,7 @@ const Applied_Grants = ({ applications }) => {
                       setAllApplications(applications)
                       setFilters(defaultFilters)
                     }}
-                    className={`mb-4 text-sm font-semibold bg-gray-500 text-white px-3 py-1 hover:scale-105 rounded ${isReducedMotion ? "" : 'transition-colors ease-in-out duration-150'} ${protanopia ? "hover:custom-green-background-pt" : deuteranopia ? "hover:custom-green-background-dt" : tritanopia ? "hover:custom-green-background-tr" : "hover:custom-green-background"}`}>
+                    className={`mb-4 text-sm font-semibold bg-gray-500 text-white px-3 py-1 hover:scale-105 rounded ${isReducedMotion ? "" : 'transition-colors ease-in-out duration-150'} hover:bg-[#d76b65]`}>
                     Reset Filters
                   </button>
                 </div>
@@ -421,9 +421,9 @@ const Applied_Grants = ({ applications }) => {
                                         Veteran Only:
                                       </span>
                                       <p tabIndex={0}>
-                                        {claim.ApplicationData.profileData?.veteran === 0
+                                        {claim.GrantData.profileReqs?.veteran === 0
                                         ? "No"
-                                        : claim.ApplicationData.profileData?.veteran === 1 ?
+                                        : claim.GrantData.profileReqs?.veteran === 1 ?
                                           "Yes"
                                           :
                                           "N/A"

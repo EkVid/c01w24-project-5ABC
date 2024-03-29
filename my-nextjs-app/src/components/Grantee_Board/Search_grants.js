@@ -1,13 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import ThemeContext from "../utils/ThemeContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import ReducedMotionContext from "../utils/ReducedMotionContext";
+import { getcbMode } from "@/components/utils/cbMode";
 
 const Search_grants = ({ grants }) => {
   const router = useRouter()
   const userData = JSON.parse(sessionStorage.getItem('userData'))
+
+  const cbMode = useContext(ColourBlindnessContext)
+  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const isReducedMotion = useContext(ReducedMotionContext)
+  const theme = useContext(ThemeContext)
 
   if(!userData){
     router.push('/login')
@@ -73,6 +82,7 @@ const Search_grants = ({ grants }) => {
     }
 
     const newFilters = filterFiltersForBackend(filters)
+    console.log(newFilters)
 
     try{
       const res = await axios.post("http://localhost:5000/getFilteredGrants", newFilters, {headers: headers})
@@ -200,10 +210,9 @@ const Search_grants = ({ grants }) => {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen pt-10"
+      className={`flex items-center justify-center flex-grow pt-10 ${theme === 'light' ? "" : "d-custom-navy-background border-t border-white"}`}
       style={{
-        backgroundImage:
-          "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')",
+        backgroundImage:`${theme === 'light' ? "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')" : ""}`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -211,19 +220,26 @@ const Search_grants = ({ grants }) => {
     >
       <div className="min-h-screen p-8 w-full">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white p-6 rounded-lg shadow-xl">
-            <div className="bg-white p-6 rounded-lg">
-              <h1 className="text-black text-3xl text-center sm:text-left font-semibold mb-10 text-left">
+          <div className="bg-white dark:d-custom-dark-grey-background p-6 rounded-lg shadow-xl dark:shadow-none dark:border dark:border-white">
+            <div className="bg-white dark:d-custom-dark-grey-background p-6 rounded-lg">
+              <Link 
+                href="/grantee_dashboard" 
+                className="dark:d-text underline hover:scale-105"
+                aria-label="back to grantee dashboard"
+              >
+                Back
+              </Link>
+              <h1 className="dark:d-text text-3xl text-center sm:text-left font-semibold mt-8 mb-10 text-left">
                 Here we go...
               </h1>
-              <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mb-4">
-                <h2 className="text-xl font-semibold text-black text-center sm:text-left">
+              <div tabIndex={0} className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mb-4">
+                <h2 className="text-xl font-semibold dark:d-text text-center sm:text-left">
                   What is this grant for?
                 </h2>
               </div>
-              <div className="mb-4 flex border border-black rounded">
+              <div className="mb-4 flex border border-black dark:border-white rounded">
                 <svg
-                  className="text-black m-2 w-6 h-6"
+                  className="dark:d-text m-2 w-6 h-6"
                   fill="none"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -239,20 +255,23 @@ const Search_grants = ({ grants }) => {
                   value={filters.titleKeyword}
                   onChange={onChangeTitle}
                   placeholder="Search for keywords in title   (e.g: study, medical)"
-                  className="p-2 w-full text-black"
+                  className="p-2 w-full dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
+                  aria-label="Search for keywords in title"
+                  tabIndex={0}
                 />
               </div>
               <div className="flex justify-between">
-                <h2 className="text-xl font-bold text-black mt-5 mb-5">
+                <h2 tabIndex={0} className="text-xl font-bold dark:d-text mt-5 mb-5">
                   Filter
                 </h2>
                 <button
+                  tabIndex={0}
                   id="toggleButton"
-                  className="focus:outline-none transition-transform"
+                  className={`${isReducedMotion ? "" : "transition-transform"}`}
                   onClick={toggleFormVisibility}
                 >
                   <svg
-                    className={`w-6 h-6 text-black transition-transform duration-200 ease-in-out ${
+                    className={`w-6 h-6 dark:d-text ${isReducedMotion ? "" : "transition-transform duration-200 ease-in-out"} ${
                       isFormVisible ? "rotate-180" : ""
                     }`}
                     fill="none"
@@ -270,11 +289,11 @@ const Search_grants = ({ grants }) => {
                 </button>
               </div>
               <div
-                className={`transition-all duration-700 ease-in-out ${
+                className={`${isReducedMotion ? "" : "transition-all duration-700 ease-in-out"} ${
                   isFormVisible
                     ? "opacity-100 max-h-[1000px]"
                     : "opacity-0 max-h-0"
-                } overflow-hidden`}
+                }`}
                 style={{ transitionProperty: "opacity, max-height" }}
               >
                 {isFormVisible && (
@@ -283,24 +302,27 @@ const Search_grants = ({ grants }) => {
                       <form>
                         <div className="mb-4">
                           <label
-                            htmlFor="maxAmount"
-                            className="block mb-2 text-black"
+                            id="genderLabel"
+                            htmlFor="gender"
+                            className="block mb-2 dark:d-text"
                           >
                             Gender:
                           </label>
                           <input
                             type="text"
-                            id="race"
+                            id="gender"
                             value={filters.gender}
                             onChange={onChangeGender}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             placeholder="All"
+                            aria-labelledby="genderLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
-                            htmlFor="maxAmount"
-                            className="block mb-2 text-black"
+                            id="raceLabel"
+                            htmlFor="race"
+                            className="block mb-2 dark:d-text"
                           >
                             Race:
                           </label>
@@ -309,45 +331,51 @@ const Search_grants = ({ grants }) => {
                             id="race"
                             value={filters.race}
                             onChange={onChangeRace}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             placeholder="All"
+                            aria-labelledby="raceLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
-                            htmlFor="maxAmount"
-                            className="block mb-2 text-black"
+                            id="nationalityLabel"
+                            htmlFor="nationality"
+                            className="block mb-2 dark:d-text"
                           >
                             Nationality:
                           </label>
                           <input
                             type="text"
-                            id="race"
+                            id="nationality"
                             value={filters.nationality}
                             onChange={onChangeNationality}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             placeholder="All"
+                            aria-labelledby="nationalityLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
+                            id="postedBeforeLabel"
                             htmlFor="postedBefore"
-                            className="block mb-2 text-black"
+                            className="block mb-2 dark:d-text"
                           >
                             Posted Before:
                           </label>
                           <input
                             type="date"
-                            id="postBefore"
+                            id="postedBefore"
                             value={filters.datePostedBefore}
                             onChange={onChangePostedBefore}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
+                            aria-labelledby="postedBeforeLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
+                            id="postedAfterLabel"
                             htmlFor="postedAfter"
-                            className="block mb-2 text-black"
+                            className="block mb-2 dark:d-text"
                           >
                             Posted After:
                           </label>
@@ -356,13 +384,15 @@ const Search_grants = ({ grants }) => {
                             id="postedAfter"
                             value={filters.datePostedAfter}
                             onChange={onChangePostedAfter}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
+                            aria-labelledby="postedAfterLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
-                            htmlFor="postedAfter"
-                            className="block mb-2 text-black"
+                            id="deadlineLabel"
+                            htmlFor="deadline"
+                            className="block mb-2 dark:d-text"
                           >
                             Available Until:
                           </label>
@@ -371,19 +401,21 @@ const Search_grants = ({ grants }) => {
                             id="deadline"
                             value={filters.deadline}
                             onChange={onChangeDeadline}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
+                            aria-labelledby="deadlineLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
+                            id="statusLabel"
                             htmlFor="status"
-                            className="block mb-2 text-black"
+                            className="block mb-2 dark:d-text"
                           >
                             Status:
                           </label>
                           <select
                             id="status"
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             value={filters.status}
                             onChange={onChangeStatus}
                           >
@@ -399,8 +431,9 @@ const Search_grants = ({ grants }) => {
                       <form>
                         <div className="mb-4">
                           <label
+                            id="grantorEmailLabel"
                             htmlFor="grantorEmail"
-                            className="block mb-2 border-black text-black"
+                            className="block mb-2 border-black dark:d-text"
                           >
                             Grantor Email:
                           </label>
@@ -409,14 +442,16 @@ const Search_grants = ({ grants }) => {
                             id="grantorEmail"
                             value={filters.email}
                             onChange={onChangeEmail}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             placeholder="Enter the email of the grantor"
+                            aria-labelledby="grantorEmailLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
-                            htmlFor="MinAmount"
-                            className="block mb-2 text-black"
+                            id="minAgeLabel"
+                            htmlFor="minAge"
+                            className="block mb-2 dark:d-text"
                           >
                             Minimum Age:
                           </label>
@@ -425,68 +460,76 @@ const Search_grants = ({ grants }) => {
                             id="minAge"
                             value={filters.minAge}
                             onChange={onChangeMinAge}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             placeholder="Enter minimum age"
+                            aria-labelledby="minAge"
                           />
                         </div>
                         <div className="mb-4">
                           <label
-                            htmlFor="maxAmount"
-                            className="block mb-2 text-black"
+                            id="maxAgeLabel"
+                            htmlFor="maxAge"
+                            className="block mb-2 dark:d-text"
                           >
                             Maximum Age
                           </label>
                           <input
-                            type="text"
-                            id="minAge"
+                            type="number"
+                            id="maxAge"
                             value={filters.maxAge}
                             onChange={onChangeMaxAge}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             placeholder="Enter maximum age"
+                            aria-labelledby="maxAgeLabel"
                           />
                         </div>
                         <div className="mb-5">
                           <label
-                            htmlFor="MinAmount"
-                            className="block mb-2 text-black"
+                            id="minAmountLabel"
+                            htmlFor="minAmount"
+                            className="block mb-2 dark:d-text"
                           >
                             Minimum Payable Amount:
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             id="minAmount"
                             value={filters.minAmount}
                             onChange={onChangeMinAmount}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             placeholder="Enter minimum amount"
+                            aria-labelledby="minAmountLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
+                            id="maxAmountLabel"
                             htmlFor="maxAmount"
-                            className="block mb-2 text-black"
+                            className="block mb-2 dark:d-text"
                           >
                             Maximum Payable Amount:
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             id="maxAmount"
                             value={filters.maxAmount}
                             onChange={onChangeMaxAmount}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             placeholder="Enter maximum amount"
+                            aria-labelledby="maxAmountLabel"
                           />
                         </div>
                         <div className="mb-4">
                           <label
+                            id="statusLabel"
                             htmlFor="status"
-                            className="block mb-2 text-black"
+                            className="block mb-2 dark:d-text"
                           >
                             Veteran Status:
                           </label>
                           <select
                             id="status"
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-600 focus:dark:border-white"
                             value={filters.veteran}
                             onChange={onChangeVeteran}
                           >
@@ -497,44 +540,54 @@ const Search_grants = ({ grants }) => {
                         </div>
                         <div className="mb-4">
                           <label
-                            htmlFor="MinAmount"
-                            className="block mb-2 text-black"
+                            id="numGrantsLabel"
+                            htmlFor="numGrants"
+                            className="block mb-2 dark:d-text"
                           >
                             Number of Grants Available:
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             id="numGrants"
                             value={filters.maxWinners}
                             onChange={onChangeMaxWinners}
-                            className="w-full p-2 border border-black rounded text-black"
+                            className="w-full p-2 border border-black rounded focus:dark:border-white dark:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background"
                             placeholder="Enter the number of grants available"
+                            aria-labelledby="numGrantslabel"
                           />
                         </div>
                       </form>
                     </div>
                   </div>
                 )}
-                <div className="w-full flex justify-center mt-4 md:mt-0 sm:justify-end">
-                  <button onClick={() => handleFilteredGrants(filters)} className="mr-2 px-6 py-2 text-white bg-green-700 hover:bg-green-900 rounded-full">
-                    Filter
-                  </button>
-                  <button onClick={() => {
-                    setFilters(defaultFilters)
-                    setAllGrants(grants)
-                    }} 
-                    className="px-4 py-2 text-white bg-gray-500 hover:bg-gray-700 rounded-full">
-                    Reset
-                  </button>
-                </div>
+                {isFormVisible && 
+                  <div className="w-full flex justify-center mt-4 md:mt-0 sm:justify-end">
+                    <button 
+                      onClick={() => handleFilteredGrants(filters)} 
+                      className={`mr-2 px-6 py-2 text-white rounded-full hover:scale-105 ${isReducedMotion ? "" : "transition-colors"} text-sm sm:text-base ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
+                      aria-label="Apply filters"
+                    >
+                      Filter
+                    </button>
+                    <button onClick={() => {
+                      setFilters(defaultFilters)
+                      setAllGrants(grants)
+                      }} 
+                      className="px-4 py-2 text-white bg-gray-500 hover:scale-105 hover:bg-[#d76b65] rounded-full"
+                      aria-label="Reset filters"
+                      >
+                      Reset
+                    </button>
+                  </div>
+                }
               </div>
             </div>
             <div className="border-2 border-black block"></div>
             <div className="w-full p-4 mt-7">
-              <h2 className="font-bold text-lg mb-4 text-black">
+              <h2 className="font-bold text-lg mb-4 dark:d-text">
                 Available Grants
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black mt-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 dark:d-text mt-3">
                 {currentGrants.map((claim) => {
                   // Check if the card should be expanded or if no card is expanded
                   const shouldDisplay =
@@ -545,10 +598,10 @@ const Search_grants = ({ grants }) => {
                     return (
                       <div
                         key={claim._id}
-                        className={` p-1 transition-all duration-500 ease-in-out ${
+                        className={`p-1 ${isReducedMotion ? "" : "transition-all duration-500 ease-in-out"} ${
                           expandedGrantId === claim._id
                             ? "scale-100 opacity-100"
-                            : "scale-95 opacity-75"
+                            : "scale-95"
                         } ${
                           expandedGrantId === claim._id
                             ? "col-span-3 lg:col-span-3"
@@ -556,16 +609,13 @@ const Search_grants = ({ grants }) => {
                         }`}
                       >
                         <div
-                          className={"h-2 w-full rounded-t-lg bg-orange-400"}
+                          className={`h-2 w-full rounded-t-lg ${claim.Active ? protanopia ? "custom-yellow-background-pt" : deuteranopia ? "custom-yellow-background-dt" : tritanopia ? "custom-yellow-background-tr" : "bg-yellow-600" : 'bg-red-600'}`}
                         ></div>
 
-                        <div className="bg-white p-2 rounded-lg shadow shadow-xl">
+                        <div className="bg-white dark:d-custom-dark-grey-background dark:border dark:border-neutral-600 p-2 rounded-lg shadow shadow-xl">
                           <div className="flex justify-between items-center mb-4">
-                            <p className="text-md">
-                              <p className=" text-black">
-                                <span className="font-semibold">Email: </span>{" "}
-                                {claim.grantorEmail}
-                              </p>
+                            <p tabIndex={0} className="text-md dark:d-text">
+                              Email: {claim.grantorEmail}
                             </p>
                             <button
                               onClick={() =>
@@ -575,7 +625,8 @@ const Search_grants = ({ grants }) => {
                                     : claim._id
                                 )
                               }
-                              className="text-green-700 text-md hover:text-green-900 transition duration-150 ease-in-out"
+                              className={`text-md hover:underline ${isReducedMotion ? "" : "transition duration-150 ease-in-out"} ${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"}`}
+                                aria-label={expandedGrantId === claim._id ? "Close grant details" : "View grant details"}
                             >
                               {expandedGrantId === claim._id
                                 ? "Close"
@@ -587,120 +638,144 @@ const Search_grants = ({ grants }) => {
                           {expandedGrantId === claim._id ? (
                             <div>
                               {/* Expanded view content */}
-                              <div className="mb-5">
-                                <div className="flex justify-between">
-                                  <h2 className="text-black font-semibold mb-2">
-                                    Basic Information
-                                  </h2>
+                              <div className="mb-5 ">
+                                  <div className="flex justify-between">
+                                    <h2 tabIndex={0} className="dark:d-text font-semibold mb-2">
+                                      Grant's Information
+                                    </h2>
+                                  </div>
+                                  <div className="bg-slate-100 dark:d-custom-dark-grey-background dark:d-text border-2 rounded p-6">
+                                    <div className="flex justify-between mb-2">
+                                      <span tabIndex={0} className="font-bold dark:d-text">Title:</span>
+                                      <p tabIndex={0}>{claim.Title}</p>
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span tabIndex={0} className="font-bold">
+                                        Provider Email:
+                                      </span>
+                                      <p tabIndex={0}>{claim.grantorEmail}</p>
+                                    </div>
+                                    <div className="flex justify-between items-center mb-2">
+                                      <span tabIndex={0} className="font-bold dark:d-text">
+                                        Amount Payable:
+                                      </span>
+                                      <p tabIndex={0}>${claim.AmountPerApp}</p>
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span tabIndex={0} className="font-bold dark:d-text">Age:</span>
+                                      <p tabIndex={0}>
+                                        {claim.profileReqs.minAge === 0 && claim.profileReqs.maxAge === 0 ?
+                                          "N/A"
+                                        :
+                                          claim.profileReqs.minAge + '-' + claim.profileReqs.maxAge
+                                        }
+                                      </p>
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span tabIndex={0} className="font-bold dark:d-text">
+                                        Required Race:
+                                      </span>
+                                      <p tabIndex={0}>
+                                        {claim.profileReqs.race.length > 0 ?
+                                          claim.profileReqs.race.join(
+                                            ", "
+                                          )
+                                        :
+                                          "N/A"
+                                        }
+                                      </p>
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span tabIndex={0} className="font-bold dark:d-text">
+                                        Required Gender:
+                                      </span>
+                                      <p tabIndex={0}>
+                                        {claim.profileReqs.gender.length > 0 ?
+                                          claim.profileReqs.gender.join(
+                                            ", "
+                                          )
+                                        :
+                                          "N/A"
+                                        }
+                                      </p>
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span tabIndex={0} className="font-bold dark:d-text">
+                                        Veteran Only:
+                                      </span>
+                                      <p tabIndex={0}>
+                                        {claim.profileReqs?.veteran === 0
+                                        ? "No"
+                                        : claim.profileReqs?.veteran === 1 ?
+                                          "Yes"
+                                          :
+                                          "N/A"
+                                        }
+                                      </p>
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span tabIndex={0} className="font-bold">
+                                        Number of Grants Available:
+                                      </span>
+                                      <p tabIndex={0}>{claim.MaxWinners}</p>
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                      <span tabIndex={0} className="font-bold dark:d-text">
+                                        Date Posted:
+                                      </span>
+                                      <p tabIndex={0}>{claim.PostedDate}</p>
+                                    </div>
+                                    <div className="flex justify-between items-center mb-2">
+                                      <span tabIndex={0} className="font-bold dark:d-text">
+                                        Grant Status:
+                                      </span>
+                                      <p tabIndex={0}>{claim.Active ? "Yes" : "No"}</p>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="bg-slate-100 border-2 rounded p-6">
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">Title:</span>
-                                    {claim.Title}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
-                                      Provider Email:
-                                    </span>
-                                    {claim.grantorEmail}
-                                  </div>
-                                  <div className="flex justify-between items-center mb-2">
-                                    <span className="font-bold">
-                                      Amount Payable:
-                                    </span>
-                                    {claim.AmountPerApp}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
-                                      Required Nationality:
-                                    </span>
-                                    {claim.profileReqs.nationality.join(", ")}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
-                                      Required Age:
-                                    </span>
-                                    {claim.profileReqs.minAge} -{" "}
-                                    {claim.profileReqs.maxAge}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
-                                      Required Race:
-                                    </span>
-                                    {claim.profileReqs.race.join(", ")}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
-                                      Required Gender:
-                                    </span>
-                                    {claim.profileReqs.gender.join(", ")}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
-                                      Veteran Only:
-                                    </span>
-                                    {claim.profileReqs.veteran === 0
-                                      ? "No"
-                                      : "Yes"}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
-                                      Number of Grants Available:
-                                    </span>
-                                    {claim.MaxWinners}
-                                  </div>
-                                  <div className="flex justify-between mb-2">
-                                    <span className="font-bold">
-                                      Date Posted:
-                                    </span>
-                                    {claim.PostedDate}
-                                  </div>
-                                  <div className="flex justify-between items-center mb-2">
-                                    <span className="font-bold">
-                                      Grant Status:
-                                    </span>
-                                    {claim.Active ? "Active" : "Inactive"}
-                                  </div>
-                                </div>
-                              </div>
-                              <h2 className="text-black font-semibold mb-2">
+                              <h2 tabIndex={0} className="dark:d-text font-semibold mb-2">
                                 Description
                               </h2>
-                              <div className="bg-slate-100 border-2  rounded p-6">
-                                <div className="flex justify-between mb-4 text-md">
+                              <div className="bg-slate-100 dark:d-custom-dark-grey-background dark:d-text border-2 rounded p-6">
+                                <p tabIndex={0} className="mb-4 text-md">
                                   {claim.Description}
-                                </div>
+                                </p>
                               </div>
-                              <h2 className="text-red-500 font-semibold mb-2 mt-5">
+                              <h2 tabIndex={0} className="text-red-500 font-semibold mb-2 mt-5">
                                 Deadline to Apply
                               </h2>
-                              <div className="bg-slate-100 border-2  rounded p-6">
-                                <div className="mb-2">{claim.Deadline}</div>
+                              <div className="bg-slate-100 dark:d-custom-dark-grey-background dark:d-text border-2  rounded p-6">
+                                <p tabIndex={0} className="mb-2">{claim.Deadline}</p>
                               </div>
                               <div className="flex justify-center items-center">
-                                <Link 
-                                  href={`/apply/${claim._id}`}
-                                  className="text-black px-6 py-2 bg-sky-100 hover:bg-sky-200 rounded-full font-semibold mb-2 mt-5">
-                                  Apply Here
-                                </Link>
+                                {claim.Active ? 
+                                  <Link 
+                                    href={`/apply/${claim._id}`}
+                                    className="dark:d-text px-6 py-2 bg-sky-100 dark:border dark:border-white dark:d-custom-dark-grey-background dark:d-text hover:scale-105 rounded-full font-semibold mb-2 mt-5">
+                                    Apply Here
+                                  </Link>
+                                :
+                                  <></>
+                                }
+                                
                               </div>
                             </div>
                           ) : (
                             <div>
                               {/* Small view content */}
-                              <p className="mb-2 text-md">{claim.Title}</p>
-                              <p className="mb-2">
+                              <p tabIndex={0} className="mb-2 text-md">{claim.Title}</p>
+                              <p tabIndex={0} className="mb-2">
                                 {claim.profileReqs.minAge} -{" "}
                                 {claim.profileReqs.maxAge}
                               </p>
                               <div className="flex justify-between items-center">
                                 <div>
-                                  <p>Date Posted:</p>
-                                  <p>{claim.PostedDate}</p>
+                                  <p tabIndex={0}>Date Posted:</p>
+                                  <p tabIndex={0}>{claim.PostedDate}</p>
                                 </div>
                                 <div>
-                                  <p>Amount Payable:</p>
-                                  <p>{claim.AmountPerApp}</p>
+                                  <p tabIndex={0}>Amount Payable:</p>
+                                  <p tabIndex={0}>${claim.AmountPerApp}</p>
                                 </div>
                               </div>
                             </div>
@@ -713,11 +788,12 @@ const Search_grants = ({ grants }) => {
                 })}
               </div>
 
-              <div className="flex justify-center p-4 text-black">
+              <div className="flex justify-center p-4 dark:d-text">
                 {currentPage > 1 && (
                   <button
                     onClick={() => paginate(currentPage - 1)}
-                    className="px-2 py-2 mr-5 text-sm font-semibold text-white bg-green-600 rounded-full sm:w-auto sm:px-4 hover:bg-green-800"
+                    className={`px-2 py-2 mr-5 text-sm font-semibold text-white hover:scale-105 rounded-full w-1/4 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
+                    aria-label="Previous page of applications"
                   >
                     Previous
                   </button>
@@ -725,7 +801,8 @@ const Search_grants = ({ grants }) => {
                 {indexOfLastGrant < allGrants.length && (
                   <button
                     onClick={() => paginate(currentPage + 1)}
-                    className="px-2 py-2 mx-1 text-sm font-semibold text-white bg-green-600 rounded-full w-1/4  hover:bg-green-800"
+                    className={`px-4 py-2 mx-1 text-sm font-semibold text-white hover:scale-105 rounded-full w-1/4 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
+                      aria-label="Next page of applications"
                   >
                     Next
                   </button>

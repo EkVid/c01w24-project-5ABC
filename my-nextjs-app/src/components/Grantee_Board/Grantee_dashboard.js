@@ -221,9 +221,9 @@ const Grantee_dashboard = ({ applications }) => {
                                         Veteran Only:
                                       </span>
                                       <p tabIndex={0}>
-                                        {claim.ApplicationData.profileData?.veteran === 0
+                                        {claim.GrantData.profileReqs?.veteran === 0
                                         ? "No"
-                                        : claim.ApplicationData.profileData?.veteran === 1 ?
+                                        : claim.GrantData.profileReqs?.veteran === 1 ?
                                           "Yes"
                                           :
                                           "N/A"
