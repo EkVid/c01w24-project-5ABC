@@ -270,7 +270,6 @@ def testDelete():
 
 # For Frontend Use
 @app.route("/getFile/<_id>", methods=['GET'])
-@tokenCheck.token_required
 def getFile(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -519,28 +518,39 @@ def getAllGrantApplications(_id):
 
 
 @app.route("/updateGrantWinners", methods=["PUT"])
-@tokenCheck.token_required
+# @tokenCheck.token_required
 def updateGrantWinners():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
 
     json = request.json
-    applicationID = json.get("applicationID", "")
-    grantID = json.get("grantID", "")
-    email = json.get("email", "")
-    if not email or not ObjectId.is_valid(applicationID) or not ObjectId.is_valid(grantID):
-        return {"message": "Invalid application ID, grant ID, or email"}, 400
-
-    user = userCollection.find_one({"Email": email})
-    if user is None:
-        return {"message": "Grantee with the given email does not exist"}, 400
-
-    applicationObjID = ObjectId(applicationID)
-    grantObjID = ObjectId(grantID)
-    grantCollection.update_one({"_id": grantObjID}, {"$push": {"WinnerIDs": applicationID}})
-    grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": ApplicationStatus.APPROVED}})
+    applicationID = ObjectId(json.get("applicationID", ""))
+    application = grantAppCollection.find_one({"_id": applicationID})
+    if application == None:
+        return {"message": "Invalid application ID"}, 400
+    
+    grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$push": {"WinnerIDs": str(applicationID)}})
+    grantAppCollection.update_one({"_id": applicationID}, {"$set": {"status": ApplicationStatus.APPROVED}})
 
     return {"message": "Application winner successfully added"}, 200
+
+
+@app.route("/updateGrantLosers", methods=["PUT"])
+# @tokenCheck.token_required
+def updateGrantLosers():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
+    json = request.json
+    applicationID = ObjectId(json.get("applicationID", ""))
+    application = grantAppCollection.find_one({"_id": applicationID})
+    if application == None:
+        return {"message": "Invalid application ID"}, 400
+    
+    grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$pull": {"WinnerIDs": str(applicationID)}})
+    grantAppCollection.update_one({"_id": applicationID}, {"$set": {"status": ApplicationStatus.REJECTED}})
+
+    return {"message": "Application loser successfully removed"}, 200
 
 
 @app.route("/deleteApplication/<_id>", methods=["DELETE"])
