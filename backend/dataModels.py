@@ -43,14 +43,14 @@ class UserProfile(BaseModel):
 Question Option and Question Models
 """
 class TextboxOptions(BaseModel):
-    minCharsNum: PositiveInt
-    maxCharsNum: PositiveInt
+    minCharsNum: Optional[PositiveInt] = None
+    maxCharsNum: Optional[PositiveInt] = None
     isMultipleLines: Optional[bool] = None
 
 class NumberOptions(BaseModel):
-    isIntegerOnly: bool
-    minNum: Union[int, float]
-    maxNum: Union[int, float]
+    isIntegerOnly: Optional[bool] = None
+    minNum: Optional[Union[int, float]] = None
+    maxNum: Optional[Union[int, float]] = None
 
     @validator('minNum', 'maxNum', always=True)
     def validate_range(cls, value, values) -> Union[int, float]:
@@ -66,7 +66,7 @@ class MultipleChoiceOptions(BaseModel):
 
 class CheckboxOptions(BaseModel):
     answers: Annotated[list[str], Len(min_length=1, max_length=10)]
-    isNoneAnOption: bool
+    isNoneAnOption: Optional[bool]
 
 class DateOptions(BaseModel):
     isDateRange: Optional[bool] = None
