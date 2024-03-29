@@ -222,16 +222,19 @@ const Search_grants = ({ grants }) => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white dark:d-custom-dark-grey-background p-6 rounded-lg shadow-xl dark:shadow-none dark:border dark:border-white">
             <div className="bg-white dark:d-custom-dark-grey-background p-6 rounded-lg">
-              <Link 
-                href="/grantee_dashboard" 
-                className="dark:d-text underline hover:scale-105"
-                aria-label="back to grantee dashboard"
-              >
-                Back
-              </Link>
-              <h1 className="dark:d-text text-3xl text-center sm:text-left font-semibold mt-8 mb-10 text-left">
-                Here we go...
-              </h1>
+              <div className="flex flex-col items-start">
+                <Link 
+                  href="/grantee_dashboard" 
+                  className="dark:d-text underline hover:scale-105"
+                  aria-label="back to grantee dashboard"
+                >
+                  Back
+                </Link>
+                <h1 className="dark:d-text text-3xl text-center sm:text-left font-semibold mt-8 mb-10 text-left">
+                  Here we go...
+                </h1>
+              </div>
+              
               <div tabIndex={0} className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mb-4">
                 <h2 className="text-xl font-semibold dark:d-text text-center sm:text-left">
                   What is this grant for?
@@ -582,7 +585,7 @@ const Search_grants = ({ grants }) => {
                 }
               </div>
             </div>
-            <div className="border-2 border-black block"></div>
+            <div className="border-2 border-black dark:border-white block"></div>
             <div className="w-full p-4 mt-7">
               <h2 className="font-bold text-lg mb-4 dark:d-text">
                 Available Grants
@@ -751,7 +754,7 @@ const Search_grants = ({ grants }) => {
                                 {claim.Active ? 
                                   <Link 
                                     href={`/apply/${claim._id}`}
-                                    className="dark:d-text px-6 py-2 bg-sky-100 dark:border dark:border-white dark:d-custom-dark-grey-background dark:d-text hover:scale-105 rounded-full font-semibold mb-2 mt-5">
+                                    className="dark:d-text px-6 py-2 bg-sky-100 border border-neutral-700 dark:border-white dark:d-custom-dark-grey-background dark:d-text hover:scale-105 rounded-full font-semibold mb-2 mt-5">
                                     Apply Here
                                   </Link>
                                 :
