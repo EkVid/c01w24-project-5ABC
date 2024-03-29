@@ -625,8 +625,7 @@ def getFilteredGrants():
         grants = list(grantCollection.find({"$and": query}))
 
     for grant in grants:
-        grant["grantID"] = str(grant["_id"])
-        del grant["_id"]
+        grant["_id"] = str(grant["_id"])
 
     return grants, 200
 
