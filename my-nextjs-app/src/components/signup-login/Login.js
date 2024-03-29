@@ -98,7 +98,7 @@ const Login = () => {
               height={80 * fontSizeMultiplier}
               className="rounded-3xl"
             />
-            <h2 className="text-center lg:text-6xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black dark:d-text">
+            <h2 tabIndex={0} className="text-center lg:text-6xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black dark:d-text">
               Sign in to your account
             </h2>
           </div>
