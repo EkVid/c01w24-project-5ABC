@@ -517,7 +517,7 @@ def getAllGrantApplications(_id):
 
 
 @app.route("/updateGrantWinners", methods=["PUT"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def updateGrantWinners():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
@@ -535,7 +535,7 @@ def updateGrantWinners():
 
 
 @app.route("/updateGrantLosers", methods=["PUT"])
-# @tokenCheck.token_required
+@tokenCheck.token_required
 def updateGrantLosers():
     if request.headers.get("Content-Type") != "application/json":
         return {"message": "Unsupported Content Type"}, 400
