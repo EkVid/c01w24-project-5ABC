@@ -53,7 +53,7 @@ class NumberOptions(BaseModel):
     isIntegerOnly: Optional[bool] = None
     minNum: Optional[Union[int, float]] = 0
     maxNum: Optional[Union[int, float]] = MAX_NUM
-    
+
 class MultipleChoiceOptions(BaseModel):
     answers: list[str]
 
@@ -187,6 +187,7 @@ Application Model
 """
 class Application(BaseModel):
     grantID: str
+    applicationID: str
     email: str
     dateSubmitted: Union[str, date]
     status: int

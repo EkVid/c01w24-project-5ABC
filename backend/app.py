@@ -270,7 +270,6 @@ def testDelete():
 
 # For Frontend Use
 @app.route("/getFile/<_id>", methods=['GET'])
-@tokenCheck.token_required
 def getFile(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -395,7 +394,7 @@ def getGrantorGrants():
 
 
 @app.route("/deleteGrant/<_id>", methods=["DELETE"])
-@tokenCheck.token_required
+# @tokenCheck.token_required
 def deleteGrant(_id):
     if not ObjectId.is_valid(_id):
         return {"message": "Invalid ID"}, 400
@@ -404,6 +403,8 @@ def deleteGrant(_id):
     grant = grantCollection.find_one_and_delete({"_id": objID})
     if grant == None:
         return {"message": "Grant form with the given ID not found"}, 404
+    
+    grantAppCollection.delete_many({"grantID":str(grant["_id"])})
 
     for question in grant["QuestionData"]:
         fileData = question.get("fileData", None)
@@ -512,14 +513,11 @@ def getGranteeApplications():
     grantIDs = [ObjectId(application["grantID"]) for application in applicationDatas]
     grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
 
-    if len(applicationDatas) != len(grants):
-        return {"message": "Question data retrieval error"}, 403
-
     # Assign grantIDs to link each application to its grant
     for grant in grants:
         grant["grantID"] = str(grant["_id"])
         del grant["_id"]
-
+      
     applicationsWithGrants = []
     # Tradeoff for having only two DB calls
     for applicationData in applicationDatas:
@@ -551,7 +549,6 @@ def getAllGrantApplications(_id):
     return {"applications": applications}, 200
 
 
-
 @app.route("/updateGrantWinners", methods=["PUT"])
 @tokenCheck.token_required
 def updateGrantWinners():
@@ -559,22 +556,39 @@ def updateGrantWinners():
         return {"message": "Unsupported Content Type"}, 400
 
     json = request.json
-    applicationID = json.get("applicationID", "")
-    grantID = json.get("grantID", "")
-    email = json.get("email", "")
-    if not email or not ObjectId.is_valid(applicationID) or not ObjectId.is_valid(grantID):
-        return {"message": "Invalid application ID, grant ID, or email"}, 400
+    applicationID = ObjectId(json.get("applicationID", ""))
+    application = grantAppCollection.find_one({"_id": applicationID})
+    if application == None:
+        return {"message": "Invalid application ID"}, 400
+    
+    grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$push": {"WinnerIDs": str(applicationID)}})
+    grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$inc": {"NumWinners": 1}})
+    grant = grantCollection.find_one({"_id": ObjectId(application["grantID"])})
+    if grant["NumWinners"] >= grant["MaxWinners"]:
+        grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$set": {"Active": False}})
 
-    user = userCollection.find_one({"Email": email})
-    if user is None:
-        return {"message": "Grantee with the given email does not exist"}, 400
-
-    applicationObjID = ObjectId(applicationID)
-    grantObjID = ObjectId(grantID)
-    grantCollection.update_one({"_id": grantObjID}, {"$push": {"WinnerIDs": applicationID}})
-    grantAppCollection.update_one({"_id": applicationObjID}, {"$set": {"status": ApplicationStatus.APPROVED}})
+    grantAppCollection.update_one({"_id": applicationID}, {"$set": {"status": ApplicationStatus.APPROVED}})
 
     return {"message": "Application winner successfully added"}, 200
+
+
+@app.route("/updateGrantLosers", methods=["PUT"])
+@tokenCheck.token_required
+def updateGrantLosers():
+    if request.headers.get("Content-Type") != "application/json":
+        return {"message": "Unsupported Content Type"}, 400
+
+    json = request.json
+    applicationID = ObjectId(json.get("applicationID", ""))
+    application = grantAppCollection.find_one({"_id": applicationID})
+    if application == None:
+        return {"message": "Invalid application ID"}, 400
+    
+    grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$pull": {"WinnerIDs": str(applicationID)}})
+    grantCollection.update_one({"_id": ObjectId(application["grantID"])}, {"$inc": {"NumWinners": -1}})
+    grantAppCollection.update_one({"_id": applicationID}, {"$set": {"status": ApplicationStatus.REJECTED}})
+
+    return {"message": "Application loser successfully removed"}, 200
 
 
 @app.route("/deleteApplication/<_id>", methods=["DELETE"])
@@ -645,8 +659,7 @@ def getFilteredGrants():
         grants = list(grantCollection.find({"$and": query}))
 
     for grant in grants:
-        grant["grantID"] = str(grant["_id"])
-        del grant["_id"]
+        grant["_id"] = str(grant["_id"])
 
     return grants, 200
 
