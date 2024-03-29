@@ -15,7 +15,7 @@ export async function getData(){
     if(response.status !== 200){
       throw new Error('Failed to fetch applications')
     }
-    return response.data.applicationsWithGrants
+    return response.data.applicationsWithGrants.reverse()
 }
 
 const Grantee_browse_page = async () => {

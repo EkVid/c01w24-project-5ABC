@@ -2,6 +2,10 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import FontSizeContext from "@/components/utils/FontSizeContext";
+import ThemeContext from "../utils/ThemeContext";
+import ColourBlindnessContext from "@/components/utils/ColorBlindnessContext";
+import ReducedMotionContext from "../utils/ReducedMotionContext";
+import { getcbMode } from "@/components/utils/cbMode";
 import show_password from "../../../public/password_eye.svg";
 import hide_password from "../../../public/password_eye_cross.svg";
 import Image from "next/image";
@@ -12,6 +16,9 @@ import axios from "axios";
 const VerificationSuccessMessage = () => {
   const [countdown, setCountdown] = useState(3); // Start the countdown at 3 seconds
   const router = useRouter();
+
+  const cbMode = useContext(ColourBlindnessContext)
+  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
 
   useEffect(() => {
     if (countdown === 0) {
@@ -28,7 +35,7 @@ const VerificationSuccessMessage = () => {
   }, [countdown, router]);
 
   return (
-    <div className="fixed top-0 left-0 w-full p-4 bg-green-500 text-white text-center shadow-md">
+    <div className={`fixed top-0 left-0 w-full p-4 text-white text-center shadow-md ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}>
       Password Reset successful! Redirecting you to Login page in {countdown}{" "}
       seconds...
     </div>
@@ -50,6 +57,11 @@ const ResetPassword = () => {
 
 
   const fontSizeMultiplier = useContext(FontSizeContext) / 100;
+  
+  const cbMode = useContext(ColourBlindnessContext)
+  const { protanopia, deuteranopia, tritanopia } = getcbMode(cbMode)
+  const theme = useContext(ThemeContext)
+  const isReducedMotion = useContext(ReducedMotionContext)
 
   const onValueChange = (value) => {
     console.log('Received value:', value);
@@ -140,23 +152,22 @@ const ResetPassword = () => {
 
   return (
     <div
-      className="flex items-center justify-center flex-grow max-h-screen"
+      className={`flex items-center justify-center flex-grow ${theme === 'light' ? "" : "d-custom-navy-background border-t border-white"}`}
       style={{
-        backgroundImage:
-          "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')",
+        backgroundImage:`${theme === 'light' ? "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00MjItMDQ3LWtxOTJ3eDl5LmpwZw.jpg')" : ""}`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}
+    }}
     >
       {display && <VerificationFailMessage text={errorMsg} />}
       <div
-        className="flex flex-col md:flex-row bg-white shadow-xl overflow-hidden rounded-lg"
+        className="flex flex-col md:flex-row bg-white dark:d-custom-dark-grey-background shadow-xl overflow-hidden rounded-lg"
         style={{ maxWidth: "1000px", width: "100%" }}
       >
         <div className="flex flex-col w-full p-16 space-y-8">
           <div className="space-y-6">
             <div>{showSuccessMessage && <VerificationSuccessMessage />}</div>
-            <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black">
+            <h2 className="text-center lg:text-5xl md:text-5xl text-4xl mb-8 mt-8 font-semibold dark:d-text">
               Reset your password
             </h2>
           </div>
@@ -165,10 +176,10 @@ const ResetPassword = () => {
             onSubmit={handleSubmit}
           >
             {/* New Password Input */}
-            <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs font-semibold text-green-600">
+            <div className={`text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs font-semibold ${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"}`}>
               <p>New Password</p>
               <p
-                className={`text-red-500 text-xs mt-5 Participant 5: 5 ${
+                className={`text-red-500 text-sm mt-5 Participant 5: 5 ${
                   passwordError ? "block" : "hidden"
                 }`}
               >
@@ -211,7 +222,7 @@ const ResetPassword = () => {
               </div>
             </div>
             {/* Confirm New Password Input */}
-            <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs text-green-600 font-semibold">
+            <div className={`text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs font-semibold ${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"}`}>
               <p>Confirm New Password</p>
               <p
                 className={`text-red-500 text-xs mt-5 ${
@@ -255,7 +266,7 @@ const ResetPassword = () => {
                 )}
               </div>
             </div>
-            <div className="text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs text-green-600 font-semibold">
+            <div className={`text-left w-full text-sm px-4 lg:max-w-lg md:max-w-md max-w-xs font-semibold ${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"}`}>
               <p>Verification Code</p>
             </div>
             <div className="relative flex items-center w-full lg:max-w-lg md:max-w-md max-w-xs">
@@ -277,7 +288,7 @@ const ResetPassword = () => {
             <div className="bg-green-500 max-w-xs w-full rounded-full">
               <button
                 type="submit"
-                className="text-white text-md w-full font-semibold bg-green-500 hover:bg-green-600 rounded-full h-12 px-6 transition duration-150 ease-in-out"
+                className={`text-white text-md w-full font-semibold hover:scale-105 rounded-full h-12 px-6 ${isReducedMotion ? "" : "transition duration-150 ease-in-out"} ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
               >
                 Save Password
               </button>

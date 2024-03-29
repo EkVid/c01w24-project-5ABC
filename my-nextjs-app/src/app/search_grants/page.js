@@ -15,7 +15,7 @@ export async function getData(){
       throw new Error('Failed to fetch applications')
     }
 
-    return response.data.grants
+    return response.data.grants.reverse()
 }
 
 

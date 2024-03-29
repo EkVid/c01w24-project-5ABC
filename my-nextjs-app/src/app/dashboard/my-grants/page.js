@@ -14,7 +14,7 @@ export async function getData(){
       throw new Error('Failed to fetch grant data')
     }
 
-    return response.data.grants
+    return response.data.grants.reverse()
 
 }
 

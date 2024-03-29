@@ -6,7 +6,7 @@ export default function ViewDate({ question }){
   const isReduceMotion = useContext(ReducedMotionContext);
 
   const isDateRange = question.options?.isDateRange ?? false;
-  const isBothRequired = question.options?.isBothRequired && isDateRange ? options.isBothRequired : false;
+  const isBothRequired = question.options?.isBothRequired && isDateRange ? question.options.isBothRequired : false;
 
   return (
     <div className='p-2 md:mx-10 mx-4 my-4 border border-black dark:border-white rounded'>

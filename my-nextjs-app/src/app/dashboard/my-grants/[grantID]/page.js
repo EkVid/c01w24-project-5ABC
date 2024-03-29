@@ -1,14 +1,12 @@
 'use client'
 import GrantInfo from "@/components/Dashboard/Grants/MyGrants/grantInfo/GrantInfo";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-const MyGrants = async () => {
-    const params = useParams()
+const MyGrants = async ({params}) => {
     const router = useRouter()
 
     const grantID = params.grantID
-    console.log(grantID)
     const userData = JSON.parse(sessionStorage.getItem('userData'))
     let grant = null
     let applications = null
@@ -27,7 +25,6 @@ const MyGrants = async () => {
 
       try{
         const appRes = await axios.get(`http://localhost:5000/getAllGrantApplications/${grantID}`, {headers: authHeaders})
-        console.log('applications', appRes)
         applications = appRes.data.applications
       }
       catch(err){

@@ -62,7 +62,7 @@ const Apply = ({title, grantID, fetchedQuestData}) => {
       if(!confirm("Are you sure you want to leave? You will lose your answers")) return;
     }
     // TODO: Navigate back to application page
-    router.push("/");
+    router.push("/search_grants");
   }
 
   // Checks answers and validates them and shows error message for issues

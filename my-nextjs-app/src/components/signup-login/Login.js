@@ -3,8 +3,8 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Four_Circle from "../../../public/logo.svg";
-import cbFourCircle from "../../../public/cblogo.svg"
-import monochromeFour_Circle from "../../../public/monochromelogo.svg"
+import cbFour_Circle from "../../../public/cblogo.svg"
+import trFour_Circle from "../../../public/trlogo.svg"
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ThemeContext from "../utils/ThemeContext";
@@ -92,13 +92,13 @@ const Login = () => {
         <div className="flex flex-col w-full md:w-1/2 lg:w-3/5 xl:w-3/5 p-16 space-y-8">
           <div className="space-y-6 flex flex-col items-center md:items-start">
             <Image
-              src={monochrome ? monochromeFour_Circle : protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
+              src={protanopia ? cbFour_Circle : deuteranopia ? cbFour_Circle : tritanopia ? trFour_Circle : Four_Circle}
               alt="Logo"
               width={80 * fontSizeMultiplier}
               height={80 * fontSizeMultiplier}
               className="rounded-3xl"
             />
-            <h2 className="text-center lg:text-6xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black dark:d-text">
+            <h2 tabIndex={0} className="text-center lg:text-6xl md:text-5xl text-4xl mb-8 mt-8 font-semibold text-black dark:d-text">
               Sign in to your account
             </h2>
           </div>

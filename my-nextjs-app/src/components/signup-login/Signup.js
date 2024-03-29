@@ -3,8 +3,8 @@ import React, { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Four_Circle from "../../../public/logo.svg";
-import cbFourCircle from "../../../public/cblogo.svg"
-import monochromeFour_Circle from "../../../public/monochromelogo.svg"
+import cbFour_Circle from "../../../public/cblogo.svg"
+import trFour_Circle from "../../../public/trlogo.svg"
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ThemeContext from "../utils/ThemeContext";
@@ -140,7 +140,7 @@ const SignUp = () => {
         <div className="flex flex-col w-full md:w-4/6 p-12 space-y-6 ">
           <div className="flex flex-col items-center lg:items-start space-y-4">
             <Image
-              src={monochrome ? monochromeFour_Circle : protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
+              src={protanopia ? cbFour_Circle : deuteranopia ? cbFour_Circle : tritanopia ? trFour_Circle : Four_Circle}
               alt="Logo"
               width={80 * fontSizeMultiplier}
               height={80 * fontSizeMultiplier}
@@ -153,7 +153,7 @@ const SignUp = () => {
           </div>
           <p className="text-center text-lg mt-4 text-black dark:d-text">
             Already have an account?{" "}
-            <Link href="/login" className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : monochrome ? "custom-green-background-mo dark:d-text-white" : "custom-green"} hover:underline`}>
+            <Link href="/login" className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"} hover:underline`}>
               Sign in
             </Link>
           </p>

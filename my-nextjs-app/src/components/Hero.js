@@ -2,6 +2,7 @@
 
 import Four_Circle from "../../public/logo.svg";
 import cbFour_Circle from "../../public/cblogo.svg"
+import trFour_Circle from "../../public/trlogo.svg"
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import monochromeFour_Circle from "../../public/monochromelogo.svg"
@@ -22,7 +23,7 @@ const Hero = () => {
         <div className="flex flex-col gap-8 items-center text-center lg:items-start lg:text-left text-align:ceter">
           <h1 className="custom-text dark:d-text text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
             Funding futures,{" "}
-            <span className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : monochrome ? "custom-green-mo" : "custom-green"}`}>changing lives</span>.
+            <span className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"}`}>changing lives</span>.
           </h1>
           <p className="custom-text text-sm md:text-sm lg:text-sm custom-grey dark:text-[#dddddd]">
             Simplify your life with MA everywhere, our online and mobile
@@ -38,7 +39,7 @@ const Hero = () => {
       </div>
       <div className="flex justify-center">
         <Image
-          src={monochrome ? monochromeFour_Circle : protanopia || deuteranopia || tritanopia ? cbFour_Circle : Four_Circle}
+          src={protanopia ? cbFour_Circle : deuteranopia ? cbFour_Circle : tritanopia ? trFour_Circle : Four_Circle}
           alt="Logo"
           width={300 * fontSizeMultiplier}
           height={"auto"}

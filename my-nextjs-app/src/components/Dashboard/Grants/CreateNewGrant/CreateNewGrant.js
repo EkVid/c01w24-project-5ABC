@@ -145,7 +145,7 @@ const CreateNewGrant = () => {
 
     const raceElements = grant.profileReqs.race.map(race => {
         return (
-            <div tabIndex='0' aria-label={`${race} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeRace(race) : null}>
+            <div tabIndex='0' aria-label={`Race ${race} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeRace(race) : null}>
                 {race}
                 <Image 
                     src={xMark}
@@ -178,7 +178,7 @@ const CreateNewGrant = () => {
 
     const genderElements = grant.profileReqs.gender.map(gender => {
         return (
-            <div tabIndex='0' aria-label={`${gender} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeGender(gender) : null}>
+            <div tabIndex='0' aria-label={`Gender ${gender} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeGender(gender) : null}>
                 {gender}
                 <Image 
                     src={xMark}
@@ -211,7 +211,7 @@ const CreateNewGrant = () => {
 
     const nationalityElements = grant.profileReqs.nationality.map(nationality => {
         return (
-            <div tabIndex='0' aria-label={`${nationality} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeNationality(nationality) : null}>
+            <div tabIndex='0' aria-label={`Nationality ${nationality} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeNationality(nationality) : null}>
                 {nationality}
                 <Image 
                     src={xMark}
@@ -257,11 +257,11 @@ const CreateNewGrant = () => {
                 <ViewGrant grant={grant} setViewGrant={setViewGrant}/>
             :
                 <div>
-                    <h1 className="text-3xl dark:d-text">
+                    <h1 tabIndex={0} className="text-3xl dark:d-text">
                         Create New Grant
                     </h1>
 
-                    <p className="text-lg dark:d-text my-6 ms-6">
+                    <p tabIndex={0} className="text-lg dark:d-text my-6 ms-6">
                         Seamlessly create new grants with a quick and easy application 
                         form builder. Drag and drop any question type and customize it 
                         to your needs. Mix and match to create the perfect form!
@@ -269,7 +269,7 @@ const CreateNewGrant = () => {
 
                     <div className="w-full shadow-2xl rounded-xl p-8 dark:shadow-none dark:border-2 dark:border-neutral-600">
                         <form onSubmit={handleSubmit} onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}>
-                            <label id="grant-title" aria-label="Your grant title">
+                            <label id="grant-title" aria-label="Your custom grant title, required">
                                 <input 
                                     className="w-full mb-10 text-3xl dark:d-text bg-transparent focus:outline-none dark:placeholder:text-neutral-300"
                                     type="text" 
@@ -281,7 +281,7 @@ const CreateNewGrant = () => {
                                 />
                             </label>
 
-                            <label id="grant-desc" aria-label="grant-description" className="flex md:flex-row flex-col items-top ms-4 mb-10">
+                            <label id="grant-desc" aria-label="Description of your grant, required" className="flex md:flex-row flex-col items-top ms-4 mb-10">
                                 <p className="pt-2 dark:d-text">Desctipion*&nbsp;:</p>
                                 <textarea 
                                     className="md:mx-4 mx-0 p-2 rounded-md w-full custom-dark-grey-background border-2 border-neutral-300 focus:border-neutral-600 dark:d-text dark:d-custom-dark-grey-background dark:border-neutral-700 dark:focus:border-white" 
@@ -294,7 +294,7 @@ const CreateNewGrant = () => {
                                 </textarea>
                             </label>
 
-                            <label id="grant-nw" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="number of winners">
+                            <label id="grant-nw" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="Number of possible winners, required">
                                 <p className="pt-2 dark:d-text">Number of Grant Winners*&nbsp;:</p>
                                 <input 
                                     type="number"
@@ -307,7 +307,7 @@ const CreateNewGrant = () => {
                                 />
                             </label>
 
-                            <label id="grant-aw" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="amount per winner (CAD)">
+                            <label id="grant-aw" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="Amount per winner ($ CAD), required">
                                 <p className="pt-2 dark:d-text">Amount Per Winner (CAD $)*&nbsp;:</p>
                                 <input 
                                     type="number"
@@ -334,13 +334,18 @@ const CreateNewGrant = () => {
                                     >
                                         {grant.Title ? grant.Title : 'Default'} Form
                                     </p>
-                                    <Link aria-label="edit grant application form" href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} className={`px-8 my-2 md:my-0 text-center py-4 rounded-md text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}>
+                                    <Link 
+                                        aria-label="Edit grant application form, required" 
+                                        href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} 
+                                        className={`px-8 my-2 md:my-0 text-center py-4 rounded-md text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
+                                        onKeyUp={(e) => {if(e.key === 'Enter') e.target.click()}}
+                                    >
                                         Edit
                                     </Link>
                                 </div> 
                             </div>
 
-                            <label id="grant-deadline" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="grant deadline">
+                            <label id="grant-deadline" className="flex md:flex-row flex-col items-top ms-4 mb-10" aria-label="Deadline for applications, required">
                                 <p className="pt-2 dark:d-text">Application Deadline*&nbsp;:</p>
                                 <input 
                                     type="date"
@@ -370,7 +375,7 @@ const CreateNewGrant = () => {
                                                 step='1'
                                                 onBlur={verifyMinAge}
                                                 placeholder="0"
-                                                aria-label="minimum age"
+                                                aria-label="minimum age, not required"
                                             />
                                             -
                                             <input 
@@ -380,7 +385,7 @@ const CreateNewGrant = () => {
                                                 onChange={setMaxAge}
                                                 onBlur={verifyMaxAge}
                                                 placeholder="0"
-                                                aria-label="maximum age"
+                                                aria-label="maximum age, not required"
                                             />
                                         </div>
                                         
@@ -395,7 +400,7 @@ const CreateNewGrant = () => {
                                                 value={race} 
                                                 onChange={(e) => setRace(e.target.value)}
                                                 onKeyUp={addRace}
-                                                aria-label="desired races"
+                                                aria-label="desired races, press enter to add, not required"
                                             />
 
                                             <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
@@ -413,7 +418,7 @@ const CreateNewGrant = () => {
                                                 value={gender} 
                                                 onChange={(e) => setGender(e.target.value)}
                                                 onKeyUp={addGender}
-                                                aria-label="desired genders"
+                                                aria-label="desired genders, press enter to add, not required"
                                             />
 
                                             <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
@@ -431,7 +436,7 @@ const CreateNewGrant = () => {
                                                 value={nationality} 
                                                 onChange={(e) => setNationality(e.target.value)}
                                                 onKeyUp={addNationality}
-                                                aria-label="desired nationalities"
+                                                aria-label="desired nationalities, press enter to add, not required"
                                             />
 
                                             <div className="flex flex-wrap gap-3 lg:ms-6 ms-4 md:mt-0">
@@ -440,7 +445,7 @@ const CreateNewGrant = () => {
                                         </div>
                                     </label>
 
-                                    <label tabIndex="0" className="flex flex-col my-2">
+                                    <label tabIndex="0" aria-label="Are they a veteran, not required" className="flex flex-col my-2">
                                         Are they a veteran:
                                         <div className="flex flex-col lg:flex-row gap-x-10">
                                             <label id="grant-nv" tabIndex="0" aria-label="not a veteran" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
