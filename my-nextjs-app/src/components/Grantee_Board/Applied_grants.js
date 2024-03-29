@@ -32,7 +32,7 @@ const Applied_Grants = ({ applications }) => {
     if(filters.deadline){
       newFilters["deadline"] = filters.deadline
     }
-    if(filters.status !== '0'){
+    if(filters.status){
       newFilters["status"] = parseInt(filters.status)
     }
     if(filters.maxAmount){
@@ -48,6 +48,7 @@ const Applied_Grants = ({ applications }) => {
       'Authorization': `Bearer ${userData.token}`
     }
     const newFilters = filterFiltersForBackend(filters)
+    console.log(newFilters)
     const body = {
         Email: userData.email,
         Filters: newFilters,
@@ -141,7 +142,6 @@ const Applied_Grants = ({ applications }) => {
   }
 
   function onChangeStatus(e){
-    console.log(e.target.value)
     setFilters(prevFilters => ({...prevFilters, status:e.target.value}))
   }
 

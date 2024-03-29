@@ -272,6 +272,7 @@ const Search_grants = ({ grants }) => {
                   id="toggleButton"
                   className={`${isReducedMotion ? "" : "transition-transform"}`}
                   onClick={toggleFormVisibility}
+                  aria-label="toggle filter menu"
                 >
                   <svg
                     className={`w-6 h-6 dark:d-text ${isReducedMotion ? "" : "transition-transform duration-200 ease-in-out"} ${
@@ -587,7 +588,7 @@ const Search_grants = ({ grants }) => {
             </div>
             <div className="border-2 border-black dark:border-white block"></div>
             <div className="w-full p-4 mt-7">
-              <h2 className="font-bold text-lg mb-4 dark:d-text">
+              <h2 tabIndex={0} className="font-bold text-lg mb-4 dark:d-text">
                 Available Grants
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 dark:d-text mt-3">

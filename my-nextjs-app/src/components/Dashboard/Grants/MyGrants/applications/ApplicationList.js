@@ -28,7 +28,7 @@ export default function ApplicationList({ applications, setCurrApp, setViewApp }
     }
     else if(applications.length === 0){
         applicationElements = 
-            <h1 className="dark:d-text">
+            <h1 tabIndex={0} className="dark:d-text">
                 There are no applications for this grant. 
                 {/* <Link href='/dashboard/my-grants' className="ps-2 underline">
                     Go Back

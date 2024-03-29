@@ -145,7 +145,7 @@ const CreateNewGrant = () => {
 
     const raceElements = grant.profileReqs.race.map(race => {
         return (
-            <div tabIndex='0' aria-label={`${race} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeRace(race) : null}>
+            <div tabIndex='0' aria-label={`Race ${race} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeRace(race) : null}>
                 {race}
                 <Image 
                     src={xMark}
@@ -178,7 +178,7 @@ const CreateNewGrant = () => {
 
     const genderElements = grant.profileReqs.gender.map(gender => {
         return (
-            <div tabIndex='0' aria-label={`${gender} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeGender(gender) : null}>
+            <div tabIndex='0' aria-label={`Gender ${gender} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeGender(gender) : null}>
                 {gender}
                 <Image 
                     src={xMark}
@@ -211,7 +211,7 @@ const CreateNewGrant = () => {
 
     const nationalityElements = grant.profileReqs.nationality.map(nationality => {
         return (
-            <div tabIndex='0' aria-label={`${nationality} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeNationality(nationality) : null}>
+            <div tabIndex='0' aria-label={`Nationality ${nationality} press enter to remove`} className="flex w-fit p-2 my-0 lg:my-4 border border-black dark:border-white rounded dark:d-custom-navy-background" key={uuidv4()} onKeyUp={(e)=> e.key === 'Enter' ? removeNationality(nationality) : null}>
                 {nationality}
                 <Image 
                     src={xMark}
@@ -334,7 +334,12 @@ const CreateNewGrant = () => {
                                     >
                                         {grant.Title ? grant.Title : 'Default'} Form
                                     </p>
-                                    <Link aria-label="Edit grant application form, required" href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} className={`px-8 my-2 md:my-0 text-center py-4 rounded-md text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}>
+                                    <Link 
+                                        aria-label="Edit grant application form, required" 
+                                        href={`/edit/${grant.Title ? grant.Title : 'Default Form'}`} 
+                                        className={`px-8 my-2 md:my-0 text-center py-4 rounded-md text-white border-2 border-neutral-300 hover:scale-105 dark:d-text dark:border-neutral-700 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
+                                        onKeyUp={(e) => {if(e.key === 'Enter') e.target.click()}}
+                                    >
                                         Edit
                                     </Link>
                                 </div> 
