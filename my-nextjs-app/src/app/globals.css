@@ -79,7 +79,7 @@ body {
   }
 
   .custom-green-tr{
-    color: #1341d8;
+    color: #910acf;
   }
   
   .custom-green-background{
@@ -95,7 +95,7 @@ body {
   }
   
   .custom-green-background-tr{
-    background-color: #1341d8;
+    background-color: #910acf;
   }
   
   .custom-green-dark {
@@ -223,6 +223,9 @@ body {
     color: #1389d8;
   }
 
+  .d-custom-green-color-blind-tr{
+    color: #b417fd;
+  }
 }
 
 /* ------------------Non-Dynamic Font Sizes------------------*/

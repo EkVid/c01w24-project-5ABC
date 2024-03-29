@@ -4,7 +4,7 @@ const DashboardHome = () => {
     return(
         <DashboardInnerContainer>
             <div className="min-h-screen dark:d-text">
-                Home dashboard
+                <p tabIndex={0} >Home dashboard</p>
             </div>
         </DashboardInnerContainer>
         

@@ -21,7 +21,7 @@ const Hero = () => {
         <div className="flex flex-col gap-8 items-center text-center lg:items-start lg:text-left text-align:ceter">
           <h1 className="custom-text dark:d-text text-3xl tracking-widest md:text-4xl lg:text-5xl font-semibold">
             Funding futures,{" "}
-            <span className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"}`}>changing lives</span>.
+            <span className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"}`}>changing lives</span>.
           </h1>
           <p className="custom-text text-sm md:text-sm lg:text-sm custom-grey dark:text-[#dddddd]">
             Simplify your life with MA everywhere, our online and mobile

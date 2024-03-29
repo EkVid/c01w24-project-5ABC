@@ -12,7 +12,7 @@ const CheckWord = ({word, theme, protanopia, deuteranopia, tritanopia}) => {
         width={30}
         className="transition-all duration-300 mr-4 pointer"
       />
-      <h2 className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} self-center text-3xl font-bold`}>
+      <h2 className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:custom-green-color-blind-tr" : "custom-green"} self-center text-3xl font-bold`}>
         {word}
       </h2>
     </div>

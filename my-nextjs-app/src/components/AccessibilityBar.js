@@ -134,13 +134,13 @@ const AccessibilityBar = ({children, onChangeTheme, onChangeFont, onChangeMotion
           <div className="flex flex-col p-2 rounded-lg drop-shadow-lg custom-offwhite-background dark:bg-[#1f1f1f] border-2 border-transparent dark:border-gray-600 min-w-40">
             <h3 className="text-center cs-text-xl dark:d-text">Reduced Motion</h3>
             <div className="flex space-x-2 items-center mt-4">
-              <p className="cs-text-lg dark:d-text">Off</p>
+              <p className="dark:d-text">Off</p>
               <label id='motion-label' htmlFor="motion" tabIndex='0' aria-label="toggle reduced motion" className="relative cursor-pointer focus-visible:ring focus-visible:ring-[#E0E0E0]" onKeyUp={(e)=> e.key === 'Enter' ? e.target.click() : null}>
                 <input id='motion' name='motion' value="reduced" tabIndex='-1' type="checkbox" aria-labelledby="motion-label" className="sr-only peer" onChange={handleOnClickMotion} checked={isReducedMotion}/>
                 <div className={`bg-[#E0E0E0] ${protanopia ? "peer-checked:custom-green-background-pt" : deuteranopia ? "peer-checked:custom-green-background-dt" : tritanopia ? "peer-checked:custom-green-background-tr" : "peer-checked:custom-green-background"} relative w-20 h-10 rounded-full ${isReducedMotion ? "" : "transition-colors"} duration-400 z-0`}></div>
                 <span className="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:left-11 transition-all duration-400 z-1"></span>
               </label>
-              <p className="cs-text-lg dark:d-text">On</p>
+              <p className="dark:d-text">On</p>
             </div>
           </div>
         </div>

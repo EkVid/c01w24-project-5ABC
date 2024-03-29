@@ -152,7 +152,7 @@ const SignUp = () => {
           </div>
           <p className="text-center text-lg mt-4 text-black dark:d-text">
             Already have an account?{" "}
-            <Link href="/login" className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline`}>
+            <Link href="/login" className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"} hover:underline`}>
               Sign in
             </Link>
           </p>

@@ -215,7 +215,7 @@ const ForgotPassword = () => {
             <p>
               <Link
                 href="/login"
-                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline mr-5`}
+                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"} hover:underline mr-5`}
               >
                 Login
               </Link>
@@ -224,7 +224,7 @@ const ForgotPassword = () => {
             <p>
               <Link
                 href="/signup"
-                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind" : "custom-green"} hover:underline ml-5`}
+                className={`${protanopia ? "custom-green-pt dark:d-custom-green-color-blind" : deuteranopia ? "custom-green-dt dark:d-custom-green-color-blind" : tritanopia ? "custom-green-tr dark:d-custom-green-color-blind-tr" : "custom-green"} hover:underline ml-5`}
               >
                 Register
               </Link>
