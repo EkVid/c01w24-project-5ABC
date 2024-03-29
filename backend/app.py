@@ -3,10 +3,10 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
-from userRoutes import user
-from fileRoutes import files
-from grantRoutes import grant
-from applicationRoutes import application
+from routes.userRoutes import user
+from routes.fileRoutes import files
+from routes.grantRoutes import grant
+from routes.applicationRoutes import application
 
 load_dotenv()
 app = Flask(__name__)

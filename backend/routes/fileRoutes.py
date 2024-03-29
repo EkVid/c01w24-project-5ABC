@@ -1,3 +1,5 @@
+# File containing file management and file upload related routes
+
 from bson import ObjectId
 from flask import request, Blueprint, send_file
 
@@ -6,8 +8,6 @@ from helpers import *
 
 
 files = Blueprint('files' , __name__)
-
-# File management routes
 
 def uploadFile(file, fileName):
     fs.put(file, filename=fileName)

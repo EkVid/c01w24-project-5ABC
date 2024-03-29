@@ -1,3 +1,5 @@
+# File containing grantor and grant creation related routes
+
 from bson import ObjectId
 from flask import Blueprint, request
 from pydantic import ValidationError
@@ -8,7 +10,7 @@ import re
 from dataModels import *
 from helpers import *
 from db import *
-from fileRoutes import *
+from backend.routes.fileRoutes import *
 
 
 grant = Blueprint('grant' , __name__)

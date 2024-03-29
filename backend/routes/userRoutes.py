@@ -1,3 +1,5 @@
+# File containing user login/register related routes
+
 from flask import Blueprint, request, current_app
 from middleware import tokenCheck
 from email.mime.text import MIMEText
@@ -7,11 +9,10 @@ import bcrypt
 import datetime
 import random
 
-user = Blueprint('user' , __name__)
-
 from db import *
 
-# User Login/Register Routes
+
+user = Blueprint('user' , __name__)
 
 @user.route("/signup", methods=["POST"])
 def register():

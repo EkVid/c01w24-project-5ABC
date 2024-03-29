@@ -1,3 +1,5 @@
+# File containing grantor and grant application related routes
+
 from bson import ObjectId
 from flask import Blueprint, request
 from middleware import tokenCheck
@@ -8,7 +10,7 @@ import re
 from dataModels import *
 from helpers import *
 from db import *
-from fileRoutes import *
+from backend.routes.fileRoutes import *
 
 
 application = Blueprint('application' , __name__)
