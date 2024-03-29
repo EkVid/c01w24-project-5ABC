@@ -3,7 +3,8 @@ import React, { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Four_Circle from "../../../public/logo.svg";
-import cbFourCircle from "../../../public/cblogo.svg"
+import cbFour_Circle from "../../../public/cblogo.svg"
+import trFour_Circle from "../../../public/trlogo.svg"
 import Image from "next/image";
 import FontSizeContext from "@/components/utils/FontSizeContext";
 import ThemeContext from "../utils/ThemeContext";
@@ -139,7 +140,7 @@ const SignUp = () => {
         <div className="flex flex-col w-full md:w-4/6 p-12 space-y-6 ">
           <div className="flex flex-col items-center lg:items-start space-y-4">
             <Image
-              src={protanopia || deuteranopia || tritanopia ? cbFourCircle : Four_Circle}
+              src={protanopia ? cbFour_Circle : deuteranopia ? cbFour_Circle : tritanopia ? trFour_Circle : Four_Circle}
               alt="Logo"
               width={80 * fontSizeMultiplier}
               height={80 * fontSizeMultiplier}
