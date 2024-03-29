@@ -12,11 +12,10 @@ export async function getData(){
     }
 
     const response = await axios.post('http://localhost:5000/getGranteeApplications', {email: userData.email}, {headers: headers})
-    console.log(response)
     if(response.status !== 200){
       throw new Error('Failed to fetch applications')
     }
-    return response.data.applicationsWithGrants
+    return response.data.applicationsWithGrants.reverse()
 }
 
 const Grantee_browse_page = async () => {

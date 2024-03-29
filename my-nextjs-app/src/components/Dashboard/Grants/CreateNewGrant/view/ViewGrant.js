@@ -43,6 +43,14 @@ export default function ViewGrant({ grant, setViewGrant }){
                 newQuestion.fileIdx = fileIdx
                 fileIdx++
             }
+            if(question.answersObj){
+                if(question.options){
+                    newQuestion = {...newQuestion, options:{...question.options, answersObj: question.answersObj}}
+                }
+                else{
+                    newQuestion = {...newQuestion, options:{answersObj: question.answersObj}}
+                }
+            }
             delete newQuestion.file
             delete newQuestion.id
             delete newQuestion.errMsg
@@ -50,7 +58,6 @@ export default function ViewGrant({ grant, setViewGrant }){
         })
         const finalGrant = {...signedGrant, QuestionData: finalQuestionArr}
         console.log(finalGrant)
-        console.log(fileArr)
         form.append('jsonData', JSON.stringify(finalGrant))
         form.append('files', JSON.stringify(fileArr))
         return form

@@ -108,30 +108,37 @@ export default function GrantInfo({ grant, grantID, applications }){
 
                 <div className="w-full flex flex-col sm:flex-row">
                     {grant.Active ? 
-                        <button 
-                            onClick={() => {
-                                closeGrant(grantID, userData)
-                                router.refresh()
-                                console.log(grant)
-                            }}
-                            className="rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 bg-[#d76b65]"
-                            aria-label="Change grant status to closed"
-                        >
-                            Close Grant
-                        </button>
-                    :
-                        grant.NumWinners < grant.MaxWinners ?
+                        <div className="flex flex-col">
+                            <p className="mt-8 dark:d-text">Close the grant to new applications</p>
                             <button 
                                 onClick={() => {
-                                    openGrant(grantID, userData)
+                                    closeGrant(grantID, userData)
                                     router.refresh()
                                     console.log(grant)
                                 }}
-                                className={`rounded text-center px-4 py-2 hover:scale-105 text-white mt-6 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
-                                aria-label="Change grant status to open"
+                                className="rounded text-center px-4 py-2 hover:scale-105 text-white mt-2 bg-[#d76b65]"
+                                aria-label="Change grant status to closed"
                             >
-                                Open Grant
+                                Close Grant
                             </button>
+                        </div>
+             
+                    :
+                        grant.NumWinners < grant.MaxWinners ?
+                            <div className="flex flex-col">
+                                <p className="mt-8 dark:d-text">Open the grant to new applications</p>
+                                <button 
+                                    onClick={() => {
+                                        openGrant(grantID, userData)
+                                        router.refresh()
+                                        console.log(grant)
+                                    }}
+                                    className={`rounded text-center px-4 py-2 hover:scale-105 text-white mt-2 ${protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background"}`}
+                                    aria-label="Change grant status to open"
+                                >
+                                    Open Grant
+                                </button>
+                            </div>
                         :
                             <></>
                     }
@@ -145,7 +152,7 @@ export default function GrantInfo({ grant, grantID, applications }){
                     </button>
                     <Application application={currApp} QuestionData={grant.QuestionData} />
 
-                    {currApp && applicationStatus === 'Pending' ? 
+                    {currApp && applicationStatus === 'Pending' && grant.NumWinners < grant.MaxWinners ? 
                         <div className="flex flex-row justify-between my-10">
                             <button onClick={handleReject} className={`p-2 text-center rounded hover:scale-105 text-white bg-[#d76b65]`}>
                                 Reject Application
@@ -159,18 +166,31 @@ export default function GrantInfo({ grant, grantID, applications }){
                             <div tabIndex="0" aria-label={`Application status: ${applicationStatus}`} className={`rounded-full text-center text-white px-4 py-2 mt-2 sm:mt-0 ${applicationStatus === 'Accepted' ? (protanopia ? "custom-green-background-pt" : deuteranopia ? "custom-green-background-dt" : tritanopia ? "custom-green-background-tr" : "custom-green-background") : (applicationStatus === 'Pending' ? (protanopia ? "custom-yellow-background-pt" : deuteranopia ? "custom-yellow-background-dt" : tritanopia ? "custom-yellow-background-tr" : "bg-[#d1aa64]") : 'bg-[#d76b65]')}`}>
                                 {applicationStatus}
                             </div>
-                            <div className="flex flex-row justify-end mt-6">
+                            <div className="flex flex-col items-end mt-6">
                                 {grant.NumWinners === grant.MaxWinners ? 
+                                    applicationStatus === 'Accepted' ?
+                                    <>
+                                        <h1>All winners have been selected </h1>
+                                        <button onClick={handleReject} className={`p-2 text-center rounded hover:underline dark:d-text`}>
+                                            Revoke Application
+                                        </button>
+                                    </>
+                                    :
                                     <h1>All winners have been selected </h1>
+                                
                                 :
                                     applicationStatus === 'Accepted' ?
-                                    <button onClick={handleReject} className={`p-2 text-center rounded hover:underline text-white`}>
+                                    <button onClick={handleReject} className={`p-2 text-center rounded hover:underline dark:d-text`}>
                                         Revoke Application
                                     </button>
-                                    :
-                                    <button onClick={handleAccept} className={`p-2 text-center rounded hover:underline text-white`}>
-                                        Accept Application
-                                    </button>
+                                    : applicationStatus === 'Rejected' ?
+                                        <button onClick={handleAccept} className={`p-2 text-center rounded hover:underline dark:d-text`}>
+                                            Accept Application
+                                        </button>
+                                        :
+                                        <></>
+                                }
+                                {
                                 }
                                 
                                 
