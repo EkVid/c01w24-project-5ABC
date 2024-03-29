@@ -437,7 +437,7 @@ def createApplication():
         application = request.json
         application["dateSubmitted"] = datetime.date.today().strftime("%Y-%m-%d")
         application["profileData"] = None
-        application["status"] = 1
+        application["status"] = ApplicationStatus.IN_REVIEW
 
         id = grantAppCollection.insert_one(application).inserted_id
         return {
