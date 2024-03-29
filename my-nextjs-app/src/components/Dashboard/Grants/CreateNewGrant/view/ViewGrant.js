@@ -57,7 +57,6 @@ export default function ViewGrant({ grant, setViewGrant }){
             return newQuestion
         })
         const finalGrant = {...signedGrant, QuestionData: finalQuestionArr}
-        console.log(finalGrant)
         form.append('jsonData', JSON.stringify(finalGrant))
         form.append('files', JSON.stringify(fileArr))
         return form

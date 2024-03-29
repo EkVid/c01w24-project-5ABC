@@ -58,13 +58,9 @@ const FormComponent = ({title}) => {
   const tempObj = {...getNewQuestionObj("multiple choice"), isTemp: true}
 
   const handleOnSave = () => {
-    // TODO: Do save and make request
-
     // Carter: setting the question data into grant form
     const newGrant = {...grant, form:{...grant.form, questionData:questionData}}
     localStorage.setItem('grant', JSON.stringify(newGrant))
-
-    console.log("Congratulations. You clicked the save button. Way to go. This button doesn't work btw.");
   }
 
   const handleOnClickAddQuestion = (type) => {
