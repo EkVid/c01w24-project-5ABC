@@ -18,6 +18,9 @@ class VeteranStatus(IntEnum):
     VETERAN = 0
     NON_VETERAN = 1 
 
+MAX_CHARS = 1000000
+MAX_NUM = 1000000
+
 """
 User Profile Models
 """
@@ -42,43 +45,30 @@ class UserProfile(BaseModel):
 Question Option and Question Models
 """
 class TextboxOptions(BaseModel):
-    minCharsNum: Optional[PositiveInt] = None
-    maxCharsNum: Optional[PositiveInt] = None
+    minCharsNum: Optional[Union[str, int]] = 0
+    maxCharsNum: Optional[Union[str, int]] = MAX_CHARS
     isMultipleLines: Optional[bool] = None
 
 class NumberOptions(BaseModel):
     isIntegerOnly: Optional[bool] = None
-    minNum: Optional[Union[int, float]] = None
-    maxNum: Optional[Union[int, float]] = None
-
-    @validator('minNum', 'maxNum', always=True)
-    def validate_range(cls, value, values) -> Union[int, float]:
-        if value == None: return value
-        if values['isIntegerOnly']:
-            assert(type(value) == int)
-        else:
-            assert(type(value) == float)
-
-        return value
+    minNum: Optional[Union[int, float]] = 0
+    maxNum: Optional[Union[int, float]] = MAX_NUM
     
-
 class MultipleChoiceOptions(BaseModel):
-    answers: Annotated[list, Len(min_length=2, max_length=10)]
+    answers: list[str]
 
 class CheckboxOptions(BaseModel):
-    answers: Annotated[list, Len(min_length=1, max_length=10)]
-    isNoneAnOption: Optional[bool] = None
+    answers: list[str]
+    isNoneAnOption: Optional[bool] = False
 
 class DateOptions(BaseModel):
     isDateRange: Optional[bool] = None
     isBothRequired: Optional[bool] = None
 
-class FileOptions(BaseModel):
-    type: str
-
 class Question(BaseModel):
     question: str
-    type: Literal['textbox', 'number', 'multiple choice', 'checkbox', 'date', 'file', 'email', 'phone number']
+    type: Literal['textbox', 'number', 'multiple choice', 'checkbox', 'date', 
+        'file', 'email', 'phone number']
     isRequired: bool
     answersObj: Optional[list] = None
     fileData: Optional[dict] = None
@@ -90,7 +80,6 @@ class Question(BaseModel):
         MultipleChoiceOptions,
         CheckboxOptions,
         DateOptions,
-        FileOptions
     ]] = None
 
 """
@@ -102,41 +91,56 @@ class TextboxAnswer(BaseModel):
 
     @validator('text', always=True)
     def validate_textbox(cls, value, values):
-        if values.get('options', None) == None: return value
-        # TODO: check that "options" is a valid key and minCharsNum/maxCharsNum are present
-        # This would cause an error when attempting to update a non-existent application
-        minChars = values['options'].minCharsNum
-        maxChars = values['options'].maxCharsNum
+        opts = values.get('options', None)
+        if opts == None: return value
+        minChars = int(values['options'].minCharsNum)
+        maxChars = int(values['options'].maxCharsNum)
         inRange = minChars <= len(value) and len(value) <= maxChars
         assert(inRange == True)
+
         return value
+    
 
 class NumberAnswer(BaseModel):
     options: Optional[NumberOptions] = None
     value: Union[int, float]
-
+    
+    """
     @validator('value', always=True)
     def validate_number(cls, value, values):
-        if values.get('options', None) == None: return value
+        opts = values.get('options', None)
+        if opts == None: return value
         minNum = values['options'].minNum
         maxNum = values['options'].maxNum
         validNum = ((type(value) == type(minNum)) and (minNum <= value <= maxNum))
+            
         assert(validNum == True)
-
         return value
-    
+    """
 
 class MultipleChoiceAnswer(BaseModel):
-    options: Optional[MultipleChoiceOptions] = None
-    answer: Annotated[list[str], Len(min_length=1, max_length=1)]
-
+    options: MultipleChoiceOptions
+    answer: str
+    
+    @validator('answer', always=True)
+    def validate_checkbox(cls, value, values):
+        opts = values.get('options', None)
+        if opts == None: return value
+        validAnswer = True
+        if value not in values['options'].answers:
+            validAnswer = False
+        assert(validAnswer == True)
+        
+        return value
+    
 class CheckboxAnswer(BaseModel):
-    options: Optional[CheckboxOptions] = None
+    options: CheckboxOptions
     answers: list[str]
     
     @validator('answers', always=True)
     def validate_checkbox(cls, value, values):
-        if values.get('options', None) == None: return value
+        opts = values.get('options', None)
+        if opts == None: return value
         if len(value) == 0:
             validAnswer = values['options'].isNoneAnOption
         else:
@@ -145,9 +149,7 @@ class CheckboxAnswer(BaseModel):
                 if el not in values['options'].answers:
                     validAnswer = False
         assert(validAnswer == True)
-
         return value
-    
     
 class EmailAnswer(BaseModel):
     email: str
@@ -157,13 +159,8 @@ class PhoneNumAnswer(BaseModel):
 
 class DateAnswer(BaseModel):
     options: Optional[DateOptions] = None
-    startDate: Union[str, date] = None
+    startDate: date
     endDate: Optional[str] = None
-
-class FileAnswer(BaseModel):
-    options: Optional[FileOptions] = None
-    fileLink: Optional[Any] = None
-    fileName: Optional[str] = None
 
 
 """
@@ -202,5 +199,4 @@ class Application(BaseModel):
         EmailAnswer,
         PhoneNumAnswer,
         DateAnswer,
-        FileAnswer
     ]]

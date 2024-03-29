@@ -298,7 +298,7 @@ def deleteUser():
 
 
 @app.route("/createGrant", methods=["POST"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def createGrant():
     grantDict = getJSONData(request)
     files = getFileData(request)
@@ -311,15 +311,15 @@ def createGrant():
         questionType = questions[i]["type"]
         if questionType == "multiple choice" or questionType == "checkbox":
             options = questions[i].get("options", None)
-            if not options: continue
-            answers = []
-            for answerDict in options["answersObj"]:
-                answers.append(answerDict["answer"])
-            
-            optionsDict = {"answers": answers}
-            if questionType == "checkbox":
-                isNoneAnOption = options.get("isNoneAnOption", None)
-                optionsDict["isNoneAnOption"] = isNoneAnOption
+            if options:
+                answers = []
+                for answerDict in options["answersObj"]:
+                    answers.append(answerDict["answer"])
+                
+                optionsDict = {"answers": answers}
+                if questionType == "checkbox":
+                    isNoneAnOption = options.get("isNoneAnOption", None)
+                    optionsDict["isNoneAnOption"] = isNoneAnOption
 
             grantDict["QuestionData"][i]["options"] = optionsDict
     
@@ -432,7 +432,7 @@ def updateGrantStatus():
 
 
 @app.route("/createApplication", methods=["POST"])
-#@tokenCheck.token_required
+@tokenCheck.token_required
 def createApplication():
     contentType = request.headers.get('Content-Type')
     if contentType == 'application/json':
@@ -464,18 +464,18 @@ def createApplication():
         # Populate json request with answer constraints from grant to validate
         for i in range(len(grant["QuestionData"])):
             application["answers"][i]["options"] = grant["QuestionData"][i].get("options", None)
-
+        
         try:
-            Application.model_validate_json(JSON.dumps(application))
+            Application.model_validate(application)
         except ValidationError as e:
-            print(e)
             return {"message": str(e.errors())}, 400
-
+        
         id = grantAppCollection.insert_one(application).inserted_id
         return {
             "message": "Grant application successfully created",
             "_id": str(id)
         }, 200
+        
     else:
         return {"message": "Unsupported Content Type"}, 400
 
@@ -508,7 +508,7 @@ def getGranteeApplications():
     if not email:
         return {"message": "Invalid email"}, 400
 
-    applicationDatas = list(grantAppCollection.find({"email": email}, {"_id": False}))
+    applicationDatas = list(grantAppCollection.find({"email": email}))
     grantIDs = [ObjectId(application["grantID"]) for application in applicationDatas]
     grants = list(grantCollection.find({"_id": {"$in": grantIDs}}))
 
@@ -523,6 +523,9 @@ def getGranteeApplications():
     applicationsWithGrants = []
     # Tradeoff for having only two DB calls
     for applicationData in applicationDatas:
+        applicationData["applicationID"] = str(applicationData["_id"])
+        del applicationData["_id"]
+
         for grant in grants:
             if applicationData["grantID"] == grant["grantID"]:
                 applicationsWithGrants.append({
