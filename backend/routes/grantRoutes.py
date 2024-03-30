@@ -83,8 +83,6 @@ def getGrantorGrants():
         return {"message": "Invalid grantor email"}, 400
 
     grants = list(grantCollection.find({"grantorEmail": email}))
-    if not grants:
-        return {"message": "No grants found"}, 404
 
     for grant in grants:
         grant["_id"] = str(grant["_id"])
