@@ -12,3 +12,7 @@ out
 node_modules
 backend/data/
 .next
+__pycache__
+certs
+html
+vhost
