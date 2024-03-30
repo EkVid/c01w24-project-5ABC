@@ -170,13 +170,13 @@ export default function GrantInfo({ grant, grantID, applications }){
                                 {grant.NumWinners === grant.MaxWinners ? 
                                     applicationStatus === 'Accepted' ?
                                     <>
-                                        <h1>All winners have been selected </h1>
+                                        <h1 className="dark:d-text">All winners have been selected </h1>
                                         <button onClick={handleReject} className={`p-2 text-center rounded hover:underline dark:d-text`}>
                                             Revoke Application
                                         </button>
                                     </>
                                     :
-                                    <h1>All winners have been selected </h1>
+                                    <h1 className="dark:d-text">All winners have been selected </h1>
                                 
                                 :
                                     applicationStatus === 'Accepted' ?
