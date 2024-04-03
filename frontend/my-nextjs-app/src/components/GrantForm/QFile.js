@@ -30,7 +30,7 @@ const QFile = ({isEditMode, onSelectAnswer, applicantAnswer}) => {
   const handleOnClearFile = () => {
     if (currentAnswer?.fileLink) URL.revokeObjectURL(currentAnswer.fileLink);
     setCurrentAnswer(null);
-    onSelectAnswer(null);
+    if (!isEditMode) onSelectAnswer(null);
     if (formRef.current) formRef.current.reset();
   }
 

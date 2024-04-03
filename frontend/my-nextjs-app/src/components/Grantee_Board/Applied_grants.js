@@ -56,6 +56,7 @@ const Applied_Grants = ({ applications }) => {
 
     try{
       const res = await axios.post("http://localhost:5000/getFilteredGranteeApplications", body, {headers: headers})
+      setExpandedApplicationId(null)
       setAllApplications(res.data)
     }
     catch(error){

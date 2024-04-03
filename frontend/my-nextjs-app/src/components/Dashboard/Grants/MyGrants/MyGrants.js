@@ -20,7 +20,12 @@ const MyGrants = ({ grants }) => {
     }
 
     function getGrantElements(grants){
-        const grantElements = grants.map(grant => {
+        let grantElements
+        if(!grants || grants.length === 0){
+            return <h1 className="text-2xl dark:d-text mt-6">You don't have any grants yet.</h1>
+        }
+
+        grantElements = grants.map(grant => {
             const grantStatus = getGrantStatus(grant)
             
             return(
